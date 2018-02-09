@@ -15,6 +15,8 @@
                         <b-nav-item-dropdown text="User" right>
                             <b-dropdown-item href="/admin">Admin</b-dropdown-item>
                             <b-dropdown-item href="/logs" v-show="true">Logs</b-dropdown-item>
+                            <b-dropdown-divider></b-dropdown-divider>
+                            <b-dropdown-item href="/#logout" @click="logout()">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                 </b-collapse>
@@ -24,6 +26,16 @@
 </template>
 <script>
     export default {
-        //component definition
+        methods: {
+            logout: function () {
+                window.axios.post('/logout')
+                    .then(function (response) {
+                        window.location.reload();
+                    })
+                    .catch(function (error) {
+                        alert('error');
+                    });
+            }
+        }
     }
 </script>

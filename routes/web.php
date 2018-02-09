@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('main');
+Route::group(['middleware'=>'auth'], function () {
+    Route::get('/', function () {
+        return view('main');
+    });
 });
+
+Auth::routes();

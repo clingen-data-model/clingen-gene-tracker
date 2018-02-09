@@ -1,4 +1,4 @@
-<html lang="en">
+{{-- <html lang="en">
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -8,12 +8,17 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body>
-        <div id="app">
             <clingen-nav></clingen-nav>
-            <div class="mt-2">
+ --}}
+@extends('layouts.app')
+@section('content')
+        <div id="app">
+             <div class="mt-2">
+                {{-- <clingen-nav></clingen-nav> --}}
                 <clingen-app></clingen-app>
             </div>
         </div>
-        <script type="text/javascript" src="{{mix('/js/app.js')}}"></script>
+@endsection
+{{--         <script type="text/javascript" src="{{mix('/js/app.js')}}"></script>
     </body>
-</html>
+</html> --}}

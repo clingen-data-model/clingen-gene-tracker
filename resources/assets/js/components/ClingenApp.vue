@@ -37,7 +37,6 @@
 <script>
     export default {
         components: {
-
             'new-gene-form': require('./NewGeneForm.vue'),
         },
         data: function() {
@@ -59,7 +58,9 @@
             toggleNewGeneForm: function () {
                 console.log('toggleNewGeneForm');
                 this.newGeneFormVisible = !this.newGeneFormVisible;
-            },
+            }
         },
+        mounted: function () {
+        }
     }
 </script>
