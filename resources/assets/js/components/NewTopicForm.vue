@@ -28,7 +28,7 @@
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapGetters, mapActions, mapMutations } from 'vuex'
 
     export default {
         data: function () {
@@ -49,13 +49,24 @@
             }
         },
         methods: {
+            ...mapMutations('messages', [
+                'addInfo',
+                'addAlert'
+            ]),
             ...mapActions('panels', {
                 getAllPanels: 'getAllItems'
+            }),
+            ...mapActions('topics', {
+                storeTopic: 'storeNewItem'
             }),
             saveGene: function ()
             {
                 this.$emit('new-gene-saved', {symbol: this.newGeneSymbol, expert_panel: this.selectedPanel});
-                this.clearForm();
+                this.storeTopic({'gene_symbol': this.newGeneSymbol, 'expert_panel_id': this.newPanelId})
+                    .then(function (response) {
+                        this.addInfo('Topic for gene '+this.newGeneSymbol+' saved for '+this.selectedPanel.name+'.')
+                        this.clearForm();
+                    }.bind(this));
             },
             cancelSave: function ()
             {

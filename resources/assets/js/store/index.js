@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import genes from './modules/genes'
+import topics from './modules/topics'
 import panels from './modules/panels'
+import messages from './modules/messages'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ export default new Vuex.Store({
   mutations: mutations, 
   modules: {
     panels: panels,
-    genes: genes
+    topics: topics,
+    messages: messages
   },
   actions: actions,
   strict: debug,

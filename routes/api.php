@@ -18,4 +18,5 @@ Route::group([
     'namespace' => 'Api'
 ], function () {
     Route::resource('/expert-panels', 'ExpertPanelController');
+    Route::resource('/topics', 'TopicController');
 });

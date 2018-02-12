@@ -19,5 +19,6 @@ const app = new Vue({
     components: {
         'clingen-app': require('./components/ClingenApp.vue'),
         'clingen-nav': require('./components/ClingenNav.vue'),
+        'alerts': require('./components/Alerts.vue')
     },
 });

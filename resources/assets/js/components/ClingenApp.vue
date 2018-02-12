@@ -1,34 +1,31 @@
 <style></style>
 <template>
     <div class="clingen-app-container container">
+
         <b-card>
             <template slot="header">
                 <button 
                     id="new-gene-btn" 
                     class="btn btn-secondary float-right btn-sm" 
-                    @click="toggleNewGeneForm()"
-                >{{ newGeneButtonLabel }}</button>
-                 <h3>Genes in curation</h3>
-            </template>
-            <b-list-group>
-                <b-list-group-item 
-                    v-for="gene in genes"
-                    v-bind:key="gene.symbol"
+                    @click="toggleNewTopicForm()"
                 >
-                    {{ gene.symbol }} - {{ gene.expert_panel.name }}
-                </b-list-group-item>
-            </b-list-group>
+                    Add new topic
+                </button>
+                 
+                <h3>Topics in curation</h3>
+            </template>
+            <topics-table></topics-table>
         </b-card>
 
         <b-modal 
-            v-model="newGeneFormVisible" 
+            v-model="newTopicFormVisible" 
             title="Add a gene to curate"
             hide-footer
             ok-title="Save"
         >
             <new-gene-form 
-                @new-gene-saved="handleNewGene($event)"
-                @new-gene-canceled="toggleNewGeneForm()"
+                @new-gene-saved="toggleNewTopicForm()"
+                @new-gene-canceled="toggleNewTopicForm()"
             >
             </new-gene-form>
         </b-modal>
@@ -37,27 +34,19 @@
 <script>
     export default {
         components: {
-            'new-gene-form': require('./NewGeneForm.vue'),
+            'new-gene-form': require('./NewTopicForm.vue'),
+            'topics-table': require('./TopicsTable.vue'),
         },
         data: function() {
             return {
-                'newGeneFormVisible': false,
-                genes: []
+                'newTopicFormVisible': false,
             }
         },
         computed: {
-            newGeneButtonLabel: function () {
-                return (!this.newGeneFormVisible) ? 'Add new Gene' : 'Close gene form';
-            }
         },
         methods: {
-            handleNewGene: function (gene) {
-                this.genes.push(gene);
-                this.toggleNewGeneForm();
-            },
-            toggleNewGeneForm: function () {
-                console.log('toggleNewGeneForm');
-                this.newGeneFormVisible = !this.newGeneFormVisible;
+            toggleNewTopicForm: function () {
+                this.newTopicFormVisible = !this.newTopicFormVisible;
             }
         },
         mounted: function () {
