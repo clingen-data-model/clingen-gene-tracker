@@ -24,14 +24,15 @@ class GeneCreationTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->user)
                     ->visit('/')
+                    ->assertSee('ClinGen')
                     ->waitFor('#new-gene-btn')
                     ->click('#new-gene-btn')
                     ->waitFor('#new-gene-form')
                     ->type('#gene-symbol-input', 'TEST-1')
-                    ->select('#expert-panel-select', $this->panels->first()->id)
+                    ->select('#expert-panel-select', 1)
                     ->click('#new-gene-form-save')
                     ->assertSee('TEST-1')
-                    ->assertSee($this->panels->first());
+                    ->assertSee($this->panels->first()->name);
         });
     }
 }

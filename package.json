@@ -20,6 +20,7 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "bootstrap-vue": "^2.0.0-rc.1"
+        "bootstrap-vue": "^2.0.0-rc.1",
+        "vuex": "^3.0.1"
     }
 }

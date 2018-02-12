@@ -13,7 +13,8 @@ class ExpertPanelControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $panels = factory(\App\ExpertPanel::class, 10)->create();
+        $this->panels = factory(\App\ExpertPanel::class, 10)->create();
+        $this->user = factory(\App\User::class)->create();
     }
 
     /**
@@ -21,10 +22,11 @@ class ExpertPanelControllerTest extends TestCase
      */
     public function lists_all_expert_panels()
     {
-        $response = $this->call('GET', '/api/expert-panels');
+        $response = $this->actingAs($this->user, 'api')
+                        ->call('GET', '/api/expert-panels');
 
         $response
             ->assertStatus(200)
-            ->assertJson($panels->toJson());
+            ->assertExactJson($this->panels->toArray());
     }
 }

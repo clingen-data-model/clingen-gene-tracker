@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 */
 
 Route::group([
-    'middleware' => 'auth:api',
+    'middleware' => ['auth:api'],
     'namespace' => 'Api'
 ], function () {
-    Route::resource('expert-panels', 'ExpertPanelController');
+    Route::resource('/expert-panels', 'ExpertPanelController');
 });
