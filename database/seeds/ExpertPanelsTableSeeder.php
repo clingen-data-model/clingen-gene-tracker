@@ -11,6 +11,17 @@ class ExpertPanelsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\ExpertPanel::class, 10)->create();
+        factory(\App\ExpertPanel::class)->create([
+            'name' => 'Cardiacmyopaphy'
+        ]);
+        factory(\App\ExpertPanel::class)->create([
+            'name' => 'Osteoboneopathy'
+        ]);
+        factory(\App\ExpertPanel::class)->create([
+            'name' => 'Cardiopulmonary Sadness'
+        ]);
+        factory(\App\ExpertPanel::class)->create([
+            'name' => 'Neuropathy'
+        ]);
     }
 }

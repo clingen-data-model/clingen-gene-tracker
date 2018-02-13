@@ -14,7 +14,9 @@
                  
                 <h3>Topics in curation</h3>
             </template>
-            <topics-table></topics-table>
+            <template slot="body">
+                <topics-table></topics-table>
+            </template>
         </b-card>
 
         <b-modal 
