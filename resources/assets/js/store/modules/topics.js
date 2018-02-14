@@ -33,10 +33,7 @@ const actions = {
             .then(function (response) {
                 commit('addItem', response.data.data);
                 return response;
-            })
-            .catch(function (error) {
-                alert(error);
-            })
+            });
     }
 }
 

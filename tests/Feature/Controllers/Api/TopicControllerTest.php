@@ -53,8 +53,29 @@ class TopicControllerTest extends TestCase
         ];
 
         $this->actingAs($this->user, 'api')
-            ->call('POST', '/api/topics', $data)
+            ->json('POST', '/api/topics', $data)
             ->assertStatus(201)
             ->assertJsonFragment(['gene_symbol' => 'MILTON-1']);
+    }
+
+    /**
+     * @test
+     */
+    public function requires_gene_symbol()
+    {
+        $data = [
+            'expert_panel' => $this->panel->id
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/topics/', $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'gene_symbol'=>[
+                        "The gene symbol field is required."
+                    ]
+                ]
+            ]);
     }
 }

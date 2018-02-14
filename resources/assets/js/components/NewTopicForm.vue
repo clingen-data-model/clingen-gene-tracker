@@ -10,8 +10,12 @@
                 type="text"
                 v-model="newGeneSymbol"
                 required
-                placeholder="ATK-1">                    
+                placeholder="ATK-1"
+                :state="geneSymbolError">                    
                 </b-form-input>
+                <b-form-invalid-feedback id="geneSymbolError">
+                    {{errors.gene_symbol}}
+                </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
                 <b-form-select id="expert-panel-select" v-model="newPanelId">
@@ -35,6 +39,7 @@
             return {
                 newGeneSymbol: null,
                 newPanelId: null,
+                errors: {}
             }
         },
         computed: {
@@ -46,6 +51,9 @@
                     obj => { 
                         return obj.id == this.newPanelId 
                     })
+            },
+            geneSymbolError: function () {
+                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             }
         },
         methods: {
@@ -61,17 +69,20 @@
             }),
             saveGene: function ()
             {
-                this.$emit('new-gene-saved', {symbol: this.newGeneSymbol, expert_panel: this.selectedPanel});
                 this.storeTopic({'gene_symbol': this.newGeneSymbol, 'expert_panel_id': this.newPanelId})
                     .then(function (response) {
                         this.addInfo('Topic for gene '+this.newGeneSymbol+' saved for '+this.selectedPanel.name+'.')
+                        this.$emit('new-gene-saved', {symbol: this.newGeneSymbol, expert_panel: this.selectedPanel});
                         this.clearForm();
+                    }.bind(this))
+                    .catch(function (error) {
+                        this.errors = error.response.data.errors;
                     }.bind(this));
             },
             cancelSave: function ()
             {
-                this.$emit('new-gene-canceled');
                 this.clearForm();
+                this.$emit('new-gene-canceled');
             },
             clearForm: function () {
                 this.newGeneSymbol = null

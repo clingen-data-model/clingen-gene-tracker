@@ -1,9 +1,7 @@
 <style></style>
 <template>
     <div class="topics-table-container">
-        <!-- <pre>{{ topics }}</pre> -->
-        <b-table striped hover :items="tableItems" :fields="fields">
-            
+        <b-table striped hover :items="tableItems" :fields="fields">            
         </b-table>
     </div>
 </template>
