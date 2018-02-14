@@ -26,7 +26,7 @@ class OmimClientTest extends TestCase
      */
     public function can_get_an_entry()
     {
-        $entryJson = '{"omim": { "version": "1.0","entryList":[{"entry":{"prefix":"#","mimNumber":100100,"status":"live","titles":{"preferredTitle":"PRUNE BELLY SYNDROME; PBS","alternativeTitles": "ABDOMINAL MUSCLES, ABSENCE OF, WITH URINARY TRACT ABNORMALITY AND CRYPTORCHIDISM;;\nEAGLE-BARRETT SYNDROME; EGBRS"}}}]}}';
+        $entryJson = file_get_contents(base_path('tests/files/omim_api/entry_response.json'));
         $omim = $this->getOmimClient([ new Response(200, [], $entryJson) ]);
         $entry = $omim->getEntry(100100);
 

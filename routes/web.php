@@ -15,6 +15,8 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/', function () {
         return view('main');
     });
+    Route::get('/omim/entry', 'Api\OmimController@entry');
+    Route::get('/omim/search', 'Api\OmimController@search');
 });
 
 Auth::routes();

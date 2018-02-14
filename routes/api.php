@@ -19,4 +19,6 @@ Route::group([
 ], function () {
     Route::resource('/expert-panels', 'ExpertPanelController');
     Route::resource('/topics', 'TopicController');
+    Route::get('/omim/entry', 'OmimController@entry');
+    Route::get('/omim/search', 'OmimController@search');
 });

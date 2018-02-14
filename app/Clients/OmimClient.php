@@ -14,7 +14,7 @@ class OmimClient
     public function __construct(Client $client = null)
     {
         $this->client = $client;
-        if (!$client) {
+        if (!$this->client) {
             $this->client = $this->getClient();
         }
         $this->baseQuery = ['format'=>'json'];
@@ -33,8 +33,8 @@ class OmimClient
 
     public function search($searchData)
     {
-        $query = $this->buildQuery(compact('searchdata'));
-        $response = $this->client->request('GET', 'search', compact('query'));
+        $query = $this->buildQuery($searchData);
+        $response = $this->client->request('GET', 'entry/search', compact('query'));
         $response = json_decode($response->getBody()->getContents());
         return $response->omim->searchResponse->entryList;
     }
