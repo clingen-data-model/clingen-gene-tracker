@@ -81,12 +81,13 @@
             },
             cancelSave: function ()
             {
-                this.clearForm();
                 this.$emit('new-gene-canceled');
+                this.clearForm();
             },
             clearForm: function () {
                 this.newGeneSymbol = null
                 this.newPanelId = null
+                this.errors = {}
             }
         },
         mounted: function() {
