@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 class UserCrudController extends CrudController
@@ -37,6 +38,17 @@ class UserCrudController extends CrudController
             'entity' => 'roles',
             'attribute' => 'name',
             'model' => Role::class,
+            'pivot' => true
+        ], 'both');
+
+        // ------ CRUD FIELDS
+        $this->crud->addField([
+            'label' => 'Permissions',
+            'type' => 'select2_multiple',
+            'name' => 'permissions',
+            'entity' => 'permissions',
+            'attribute' => 'name',
+            'model' => Permission::class,
             'pivot' => true
         ], 'both');
 
@@ -120,6 +132,11 @@ class UserCrudController extends CrudController
 
     public function update(UpdateRequest $request)
     {
+        // do not update password if left blank
+        if( $request['password'] === NULL ){
+            unset($request['password']);
+        }
+
         // your additional operations before save here
         $redirect_location = parent::updateCrud($request);
         // your additional operations after save here
