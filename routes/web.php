@@ -19,4 +19,8 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/omim/search', 'Api\OmimController@search');
 });
 
+Route::group(['prefix' => config('backpack.base.route_prefix'), 'middleware' => ['admin'], 'namespace' => 'Admin'], function(){
+    CRUD::resource('user', 'UserCrudController');
+});
+
 Auth::routes();
