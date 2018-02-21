@@ -7,11 +7,14 @@ use App\Http\Requests\UserRequest as UpdateRequest;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class UserCrudController extends CrudController
 {
     public function setup()
     {
+
+        $user = Auth::user();
 
         /*
         |--------------------------------------------------------------------------
@@ -69,6 +72,7 @@ class UserCrudController extends CrudController
         // ------ CRUD BUTTONS
         // possible positions: 'beginning' and 'end'; defaults to 'beginning' for the 'line' stack, 'end' for the others;
         // $this->crud->addButton($stack, $name, $type, $content, $position); // add a button; possible types are: view, model_function
+        $this->crud->addButton('line', 'deactivate_user', 'model_function', 'deactivateUser', 'end');
         // $this->crud->addButtonFromModelFunction($stack, $name, $model_function_name, $position); // add a button whose HTML is returned by a method in the CRUD model
         // $this->crud->addButtonFromView($stack, $name, $view, $position); // add a button whose HTML is in a view placed at resources\views\vendor\backpack\crud\buttons
         // $this->crud->removeButton($name);
@@ -77,8 +81,31 @@ class UserCrudController extends CrudController
         // $this->crud->removeAllButtonsFromStack('line');
 
         // ------ CRUD ACCESS
-        // $this->crud->allowAccess(['list', 'create', 'update', 'reorder', 'delete']);
-        // $this->crud->denyAccess(['list', 'create', 'update', 'reorder', 'delete']);
+        if( $user->hasPermissionTo('list users') ){
+            $this->crud->allowAccess(['list']);
+        }else{
+            $this->crud->denyAccess(['list']);
+        }
+        if( $user->hasPermissionTo('create users') ){
+            $this->crud->allowAccess(['create']);
+        }else{
+            $this->crud->denyAccess(['create']);
+        }
+        if( $user->hasPermissionTo('update users') ){
+            $this->crud->allowAccess(['update']);
+        }else{
+            $this->crud->denyAccess(['update']);
+        }
+        if( $user->hasPermissionTo('deactivate users') ){
+            $this->crud->allowAccess(['deactivate']);
+        }else{
+            $this->crud->denyAccess(['deactivate']);
+        }
+        if( $user->hasPermissionTo('delete users') ){
+            $this->crud->allowAccess(['delete']);
+        }else{
+            $this->crud->denyAccess(['delete']);
+        }
 
         // ------ CRUD REORDER
         // $this->crud->enableReorder('label_name', MAX_TREE_LEVEL);
@@ -92,7 +119,7 @@ class UserCrudController extends CrudController
         // ------ REVISIONS
         // You also need to use \Venturecraft\Revisionable\RevisionableTrait;
         // Please check out: https://laravel-backpack.readme.io/docs/crud#revisions
-        // $this->crud->allowAccess('revisions');
+        $this->crud->allowAccess('revisions');
 
         // ------ AJAX TABLE VIEW
         // Please note the drawbacks of this though:

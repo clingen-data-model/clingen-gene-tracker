@@ -26,7 +26,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function programmers_can_dashboard()
+    public function programmers_can_see_dashboard()
     {
         $this->u->assignRole('programmer');
 
@@ -38,7 +38,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function admins_can_dashboard()
+    public function admins_can_see_dashboard()
     {
         $this->u->assignRole('admin');
 
@@ -56,7 +56,7 @@ class AdminNavigationTest extends TestCase
 
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
-            ->assertStatus(404);
+            ->assertStatus(403);
     }
 
     /**
@@ -68,6 +68,54 @@ class AdminNavigationTest extends TestCase
 
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
-            ->assertStatus(404);
+            ->assertStatus(403);
+    }
+
+    /**
+     * @test
+     */
+    public function programmers_can_see_users()
+    {
+        $this->u->assignRole('programmer');
+
+        $this->actingAs($this->u)
+            ->call('GET', '/admin/dashboard')
+            ->assertSee('Users');
+    }
+
+    /**
+     * @test
+     */
+    public function admins_can_see_users()
+    {
+        $this->u->assignRole('admin');
+
+        $this->actingAs($this->u)
+            ->call('GET', '/admin/dashboard')
+            ->assertSee('Users');
+    }
+
+    /**
+     * @test
+     */
+    public function curators_can_not_see_users()
+    {
+        $this->u->assignRole('curator');
+
+        $this->actingAs($this->u)
+            ->call('GET', '/admin/dashboard')
+            ->assertDontSee('Users');
+    }
+
+    /**
+     * @test
+     */
+    public function coordinators_can_not_see_users()
+    {
+        $this->u->assignRole('coordinator');
+
+        $this->actingAs($this->u)
+            ->call('GET', '/admin/dashboard')
+            ->assertDontSee('Users');
     }
 }

@@ -13,8 +13,9 @@
           <!-- ==== Recommended place for admin menu items ==== -->
           <!-- ================================================ -->
           <li><a href="{{ backpack_url('dashboard') }}"><i class="fa fa-dashboard"></i> <span>{{ trans('backpack::base.dashboard') }}</span></a></li>
-
-
+              @if(Auth::user()->hasPermissionTo('list users'))
+              <li><a href="{{ backpack_url('user') }}"><i class="fa fa-user"></i> <span>Users</span></a></li>
+              @endif
           <!-- ======================================= -->
           {{-- <li class="header">Other menus</li> --}}
         </ul>

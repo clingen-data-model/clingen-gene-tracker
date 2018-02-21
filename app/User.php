@@ -10,6 +10,7 @@ use Backpack\CRUD\CrudTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -21,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','deactivated_at',
     ];
 
     /**
@@ -42,5 +43,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function deactivateUser($crud = false)
+    {
+        return '<a class="btn btn-xs btn-default" target="_blank" href="http://clingen.local/admin/user/deactivate" data-toggle="tooltip" title="Deactivate this user."><i class="fa fa-ban"></i> Deactviate</a>';
     }
 }
