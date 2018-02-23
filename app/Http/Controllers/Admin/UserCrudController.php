@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
+use App\Topic;
 use App\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -49,6 +50,18 @@ class UserCrudController extends CrudController
             'pivot' => true
         ], 'both');
 
+        /*// ------ CRUD FIELDS
+        $this->crud->addField([
+            'label' => 'Topics',
+            'type' => 'select2_multiple',
+            'name' => 'topics',
+            'entity' => 'topics',
+            'attribute' => 'gene_symbol',
+            'model' => Topic::class,
+            'pivot' => false
+        ], 'both');*/
+
+
         // ------ CRUD FIELDS
         $this->crud->addField([
             'label' => 'Permissions',
@@ -59,6 +72,8 @@ class UserCrudController extends CrudController
             'model' => Permission::class,
             'pivot' => true
         ], 'both');
+
+
 
         // ------ CRUD FIELDS
         // $this->crud->addField($options, 'update/create/both');
