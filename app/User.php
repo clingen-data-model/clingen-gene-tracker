@@ -47,6 +47,6 @@ class User extends Authenticatable
 
     public function deactivateUser($crud = false)
     {
-        return '<a class="btn btn-xs btn-default" target="_blank" href="http://clingen.local/admin/user/deactivate" data-toggle="tooltip" title="Deactivate this user."><i class="fa fa-ban"></i> Deactviate</a>';
+        return '<a class="btn btn-xs btn-default" target="_blank" href="'.\Request::root().'/admin/user/'.$crud->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user."><i class="fa fa-ban"></i> Deactviate</a>';
     }
 }
