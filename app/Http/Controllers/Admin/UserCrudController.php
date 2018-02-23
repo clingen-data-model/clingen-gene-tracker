@@ -4,17 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
+use App\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class UserCrudController extends CrudController
 {
+    protected $user = null;
+
     public function setup()
     {
-
-        $user = Auth::user();
+        $this->user = Auth::user();
 
         /*
         |--------------------------------------------------------------------------
@@ -80,28 +85,29 @@ class UserCrudController extends CrudController
         // $this->crud->removeAllButtons();
         // $this->crud->removeAllButtonsFromStack('line');
 
+
         // ------ CRUD ACCESS
-        if( $user->hasPermissionTo('list users') ){
+        if( $this->user->hasPermissionTo('list users') ){
             $this->crud->allowAccess(['list']);
         }else{
             $this->crud->denyAccess(['list']);
         }
-        if( $user->hasPermissionTo('create users') ){
+        if( $this->user->hasPermissionTo('create users') ){
             $this->crud->allowAccess(['create']);
         }else{
             $this->crud->denyAccess(['create']);
         }
-        if( $user->hasPermissionTo('update users') ){
+        if( $this->user->hasPermissionTo('update users') ){
             $this->crud->allowAccess(['update']);
         }else{
             $this->crud->denyAccess(['update']);
         }
-        if( $user->hasPermissionTo('deactivate users') ){
+        if( $this->user->hasPermissionTo('deactivate users') ){
             $this->crud->allowAccess(['deactivate']);
         }else{
             $this->crud->denyAccess(['deactivate']);
         }
-        if( $user->hasPermissionTo('delete users') ){
+        if( $this->user->hasPermissionTo('delete users') ){
             $this->crud->allowAccess(['delete']);
         }else{
             $this->crud->denyAccess(['delete']);
@@ -169,5 +175,16 @@ class UserCrudController extends CrudController
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
         return $redirect_location;
+    }
+
+    public function deactivate(Request $request)
+    {
+        if( $this->user->hasPermissionTo('deactivate users') ) {
+            $user = User::findOrFail($request->id);
+            $user->update(['deactivated_at'=>Carbon::now()]);
+            return Redirect::back()->with(['msg','User '.$user->name.' deactivated successfully']);
+        }else{
+            return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);
+        }
     }
 }
