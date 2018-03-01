@@ -42,8 +42,13 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <h6 class="dropdown-header">Admin</h6>
-                                    <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
+                                    @role('programmer|admin')
+                                        <h6 class="dropdown-header">Admin</h6>
+                                        @role('programmer')
+                                            <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
+                                        @endrole
+                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
+                                    @endrole
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
