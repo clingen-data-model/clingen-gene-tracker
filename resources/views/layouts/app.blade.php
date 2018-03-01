@@ -42,6 +42,9 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    @if ( Auth::user()->hasAnyRole(['programmer','admin']) )
+                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

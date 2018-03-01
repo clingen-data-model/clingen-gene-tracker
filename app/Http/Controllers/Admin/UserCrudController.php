@@ -73,6 +73,8 @@ class UserCrudController extends CrudController
             'pivot' => true
         ], 'both');
 
+        $this->crud->removeField('deactivated_at');
+
 
 
         // ------ CRUD FIELDS
@@ -102,30 +104,21 @@ class UserCrudController extends CrudController
 
 
         // ------ CRUD ACCESS
+        $this->crud->denyAccess(['list','create','update','deactivate','delete']);
         if( $this->user->hasPermissionTo('list users') ){
             $this->crud->allowAccess(['list']);
-        }else{
-            $this->crud->denyAccess(['list']);
         }
         if( $this->user->hasPermissionTo('create users') ){
             $this->crud->allowAccess(['create']);
-        }else{
-            $this->crud->denyAccess(['create']);
         }
         if( $this->user->hasPermissionTo('update users') ){
             $this->crud->allowAccess(['update']);
-        }else{
-            $this->crud->denyAccess(['update']);
         }
         if( $this->user->hasPermissionTo('deactivate users') ){
             $this->crud->allowAccess(['deactivate']);
-        }else{
-            $this->crud->denyAccess(['deactivate']);
         }
         if( $this->user->hasPermissionTo('delete users') ){
             $this->crud->allowAccess(['delete']);
-        }else{
-            $this->crud->denyAccess(['delete']);
         }
 
         // ------ CRUD REORDER
