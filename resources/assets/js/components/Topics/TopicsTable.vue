@@ -2,6 +2,15 @@
 <template>
     <div class="topics-table-container">
         <b-table striped hover :items="tableItems" :fields="fields">            
+            <template slot="actions" slot-scope="data">
+            <router-link
+                id="new-topic-btn" 
+                class="btn btn-secondary float-right btn-sm" 
+                :to="'/topics/'+data.item.id+'/edit'"
+            >
+                Edit
+            </router-link>
+            </template>
         </b-table>
     </div>
 </template>
@@ -23,6 +32,10 @@
                     curator: {
                         label: 'Curator',
                         sortable: true,
+                    },
+                    actions: {
+                        label: 'Actions',
+                        sortable: false,
                     }
                 },
             }
@@ -48,7 +61,9 @@
             })
         },
         mounted: function () {
-            this.getAllTopics();
+            if (this.topics.length == 0) {
+                this.getAllTopics();
+            }
         }
     }
 </script>

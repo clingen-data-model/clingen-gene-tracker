@@ -1,9 +1,9 @@
 <style></style>
 <template>
-    <div class="new-gene-form-container">
-        <b-form id="new-gene-form">
+    <div class="new-topic-form-container">
+        <b-form id="new-topic-form">
             <b-form-group id="new-gene-symbol-group"
-                label="HGNC Gene Symbol"
+                label="HGNC topic Symbol"
                 label-for="gene-symbol-input"
             >
                 <b-form-input id="gene-symbol-input"
@@ -25,8 +25,8 @@
             </b-form-group>
             <div class="text-right">
                 <hr>
-                <b-button variant="default" id="new-gene-form-cancel" @click="cancelSave()">Cancel</b-button>
-                <b-button variant="primary" id="new-gene-form-save" @click="saveGene()">Save</b-button>
+                <b-button variant="default" id="new-topic-form-cancel" @click="cancelSave()">Cancel</b-button>
+                <b-button variant="primary" id="new-topic-form-save" @click="saveTopic()">Save</b-button>
             </div>
         </b-form>
     </div>
@@ -67,12 +67,12 @@
             ...mapActions('topics', {
                 storeTopic: 'storeNewItem'
             }),
-            saveGene: function ()
+            saveTopic: function ()
             {
                 this.storeTopic({'gene_symbol': this.newGeneSymbol, 'expert_panel_id': this.newPanelId})
                     .then(function (response) {
                         this.addInfo('Topic for gene '+this.newGeneSymbol+' saved for '+this.selectedPanel.name+'.')
-                        this.$emit('new-gene-saved', {symbol: this.newGeneSymbol, expert_panel: this.selectedPanel});
+                        this.$emit('new-topic-saved', {symbol: this.newGeneSymbol, expert_panel: this.selectedPanel});
                         this.clearForm();
                     }.bind(this))
                     .catch(function (error) {
@@ -81,7 +81,7 @@
             },
             cancelSave: function ()
             {
-                this.$emit('new-gene-canceled');
+                this.$emit('new-topic-canceled');
                 this.clearForm();
             },
             clearForm: function () {
