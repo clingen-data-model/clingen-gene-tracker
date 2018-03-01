@@ -17,6 +17,8 @@ Route::group(['middleware'=>'auth'], function () {
     });
     Route::get('/omim/entry', 'Api\OmimController@entry');
     Route::get('/omim/search', 'Api\OmimController@search');
+
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
 });
 
 

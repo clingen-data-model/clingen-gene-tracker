@@ -45,6 +45,8 @@
                                     @if ( Auth::user()->hasAnyRole(['programmer','admin']) )
                                         <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
                                     @endif
+                                    <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

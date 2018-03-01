@@ -3,7 +3,7 @@
     <div class="new-gene-form-container">
         <b-form id="new-gene-form">
             <b-form-group id="new-gene-symbol-group"
-                label="Gene Symbol"
+                label="HGNC Gene Symbol"
                 label-for="gene-symbol-input"
             >
                 <b-form-input id="gene-symbol-input"
