@@ -4,11 +4,21 @@
         id="edit-topic-modal"
     >
         <template slot="header">
-            <h3>{{ title }}</h3>
+            <h3>
+                {{ title }}
+                 <router-link
+                    :id="'edit-topic-'+topic.id+'-btn'" 
+                    class="btn btn-secondary float-right btn-sm" 
+                    :to="'/topics/'+topic.id"
+                >
+                    cancel
+                </router-link>
+            </h3>
         </template>
         <div v-if="this.topics">
-            <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
-            <p><strong>Expert Panel</strong>: {{ topic.expert_panel.name }}</p>
+            <topic-form :topic="topic">
+                
+            </topic-form>
         </div>
     </b-card>
 </template>
@@ -19,7 +29,8 @@
         props: ['id'],
         computed: {
             ...mapGetters('topics', {
-                topics: 'Items'
+                topics: 'Items',
+                getTopic: 'getItemById'
             }),            
             title: function () {
                 let title = 'Edit Topic: ';
@@ -38,10 +49,13 @@
                     }
                 }
 
-                return this.topics.find( function (element) {
-                    return element.id == this.id
-                }.bind(this))
-            }
+                return this.getTopic(this.id);
+            },
+            curator: function () {
+                return (this.topic.curator) ? this.topic.curator.name : '--';
+            },
+            expertPanel: () => { return (this.expert_panel) ? this.topic.expert_panel.name : '--'; }
+
         },
         methods: {
             ...mapActions('topics', {

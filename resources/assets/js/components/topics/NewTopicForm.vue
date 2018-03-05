@@ -65,7 +65,7 @@
                 getAllPanels: 'getAllItems'
             }),
             ...mapActions('topics', {
-                storeTopic: 'storeNewItem'
+                storeTopic: 'storeItemUpdates'
             }),
             saveTopic: function ()
             {
