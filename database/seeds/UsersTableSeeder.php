@@ -11,11 +11,12 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\User::class)->create([
+        $user = factory(\App\User::class)->create([
             'name' => 'Sirs Programmer',
             'email' => 'sirs@unc.edu',
             'password' => \Hash::make('tester')
         ]);
+        $user->assignRole('programmer');
 
         factory(\App\User::class, 3)->create();
     }
