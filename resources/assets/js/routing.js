@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Topics from './components/topics/Topics'
-import NewTopic from './components/topics/NewTopic'
-import EditTopic from './components/topics/EditTopic'
+import Topics from './components/Topics/Topics'
+import NewTopic from './components/Topics/NewTopic'
+import EditTopic from './components/Topics/EditTopic'
+import ShowTopic from './components/Topics/ShowTopic'
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,11 @@ const routes = [
         component: EditTopic,
         props: true
     },
+    {
+        path: '/topics/:id',
+        component: ShowTopic,
+        props: true
+    }
 ]
 
 const router = new VueRouter({
