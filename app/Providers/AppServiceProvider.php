@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        date_default_timezone_set('America/New_York');
+        if ($this->app->environment('production')) {
+            config(['backpack.base.skin'=>'skin-blue']);
+        }
+        if ($this->app->environment('local', 'demo')) {
+            config(['backpack.base.logo_lg' => '<b>CHANGE</b> - '.$this->app->environment()]);
+        }
     }
 
     /**
