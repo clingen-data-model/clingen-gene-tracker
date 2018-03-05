@@ -42,7 +42,9 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <h6 class="dropdown-header">Admin</h6>
+                                    @if ( Auth::user()->hasAnyRole(['programmer','admin']) )
+                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
