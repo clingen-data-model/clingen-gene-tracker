@@ -20,6 +20,7 @@ class CreateTopicsTable extends Migration
             $table->foreign('expert_panel_id')->references('id')->on('expert_panels');
             $table->integer('curator_id')->unsigned()->nullable();
             $table->foreign('curator_id')->references('id')->on('users');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
