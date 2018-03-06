@@ -1,0 +1,119 @@
+<style></style>
+<template>
+    <div class="new-topic-form-container">
+        <b-form id="new-topic-form">
+            <b-form-group id="new-gene-symbol-group"
+                label="HGNC topic Symbol"
+                label-for="gene-symbol-input"
+            >
+                <b-form-input id="gene-symbol-input"
+                type="text"
+                v-model="updatedTopic.gene_symbol"
+                required
+                placeholder="ATK-1"
+                :state="geneSymbolError">                    
+                </b-form-input>
+                <b-form-invalid-feedback id="geneSymbolError">
+                    {{errors.gene_symbol}}
+                </b-form-invalid-feedback>
+            </b-form-group>
+            <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
+                <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id">
+                    <option :value="null">Select...</option>
+                    <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
+                </b-form-select>
+            </b-form-group>
+            <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
+                <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
+                    <option :value="null">Select...</option>
+                    <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
+                </b-form-select>
+            </b-form-group>
+            <div class="form-group">
+                <label for="notes-field">Notes</label>
+                <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
+            </div>
+            <div class="text-right">
+                <hr>
+                <b-button variant="default" id="new-topic-form-cancel" @click="cancel()">Cancel</b-button>
+                <b-button variant="primary" id="new-topic-form-save" @click="saveTopic()">Save</b-button>
+            </div>
+        </b-form>
+    </div>
+</template>
+<script>
+    import { mapGetters, mapActions, mapMutations } from 'vuex'
+
+    export default {
+        props: ['topic'],
+        data: function () {
+            return {
+                updatedTopic: {},
+                errors: {}
+            }
+        },
+        watch: {
+            topic: function (to, from) {
+                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+            }
+        },
+        computed: {
+            ...mapGetters('panels', {
+                panels: 'Items',
+            }),
+            ...mapGetters('users', {
+                curators: 'getCurators'
+            }),
+            selectedPanel: function () {
+                return this.panels.find(
+                    obj => { 
+                        return obj.id == this.newPanelId 
+                    })
+            },
+            geneSymbolError: function () {
+                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
+            },
+        },
+        methods: {
+            ...mapMutations('messages', [
+                'addInfo',
+                'addAlert'
+            ]),
+            ...mapActions('panels', {
+                getAllPanels: 'getAllItems'
+            }),
+            ...mapActions('topics', {
+                createTopic: 'storeNewItem',
+                updateTopic: 'storeItemUpdates'
+            }),
+            ...mapActions('users', {
+                getAllUsers: 'getAllItems'
+            }),
+            saveTopic: function ()
+            {
+                if (this.updatedTopic.id) {
+                    this.updateTopic(this.updatedTopic)
+                        .then(() => this.$emit('saved'));
+                    return;
+                }
+                this.$emit('saved');
+                this.$router.go(-1);
+            },
+            cancel: function ()
+            {
+                this.$emit('canceled');
+                this.clearForm();
+            },
+            clearForm: function () {
+                this.newGeneSymbol = null
+                this.newPanelId = null
+                this.errors = {}
+            }
+        },
+        mounted: function() {
+            this.getAllPanels();
+            this.getAllUsers();
+            this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+        }
+    }
+</script>

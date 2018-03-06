@@ -65,4 +65,20 @@ class UsersControllerTest extends TestCase
             ->assertDontSee($this->users->first()->name)
             ->assertDontSee($this->users->last()->name);
     }
+
+    /**
+     * @test
+     */
+    public function index_can_return_users_with_role()
+    {
+        $this->disableExceptionHandling();
+        $curators = factory(\App\User::class, 2)->create()
+                        ->each(function ($user) {
+                            $user->assignRole('curator');
+                        });
+
+        $this->actingAs($this->user, 'api')
+            ->call('GET', 'api/users?with=role')
+            ->assertSee('name: curator');
+    }
 }

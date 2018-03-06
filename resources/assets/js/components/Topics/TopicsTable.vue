@@ -77,7 +77,7 @@
                 topics: 'Items'
             }),
             tableItems: function () {
-                let items = this.topics
+                let items = Object.values(this.topics)
                     .map(function (item){
                         return {
                             id: item.id,

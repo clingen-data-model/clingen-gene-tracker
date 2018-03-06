@@ -28,7 +28,8 @@
         props: ['id'],
         computed: {
             ...mapGetters('topics', {
-                topics: 'Items'
+                topics: 'Items',
+                getTopic: 'getItemById'
             }),            
             title: function () {
                 let title = 'Topic: ';
@@ -46,9 +47,7 @@
                     return {}
                 }
 
-                return this.topics.find( function (element) {
-                    return element.id == this.id
-                }.bind(this))
+                return this.getTopic(this.id);
             }
 
         },

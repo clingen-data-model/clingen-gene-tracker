@@ -6,27 +6,30 @@
         <template slot="header">
             <h3>
                 {{ title }}
-                 <router-link
+                 <button
                     :id="'edit-topic-'+topic.id+'-btn'" 
                     class="btn btn-secondary float-right btn-sm" 
-                    :to="'/topics/'+topic.id"
+                    @click="$router.go(-1)"
                 >
                     cancel
-                </router-link>
+                </button>
             </h3>
         </template>
         <div v-if="this.topics">
-            <topic-form :topic="topic">
-                
+            <topic-form :topic="topic" @canceled="$router.go(-1)">                
             </topic-form>
         </div>
     </b-card>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import TopicForm from './Form'
 
     export default {
         props: ['id'],
+        components: {
+            topicForm: TopicForm
+        },
         computed: {
             ...mapGetters('topics', {
                 topics: 'Items',

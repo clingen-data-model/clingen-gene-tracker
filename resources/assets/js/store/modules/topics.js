@@ -8,7 +8,7 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items.find(item => item.id == id)
+        return state.items[id]
     }
 }
 
@@ -19,8 +19,8 @@ const mutations = {
     addItem: function (state, item) {
         state.items.push(item)
     },
-    updateItem: function (state, id, item) {
-        state.items[id] = item
+    updateItem: function (state, item) {
+        state.items[item.id] = item;
     },
 }
 
@@ -42,7 +42,7 @@ const actions = {
             });
     },
     storeItemUpdates: function ( {commit}, data ) {
-        return window.axios.put(baseUrl+'/'+data.topic_id, data)
+        return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
                 commit('updateItem', response.data.data);
                 return response;
