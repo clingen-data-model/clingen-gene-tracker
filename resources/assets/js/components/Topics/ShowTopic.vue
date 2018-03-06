@@ -18,6 +18,7 @@
             <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
             <p><strong>Expert Panel</strong>: {{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</p>
             <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
+            <p><strong>Notes</strong>: {{ topic.notes }}</p>
         </div>
     </b-card>
 </template>

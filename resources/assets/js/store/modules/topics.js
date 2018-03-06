@@ -17,7 +17,7 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        state.items.push(item)
+        state.items[item.id] = item;
     },
     updateItem: function (state, item) {
         state.items[item.id] = item;

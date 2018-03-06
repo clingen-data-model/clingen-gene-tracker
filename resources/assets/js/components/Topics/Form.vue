@@ -93,11 +93,28 @@
             {
                 if (this.updatedTopic.id) {
                     this.updateTopic(this.updatedTopic)
-                        .then(() => this.$emit('saved'));
+                        .then( (response) => {
+                            this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
+                            this.$emit('saved'); 
+                            this.clearForm();
+                            this.$router.go(-1);
+                        })
+                        .catch( (error) => {
+                            this.errors = error.response.data.errors;
+                        });
                     return;
                 }
-                this.$emit('saved');
-                this.$router.go(-1);
+                this.createTopic(this.updatedTopic)
+                    .then( (response) => {
+                        let panel = this.panels.find((item) => item.id == this.updatedTopic.expert_panel_id);
+                        this.addInfo('Topic created for gene '+this.updatedTopic.gene_symbol+' saved for '+panel.name+'.')
+                        this.$emit('saved'); 
+                        this.$router.go(-1);
+                        return response;
+                    })
+                    .catch( (error) => {
+                        this.errors = error.response.data.errors;
+                    });
             },
             cancel: function ()
             {
@@ -113,7 +130,9 @@
         mounted: function() {
             this.getAllPanels();
             this.getAllUsers();
-            this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+            if (this.topic) {
+                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+            }
         }
     }
 </script>

@@ -15,15 +15,11 @@ class TopicResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'gene_symbol' => $this->gene_symbol,
-            'curator_id' => $this->curator_id,
-            'curator' => new UserResource($this->curator) ?? null,
-            'expert_panel_id' => $this->expert_panel_id,
-            'expert_panel' => new ExpertPanelResource($this->expertPanel) ?? null,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
-        ];
+        $data = parent::toArray($request);
+        $data['curator'] = new UserResource($this->curator) ?? null;
+        $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
+        $data['created_at'] = $this->created_at;
+        $data['updated_at'] = $this->updated_at;
+        return $data;
     }
 }
