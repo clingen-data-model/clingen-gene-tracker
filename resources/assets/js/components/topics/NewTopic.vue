@@ -18,7 +18,6 @@
     import TopicForm from './Form'
     export default {
         components: {
-            'new-topic-form': require('./NewTopicForm.vue'),
             'topic-form': TopicForm
         },
         data: function () {
