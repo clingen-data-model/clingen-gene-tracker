@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import topics from './modules/topics'
 import panels from './modules/panels'
 import messages from './modules/messages'
+import users from './modules/users'
 
 Vue.use(Vuex)
 
@@ -27,7 +28,8 @@ export default new Vuex.Store({
   modules: {
     panels: panels,
     topics: topics,
-    messages: messages
+    messages: messages,
+    users: users
   },
   actions: actions,
   strict: debug,

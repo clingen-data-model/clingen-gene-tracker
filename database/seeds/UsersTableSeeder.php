@@ -18,6 +18,11 @@ class UsersTableSeeder extends Seeder
         ]);
         $user->assignRole('programmer');
 
+        $curator = factory(\App\User::class, 3)->create();
+        $curator->each(function ($u) {
+            $u->assignRole('curator');
+        });
+
         factory(\App\User::class, 3)->create();
     }
 }

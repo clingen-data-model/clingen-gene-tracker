@@ -10,6 +10,7 @@ class Topic extends Model
         'gene_symbol',
         'expert_panel_id',
         'curator_id',
+        'notes'
     ];
 
     public function expertPanel()

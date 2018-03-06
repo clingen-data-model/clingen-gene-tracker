@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7013a505c14b42dd7cdc279d19d6c780",
+    "content-hash": "386ee6888066db48df8f1d5c903fec58",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -4762,7 +4762,7 @@
                 "generators",
                 "laravel"
             ],
-            "time": "2017-11-15T07:23:53+00:00"
+            "time": "2017-11-15 07:23:53"
         },
         {
             "name": "laravel/dusk",

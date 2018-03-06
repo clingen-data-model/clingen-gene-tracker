@@ -17,7 +17,7 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return TopicResource::collection(Topic::all());
+        return TopicResource::collection(Topic::all()->keyBy('id'));
     }
 
     /**
@@ -52,7 +52,9 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $topic = Topic::findOrFail($id);
+        $topic->update($request->all());
+        return new TopicResource($topic);
     }
 
     /**

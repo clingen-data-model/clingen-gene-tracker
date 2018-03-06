@@ -22,7 +22,7 @@ class TopicsTableSeeder extends Seeder
                     'expert_panel_id' => $panels->random()->id,
                 ]);
             });
-        factory(Topic::class, 3)->create()
+        factory(Topic::class, 100)->create()
             ->each(function ($item) use ($users, $panels) {
                 $item->update([
                     'expert_panel_id' => $panels->random()->id,

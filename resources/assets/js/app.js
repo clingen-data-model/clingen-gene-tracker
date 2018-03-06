@@ -8,12 +8,14 @@
 require('./bootstrap');
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
+import router from './routing.js'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
 
 
 const app = new Vue({
+    router,
     el: '#app',
     store: store,
     components: {

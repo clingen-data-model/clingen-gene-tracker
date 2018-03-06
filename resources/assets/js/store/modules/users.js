@@ -1,4 +1,4 @@
-const baseUrl = '/api/topics'
+const baseUrl = '/api/users'
 const state = {
     items: []
 }
@@ -8,7 +8,15 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items[id]
+        return state.items.find(item => item.id == id)
+    },
+    getCurators: (state) => {
+        return state.items.filter(item => { 
+            if (!item.roles || item.roles.lenght == 0) {
+                return false
+            }
+            return item.roles.filter(i => i.name === 'curator').length > 0
+        })
     }
 }
 
@@ -17,16 +25,16 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        state.items[item.id] = item;
+        state.items.push(item)
     },
-    updateItem: function (state, item) {
-        state.items[item.id] = item;
+    updateItem: function (state, id, item) {
+        state.items[id] = item
     },
 }
 
 const actions = {
     getAllItems: function ( {commit} ) {
-        return window.axios.get(baseUrl)
+        return window.axios.get(baseUrl+'?with=roles')
             .then(function (response) {
                 commit('setItems', response.data.data)
             })
