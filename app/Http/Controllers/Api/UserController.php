@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,10 @@ class UserController extends Controller
             $query->role(explode(',', $request->role));
         }
 
-        return $query->get();
+        if ($request->has('with')) {
+            $query->with($request->with);
+        }
+
+        return UserResource::collection($query->get());
     }
 }
