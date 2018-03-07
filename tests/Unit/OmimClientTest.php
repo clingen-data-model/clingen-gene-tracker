@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
+ * @group omim-client
  * @group omim
  */
 class OmimClientTest extends TestCase
@@ -44,9 +45,29 @@ class OmimClientTest extends TestCase
         $omim = $this->getOmimClient([new Response(200, [], $json)]);
         $results = $omim->search(['search'=>'myl2']);
 
-        $expectedEntries = json_decode($json)->omim->searchResponse->entryList;
+        $expectedEntries = collect(json_decode($json)->omim->searchResponse->entryList)->transform(function ($entry) {
+            return $entry->entry;
+        });
+        ;
         $this->assertEquals($expectedEntries, $results);
     }
+
+    /**
+     * @test
+     */
+    public function can_get_phenotypes_for_hgnc_gene_symbol()
+    {
+        $json = file_get_contents(base_path('tests/files/omim_api/gene_phenotypes_search.json'));
+        $omim = $this->getOmimClient([new Response(200, [], $json)]);
+        $results = $omim->getGenePhenotypes('TP53');
+
+        $expectedEntries = collect(json_decode($json)->omim->searchResponse->entryList[0]->entry->geneMap->phenotypeMapList)
+                                ->transform(function ($item) {
+                                    return $item->phenotypeMap;
+                                });
+        $this->assertEquals($expectedEntries, $results);
+    }
+    
 
     private function getOmimClient($responses)
     {

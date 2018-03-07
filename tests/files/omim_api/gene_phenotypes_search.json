@@ -1,0 +1,158 @@
+{
+    "omim": {
+        "version": "1.0",
+        "searchResponse": {
+            "search": "approved_gene_symbol:TP53",
+            "expandedSearch": "approved_gene_symbol:TP53",
+            "parsedSearch": "+approved_gene_symbol:tp53 ()",
+            "searchSuggestion": null,
+            "searchSpelling": null,
+            "filter": null,
+            "expandedFilter": null,
+            "fields": null,
+            "searchReport": null,
+            "totalResults": 1,
+            "startIndex": 0,
+            "endIndex": 0,
+            "sort": null,
+            "operator": null,
+            "searchTime": 2.0,
+            "entryList": [
+                {
+                    "entry": {
+                        "prefix": "*",
+                        "mimNumber": 191170,
+                        "status": "live",
+                        "titles": {
+                            "preferredTitle": "TUMOR PROTEIN p53; TP53",
+                            "alternativeTitles": "P53;;\nTRANSFORMATION-RELATED PROTEIN 53; TRP53"
+                        },
+                        "geneMap": {
+                            "sequenceID": 12602,
+                            "chromosome": 17,
+                            "chromosomeSymbol": "17",
+                            "chromosomeSort": 158,
+                            "chromosomeLocationStart": 7668401,
+                            "chromosomeLocationEnd": 7687549,
+                            "transcript": "uc060aur.1",
+                            "cytoLocation": "17p13.1",
+                            "computedCytoLocation": "17p13.1",
+                            "mimNumber": 191170,
+                            "geneSymbols": "TP53, P53, LFS1 , BCC7",
+                            "geneName": "Tumor protein p53",
+                            "mappingMethod": "REa, A, D",
+                            "confidence": "C",
+                            "mouseGeneSymbol": "Trp53",
+                            "mouseMgiID": "MGI:98834",
+                            "geneInheritance": null,
+                            "phenotypeMapList": [
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Adrenal cortical carcinoma",
+                                        "phenotypeMimNumber": 202300,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal recessive"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Breast cancer",
+                                        "phenotypeMimNumber": 114480,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Choroid plexus papilloma",
+                                        "phenotypeMimNumber": 260500,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Colorectal cancer",
+                                        "phenotypeMimNumber": 114500,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Hepatocellular carcinoma",
+                                        "phenotypeMimNumber": 114550,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Somatic mutation"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Li-Fraumeni syndrome",
+                                        "phenotypeMimNumber": 151623,
+                                        "phenotypicSeriesNumber": "PS151623",
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Nasopharyngeal carcinoma",
+                                        "phenotypeMimNumber": 607107,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": null
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Osteosarcoma",
+                                        "phenotypeMimNumber": 259500,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal recessive"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Pancreatic cancer",
+                                        "phenotypeMimNumber": 260350,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant; Somatic mutation; Multifactorial"
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "{Basal cell carcinoma 7}",
+                                        "phenotypeMimNumber": 614740,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": null
+                                    }
+                                },
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "{Glioma susceptibility 1}",
+                                        "phenotypeMimNumber": 137800,
+                                        "phenotypicSeriesNumber": "PS137800",
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal dominant; Somatic mutation"
+                                    }
+                                }
+                            ]
+                        },
+                        "matches": "tp53"
+                    }
+                }
+            ]
+        }
+    }
+}

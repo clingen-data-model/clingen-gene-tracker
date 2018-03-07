@@ -2,21 +2,27 @@
 namespace App\Clients;
 
 use GuzzleHttp\Client;
+use App\Contracts\OmimClient as OmimClientContract;
 
 /**
 * Client for interacting with OMIM APi
 */
-class OmimClient
+class OmimClient implements OmimClientContract
 {
     protected $client;
     protected $query;
 
-    public function __construct(Client $client = null)
+    public function __construct($client = null)
     {
+        if ($client && get_class($client) != Client::class) {
+            throw new \Exception('Bad client exception');
+        }
+
         $this->client = $client;
         if (!$this->client) {
             $this->client = $this->getClient();
         }
+        
         $this->baseQuery = ['format'=>'json'];
     }
 
@@ -36,7 +42,22 @@ class OmimClient
         $query = $this->buildQuery($searchData);
         $response = $this->client->request('GET', 'entry/search', compact('query'));
         $response = json_decode($response->getBody()->getContents());
-        return $response->omim->searchResponse->entryList;
+        return collect($response->omim->searchResponse->entryList)
+                ->transform(function ($entry) {
+                    return $entry->entry;
+                });
+    }
+
+    public function getGenePhenotypes($geneSymbol)
+    {
+        $entryList = $this->search([
+                    'search'=>'approved_gene_symbol:'.$geneSymbol,
+                    'include'=> 'geneMap'
+                ]);
+        return collect($entryList[0]->geneMap->phenotypeMapList)
+                ->transform(function ($item) {
+                    return $item->phenotypeMap;
+                });
     }
 
     private function buildQuery($params)
