@@ -12,6 +12,8 @@ use Tests\TestCase;
 /**
  * @group api
  * @group topics
+ * @group controllers
+ * @group topics-controller
  */
 class TopicControllerTest extends TestCase
 {
@@ -77,5 +79,110 @@ class TopicControllerTest extends TestCase
                     ]
                 ]
             ]);
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_include_phenotypes_when_not_requested()
+    {
+        $this->disableExceptionHandling();
+        $phenotypes = factory(\App\Phenotype::class, 3)->create();
+        $this->topics->each(function ($t) use ($phenotypes) {
+            $t->phenotypes()->sync($phenotypes->pluck('id'));
+        });
+
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics/')
+            ->assertDontSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+    }
+
+
+    /**
+     * @test
+     */
+    public function includes_phenotypes_when_requested()
+    {
+        $this->disableExceptionHandling();
+        $phenotypes = factory(\App\Phenotype::class, 3)->create();
+        $this->topics->each(function ($t) use ($phenotypes) {
+            $t->phenotypes()->sync($phenotypes->pluck('id'));
+        });
+
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics/?with=phenotypes')
+            ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+    }
+
+    /**
+     * @test
+     */
+    public function topic_show_includes_phenotypes_by_default()
+    {
+        $this->disableExceptionHandling();
+        $phenotypes = factory(\App\Phenotype::class, 3)->create();
+        $this->topics->each(function ($t) use ($phenotypes) {
+            $t->phenotypes()->sync($phenotypes->pluck('id'));
+        });
+
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics/1')
+            ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+    }
+
+    /**
+     * @test
+     */
+    public function store_saves_phenotypes_for_new_topic()
+    {
+        $this->disableExceptionHandling();
+        $phenotype = factory(\App\Phenotype::class)->create();
+        $curator = factory(\App\User::class)->create();
+
+        $data = [
+            'gene_symbol' => 'MLTN1',
+            'expert_panel_id' => $this->panel->id,
+            'curator_id' => $curator->id,
+            'phenotypes' => [
+                12345,
+                67890,
+                $phenotype->mim_number
+            ]
+        ];
+
+        $this->actingAs($this->user, 'api')
+            ->call('POST', '/api/topics', $data)
+            ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
+            ->assertSee('"mim_number":"12345"')
+            ->assertSee('"mim_number":"67890"');
+    }
+
+    /**
+     * @test
+     */
+    public function updates_phenotypes_for_new_topic()
+    {
+        $this->disableExceptionHandling();
+        $phenotype = factory(\App\Phenotype::class)->create();
+        $phenotype2 = factory(\App\Phenotype::class)->create();
+        $this->topics->first()->phenotypes()->attach($phenotype2->id);
+
+        $data = [
+            'phenotypes' => [
+                12345,
+                67890,
+                $phenotype->mim_number
+            ]
+        ];
+
+
+        $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$this->topics->first()->id, $data)
+            ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
+            ->assertSee('"mim_number":"12345"')
+            ->assertSee('"mim_number":"67890"');
     }
 }

@@ -16,7 +16,7 @@
             </h3>
         </template>
         <div v-if="this.topics">
-            <topic-form :topic="topic" @canceled="$router.go(-1)">                
+            <topic-form :topic="topic" @canceled="$router.go(-1)" @saved="$router.go(-1)">                
             </topic-form>
         </div>
     </b-card>
@@ -28,7 +28,7 @@
     export default {
         props: ['id'],
         components: {
-            topicForm: TopicForm,
+            'topic-form': TopicForm,
         },
         computed: {
             ...mapGetters('topics', {

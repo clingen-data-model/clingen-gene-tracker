@@ -73,7 +73,10 @@ class PhenotypeTest extends TestCase
     public function phenotype_has_many_topics_relationship()
     {
         $phenotype = factory(\App\Phenotype::class)->create();
+        $topics = factory(\App\Topic::class, 3)->create();
+        $phenotype->topics()->attach($topics->pluck('id'));
 
         $this->assertInstanceOf(BelongsToMany::class, $phenotype->topics());
+        $this->assertEquals(3, $phenotype->topics->count());
     }
 }

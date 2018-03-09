@@ -26,8 +26,8 @@
                     <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
                 </b-form-select>
             </b-form-group>
-            <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-                <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
+            <b-form-group horizontal id="curator-select-group" label="Curator" label-for="curator-select">
+                <b-form-select id="curator-select" v-model="updatedTopic.curator_id">
                     <option :value="null">Select...</option>
                     <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
                 </b-form-select>
@@ -41,7 +41,7 @@
             <phenotype-list 
                 v-if="updatedTopic.gene_symbol" 
                 :gene-symbol="updatedTopic.gene_symbol"
-                v-model="phenotypes"
+                v-model="updatedTopic.phenotypes"
             ></phenotype-list>
             <div class="text-right">
                 <hr>
@@ -64,12 +64,11 @@
             return {
                 updatedTopic: {},
                 errors: {},
-                phenotypes: []
             }
         },
         watch: {
             topic: function (to, from) {
-                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+                this.setUpdatedTopic(to, from);
             }
         },
         computed: {
@@ -78,6 +77,9 @@
             }),
             ...mapGetters('users', {
                 curators: 'getCurators'
+            }),
+            ...mapGetters('topics', {
+                getTopic: 'getItemById',                
             }),
             selectedPanel: function () {
                 return this.panels.find(
@@ -98,12 +100,28 @@
                 getAllPanels: 'getAllItems'
             }),
             ...mapActions('topics', {
+                fetchTopic: 'fetchItem',
                 createTopic: 'storeNewItem',
                 updateTopic: 'storeItemUpdates'
             }),
             ...mapActions('users', {
                 getAllUsers: 'getAllItems'
             }),
+            setUpdatedTopic: function (to, from) {
+                console.log(to);
+                console.log(from);
+                if (to.id != from.id) {
+                    console.log(to.id)
+                    console.log(from.id)
+                    this.fetchTopic(this.topic.id)
+                        .then( function (response) {
+                            console.log(this.topic.phenotypes)
+                        }.bind(this))
+                }
+                    // console.log(this.topic.phenotypes);
+                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+
+            },
             saveTopic: function ()
             {
                 if (this.updatedTopic.id) {
@@ -112,7 +130,6 @@
                             this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
                             this.$emit('saved'); 
                             this.clearForm();
-                            this.$router.go(-1);
                         })
                         .catch( (error) => {
                             this.errors = error.response.data.errors;
@@ -124,7 +141,6 @@
                         let panel = this.panels.find((item) => item.id == this.updatedTopic.expert_panel_id);
                         this.addInfo('Topic created for gene '+this.updatedTopic.gene_symbol+' saved for '+panel.name+'.')
                         this.$emit('saved'); 
-                        this.$router.go(-1);
                         return response;
                     })
                     .catch( (error) => {
@@ -137,17 +153,17 @@
                 this.clearForm();
             },
             clearForm: function () {
-                this.newGeneSymbol = null
-                this.newPanelId = null
+                this.updatedTopic = {};
                 this.errors = {}
             }
         },
         mounted: function() {
+
             this.getAllPanels();
             this.getAllUsers();
             this.updatedTopic = {};
             if (this.topic) {
-                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
+                this.setUpdatedTopic(this.topic, {})
             }
         }
     }

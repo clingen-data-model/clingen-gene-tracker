@@ -57,6 +57,9 @@ class TopicTest extends TestCase
     public function topic_belongsToMany_phenotypes()
     {
         $topic = factory(\App\Topic::class)->create();
+        $phenotypes = factory(\App\Phenotype::class, 2)->create();
+        $topic->phenotypes()->attach($phenotypes->pluck('id'));
         $this->assertInstanceOf(BelongsToMany::class, $topic->phenotypes());
+        $this->assertEquals(2, $topic->phenotypes->count());
     }
 }

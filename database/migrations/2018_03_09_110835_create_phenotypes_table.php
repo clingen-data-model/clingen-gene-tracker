@@ -14,8 +14,8 @@ class CreatePhenotypesTable extends Migration
     public function up()
     {
         Schema::create('phenotypes', function (Blueprint $table) {
-            $table->integer('mim_number');
-            $table->primary('mim_number');
+            $table->increments('id');
+            $table->integer('mim_number')->unique();
             $table->timestamps();
             $table->softDeletes();
         });

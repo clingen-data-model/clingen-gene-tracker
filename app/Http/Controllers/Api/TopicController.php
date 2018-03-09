@@ -5,19 +5,37 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicCreateRequest;
 use App\Http\Resources\TopicResource;
+use App\Jobs\Topics\SyncPhenotypes;
 use App\Topic;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
 {
+    protected $validFilters = [
+        'gene_symbol',
+        'expert_panel_id',
+        'curator_id',
+        'phenotype'
+    ];
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return TopicResource::collection(Topic::all()->keyBy('id'));
+        $query = Topic::query();
+        foreach ($request->all() as $key => $value) {
+            if ($key == 'with') {
+                $query->with($value);
+            }
+            if (in_array($key, $this->validFilters)) {
+                $query->where($key, $value);
+            }
+        }
+        $output = TopicResource::collection($query->get()->keyBy('id'));
+        return $output;
     }
 
     /**
@@ -28,7 +46,9 @@ class TopicController extends Controller
      */
     public function store(TopicCreateRequest $request)
     {
-        $topic = Topic::create($request->all());
+        $topic = Topic::create($request->except('phenotypes'));
+        \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        $topic->load('phenotypes');
         return new TopicResource($topic);
     }
 
@@ -40,7 +60,9 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        //
+        $topic = Topic::findOrFail($id);
+        $topic->load('phenotypes');
+        return new TopicResource($topic);
     }
 
     /**
@@ -53,7 +75,9 @@ class TopicController extends Controller
     public function update(Request $request, $id)
     {
         $topic = Topic::findOrFail($id);
-        $topic->update($request->all());
+        $topic->update($request->except('phenotypes'));
+        \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        $topic->load('phenotypes');
         return new TopicResource($topic);
     }
 

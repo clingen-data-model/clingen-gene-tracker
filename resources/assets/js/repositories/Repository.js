@@ -30,7 +30,6 @@ module.exports = {
         if (data) {
             request.data = data;
         }
-        console.log(request.data);
 
         return window.axios(request);
     },
