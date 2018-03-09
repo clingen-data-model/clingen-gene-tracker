@@ -54,6 +54,9 @@ class OmimClient implements OmimClientContract
                     'search'=>'approved_gene_symbol:'.$geneSymbol,
                     'include'=> 'geneMap'
                 ]);
+        if (count($entryList) == 0) {
+            return [];
+        }
         return collect($entryList[0]->geneMap->phenotypeMapList)
                 ->transform(function ($item) {
                     return $item->phenotypeMap;

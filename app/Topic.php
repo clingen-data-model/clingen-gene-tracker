@@ -22,4 +22,9 @@ class Topic extends Model
     {
         return $this->belongsTo(User::class, 'curator_id');
     }
+
+    public function phenotypes()
+    {
+        return $this->belongsToMany(Phenotype::class);
+    }
 }

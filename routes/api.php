@@ -17,9 +17,14 @@ Route::group([
     'middleware' => ['auth:api'],
     'namespace' => 'Api'
 ], function () {
+
+    // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
     Route::resource('/topics', 'TopicController');
     Route::resource('/users', 'UserController');
+
+    // OMIM
     Route::get('/omim/entry', 'OmimController@entry');
     Route::get('/omim/search', 'OmimController@search');
+    Route::get('/omim/gene', 'OmimController@gene');
 });

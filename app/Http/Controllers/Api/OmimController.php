@@ -20,6 +20,9 @@ class OmimController extends Controller
 
     public function entry(Request $request)
     {
+        if (!$request->has('mim_number')) {
+            return new JsonResponse(['errors' => ['You must provide a mim_number to get a omim record.']], 422);
+        }
         $entry = $this->omim->getEntry($request->mim_number);
         return $entry;
     }

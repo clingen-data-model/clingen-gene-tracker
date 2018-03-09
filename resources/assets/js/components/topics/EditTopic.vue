@@ -28,7 +28,7 @@
     export default {
         props: ['id'],
         components: {
-            topicForm: TopicForm
+            topicForm: TopicForm,
         },
         computed: {
             ...mapGetters('topics', {

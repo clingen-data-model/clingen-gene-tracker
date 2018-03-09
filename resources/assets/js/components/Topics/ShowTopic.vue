@@ -20,13 +20,18 @@
             <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
             <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
         </div>
+        <phenotype-list :gene-symbol="topic.gene_symbol"></phenotype-list>
     </b-card>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
+    import PhenotypeList from './Phenotypes/List'
 
     export default {
         props: ['id'],
+        components: {
+            'phenotype-list': PhenotypeList
+        },
         computed: {
             ...mapGetters('topics', {
                 topics: 'Items',
