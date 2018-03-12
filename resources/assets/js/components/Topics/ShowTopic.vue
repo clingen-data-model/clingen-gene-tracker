@@ -20,7 +20,7 @@
             <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
             <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
         </div>
-        <phenotype-list :gene-symbol="topic.gene_symbol"></phenotype-list>
+        <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
     </b-card>
 </template>
 <script>
@@ -59,13 +59,11 @@
         },
         methods: {
             ...mapActions('topics', {
-                getAllTopics: 'getAllItems'
+                fetchTopic: 'fetchItem'
             })
         },
         mounted: function () {
-            if (this.topics.length == 0) {
-                this.getAllTopics();
-            }
+            this.fetchTopic(this.id);
         }
     }
 </script>

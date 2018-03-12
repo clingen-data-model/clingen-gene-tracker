@@ -54,9 +54,6 @@
 
                 return this.getTopic(this.id);
             },
-            curator: function () {
-                return (this.topic.curator) ? this.topic.curator.name : '--';
-            },
             expertPanel: () => { return (this.expert_panel) ? this.topic.expert_panel.name : '--'; }
 
         },

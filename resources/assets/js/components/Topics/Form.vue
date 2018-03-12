@@ -108,17 +108,12 @@
                 getAllUsers: 'getAllItems'
             }),
             setUpdatedTopic: function (to, from) {
-                console.log(to);
-                console.log(from);
                 if (to.id != from.id) {
-                    console.log(to.id)
-                    console.log(from.id)
                     this.fetchTopic(this.topic.id)
                         .then( function (response) {
                             console.log(this.topic.phenotypes)
                         }.bind(this))
                 }
-                    // console.log(this.topic.phenotypes);
                 this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
 
             },

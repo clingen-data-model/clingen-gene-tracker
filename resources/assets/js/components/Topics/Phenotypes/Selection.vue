@@ -3,7 +3,7 @@
     <div class="component-container">
         <h3>Phenotypes: {{phenotypes.length}}</h3>
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-lg-8">
                 <div v-show="phenotypes.length == 0">
                     <div class="alert alert-secondary clearfix">
                         The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
@@ -17,11 +17,12 @@
                             type="checkbox" 
                             v-model="selectedPhenotypes"
                             :value="data.item.phenotypeMimNumber"
+                            :disabled="disabled"
                         ></input>
                     </template>
                 </b-table>
             </div>
-            <div class="col-sm-4">
+            <div class="col-lg-4">
                 <criteria-table></criteria-table>
             </div>
         </div>
@@ -35,7 +36,7 @@
         components: {
             'criteria-table': CriteriaTable
         },
-        props: ['gene-symbol', 'value'],
+        props: ['gene-symbol', 'value', 'disabled'],
         data: function () {
             return {
                 phenotypes: [],
