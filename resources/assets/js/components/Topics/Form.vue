@@ -2,42 +2,43 @@
 <template>
     <div class="new-topic-form-container">
         <b-form id="new-topic-form">
-            <b-form-group horizontal
-                id="new-gene-symbol-group"
-                label="HGNC topic Symbol"
-                label-for="gene-symbol-input"
-            >
-                <b-form-input id="gene-symbol-input"
-                    type="text"
-                    v-model="updatedTopic.gene_symbol"
-                    required
-                    placeholder="ATK-1"
-                    :state="geneSymbolError"
-                >
-                </b-form-input>
-                
-                <b-form-invalid-feedback id="geneSymbolError">
-                    {{errors.gene_symbol}}
-                </b-form-invalid-feedback>
-            </b-form-group>
-            <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-                <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id">
-                    <option :value="null">Select...</option>
-                    <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
-                </b-form-select>
-            </b-form-group>
-            <b-form-group horizontal id="curator-select-group" label="Curator" label-for="curator-select">
-                <b-form-select id="curator-select" v-model="updatedTopic.curator_id">
-                    <option :value="null">Select...</option>
-                    <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
-                </b-form-select>
-            </b-form-group>
-            <div class="form-row">
-                <label for="notes-field" class="col-sm-3">Notes</label>
-                <div class="col-sm-9">
-                    <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>                    
+            <h4>Info</h4>
+            <div class="card">
+                <div class="card-body">
+                    <b-form-group id="new-gene-symbol-group"
+                        label="HGNC topic Symbol"
+                        label-for="gene-symbol-input"
+                    >
+                        <b-form-input id="gene-symbol-input"
+                        type="text"
+                        v-model="updatedTopic.gene_symbol"
+                        required
+                        placeholder="ATK-1"
+                        :state="geneSymbolError">                    
+                        </b-form-input>
+                        <b-form-invalid-feedback id="geneSymbolError">
+                            {{errors.gene_symbol}}
+                        </b-form-invalid-feedback>
+                    </b-form-group>
+                    <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
+                        <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id">
+                            <option :value="null">Select...</option>
+                            <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
+                        </b-form-select>
+                    </b-form-group>
+                    <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
+                        <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
+                            <option :value="null">Select...</option>
+                            <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
+                        </b-form-select>
+                    </b-form-group>
+                    <div class="form-group">
+                        <label for="notes-field">Notes</label>
+                        <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
+                    </div>
                 </div>
             </div>
+
             <phenotype-list 
                 v-if="updatedTopic.gene_symbol" 
                 :gene-symbol="updatedTopic.gene_symbol"
