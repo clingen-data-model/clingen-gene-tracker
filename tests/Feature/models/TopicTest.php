@@ -3,6 +3,7 @@
 namespace Tests\Feature\models;
 
 use App\Topic;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -48,5 +49,17 @@ class TopicTest extends TestCase
         ]);
 
         $this->assertEquals($panel->name, $topic->expertPanel->name);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_belongsToMany_phenotypes()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $phenotypes = factory(\App\Phenotype::class, 2)->create();
+        $topic->phenotypes()->attach($phenotypes->pluck('id'));
+        $this->assertInstanceOf(BelongsToMany::class, $topic->phenotypes());
+        $this->assertEquals(2, $topic->phenotypes->count());
     }
 }

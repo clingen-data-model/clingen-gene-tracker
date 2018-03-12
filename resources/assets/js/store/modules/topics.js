@@ -1,3 +1,7 @@
+function transformPhenotypes(phenotypes) {
+    return phenotypes.map(p => p.mim_number);
+}
+
 const baseUrl = '/api/topics'
 const state = {
     items: []
@@ -17,6 +21,9 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
+        if (state.items[item.id]) {
+            state.items[item.id] = item;   
+        }
         state.items[item.id] = item;
     },
     updateItem: function (state, item) {
@@ -39,14 +46,33 @@ const actions = {
             .then(function (response) {
                 commit('addItem', response.data.data);
                 return response;
-            });
+            })
+            .catch(function (error) {
+                alert(error);
+            })
     },
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
                 commit('updateItem', response.data.data);
                 return response;
-            });
+            })
+            .catch(function (error) {
+                alert(error);
+            })
+    },
+    fetchItem: function ( {commit}, id ) {
+        return window.axios.get(baseUrl+'/'+id)
+            .then(function (response) {
+                let item = response.data.data;
+                item.phenotypes = transformPhenotypes(item.phenotypes);
+                console.log(item);
+                commit('addItem', item);
+                return response;
+            })
+            .catch(function (error) {
+                alert(error);
+            })
     }
 }
 

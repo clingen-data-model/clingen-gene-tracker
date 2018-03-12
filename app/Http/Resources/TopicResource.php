@@ -18,6 +18,7 @@ class TopicResource extends JsonResource
         $data = parent::toArray($request);
         $data['curator'] = new UserResource($this->curator) ?? null;
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
+        $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
         $data['created_at'] = $this->created_at;
         $data['updated_at'] = $this->updated_at;
         return $data;
