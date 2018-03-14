@@ -59,10 +59,12 @@
         },
         watch: {
             updatedTopic: function () {
-                this.$emit('input', this.updatedTopic)
+                this.$emit('input', this.updatedTopic);
             },
             value: function () {
-                this.updatedTopic = this.value
+                if (this.value != this.updatedTopic) {
+                    this.syncValue();
+                }
             }
         },
         methods: {
@@ -72,10 +74,16 @@
             ...mapActions('users', {
                 getAllUsers: 'getAllItems'
             }),
+            syncValue: function () {
+                if (this.value) {
+                    this.updatedTopic = JSON.parse(JSON.stringify(this.value));
+                }
+            }
         },
         mounted: function () {
             this.getAllPanels();
             this.getAllUsers();
+            this.syncValue();
         }
     }
 </script>

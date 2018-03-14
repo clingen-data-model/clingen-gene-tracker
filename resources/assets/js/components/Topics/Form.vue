@@ -1,39 +1,30 @@
 <style></style>
 <template>
     <div class="new-topic-form-container">
-        <pre>{{ updatedTopic.phenotypes }}</pre>
+        <pre>{{errors}}</pre>
         <b-form id="new-topic-form">
-<!--             <select v-model="currentStep">
+            <select v-model="currentStep">
                 <option v-for="(val, key) in steps" :value="key">{{val.title}}</option>
             </select>
+
             <h4>{{steps[currentStep].title}}</h4>
-            <component :is="currentStep" v-bind="currentProps"></component> -->
-<!--             <collapsable id="info-fields">
-                <div slot="heading">Info</div>
-                <div slot="body">
-                    <info-fields v-model="updatedTopic" :errors="errors"></info-fields>                    
-                </div>
-            </collapsable> -->
+            <component :is="currentStep" 
+                :value="updatedTopic" 
+                :errors="errors"
+                @input="updatedTopic = $event"
+            ></component>
 
-            <collapsable v-if="updatedTopic.gene_symbol" id="phenotypes-fields">
-                <div slot="heading">Phenotypes</div>
-                <div slot="body">
-                    <phenotype-list v-model="updatedTopic">                        
-                    </phenotype-list>
+            <div class="row">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="cancel()">Cancel</button>
                 </div>
-            </collapsable>
-
-<!--            <collapsable id="disease-entity-fields">
-                <div slot="heading">Disease Entity</div>
-                <div slot="body">
-                    <disease-entity-fields :errors="errors" :v-model="updatedTopic"></disease-entity-fields>
+                <div class="col-md-11 text-right">
+                    <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                    <button type="button" class="btn btn-secondary" id="topic-proceed" @click="saveAndExit()">Save &amp; exit</button>
+                    <b-button variant="primary" id="new-topic-form-save" @click="saveAndNext()">Next</b-button>
                 </div>
-            </collapsable>
- -->            <div class="text-right">
-                <hr>
-                <b-button variant="default" id="new-topic-form-cancel" @click="cancel()">Cancel</b-button>
-                <b-button variant="primary" id="new-topic-form-save" @click="saveTopic()">Save</b-button>
             </div>
+            <pre>{{ updatedTopic }}</pre>
         </b-form>
     </div>
 </template>
@@ -50,32 +41,34 @@
             phenotypeList: PhenotypeList,
             infoFields: InfoFields,
             collapsable: Collapsable,
-            'disease-entity-fields': DiseaseEntityFields
+            'disease-entity-fields': DiseaseEntityFields,
         },
         data: function () {
             return {
                 currentStep: 'info-fields',
                 steps: {
                    'info-fields': {
-                        title: 'Info'
+                        title: 'Info',
+                        next: 'phenotype-list'
                     },
                     'phenotype-list': {
-                        title: 'Phenotypes'
+                        title: 'Phenotypes',
+                        next: 'disease-entity-fields'
                     },
                     'disease-entity-fields': {
                         title: 'Disease Entity',
+                        next: null
                     }
 
                 },
                 updatedTopic: {},
                 errors: {},
-                viewState: {
-                    info: true,
-                    phenotypes: true
-                }
             }
         },
         watch: {
+            currentStep: function (to, from) {
+                this.currentProps;
+            },
             topic: function (to, from) {
                 this.setUpdatedTopic(to, from);
             }
@@ -89,12 +82,6 @@
                     obj => { 
                         return obj.id == this.newPanelId 
                     })
-            },
-            currentProps: function () {
-                return {
-                    'v-model': this.updatedTopic,
-                    'errors': this.errors
-                }
             }
         },
         methods: {
@@ -109,29 +96,28 @@
             }),
             setUpdatedTopic: function (to, from) {
                 if (to.id != from.id) {
-                    this.fetchTopic(this.topic.id)
-                        .then( function (response) {
-                            console.log(this.topic.phenotypes)
-                        }.bind(this))
+                    this.fetchTopic(this.topic.id);
                 }
                 this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
 
             },
             saveTopic: function ()
             {
+                console.log(this.updatedTopic);
                 if (this.updatedTopic.id) {
-                    this.updateTopic(this.updatedTopic)
+                    return this.updateTopic(this.updatedTopic)
                         .then( (response) => {
                             this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
                             this.$emit('saved'); 
-                            this.clearForm();
+                            return response;
                         })
                         .catch( (error) => {
                             this.errors = error.response.data.errors;
+                            return error;
                         });
                     return;
                 }
-                this.createTopic(this.updatedTopic)
+                return this.createTopic(this.updatedTopic)
                     .then( (response) => {
                         let panel = this.panels.find((item) => item.id == this.updatedTopic.expert_panel_id);
                         this.addInfo('Topic created for gene '+this.updatedTopic.gene_symbol+' saved for '+panel.name+'.')
@@ -140,6 +126,29 @@
                     })
                     .catch( (error) => {
                         this.errors = error.response.data.errors;
+                        return error;
+                    });
+            },
+            saveAndNext: function () {
+                this.saveTopic()
+                    .then(response => {
+                            this.currentStep = this.steps[this.currentStep].next;
+                    });
+
+            },
+            saveAndExit: function () {
+                this.saveTopic()
+                    .then(response => {
+                        if (this.errors.length == 0) {
+                            this.currentStep = this.steps[this.currentStep].next;
+                            this.clearForm();
+                            this.$emit('save-exited');
+                        }
+                    })
+                    .catch( function (error) {
+                        console.log('caught errors');
+                        this.errors = error.response.data.errors;
+                        return error;
                     });
             },
             cancel: function ()
@@ -150,6 +159,10 @@
             clearForm: function () {
                 this.updatedTopic = {};
                 this.errors = {}
+            },
+            proceed: function () {
+
+                this.currentStep = 'disease-entity-fields';
             }
         },
         mounted: function() {

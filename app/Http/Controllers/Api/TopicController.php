@@ -35,6 +35,7 @@ class TopicController extends Controller
             }
         }
         $output = TopicResource::collection($query->get()->keyBy('id'));
+
         return $output;
     }
 
@@ -49,6 +50,7 @@ class TopicController extends Controller
         $topic = Topic::create($request->except('phenotypes'));
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         $topic->load('phenotypes');
+
         return new TopicResource($topic);
     }
 
@@ -62,6 +64,7 @@ class TopicController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $topic->load('phenotypes');
+
         return new TopicResource($topic);
     }
 
@@ -72,12 +75,13 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TopicCreateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
         $topic->update($request->except('phenotypes'));
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         $topic->load('phenotypes');
+
         return new TopicResource($topic);
     }
 
@@ -89,6 +93,5 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

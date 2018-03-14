@@ -27,6 +27,7 @@ const mutations = {
         state.items[item.id] = item;
     },
     updateItem: function (state, item) {
+        item = transformPhenotypes(item.phenotypes);
         state.items[item.id] = item;
     },
 }
@@ -66,7 +67,6 @@ const actions = {
             .then(function (response) {
                 let item = response.data.data;
                 item.phenotypes = transformPhenotypes(item.phenotypes);
-                console.log(item);
                 commit('addItem', item);
                 return response;
             })
