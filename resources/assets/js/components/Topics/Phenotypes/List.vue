@@ -10,7 +10,6 @@
         <div v-show="phenotypes.length == 0">
             <div class="alert alert-secondary clearfix">
                 The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
-                <button class="btn btn-secondary float-right" @click="">Proceed</button>
             </div>
         </div>
         <ul v-show="usedPhenotypes.length > 0">
@@ -46,13 +45,13 @@
         },
         computed: {
             usedPhenotypes: function () {
-                if (this.phenotypes.length > 0) {
+                if (this.phenotypes.length > 0 && this.topic.phenotypes) {
                     return this.phenotypes.filter(pheno => this.topic.phenotypes.indexOf(pheno.phenotypeMimNumber) > -1)
                 }
                 return this.phenotypes;
             },
             unusedPhenotypes: function () {
-                if (this.phenotypes.length > 0) {
+                if (this.phenotypes.length > 0 && this.topic.phenotypes) {
                     return this.phenotypes.filter(pheno => this.topic.phenotypes.indexOf(pheno.phenotypeMimNumber) < 0)
                 }
                 return this.phenotypes;

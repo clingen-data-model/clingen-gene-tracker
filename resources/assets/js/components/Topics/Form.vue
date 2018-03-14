@@ -1,50 +1,35 @@
 <style></style>
 <template>
     <div class="new-topic-form-container">
+        <pre>{{ updatedTopic.phenotypes }}</pre>
         <b-form id="new-topic-form">
-            <h4>Info</h4>
-            <div class="card">
-                <div class="card-body">
-                    <b-form-group id="new-gene-symbol-group"
-                        label="HGNC topic Symbol"
-                        label-for="gene-symbol-input"
-                    >
-                        <b-form-input id="gene-symbol-input"
-                        type="text"
-                        v-model="updatedTopic.gene_symbol"
-                        required
-                        placeholder="ATK-1"
-                        :state="geneSymbolError">                    
-                        </b-form-input>
-                        <b-form-invalid-feedback id="geneSymbolError">
-                            {{errors.gene_symbol}}
-                        </b-form-invalid-feedback>
-                    </b-form-group>
-                    <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-                        <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id">
-                            <option :value="null">Select...</option>
-                            <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
-                        </b-form-select>
-                    </b-form-group>
-                    <b-form-group id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-                        <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
-                            <option :value="null">Select...</option>
-                            <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
-                        </b-form-select>
-                    </b-form-group>
-                    <div class="form-group">
-                        <label for="notes-field">Notes</label>
-                        <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
-                    </div>
+<!--             <select v-model="currentStep">
+                <option v-for="(val, key) in steps" :value="key">{{val.title}}</option>
+            </select>
+            <h4>{{steps[currentStep].title}}</h4>
+            <component :is="currentStep" v-bind="currentProps"></component> -->
+<!--             <collapsable id="info-fields">
+                <div slot="heading">Info</div>
+                <div slot="body">
+                    <info-fields v-model="updatedTopic" :errors="errors"></info-fields>                    
                 </div>
-            </div>
+            </collapsable> -->
 
-            <phenotype-list 
-                v-if="updatedTopic.gene_symbol" 
-                :gene-symbol="updatedTopic.gene_symbol"
-                v-model="updatedTopic.phenotypes"
-            ></phenotype-list>
-            <div class="text-right">
+            <collapsable v-if="updatedTopic.gene_symbol" id="phenotypes-fields">
+                <div slot="heading">Phenotypes</div>
+                <div slot="body">
+                    <phenotype-list v-model="updatedTopic">                        
+                    </phenotype-list>
+                </div>
+            </collapsable>
+
+<!--            <collapsable id="disease-entity-fields">
+                <div slot="heading">Disease Entity</div>
+                <div slot="body">
+                    <disease-entity-fields :errors="errors" :v-model="updatedTopic"></disease-entity-fields>
+                </div>
+            </collapsable>
+ -->            <div class="text-right">
                 <hr>
                 <b-button variant="default" id="new-topic-form-cancel" @click="cancel()">Cancel</b-button>
                 <b-button variant="primary" id="new-topic-form-save" @click="saveTopic()">Save</b-button>
@@ -55,16 +40,39 @@
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import PhenotypeList from './Phenotypes/Selection'
+    import InfoFields from './InfoFields'
+    import Collapsable from '../Collapsable'
+    import DiseaseEntityFields from './DiseaseEntityFields'
 
     export default {
         props: ['topic'],
         components: {
-            phenotypeList: PhenotypeList
+            phenotypeList: PhenotypeList,
+            infoFields: InfoFields,
+            collapsable: Collapsable,
+            'disease-entity-fields': DiseaseEntityFields
         },
         data: function () {
             return {
+                currentStep: 'info-fields',
+                steps: {
+                   'info-fields': {
+                        title: 'Info'
+                    },
+                    'phenotype-list': {
+                        title: 'Phenotypes'
+                    },
+                    'disease-entity-fields': {
+                        title: 'Disease Entity',
+                    }
+
+                },
                 updatedTopic: {},
                 errors: {},
+                viewState: {
+                    info: true,
+                    phenotypes: true
+                }
             }
         },
         watch: {
@@ -73,12 +81,6 @@
             }
         },
         computed: {
-            ...mapGetters('panels', {
-                panels: 'Items',
-            }),
-            ...mapGetters('users', {
-                curators: 'getCurators'
-            }),
             ...mapGetters('topics', {
                 getTopic: 'getItemById',                
             }),
@@ -88,25 +90,22 @@
                         return obj.id == this.newPanelId 
                     })
             },
-            geneSymbolError: function () {
-                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
-            },
+            currentProps: function () {
+                return {
+                    'v-model': this.updatedTopic,
+                    'errors': this.errors
+                }
+            }
         },
         methods: {
             ...mapMutations('messages', [
                 'addInfo',
                 'addAlert'
             ]),
-            ...mapActions('panels', {
-                getAllPanels: 'getAllItems'
-            }),
             ...mapActions('topics', {
                 fetchTopic: 'fetchItem',
                 createTopic: 'storeNewItem',
                 updateTopic: 'storeItemUpdates'
-            }),
-            ...mapActions('users', {
-                getAllUsers: 'getAllItems'
             }),
             setUpdatedTopic: function (to, from) {
                 if (to.id != from.id) {
@@ -154,9 +153,6 @@
             }
         },
         mounted: function() {
-
-            this.getAllPanels();
-            this.getAllUsers();
             this.updatedTopic = {};
             if (this.topic) {
                 this.setUpdatedTopic(this.topic, {})
