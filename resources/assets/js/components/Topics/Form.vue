@@ -1,6 +1,7 @@
 <style></style>
 <template>
     <div class="new-topic-form-container">
+        <!-- <pre>{{ updatedTopic }}</pre> -->
         <b-form id="new-topic-form">
             <select v-model="currentStep">
                 <option v-for="(val, key) in steps" :value="key">{{val.title}}</option>
@@ -48,7 +49,7 @@
         },
         data: function () {
             return {
-                currentStep: 'phenotype-list',
+                currentStep: 'info-fields',
                 steps: {
                    'info-fields': {
                         title: 'Info',
@@ -89,6 +90,9 @@
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },
+            nextStep: function () {
+                return this.steps[this.currentStep].next;
+            }
         },
         methods: {
             ...mapMutations('messages', [
@@ -103,8 +107,13 @@
             updateTopic: function () {
                 return this.storeItemUpdates(this.updatedTopic)
                     .then( (response) => {
-                        this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
-                        this.$emit('saved'); 
+                        this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+'.')
+                        this.$emit('saved');
+                        console.log(this.nextStep);
+                        if (this.nextStep === null) {
+                            this.$router.push('/topics/'+this.updatedTopic.id)
+                        }
+                        this.currentStep = this.nextStep;
                         return response;
                     })
                     .catch( (error) => {
@@ -117,7 +126,8 @@
                     .then( (response) => {
                         this.$emit('saved');
                         this.$emit('created');
-                        this.$router.push(this.$router.push('/topics/'+response.data.data.id+'/edit'))
+                        this.addInfo('Topic with '+this.updatedTopic.gene_symbol+' created.')
+                        this.$router.push('/topics/'+response.data.data.id+'/edit');
                         return response;
                     })
                     .catch( (error) => {

@@ -53,7 +53,6 @@
                 }
 
                 const topic = this.getTopic(this.id);
-                console.log(topic);
                 return topic;
             },
             curator: function () {

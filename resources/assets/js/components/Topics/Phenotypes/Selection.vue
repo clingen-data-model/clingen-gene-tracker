@@ -1,7 +1,8 @@
 <style></style>
 <template>
     <div class="component-container">
-        <div v-show="phenotypes.length == 0">
+        <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div>
+        <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
                 The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.
             </div>
@@ -58,6 +59,11 @@
                 }
             }
         },
+        computed: {
+            loading: function () {
+                return this.$store.getters.loading;
+            }
+        },
         watch: {
             updatedTopic: function () {
                 this.$emit('input', this.updatedTopic);
@@ -70,7 +76,6 @@
         },
         methods: {
             fetchPhenotypes: function () {
-                console.log("fetchPhenotypes: "+this.updatedTopic.gene_symbol);
                 if (this.updatedTopic.gene_symbol) {
                     OmimRepo.gene(this.updatedTopic.gene_symbol)
                         .then( response => this.phenotypes = response.data.phenotypes )

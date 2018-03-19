@@ -1,7 +1,13 @@
 import Vue from 'vue'
 
 function transformPhenotypes(phenotypes) {
-    return phenotypes.map(p => p.mim_number);
+    const out = phenotypes.map(p => {
+        if (p.mim_number) {
+            return p.mim_number
+        }
+        return p
+    });
+    return out;
 }
 
 const baseUrl = '/api/topics'
@@ -25,7 +31,6 @@ const mutations = {
     addItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
         Vue.set(state.items, item.id, item)
-
     },
 }
 

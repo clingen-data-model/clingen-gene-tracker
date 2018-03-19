@@ -4,8 +4,6 @@ namespace Tests\Feature\models;
 
 use App\Topic;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -23,6 +21,17 @@ class TopicTest extends TestCase
         $topic->fill(['gene_symbol'=>'TEST-1']);
 
         $this->assertEquals('TEST-1', $topic->gene_symbol);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_modo_id()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['mondo_id' => 1234567890]);
+
+        $this->assertEquals(1234567890, $topic->mondo_id);
     }
 
     /**

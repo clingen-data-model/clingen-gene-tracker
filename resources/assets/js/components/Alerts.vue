@@ -29,9 +29,5 @@
                 'removeError'
             ])
         },
-        // mounted: function() {
-        //     this.addInfo('This is a test message');
-        //     this.addError('This is a test error');
-        // }
     }
 </script>

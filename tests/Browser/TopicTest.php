@@ -2,15 +2,15 @@
 
 namespace Tests\Browser;
 
+use App\Topic;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Support\Facades\Schema;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 class TopicTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    
+
     public function setUp()
     {
         parent::setUp();

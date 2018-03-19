@@ -22,9 +22,22 @@
             updatedTopic: function () {
                 this.$emit('input', this.updatedTopic)
             },
-            value: function () {
-                this.updatedTopic = this.value
+            value: function (to, from) {
+                if (this.value != this.updatedTopic) {
+                    this.syncValue();
+                }
             }
         },
+        methods: {
+            syncValue: function () {
+                if (this.value) {
+                    this.updatedTopic = JSON.parse(JSON.stringify(this.value));
+                }
+            }
+        },
+        mounted: function () {
+            this.syncValue();
+        }
+
     }
 </script>

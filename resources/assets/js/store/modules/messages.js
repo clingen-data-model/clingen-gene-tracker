@@ -1,3 +1,4 @@
+let timeouts = {};
 const state = {
     info: [],
     errors: []
@@ -17,7 +18,9 @@ const getters = {
 
 const mutations = {
     addInfo: function (state, message) {
-        state.info.push(message)
+        if (state.info.indexOf(message) == -1) {
+            state.info.push(message)
+        }
     },
     removeInfo: function (state, idx) {
         state.info.splice(idx,1);
@@ -27,6 +30,12 @@ const mutations = {
     },
     removeError: function (state, idx) {
         state.errors.splice(idx,1);
+    }
+}
+
+const actions = {
+    addInfo: function ({commit}, message) {
+        commit('addInfo', message);
     }
 }
 

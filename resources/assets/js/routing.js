@@ -7,13 +7,19 @@ import ShowTopic from './components/Topics/ShowTopic'
 
 Vue.use(VueRouter)
 
-const Foo = { template: '<div>foo</div>' }
-const Bar = { template: '<div>bar</div>' }
-
 const routes = [
-    { path: '/', component: Topics},
-    { path: '/topics', component: Topics},
-    { path: '/topics/create', component: NewTopic},
+    { 
+        path: '/', 
+        component: Topics
+    },
+    { 
+        path: '/topics', 
+        component: Topics
+    },
+    { 
+        path: '/topics/create', 
+        component: NewTopic
+    },
     { 
         path: '/topics/:id/edit', 
         component: EditTopic,
