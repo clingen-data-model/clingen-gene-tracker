@@ -1,7 +1,6 @@
 <style></style>
 <template>
     <div class="new-topic-form-container">
-        <pre>{{errors}}</pre>
         <b-form id="new-topic-form">
             <select v-model="currentStep">
                 <option v-for="(val, key) in steps" :value="key">{{val.title}}</option>
@@ -19,12 +18,16 @@
                     <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="cancel()">Cancel</button>
                 </div>
                 <div class="col-md-11 text-right">
-                    <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
-                    <button type="button" class="btn btn-secondary" id="topic-proceed" @click="saveAndExit()">Save &amp; exit</button>
-                    <b-button variant="primary" id="new-topic-form-save" @click="saveAndNext()">Next</b-button>
+                    <div v-if="$route.path == '/topics/create'">
+                        <b-button variant="primary" id="create-and-continue-btn" @click="createTopic()">Create topic</b-button>
+                    </div>
+                    <div v-else>
+                        <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                        <button type="button" class="btn btn-secondary" id="topic-proceed" @click="saveAndExit()">Save &amp; exit</button>
+                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic()">Next</b-button>
+                    </div>
                 </div>
             </div>
-            <pre>{{ updatedTopic }}</pre>
         </b-form>
     </div>
 </template>
@@ -45,7 +48,7 @@
         },
         data: function () {
             return {
-                currentStep: 'info-fields',
+                currentStep: 'phenotype-list',
                 steps: {
                    'info-fields': {
                         title: 'Info',
@@ -82,7 +85,10 @@
                     obj => { 
                         return obj.id == this.newPanelId 
                     })
-            }
+            },
+            geneSymbolError: function () {
+                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
+            },
         },
         methods: {
             ...mapMutations('messages', [
@@ -91,65 +97,40 @@
             ]),
             ...mapActions('topics', {
                 fetchTopic: 'fetchItem',
-                createTopic: 'storeNewItem',
-                updateTopic: 'storeItemUpdates'
+                storeNewItem: 'storeNewItem',
+                storeItemUpdates: 'storeItemUpdates'
             }),
+            updateTopic: function () {
+                return this.storeItemUpdates(this.updatedTopic)
+                    .then( (response) => {
+                        this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
+                        this.$emit('saved'); 
+                        return response;
+                    })
+                    .catch( (error) => {
+                        this.errors = error.response.errors;
+                        return error;
+                    });
+            },
+            createTopic: function() {
+                return this.storeNewItem(this.updatedTopic)
+                    .then( (response) => {
+                        this.$emit('saved');
+                        this.$emit('created');
+                        this.$router.push(this.$router.push('/topics/'+response.data.data.id+'/edit'))
+                        return response;
+                    })
+                    .catch( (error) => {
+                        console.log(error);
+                        this.errors = error.response.data.errors;
+                        return error;
+                    })
+            },
             setUpdatedTopic: function (to, from) {
                 if (to.id != from.id) {
                     this.fetchTopic(this.topic.id);
                 }
                 this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
-
-            },
-            saveTopic: function ()
-            {
-                console.log(this.updatedTopic);
-                if (this.updatedTopic.id) {
-                    return this.updateTopic(this.updatedTopic)
-                        .then( (response) => {
-                            this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
-                            this.$emit('saved'); 
-                            return response;
-                        })
-                        .catch( (error) => {
-                            this.errors = error.response.data.errors;
-                            return error;
-                        });
-                    return;
-                }
-                return this.createTopic(this.updatedTopic)
-                    .then( (response) => {
-                        let panel = this.panels.find((item) => item.id == this.updatedTopic.expert_panel_id);
-                        this.addInfo('Topic created for gene '+this.updatedTopic.gene_symbol+' saved for '+panel.name+'.')
-                        this.$emit('saved'); 
-                        return response;
-                    })
-                    .catch( (error) => {
-                        this.errors = error.response.data.errors;
-                        return error;
-                    });
-            },
-            saveAndNext: function () {
-                this.saveTopic()
-                    .then(response => {
-                            this.currentStep = this.steps[this.currentStep].next;
-                    });
-
-            },
-            saveAndExit: function () {
-                this.saveTopic()
-                    .then(response => {
-                        if (this.errors.length == 0) {
-                            this.currentStep = this.steps[this.currentStep].next;
-                            this.clearForm();
-                            this.$emit('save-exited');
-                        }
-                    })
-                    .catch( function (error) {
-                        console.log('caught errors');
-                        this.errors = error.response.data.errors;
-                        return error;
-                    });
             },
             cancel: function ()
             {

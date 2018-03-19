@@ -35,7 +35,6 @@ class TopicController extends Controller
             }
         }
         $output = TopicResource::collection($query->get()->keyBy('id'));
-
         return $output;
     }
 
@@ -49,7 +48,7 @@ class TopicController extends Controller
     {
         $topic = Topic::create($request->except('phenotypes'));
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
-        $topic->load('phenotypes');
+        $topic->load('phenotypes', 'expertPanel', 'curator');
 
         return new TopicResource($topic);
     }

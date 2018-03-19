@@ -10,7 +10,7 @@
                 v-model="updatedTopic.gene_symbol"
                 required
                 placeholder="ATK-1"
-                :state="geneSymbolError">                    
+                :state="geneSymbolError"> 
             </b-form-input>
             <b-form-invalid-feedback id="geneSymbolError">
                 {{errors.gene_symbol}}

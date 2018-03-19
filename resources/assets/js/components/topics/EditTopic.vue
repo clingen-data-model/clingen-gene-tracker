@@ -16,7 +16,7 @@
             </h3>
         </template>
         <div v-if="this.topics">
-            <topic-form :topic="topic" @canceled="$router.go(-1)" @save-exited="$router.go(-1)">                
+            <topic-form :topic="topic" @canceled="$router.go(-1)">         
             </topic-form>
         </div>
     </b-card>
@@ -28,7 +28,7 @@
     export default {
         props: ['id'],
         components: {
-            'topic-form': TopicForm,
+            topicForm: TopicForm
         },
         computed: {
             ...mapGetters('topics', {
@@ -52,7 +52,12 @@
                     }
                 }
 
-                return this.getTopic(this.id);
+                const topic = this.getTopic(this.id);
+                console.log(topic);
+                return topic;
+            },
+            curator: function () {
+                return (this.topic.curator) ? this.topic.curator.name : '--';
             },
             expertPanel: () => { return (this.expert_panel) ? this.topic.expert_panel.name : '--'; }
 

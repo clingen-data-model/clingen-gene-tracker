@@ -63,7 +63,6 @@
                 this.$emit('input', this.updatedTopic);
             },
             value: function () {
-                this.fetchPhenotypes()
                 if (this.value != this.updatedTopic) {
                     this.syncValue();
                 }
@@ -71,6 +70,7 @@
         },
         methods: {
             fetchPhenotypes: function () {
+                console.log("fetchPhenotypes: "+this.updatedTopic.gene_symbol);
                 if (this.updatedTopic.gene_symbol) {
                     OmimRepo.gene(this.updatedTopic.gene_symbol)
                         .then( response => this.phenotypes = response.data.phenotypes )
@@ -80,6 +80,7 @@
             syncValue: function () {
                 if (this.value) {
                     this.updatedTopic = JSON.parse(JSON.stringify(this.value));
+                    this.fetchPhenotypes()    
                 }
             }
         },

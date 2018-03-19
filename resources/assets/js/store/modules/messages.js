@@ -3,6 +3,18 @@ const state = {
     errors: []
 }
 
+const getters = {
+    info: function (state) {
+        return state.info;
+    },
+    errors: function (state) {
+        return state.errors;
+    },
+    all: function (state) {
+        return state;
+    }
+}
+
 const mutations = {
     addInfo: function (state, message) {
         state.info.push(message)
@@ -21,5 +33,6 @@ const mutations = {
 export default {
     namespaced: true,
     state,
+    getters,
     mutations
 }
