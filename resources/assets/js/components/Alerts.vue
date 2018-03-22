@@ -1,6 +1,13 @@
-<style></style>
+<style>
+    .alerts-container {
+        position:fixed; 
+        top: 70px; 
+        right: 1em;
+        min-width: 300px;
+    }
+</style>
 <template>
-    <div class="alerts-container container">
+    <div class="alerts-container">
         <div class="alert alert-info" v-for="(msg, idx) in info">
             <a class="float-right crsr-pointer" @click="removeInfo(idx)">x</a>
             {{msg}}
@@ -29,9 +36,5 @@
                 'removeError'
             ])
         },
-        // mounted: function() {
-        //     this.addInfo('This is a test message');
-        //     this.addError('This is a test error');
-        // }
     }
 </script>

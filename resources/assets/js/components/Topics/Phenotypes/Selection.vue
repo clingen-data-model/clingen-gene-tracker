@@ -1,21 +1,21 @@
 <style></style>
 <template>
     <div class="component-container">
-        <h3>Phenotypes: {{phenotypes.length}}</h3>
-        <div class="row">
+        <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div>
+        <div v-show="phenotypes.length == 0 && !loading">
+            <div class="alert alert-secondary clearfix">
+                <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
+                If you continue with this topic you will have to assign a temporary MonDO ID.
+            </div>
+        </div>
+        <div class="row" v-show="phenotypes.length > 0">
             <div class="col-lg-8">
-                <div v-show="phenotypes.length == 0">
-                    <div class="alert alert-secondary clearfix">
-                        The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
-                        <button class="btn btn-secondary float-right" @click="">Proceed</button>
-                    </div>
-                </div>
-                <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small v-show="phenotypes.length > 0">
+                <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small>
                     <template slot="checkbox" slot-scope="data">
                         <input 
                             class="form-check-input form-check-input-lg"
                             type="checkbox" 
-                            v-model="selectedPhenotypes"
+                            v-model="updatedTopic.phenotypes"
                             :value="data.item.phenotypeMimNumber"
                             :disabled="disabled"
                         ></input>
@@ -36,11 +36,11 @@
         components: {
             'criteria-table': CriteriaTable
         },
-        props: ['gene-symbol', 'value', 'disabled'],
+        props: ['value', 'disabled'],
         data: function () {
             return {
                 phenotypes: [],
-                selectedPhenotypes: [],
+                updatedTopic: {},
                 fields: {
                     'phenotype': {
                         sortable: true
@@ -60,30 +60,33 @@
                 }
             }
         },
+        computed: {
+            loading: function () {
+                return this.$store.getters.loading;
+            }
+        },
         watch: {
-            geneSymbol: function (to, from) {
-                this.fetchPhenotypes()
-            },
-            selectedPhenotypes: function () {
-                this.$emit('input', this.selectedPhenotypes);
+            updatedTopic: function () {
+                this.$emit('input', this.updatedTopic);
             },
             value: function () {
-                if (this.value != this.selectedPhenotypes) {
+                if (this.value != this.updatedTopic) {
                     this.syncValue();
                 }
             }
         },
         methods: {
             fetchPhenotypes: function () {
-                if (this.geneSymbol) {
-                    OmimRepo.gene(this.geneSymbol)
+                if (this.updatedTopic.gene_symbol) {
+                    OmimRepo.gene(this.updatedTopic.gene_symbol)
                         .then( response => this.phenotypes = response.data.phenotypes )
                         .catch( error => alert(error) )
                 }
             },
             syncValue: function () {
                 if (this.value) {
-                    this.selectedPhenotypes = JSON.parse(JSON.stringify(this.value));
+                    this.updatedTopic = JSON.parse(JSON.stringify(this.value));
+                    this.fetchPhenotypes()    
                 }
             }
         },

@@ -1,27 +1,35 @@
 <style></style>
 <template>
-    <b-card
-        id="show-topic"
-    >
-        <template slot="header">
-            <h3>{{ title }}
-             <router-link
-                :id="'edit-topic-'+topic.id+'-btn'" 
-                class="btn btn-secondary float-right btn-sm" 
-                :to="'/topics/'+topic.id+'/edit'"
-            >
-                Edit
+    <div>
+        <p>
+            <router-link to="/topics">
+                    &lt; Back to topics
             </router-link>
-            </h3>
-       </template>
-        <div v-if="this.topics">
-            <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
-            <p><strong>Expert Panel</strong>: {{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</p>
-            <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
-            <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
-        </div>
-        <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
-    </b-card>
+        </p>
+        <b-card
+            id="show-topic"
+        >
+            <template slot="header">
+                <h3>{{ title }}
+                 <router-link
+                    :id="'edit-topic-'+topic.id+'-btn'" 
+                    class="btn btn-secondary float-right btn-sm" 
+                    :to="'/topics/'+topic.id+'/edit'"
+                >
+                    Edit
+                </router-link>
+                </h3>
+           </template>
+            <div v-if="this.topics">
+                <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
+                <p><strong>Expert Panel</strong>: {{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</p>
+                <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
+                <p><strong>MonDO ID</strong>: {{ (topic.mondo_id) ? 'MONDO:'+topic.mondo_id : '--'}}</p>
+                <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
+            </div>
+            <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
+        </b-card>
+    </div>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'

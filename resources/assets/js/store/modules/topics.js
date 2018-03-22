@@ -1,5 +1,13 @@
+import Vue from 'vue'
+
 function transformPhenotypes(phenotypes) {
-    return phenotypes.map(p => p.mim_number);
+    const out = phenotypes.map(p => {
+        if (p.mim_number) {
+            return p.mim_number
+        }
+        return p
+    });
+    return out;
 }
 
 const baseUrl = '/api/topics'
@@ -21,13 +29,8 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        if (state.items[item.id]) {
-            state.items[item.id] = item;   
-        }
-        state.items[item.id] = item;
-    },
-    updateItem: function (state, item) {
-        state.items[item.id] = item;
+        item.phenotypes = transformPhenotypes(item.phenotypes);
+        Vue.set(state.items, item.id, item)
     },
 }
 
@@ -46,27 +49,20 @@ const actions = {
             .then(function (response) {
                 commit('addItem', response.data.data);
                 return response;
-            })
-            .catch(function (error) {
-                alert(error);
-            })
+            });
     },
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
-                commit('updateItem', response.data.data);
+                commit('addItem', response.data.data);
                 return response;
-            })
-            .catch(function (error) {
-                alert(error);
-            })
+            });
     },
-    fetchItem: function ( {commit}, id ) {
+    fetchItem ( {commit}, id ) {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
                 let item = response.data.data;
                 item.phenotypes = transformPhenotypes(item.phenotypes);
-                console.log(item);
                 commit('addItem', item);
                 return response;
             })

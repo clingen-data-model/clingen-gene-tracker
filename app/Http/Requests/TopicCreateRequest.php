@@ -24,7 +24,8 @@ class TopicCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'gene_symbol'=>'required'
+            'gene_symbol'=>'required',
+            'expert_panel_id' => 'required',
         ];
     }
 }

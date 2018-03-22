@@ -2,51 +2,45 @@
 <template>
     <div class="new-topic-form-container">
         <b-form id="new-topic-form">
-            <b-form-group horizontal
-                id="new-gene-symbol-group"
-                label="HGNC topic Symbol"
-                label-for="gene-symbol-input"
-            >
-                <b-form-input id="gene-symbol-input"
-                    type="text"
-                    v-model="updatedTopic.gene_symbol"
-                    required
-                    placeholder="ATK-1"
-                    :state="geneSymbolError"
-                >
-                </b-form-input>
-                
-                <b-form-invalid-feedback id="geneSymbolError">
-                    {{errors.gene_symbol}}
-                </b-form-invalid-feedback>
-            </b-form-group>
-            <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-                <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id">
-                    <option :value="null">Select...</option>
-                    <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
-                </b-form-select>
-            </b-form-group>
-            <b-form-group horizontal id="curator-select-group" label="Curator" label-for="curator-select">
-                <b-form-select id="curator-select" v-model="updatedTopic.curator_id">
-                    <option :value="null">Select...</option>
-                    <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
-                </b-form-select>
-            </b-form-group>
-            <div class="form-row">
-                <label for="notes-field" class="col-sm-3">Notes</label>
-                <div class="col-sm-9">
-                    <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>                    
+            <div class="row">
+                <div class="col-md-2 border-right">
+                    <ul class="nav nav-pills flex-column text-right">
+                        <li class="nav-item" v-for="(step, idx) in steps">
+                            <a class="nav-link" 
+                                :class="{active: (currentStep == idx)}"
+                                :href="$router.currentState" 
+                                @click="currentStep = idx"
+                            >
+                                {{ step.title }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <!-- <h4>{{steps[currentStep].title}}</h4> -->
+                    <component :is="currentStep" 
+                        :value="updatedTopic" 
+                        :errors="errors"
+                        @input="updatedTopic = $event"
+                    ></component>                    
                 </div>
             </div>
-            <phenotype-list 
-                v-if="updatedTopic.gene_symbol" 
-                :gene-symbol="updatedTopic.gene_symbol"
-                v-model="updatedTopic.phenotypes"
-            ></phenotype-list>
-            <div class="text-right">
                 <hr>
-                <b-button variant="default" id="new-topic-form-cancel" @click="cancel()">Cancel</b-button>
-                <b-button variant="primary" id="new-topic-form-save" @click="saveTopic()">Save</b-button>
+            <div class="row">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="cancel()">Cancel</button>
+                </div>
+                <div class="col-md-11 text-right">
+                    <div v-if="$route.path == '/topics/create'">
+                        <b-button variant="primary" id="create-and-continue-btn" @click="createTopic()">Create topic</b-button>
+                    </div>
+                    <div v-else>
+                        <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                        <button type="button" class="btn btn-secondary" id="topic-proceed" @click="updateTopic(exit)">Save &amp; exit</button>
+                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navBack)" v-show="currentStepIdx > 0">Back</b-button>
+                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navNext)">Next</b-button>
+                    </div>
+                </div>
             </div>
         </b-form>
     </div>
@@ -54,30 +48,49 @@
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import PhenotypeList from './Phenotypes/Selection'
+    import InfoFields from './InfoFields'
+    import Collapsable from '../Collapsable'
+    import DiseaseEntityFields from './DiseaseEntityFields'
 
     export default {
-        props: ['topic'],
+        props: ['topic', 'step'],
         components: {
-            phenotypeList: PhenotypeList
+            phenotypeList: PhenotypeList,
+            infoFields: InfoFields,
+            collapsable: Collapsable,
+            'disease-entity-fields': DiseaseEntityFields,
         },
         data: function () {
             return {
+                currentStep: 'info-fields',
+                steps: {
+                   'info-fields': {
+                        title: 'Info',
+                        next: 'phenotype-list'
+                    },
+                    'phenotype-list': {
+                        title: 'Phenotypes',
+                        next: 'disease-entity-fields'
+                    },
+                    'disease-entity-fields': {
+                        title: 'Disease Entity',
+                        next: null
+                    }
+
+                },
                 updatedTopic: {},
                 errors: {},
             }
         },
         watch: {
+            currentStep: function (to, from) {
+                this.currentProps;
+            },
             topic: function (to, from) {
                 this.setUpdatedTopic(to, from);
             }
         },
         computed: {
-            ...mapGetters('panels', {
-                panels: 'Items',
-            }),
-            ...mapGetters('users', {
-                curators: 'getCurators'
-            }),
             ...mapGetters('topics', {
                 getTopic: 'getItemById',                
             }),
@@ -90,57 +103,78 @@
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },
+            currentStepIdx: function () {
+                const stepKeys = Object.keys(this.steps);
+                return stepKeys.indexOf(this.currentStep);
+            },
+            nextStep: function () {
+                return this.steps[this.currentStep].next;
+            },
+            previousStep: function () {
+                const stepKeys = Object.keys(this.steps);
+                if (this.currentStepIdx > 0) {
+                    return stepKeys[this.currentStepIdx-1];
+                }
+                return null
+            }
         },
         methods: {
             ...mapMutations('messages', [
                 'addInfo',
                 'addAlert'
             ]),
-            ...mapActions('panels', {
-                getAllPanels: 'getAllItems'
-            }),
             ...mapActions('topics', {
                 fetchTopic: 'fetchItem',
-                createTopic: 'storeNewItem',
-                updateTopic: 'storeItemUpdates'
+                storeNewItem: 'storeNewItem',
+                storeItemUpdates: 'storeItemUpdates'
             }),
-            ...mapActions('users', {
-                getAllUsers: 'getAllItems'
-            }),
-            setUpdatedTopic: function (to, from) {
-                if (to.id != from.id) {
-                    this.fetchTopic(this.topic.id)
-                        .then( function (response) {
-                            console.log(this.topic.phenotypes)
-                        }.bind(this))
-                }
-                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
-
-            },
-            saveTopic: function ()
-            {
-                if (this.updatedTopic.id) {
-                    this.updateTopic(this.updatedTopic)
-                        .then( (response) => {
-                            this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+' saved for '+this.updatedTopic.expert_panel.name+'.')
-                            this.$emit('saved'); 
-                            this.clearForm();
-                        })
-                        .catch( (error) => {
-                            this.errors = error.response.data.errors;
-                        });
-                    return;
-                }
-                this.createTopic(this.updatedTopic)
+            updateTopic (callback) {
+                return this.storeItemUpdates(this.updatedTopic)
                     .then( (response) => {
-                        let panel = this.panels.find((item) => item.id == this.updatedTopic.expert_panel_id);
-                        this.addInfo('Topic created for gene '+this.updatedTopic.gene_symbol+' saved for '+panel.name+'.')
-                        this.$emit('saved'); 
+                        this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+'.')
+                        this.$emit('saved');
+                        callback(response);
                         return response;
                     })
                     .catch( (error) => {
-                        this.errors = error.response.data.errors;
+                        this.errors = error.response.errors;
+                        return error;
                     });
+            },
+            navNext (response) {
+                if (this.nextStep === null) {
+                    this.$router.push('/topics/'+this.updatedTopic.id)
+                }
+                this.currentStep = this.nextStep;
+            },
+            navBack (response) {
+                if (this.previousStep) {
+                    this.currentStep = this.previousStep;
+                }
+            },
+            exit (response) {
+                this.$router.go(-1)
+            },
+            createTopic () {
+                return this.storeNewItem(this.updatedTopic)
+                    .then( (response) => {
+                        this.$emit('saved');
+                        this.$emit('created');
+                        this.addInfo('Topic with '+this.updatedTopic.gene_symbol+' created.')
+                        this.$router.push('/topics/'+response.data.data.id+'/edit');
+                        return response;
+                    })
+                    .catch( (error) => {
+                        console.log(error);
+                        this.errors = error.response.data.errors;
+                        return error;
+                    })
+            },
+            setUpdatedTopic: function (to, from) {
+                if (to.id != from.id) {
+                    this.fetchTopic(this.topic.id);
+                }
+                this.updatedTopic = JSON.parse(JSON.stringify(this.topic));
             },
             cancel: function ()
             {
@@ -150,12 +184,13 @@
             clearForm: function () {
                 this.updatedTopic = {};
                 this.errors = {}
+            },
+            proceed: function () {
+
+                this.currentStep = 'disease-entity-fields';
             }
         },
         mounted: function() {
-
-            this.getAllPanels();
-            this.getAllUsers();
             this.updatedTopic = {};
             if (this.topic) {
                 this.setUpdatedTopic(this.topic, {})

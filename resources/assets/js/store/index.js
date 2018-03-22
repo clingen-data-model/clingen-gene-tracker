@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import messages from './modules/messages'
 import topics from './modules/topics'
 import panels from './modules/panels'
-import messages from './modules/messages'
 import users from './modules/users'
 
 Vue.use(Vuex)
@@ -10,12 +10,22 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
+  requestCount: 0
 }
 
 const getters = {
+  loading (state) {
+    return state.requestCount > 0
+  }
 }
 
 const mutations = {
+  addRequest(state) {
+    state.requestCount++;
+  },
+  removeRequest(state) {
+    state.requestCount--;
+  }
 }
 
 const actions = {
@@ -26,9 +36,9 @@ export default new Vuex.Store({
   getters: getters,
   mutations: mutations, 
   modules: {
+    messages: messages,
     panels: panels,
     topics: topics,
-    messages: messages,
     users: users
   },
   actions: actions,
