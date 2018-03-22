@@ -19,6 +19,7 @@ class UserController extends Controller
         if ($request->has('with')) {
             $query->with($request->with);
         }
+        dd($query->get());
 
         return UserResource::collection($query->get());
     }

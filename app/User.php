@@ -2,15 +2,15 @@
 
 namespace App;
 
+use App\Events\User\Created;
+use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNotification;
+use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNotification;
-use Backpack\CRUD\CrudTrait;
-use Venturecraft\Revisionable\RevisionableTrait;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
@@ -34,9 +34,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    protected $dispatchesEvents = [
+        'created' => Created::class
+    ];
+
     public function topics()
     {
-        return $this->hasMany( Topic::class, 'curator_id' );
+        return $this->hasMany(Topic::class, 'curator_id');
     }
 
     /**
