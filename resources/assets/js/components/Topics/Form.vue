@@ -1,19 +1,31 @@
 <style></style>
 <template>
     <div class="new-topic-form-container">
-        <!-- <pre>{{ updatedTopic }}</pre> -->
         <b-form id="new-topic-form">
-            <select v-model="currentStep">
-                <option v-for="(val, key) in steps" :value="key">{{val.title}}</option>
-            </select>
-
-            <h4>{{steps[currentStep].title}}</h4>
-            <component :is="currentStep" 
-                :value="updatedTopic" 
-                :errors="errors"
-                @input="updatedTopic = $event"
-            ></component>
-
+            <div class="row">
+                <div class="col-md-2 border-right">
+                    <ul class="nav nav-pills flex-column text-right">
+                        <li class="nav-item" v-for="(step, idx) in steps">
+                            <a class="nav-link" 
+                                :class="{active: (currentStep == idx)}"
+                                :href="$router.currentState" 
+                                @click="currentStep = idx"
+                            >
+                                {{ step.title }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-10">
+                    <!-- <h4>{{steps[currentStep].title}}</h4> -->
+                    <component :is="currentStep" 
+                        :value="updatedTopic" 
+                        :errors="errors"
+                        @input="updatedTopic = $event"
+                    ></component>                    
+                </div>
+            </div>
+                <hr>
             <div class="row">
                 <div class="col-md-1">
                     <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="cancel()">Cancel</button>
@@ -24,8 +36,9 @@
                     </div>
                     <div v-else>
                         <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
-                        <button type="button" class="btn btn-secondary" id="topic-proceed" @click="saveAndExit()">Save &amp; exit</button>
-                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic()">Next</b-button>
+                        <button type="button" class="btn btn-secondary" id="topic-proceed" @click="updateTopic(exit)">Save &amp; exit</button>
+                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navBack)" v-show="currentStepIdx > 0">Back</b-button>
+                        <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navNext)">Next</b-button>
                     </div>
                 </div>
             </div>
@@ -40,7 +53,7 @@
     import DiseaseEntityFields from './DiseaseEntityFields'
 
     export default {
-        props: ['topic'],
+        props: ['topic', 'step'],
         components: {
             phenotypeList: PhenotypeList,
             infoFields: InfoFields,
@@ -90,8 +103,19 @@
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },
+            currentStepIdx: function () {
+                const stepKeys = Object.keys(this.steps);
+                return stepKeys.indexOf(this.currentStep);
+            },
             nextStep: function () {
                 return this.steps[this.currentStep].next;
+            },
+            previousStep: function () {
+                const stepKeys = Object.keys(this.steps);
+                if (this.currentStepIdx > 0) {
+                    return stepKeys[this.currentStepIdx-1];
+                }
+                return null
             }
         },
         methods: {
@@ -104,16 +128,12 @@
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'
             }),
-            updateTopic: function () {
+            updateTopic (callback) {
                 return this.storeItemUpdates(this.updatedTopic)
                     .then( (response) => {
                         this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+'.')
                         this.$emit('saved');
-                        console.log(this.nextStep);
-                        if (this.nextStep === null) {
-                            this.$router.push('/topics/'+this.updatedTopic.id)
-                        }
-                        this.currentStep = this.nextStep;
+                        callback(response);
                         return response;
                     })
                     .catch( (error) => {
@@ -121,7 +141,21 @@
                         return error;
                     });
             },
-            createTopic: function() {
+            navNext (response) {
+                if (this.nextStep === null) {
+                    this.$router.push('/topics/'+this.updatedTopic.id)
+                }
+                this.currentStep = this.nextStep;
+            },
+            navBack (response) {
+                if (this.previousStep) {
+                    this.currentStep = this.previousStep;
+                }
+            },
+            exit (response) {
+                this.$router.go(-1)
+            },
+            createTopic () {
                 return this.storeNewItem(this.updatedTopic)
                     .then( (response) => {
                         this.$emit('saved');

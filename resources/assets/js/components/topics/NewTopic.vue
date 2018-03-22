@@ -1,6 +1,11 @@
 <style></style>
 <template>
     <div class="new-topic-container">
+        <p>
+            <router-link to="/topics">
+                    &lt; Back to topics
+            </router-link>
+        </p>        
         <b-card>
             <template slot="header">
                 <h3>Add a topic to curate</h3>

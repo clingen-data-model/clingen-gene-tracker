@@ -2,7 +2,6 @@
 @section('content')
         <div id="app">
             <div class="mt-2">
-                <alerts></alerts>
                 <clingen-app></clingen-app>
                 <b-progress 
                     :value="100" 
@@ -14,5 +13,6 @@
                 >
                 </b-progress>
             </div>
+            <alerts></alerts>
         </div>
 @endsection

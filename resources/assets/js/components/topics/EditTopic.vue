@@ -1,25 +1,32 @@
 <style></style>
 <template>
-    <b-card
-        id="edit-topic-modal"
-    >
-        <template slot="header">
-            <h3>
-                {{ title }}
-                 <button
-                    :id="'edit-topic-'+topic.id+'-btn'" 
-                    class="btn btn-secondary float-right btn-sm" 
-                    @click="$router.go(-1)"
-                >
-                    cancel
-                </button>
-            </h3>
-        </template>
-        <div v-if="this.topics">
-            <topic-form :topic="topic" @canceled="$router.go(-1)">         
-            </topic-form>
-        </div>
-    </b-card>
+    <div>
+        <p>
+            <router-link to="/topics">
+                    &lt; Back to topics
+            </router-link>
+        </p>
+        <b-card
+            id="edit-topic-modal"
+        >
+            <template slot="header">
+                <h3>
+                    {{ title }}
+                     <button
+                        :id="'edit-topic-'+topic.id+'-btn'" 
+                        class="btn btn-secondary float-right btn-sm" 
+                        @click="$router.go(-1)"
+                    >
+                        cancel
+                    </button>
+                </h3>
+            </template>
+            <div v-if="this.topics">
+                <topic-form :topic="topic" @canceled="$router.go(-1)">         
+                </topic-form>
+            </div>
+        </b-card>
+    </div>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'

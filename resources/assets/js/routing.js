@@ -4,6 +4,8 @@ import Topics from './components/Topics/Topics'
 import NewTopic from './components/Topics/NewTopic'
 import EditTopic from './components/Topics/EditTopic'
 import ShowTopic from './components/Topics/ShowTopic'
+import InfoFields from './components/Topics/InfoFields'
+import PhenotypeSelection from './components/Topics/Phenotypes/Selection'
 
 Vue.use(VueRouter)
 

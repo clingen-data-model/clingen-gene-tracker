@@ -4,7 +4,8 @@
         <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div>
         <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
-                The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.
+                <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
+                If you continue with this topic you will have to assign a temporary MonDO ID.
             </div>
         </div>
         <div class="row" v-show="phenotypes.length > 0">
