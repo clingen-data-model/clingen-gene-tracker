@@ -23,6 +23,11 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'deactivate users']);
         Permission::create(['name' => 'delete users']);
 
+        Permission::create(['name' => 'list expert-panels']);
+        Permission::create(['name' => 'create expert-panels']);
+        Permission::create(['name' => 'update expert-panels']);
+        Permission::create(['name' => 'deactivate expert-panels']);
+
         // create roles and assign existing permissions
         $role = Role::create(['name' => 'programmer']);
         $role->givePermissionTo('list users');
@@ -31,12 +36,22 @@ class RolesAndPermissionsSeeder extends Seeder
         $role->givePermissionTo('deactivate users');
         $role->givePermissionTo('delete users');
 
+        $role->givePermissionTo('list expert-panels');
+        $role->givePermissionTo('create expert-panels');
+        $role->givePermissionTo('update expert-panels');
+        $role->givePermissionTo('deactivate expert-panels');
+
         $role = Role::create(['name' => 'admin']);
         $role->givePermissionTo('list users');
         $role->givePermissionTo('create users');
         $role->givePermissionTo('update users');
         $role->givePermissionTo('deactivate users');
         $role->givePermissionTo('delete users');
+
+        $role->givePermissionTo('list expert-panels');
+        $role->givePermissionTo('create expert-panels');
+        $role->givePermissionTo('update expert-panels');
+        $role->givePermissionTo('deactivate expert-panels');
 
         Role::create(['name' => 'coordinator']);
         Role::create(['name' => 'curator']);
