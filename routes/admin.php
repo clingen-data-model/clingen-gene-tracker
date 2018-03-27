@@ -12,4 +12,5 @@ Route::group([
     Route::get('/', '\Backpack\Base\app\Http\Controllers\AdminController@redirect')->name('backpack');
     Route::get('/user/{id}/deactivate','UserCrudController@deactivate')->name('user-deactivate');
     CRUD::resource('user', 'UserCrudController');
+    CRUD::resource('expert-panel', 'ExpertPanelCrudController');
 });

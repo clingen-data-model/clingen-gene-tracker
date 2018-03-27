@@ -16,6 +16,9 @@
               @if(Auth::user()->hasPermissionTo('list users'))
               <li><a href="{{ backpack_url('user') }}"><i class="fa fa-user"></i> <span>Users</span></a></li>
               @endif
+              @if(Auth::user()->hasPermissionTo('list expert-panels'))
+                  <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-user"></i> <span>Expert Panels</span></a></li>
+              @endif
           <!-- ======================================= -->
           {{-- <li class="header">Other menus</li> --}}
         </ul>
