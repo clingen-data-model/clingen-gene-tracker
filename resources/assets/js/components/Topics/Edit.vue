@@ -182,7 +182,7 @@
                 }
             },
             exit (response) {
-                this.$router.go(-1)
+                this.$router.push('/')
             },
             setUpdatedTopic: function (to, from) {
                 if (to.id != from.id) {
