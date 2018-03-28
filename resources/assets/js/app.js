@@ -45,14 +45,3 @@ if (document.getElementById('app')) {
         }
     });
 }
-
-if (document.getElementById('test-vuex')) {
-    const test = new Vue({
-        el: '#test-vuex',
-        store: store,
-        components: {
-            'beans': require('./components/test/beans.vue'),
-        },
-    });
-
-}

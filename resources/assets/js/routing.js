@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Topics from './components/Topics/Topics'
-import NewTopic from './components/Topics/NewTopic'
-import EditTopic from './components/Topics/EditTopic'
-import ShowTopic from './components/Topics/ShowTopic'
-import InfoFields from './components/Topics/InfoFields'
-import PhenotypeSelection from './components/Topics/Phenotypes/Selection'
-import List from './components/Topics/List'
+import TopicCreate from './components/Topics/Create'
+import TopicEdit from './components/Topics/Edit'
+import TopicShow from './components/Topics/Show'
+import TopicList from './components/Topics/List'
 
 Vue.use(VueRouter)
 
@@ -18,20 +16,20 @@ const routes = [
         children: [
             {
                 path: '',
-                component: List
+                component: TopicList
             },
             { 
                 path: 'create', 
-                component: NewTopic
+                component: TopicCreate
             },
             {
                 path: ':id',
-                component: ShowTopic,
+                component: TopicShow,
                 props: true
             },
             { 
                 path: ':id/edit', 
-                component: EditTopic,
+                component: TopicEdit,
                 props: true
             },
         ]

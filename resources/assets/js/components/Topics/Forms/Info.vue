@@ -7,8 +7,7 @@
         >
             <b-form-input id="gene-symbol-input"
                 type="text"
-                :value="geneSymbol"
-                @input="updateTopicGeneSymbol($event)"
+                v-model="updatedTopic.gene_symbol"
                 required
                 placeholder="ATK-1"
                 :state="geneSymbolError"> 
@@ -71,7 +70,6 @@
         props: ['value', 'errors'],
         data: function () {
             return {
-                geneSymbol: null,
                 updatedTopic: {
                     gene_symbol: null
                 },
@@ -98,6 +96,9 @@
             }
         },
         watch: {
+            'updatedTopic.gene_symbol': function (to, from) {
+                this.checkTopics();
+            },
             updatedTopic: function (to, from) {
                 this.$emit('input', this.updatedTopic);
             },
@@ -119,14 +120,8 @@
                     this.updatedTopic = JSON.parse(JSON.stringify(this.value));
                 }
             },
-            updateTopicGeneSymbol(symbol) {
-                this.geneSymbol = symbol;
-                this.updatedTopic.gene_symbol = this.geneSymbol
-                this.checkTopics();
-            },
             checkTopics: _.debounce(function() {
-                console.log(this.geneSymbol);
-                window.axios.get('/api/topics?with=phenotypes&gene_symbol='+this.geneSymbol)
+                window.axios.get('/api/topics?with=phenotypes&gene_symbol='+this.updatedTopic.gene_symbol)
                     .then((response) => {
                         console.log(this.name);
                         console.log(response.data.data);
@@ -138,7 +133,6 @@
             this.getAllPanels();
             this.getAllUsers();
             this.syncValue();
-            this.dumpCheckTopics();
         }
     }
 </script>

@@ -52,18 +52,16 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import Phenotypes from './Phenotypes/Selection'
-    import Info from './InfoFields'
-    import Collapsable from '../Collapsable'
-    import DiseaseEntity from './DiseaseEntityFields'
+    import Phenotypes from './Forms/Phenotypes'
+    import Info from './Forms/Info'
+    import Mondo from './Forms/Mondo'
 
     export default {
         props: ['id'],
         components: {
             Phenotypes,
             Info,
-            Collapsable,
-            DiseaseEntity,
+            Mondo,
         },
         data () {
             return {

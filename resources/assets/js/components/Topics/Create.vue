@@ -11,15 +11,15 @@
                 <h3>Add a topic to curate</h3>
             </template>
             <b-form id="new-topic-form">
-                <info-fields
+                <info
                     :value="updatedTopic" 
                     :errors="errors"
                     @input="updatedTopic = $event"
-                ></info-fields>         
+                ></info>         
                 <hr>
                 <div class="row">
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="$emit('canceled')">Cancel</button>
+                        <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="$router.go(-1)">Cancel</button>
                     </div>
                     <div class="col-md-11 text-right">
                         <b-button variant="primary" id="create-and-continue-btn" @click="createTopic()">Create topic</b-button>
@@ -31,10 +31,10 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import InfoFields from './InfoFields'
+    import Info from './Forms/Info'
     export default {
         components: {
-            InfoFields
+            Info
         },
         data: function () {
             return {
