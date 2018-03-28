@@ -3,10 +3,7 @@
 namespace Tests\Feature\Controllers\Api;
 
 use App\Http\Resources\TopicResource;
-use App\User;
-use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -42,6 +39,20 @@ class TopicControllerTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics')
             ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function index_lists_topics_filtered_by_gene_sybmol()
+    {
+        $testGene = 'TEST123';
+        $topic = factory(\App\Topic::class, 16)->create(['gene_symbol'=>$testGene]);
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics?gene_symbol='.$testGene);
+
+        $this->assertEquals(16, $response->original->count());
     }
 
     /**
@@ -92,12 +103,10 @@ class TopicControllerTest extends TestCase
             $t->phenotypes()->sync($phenotypes->pluck('id'));
         });
 
-
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/')
             ->assertDontSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
     }
-
 
     /**
      * @test
@@ -109,7 +118,6 @@ class TopicControllerTest extends TestCase
         $this->topics->each(function ($t) use ($phenotypes) {
             $t->phenotypes()->sync($phenotypes->pluck('id'));
         });
-
 
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/?with=phenotypes')
@@ -126,7 +134,6 @@ class TopicControllerTest extends TestCase
         $this->topics->each(function ($t) use ($phenotypes) {
             $t->phenotypes()->sync($phenotypes->pluck('id'));
         });
-
 
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/1')
@@ -177,7 +184,6 @@ class TopicControllerTest extends TestCase
                 $phenotype->mim_number
             ]
         ];
-
 
         $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/topics/'.$this->topics->first()->id, $data)

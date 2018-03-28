@@ -7,7 +7,8 @@
         >
             <b-form-input id="gene-symbol-input"
                 type="text"
-                v-model="updatedTopic.gene_symbol"
+                :value="geneSymbol"
+                @input="updateTopicGeneSymbol($event)"
                 required
                 placeholder="ATK-1"
                 :state="geneSymbolError"> 
@@ -16,7 +17,29 @@
                  <div v-for="msg in errors.gene_symbol">{{msg}}</div>
             </b-form-invalid-feedback>
         </b-form-group>
-    
+        <transition name="fade">
+            <div class="row justify-content-end">
+                <div class="col-md-9 alert alert-warning" v-show="matchedCount > 0">
+                    <div class="clearfix">
+                        There are already <strong>{{matchedCount}}</strong> topics in curation or pre-curation with this gene symbol.
+                        <button class="btn btn-sm btn-warning float-right" v-b-toggle.matching-topics-details>Details</button>
+                    </div>
+                    <b-collapse id="matching-topics-details" class="mt-2">
+                        <div class="card mb-3 ml-3" v-for="topic in matchingTopics">
+                            <div class="card-body">
+                                <strong>{{topic.gene_symbol}} for {{topic.expert_panel.name}}</strong>
+                                <div>
+                                    Phenotypes: 
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item" v-for="phenotype in topic.phenotypes">{{phenotype.mim_number}},</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </b-collapse>
+                </div>
+            </div>
+        </transition>
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id" :state="expertPanelIdError">
                 <option :value="null">Select...</option>
@@ -41,12 +64,18 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import _ from 'lodash'
 
     export default {
+        name: 'test',
         props: ['value', 'errors'],
         data: function () {
             return {
-                updatedTopic: {}
+                geneSymbol: null,
+                updatedTopic: {
+                    gene_symbol: null
+                },
+                matchingTopics: [],
             }
         },
         computed: {
@@ -62,9 +91,14 @@
             expertPanelIdError: function () {
                 return (this.errors && this.errors.expert_panel_id && this.errors.expert_panel_id.length > 0) ? false : null;
             },
+            matchedCount: function () {
+                console.log(this.matchingTopics);
+                const keys = Object.keys(this.matchingTopics)
+                return keys.length
+            }
         },
         watch: {
-            updatedTopic: function () {
+            updatedTopic: function (to, from) {
                 this.$emit('input', this.updatedTopic);
             },
             value: function () {
@@ -84,12 +118,27 @@
                 if (this.value) {
                     this.updatedTopic = JSON.parse(JSON.stringify(this.value));
                 }
-            }
+            },
+            updateTopicGeneSymbol(symbol) {
+                this.geneSymbol = symbol;
+                this.updatedTopic.gene_symbol = this.geneSymbol
+                this.checkTopics();
+            },
+            checkTopics: _.debounce(function() {
+                console.log(this.geneSymbol);
+                window.axios.get('/api/topics?with=phenotypes&gene_symbol='+this.geneSymbol)
+                    .then((response) => {
+                        console.log(this.name);
+                        console.log(response.data.data);
+                        this.matchingTopics = response.data.data
+                    })
+            }, 500),
         },
         mounted: function () {
             this.getAllPanels();
             this.getAllUsers();
             this.syncValue();
+            this.dumpCheckTopics();
         }
     }
 </script>
