@@ -6,18 +6,13 @@
                 <div class="col-md-2 border-right">
                     <ul class="nav nav-pills flex-column text-right">
                         <li class="nav-item" v-for="(step, idx) in steps">
-                            <a class="nav-link" 
-                                :class="{active: (currentStep == idx)}"
-                                :href="$router.currentState" 
-                                @click="currentStep = idx"
-                            >
+                            <router-link :class="{active: (currentStep == idx)}" :to="$route.path+'#'+idx">
                                 {{ step.title }}
-                            </a>
+                            </router-link>
                         </li>
                     </ul>
                 </div>
                 <div class="col-md-10">
-                    <!-- <h4>{{steps[currentStep].title}}</h4> -->
                     <component :is="currentStep" 
                         :value="updatedTopic" 
                         :errors="errors"
@@ -28,7 +23,7 @@
                 <hr>
             <div class="row">
                 <div class="col-md-1">
-                    <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="cancel()">Cancel</button>
+                    <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="$emit('canceled')">Cancel</button>
                 </div>
                 <div class="col-md-11 text-right">
                     <div v-if="$route.path == '/topics/create'">
@@ -47,32 +42,32 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import PhenotypeList from './Phenotypes/Selection'
-    import InfoFields from './InfoFields'
+    import Phenotypes from './Phenotypes/Selection'
+    import Info from './InfoFields'
     import Collapsable from '../Collapsable'
-    import DiseaseEntityFields from './DiseaseEntityFields'
+    import DiseaseEntity from './DiseaseEntityFields'
 
     export default {
-        props: ['topic', 'step'],
+        props: ['topic'],
         components: {
-            phenotypeList: PhenotypeList,
-            infoFields: InfoFields,
-            collapsable: Collapsable,
-            'disease-entity-fields': DiseaseEntityFields,
+            Phenotypes,
+            Info,
+            Collapsable,
+            DiseaseEntity,
         },
         data: function () {
             return {
-                currentStep: 'info-fields',
+                currentStep: 'info',
                 steps: {
-                   'info-fields': {
+                   info: {
                         title: 'Info',
-                        next: 'phenotype-list'
+                        next: 'phenotypes'
                     },
-                    'phenotype-list': {
+                    phenotypes: {
                         title: 'Phenotypes',
-                        next: 'disease-entity-fields'
+                        next: 'disease-entity'
                     },
-                    'disease-entity-fields': {
+                    diseaseEntity: {
                         title: 'Disease Entity',
                         next: null
                     }
@@ -83,8 +78,8 @@
             }
         },
         watch: {
-            currentStep: function (to, from) {
-                this.currentProps;
+            $route(to, from) {
+                this.setCurrentStep();
             },
             topic: function (to, from) {
                 this.setUpdatedTopic(to, from);
@@ -142,10 +137,9 @@
                     });
             },
             navNext (response) {
-                if (this.nextStep === null) {
-                    this.$router.push('/topics/'+this.updatedTopic.id)
+                if (this.nextStep) {
+                    this.$router.push(this.$route.path+'#'+this.nextStep)
                 }
-                this.currentStep = this.nextStep;
             },
             navBack (response) {
                 if (this.previousStep) {
@@ -188,6 +182,11 @@
             proceed: function () {
 
                 this.currentStep = 'disease-entity-fields';
+            },
+            setCurrentStep() {
+                if (this.$route.hash.substr(1)) {
+                    this.currentStep = this.$route.hash.substr(1);
+                }
             }
         },
         mounted: function() {
@@ -195,6 +194,7 @@
             if (this.topic) {
                 this.setUpdatedTopic(this.topic, {})
             }
+            this.setCurrentStep();
         }
     }
 </script>

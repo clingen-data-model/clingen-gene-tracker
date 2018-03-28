@@ -6,32 +6,36 @@ import EditTopic from './components/Topics/EditTopic'
 import ShowTopic from './components/Topics/ShowTopic'
 import InfoFields from './components/Topics/InfoFields'
 import PhenotypeSelection from './components/Topics/Phenotypes/Selection'
+import List from './components/Topics/List'
 
 Vue.use(VueRouter)
 
 const routes = [
     { 
-        path: '/', 
-        component: Topics
+        path: '/topics',
+        alias: '' ,
+        component: Topics,
+        children: [
+            {
+                path: '',
+                component: List
+            },
+            { 
+                path: 'create', 
+                component: NewTopic
+            },
+            {
+                path: ':id',
+                component: ShowTopic,
+                props: true
+            },
+            { 
+                path: ':id/edit', 
+                component: EditTopic,
+                props: true
+            },
+        ]
     },
-    { 
-        path: '/topics', 
-        component: Topics
-    },
-    { 
-        path: '/topics/create', 
-        component: NewTopic
-    },
-    { 
-        path: '/topics/:id/edit', 
-        component: EditTopic,
-        props: true
-    },
-    {
-        path: '/topics/:id',
-        component: ShowTopic,
-        props: true
-    }
 ]
 
 const router = new VueRouter({
