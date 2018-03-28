@@ -16,29 +16,11 @@
                  <div v-for="msg in errors.gene_symbol">{{msg}}</div>
             </b-form-invalid-feedback>
         </b-form-group>
-        <transition name="fade">
-            <div class="row justify-content-end">
-                <div class="col-md-9 alert alert-warning" v-show="matchedCount > 0">
-                    <div class="clearfix">
-                        There are already <strong>{{matchedCount}}</strong> topics in curation or pre-curation with this gene symbol.
-                        <button class="btn btn-sm btn-warning float-right" v-b-toggle.matching-topics-details>Details</button>
-                    </div>
-                    <b-collapse id="matching-topics-details" class="mt-2">
-                        <div class="card mb-3 ml-3" v-for="topic in matchingTopics">
-                            <div class="card-body">
-                                <strong>{{topic.gene_symbol}} for {{topic.expert_panel.name}}</strong>
-                                <div>
-                                    Phenotypes: 
-                                    <ul class="list-inline">
-                                        <li class="list-inline-item" v-for="phenotype in topic.phenotypes">{{phenotype.mim_number}},</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </b-collapse>
-                </div>
-            </div>
-        </transition>
+        <div class="row justify-content-end">
+            <div class="col-md-9">
+                <topic-notifications :topic="updatedTopic"></topic-notifications>
+            </div> 
+        </div>
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id" :state="expertPanelIdError">
                 <option :value="null">Select...</option>
@@ -64,16 +46,19 @@
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import _ from 'lodash'
+    import TopicNotifications from './ExistingTopicNotification'
 
     export default {
         name: 'test',
         props: ['value', 'errors'],
+        components: {
+            TopicNotifications
+        },
         data: function () {
             return {
                 updatedTopic: {
                     gene_symbol: null
-                },
-                matchingTopics: [],
+                }
             }
         },
         computed: {
@@ -89,16 +74,11 @@
             expertPanelIdError: function () {
                 return (this.errors && this.errors.expert_panel_id && this.errors.expert_panel_id.length > 0) ? false : null;
             },
-            matchedCount: function () {
-                console.log(this.matchingTopics);
-                const keys = Object.keys(this.matchingTopics)
-                return keys.length
-            }
         },
         watch: {
-            'updatedTopic.gene_symbol': function (to, from) {
-                this.checkTopics();
-            },
+            // 'updatedTopic.gene_symbol': function (to, from) {
+            //     this.checkTopics();
+            // },
             updatedTopic: function (to, from) {
                 this.$emit('input', this.updatedTopic);
             },
@@ -119,15 +99,7 @@
                 if (this.value) {
                     this.updatedTopic = JSON.parse(JSON.stringify(this.value));
                 }
-            },
-            checkTopics: _.debounce(function() {
-                window.axios.get('/api/topics?with=phenotypes&gene_symbol='+this.updatedTopic.gene_symbol)
-                    .then((response) => {
-                        console.log(this.name);
-                        console.log(response.data.data);
-                        this.matchingTopics = response.data.data
-                    })
-            }, 500),
+            }
         },
         mounted: function () {
             this.getAllPanels();

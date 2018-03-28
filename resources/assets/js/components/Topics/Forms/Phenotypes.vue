@@ -1,7 +1,7 @@
 <style></style>
 <template>
     <div class="component-container">
-        <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div>
+        <!-- <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div> -->
         <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
                 <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
@@ -26,15 +26,18 @@
                 <criteria-table></criteria-table>
             </div>
         </div>
+        <topic-notifications :topic="updatedTopic"></topic-notifications>
     </div>
 </template>
 <script>
     import OmimRepo from './../../../repositories/OmimRepository';
     import CriteriaTable from './../CriteriaTable';
+    import TopicNotifications from './ExistingTopicNotification'
 
     export default {
         components: {
-            'criteria-table': CriteriaTable
+             CriteriaTable,
+             TopicNotifications
         },
         props: ['value', 'disabled'],
         data: function () {

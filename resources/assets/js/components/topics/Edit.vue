@@ -73,10 +73,10 @@
                     },
                     phenotypes: {
                         title: 'Phenotypes',
-                        next: 'disease-entity'
+                        next: 'mondo'
                     },
-                    diseaseEntity: {
-                        title: 'Disease Entity',
+                    mondo: {
+                        title: 'MonDO',
                         next: null
                     }
 
