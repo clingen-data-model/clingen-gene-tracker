@@ -18,11 +18,32 @@ class UsersTableSeeder extends Seeder
         ]);
         $user->assignRole('programmer');
 
-        $curator = factory(\App\User::class, 3)->create();
-        $curator->each(function ($u) {
-            $u->assignRole('curator');
-        });
+        $user = factory(\App\User::class)->create([
+            'name' => 'TJ Ward',
+            'email' => 'jward3@email.unc.edu',
+            'password' => \Hash::make('tester')
+        ]);
+        $user->assignRole('programmer');
 
-        factory(\App\User::class, 3)->create();
+        $user = factory(\App\User::class)->create([
+            'name' => 'Maria Tobin',
+            'email' => 'maria.tobin@unc.edu',
+            'password' => \Hash::make('tester')
+        ]);
+        $user->assignRole('programmer');
+
+        $user = factory(\App\User::class)->create([
+            'name' => 'Jenny Goldstein',
+            'email' => 'goldjen@email.unc.edu',
+            'password' => \Hash::make('tester')
+        ]);
+        $user->assignRole('admin');
+
+        $user = factory(\App\User::class)->create([
+            'name' => 'Courtney Lynn Thaxton',
+            'email' => 'courtney_thaxton@med.unc.edu',
+            'password' => \Hash::make('tester')
+        ]);
+        $user->assignRole('admin');
     }
 }
