@@ -82,4 +82,26 @@ class TopicTest extends TestCase
 
         $this->assertEquals(today(), $topic->curation_date);
     }
+
+    /**
+     * @test
+     */
+    public function has_fillable_mondo_id()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['mondo_id' => 'MONDO:00012']);
+
+        $this->assertEquals('MONDO:00012', $topic->mondo_id);
+    }
+
+    /**
+     * @test
+     */
+    public function has_fillable_disease_entity_notes()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['disease_entity_notes' => 'test beans monkeys']);
+
+        $this->assertEquals('test beans monkeys', $topic->disease_entity_notes);
+    }
 }
