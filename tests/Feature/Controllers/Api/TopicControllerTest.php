@@ -3,6 +3,8 @@
 namespace Tests\Feature\Controllers\Api;
 
 use App\Http\Resources\TopicResource;
+use App\Topic;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -95,6 +97,96 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
+    public function requires_expert_panel_id()
+    {
+        $data = [
+            'gene_symbol' => 'ABCD'
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/topics/', $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'expert_panel_id'=>[
+                        "The expert panel id field is required."
+                    ]
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function curation_date_must_be_a_date_if_included()
+    {
+        $data = [
+            'gene_symbol' => 'ABCD',
+            'expert_panel_id' => $this->panel->id,
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/topics/', $data)
+            ->assertStatus(201);
+
+        $data['curation_date'] = 'beans';
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/topics/', $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'curation_date' => [
+                        'The curation date is not a valid date.'
+                    ]
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     */
+    public function parses_curation_date_for_storage_when_creating()
+    {
+        $data = [
+            'gene_symbol' => 'ABCD',
+            'expert_panel_id' => $this->panel->id,
+            'curation_date' => '09/16/1977'
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/topics/', $data)
+            ->assertStatus(201);
+
+        $topic = Topic::gene('ABCD')->first();
+
+        $this->assertEquals(Carbon::parse('1977-09-16'), $topic->curation_date);
+    }
+
+    /**
+     * @test
+     */
+    public function parses_curation_date_for_storage_when_updating()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $data = [
+            'gene_symbol' => 'ABCD',
+            'expert_panel_id' => $this->panel->id,
+            'curation_date' => '09/16/1977'
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+
+        $topic = Topic::gene('ABCD')->first();
+
+        $this->assertEquals(Carbon::parse('1977-09-16'), $topic->curation_date);
+    }
+
+    /**
+     * @test
+     */
     public function does_not_include_phenotypes_when_not_requested()
     {
         $this->disableExceptionHandling();
@@ -178,6 +270,8 @@ class TopicControllerTest extends TestCase
         $this->topics->first()->phenotypes()->attach($phenotype2->id);
 
         $data = [
+            'gene_symbol' => 'ABCD',
+            'expert_panel_id' => $this->panel->id,
             'phenotypes' => [
                 12345,
                 67890,

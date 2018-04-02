@@ -3,6 +3,7 @@
     <div>
         <b-form-group horizontal label="Mondo ID" label-for="mondo-id">
             <input type="text" v-model="updatedTopic.mondo_id" class="form-control"></input>
+            <small class="text-muted">Refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID</small>
         </b-form-group>
         or
         <b-form-group horizontal label="Other entitiy">

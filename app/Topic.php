@@ -11,8 +11,18 @@ class Topic extends Model
         'expert_panel_id',
         'curator_id',
         'notes',
-        'mondo_id'
+        'mondo_id',
+        'curation_date'
     ];
+
+    protected $dates = [
+        'curation_date'
+    ];
+
+    public static function boot()
+    {
+        parent::boot();
+    }
 
     public function expertPanel()
     {
@@ -27,5 +37,10 @@ class Topic extends Model
     public function phenotypes()
     {
         return $this->belongsToMany(Phenotype::class);
+    }
+
+    public function scopeGene($query, $geneSymbol)
+    {
+        return $query->where('gene_symbol', $geneSymbol);
     }
 }

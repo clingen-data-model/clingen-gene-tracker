@@ -71,4 +71,15 @@ class TopicTest extends TestCase
         $this->assertInstanceOf(BelongsToMany::class, $topic->phenotypes());
         $this->assertEquals(2, $topic->phenotypes->count());
     }
+
+    /**
+     * @test
+     */
+    public function has_fillable_curation_date()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['curation_date' => today()]);
+
+        $this->assertEquals(today(), $topic->curation_date);
+    }
 }

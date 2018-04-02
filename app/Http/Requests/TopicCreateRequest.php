@@ -26,6 +26,7 @@ class TopicCreateRequest extends FormRequest
         return [
             'gene_symbol'=>'required',
             'expert_panel_id' => 'required',
+            'curation_date' => 'nullable|date'
         ];
     }
 }

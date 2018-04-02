@@ -24,6 +24,7 @@ class CreateTopicsTable extends Migration
             $table->foreign('curator_id')->references('id')->on('users');
 
             $table->string('mondo_id')->nullable();
+            $table->date('curation_date')->nullable();
 
             $table->text('notes')->nullable();
             $table->timestamps();

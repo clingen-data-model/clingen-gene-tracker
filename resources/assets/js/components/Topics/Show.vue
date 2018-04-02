@@ -24,7 +24,7 @@
                 <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
                 <p><strong>Expert Panel</strong>: {{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</p>
                 <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
-                <p><strong>MonDO ID</strong>: {{ (topic.mondo_id) ? 'MONDO:'+topic.mondo_id : '--'}}</p>
+                <p><strong>MonDO ID</strong>: {{ (topic.mondo_id) ? topic.mondo_id : '--'}}</p>
                 <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
             </div>
             <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
@@ -49,6 +49,9 @@
                 let title = 'Topic: ';
                 if (this.topic.gene_symbol) {
                     title += this.topic.gene_symbol
+                    if (this.topic.mondo_id) {
+                        title += ' / ' + this.topic.mondo_id
+                    }
                     if (this.topic.expert_panel) {
                         title += ' for '+this.topic.expert_panel.name
                     }

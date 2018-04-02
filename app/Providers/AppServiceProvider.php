@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,18 @@ class AppServiceProvider extends ServiceProvider
             'App\Contracts\OmimClient',
             'App\Clients\OmimClient'
         );
+
+        \Request::macro('dateParsed', function (...$dates) {
+            return collect($this->all())
+                    ->transform(function ($value, $key) use ($dates) {
+                        if (in_array($key, $dates)) {
+                            return Carbon::parse($value);
+                        }
+
+                        return $value;
+                    })
+                    ->toArray();
+        });
     }
 
     /**

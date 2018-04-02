@@ -41,18 +41,24 @@
         <b-form-group horizontal label="Notes" label-for="notes-field">
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
         </b-form-group>
+
+        <b-form-group horizontal label="Curation Date" label-for="curation_date">
+            <date-field v-model="updatedTopic.curation_date" :readonly="true"></date-field>
+        </b-form-group>
     </div>
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import _ from 'lodash'
     import TopicNotifications from './ExistingTopicNotification'
+    import DateField from '../../DateField'
 
     export default {
         name: 'test',
         props: ['value', 'errors'],
         components: {
-            TopicNotifications
+            TopicNotifications,
+            DateField
         },
         data: function () {
             return {

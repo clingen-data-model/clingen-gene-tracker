@@ -6,17 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicCreateRequest;
 use App\Http\Resources\TopicResource;
 use App\Jobs\Topics\SyncPhenotypes;
+use App\Services\RequestDataCleaner;
 use App\Topic;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
 {
+    protected $cleaner;
+
     protected $validFilters = [
         'gene_symbol',
         'expert_panel_id',
         'curator_id',
         'phenotype'
     ];
+
+    public function __construct(RequestDataCleaner $cleaner)
+    {
+        $this->cleaner = $cleaner;
+    }
 
     /**
      * Display a listing of the resource.
@@ -35,6 +43,7 @@ class TopicController extends Controller
             }
         }
         $output = TopicResource::collection($query->get()->keyBy('id'));
+
         return $output;
     }
 
@@ -46,7 +55,9 @@ class TopicController extends Controller
      */
     public function store(TopicCreateRequest $request)
     {
-        $topic = Topic::create($request->except('phenotypes'));
+        $topicData = $request->dateParsed('curation_date');
+
+        $topic = Topic::create($topicData);
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         $topic->load('phenotypes', 'expertPanel', 'curator');
 
@@ -77,7 +88,7 @@ class TopicController extends Controller
     public function update(TopicCreateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
-        $topic->update($request->except('phenotypes'));
+        $topic->update($request->dateParsed('curation_date'));
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         $topic->load('phenotypes');
 

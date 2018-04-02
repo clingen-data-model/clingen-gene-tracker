@@ -9,6 +9,7 @@ require('./bootstrap');
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
+import DateField from './components/DateField'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
