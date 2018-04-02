@@ -26,6 +26,7 @@
                 <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
                 <p><strong>MonDO ID</strong>: {{ (topic.mondo_id) ? topic.mondo_id : '--'}}</p>
                 <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
+                <p><strong>Notes on disease entity</strong>: {{ (topic.disease_entity_notes) ? topic.disease_entity_notes : '--' }}</p>
             </div>
             <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
         </b-card>
