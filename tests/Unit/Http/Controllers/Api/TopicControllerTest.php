@@ -219,6 +219,23 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
+    public function includes_status_by_default()
+    {
+        $this->disableExceptionHandling();
+        $status = factory(\App\TopicStatus::class)->create();
+        $this->topics->each(function ($t) use ($status) {
+            $t->topicStatus()->associate($status);
+            $t->save();
+        });
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics')
+            ->assertJsonFragment($status->toArray());
+    }
+
+    /**
+     * @test
+     */
     public function topic_show_includes_phenotypes_by_default()
     {
         $this->disableExceptionHandling();

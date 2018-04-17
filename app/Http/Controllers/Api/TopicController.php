@@ -33,7 +33,7 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Topic::query();
+        $query = Topic::with('topicStatus');
         foreach ($request->all() as $key => $value) {
             if ($key == 'with') {
                 $query->with($value);
