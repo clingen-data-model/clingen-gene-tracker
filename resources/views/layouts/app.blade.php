@@ -43,11 +43,10 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     @role('programmer|admin')
-                                        <h6 class="dropdown-header">Admin</h6>
+                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
                                         @role('programmer')
                                             <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
                                         @endrole
-                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
                                     @endrole
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
