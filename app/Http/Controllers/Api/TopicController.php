@@ -59,7 +59,7 @@ class TopicController extends Controller
 
         $topic = Topic::create($topicData);
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
-        $topic->load('phenotypes', 'expertPanel', 'curator');
+        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
 
         return new TopicResource($topic);
     }
@@ -73,7 +73,7 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = Topic::findOrFail($id);
-        $topic->load('phenotypes');
+        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
 
         return new TopicResource($topic);
     }
@@ -90,7 +90,7 @@ class TopicController extends Controller
         $topic = Topic::findOrFail($id);
         $topic->update($request->dateParsed('curation_date'));
         \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
-        $topic->load('phenotypes');
+        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
 
         return new TopicResource($topic);
     }

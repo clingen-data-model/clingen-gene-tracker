@@ -45,5 +45,13 @@ class UsersTableSeeder extends Seeder
             'password' => \Hash::make('tester')
         ]);
         $user->assignRole('admin');
+        $user->assignRole('curator');
+
+        $user = factory(\App\User::class)->create([
+            'name' => 'James A Curator',
+            'email' => 'james-curatorn@med.unc.edu',
+            'password' => \Hash::make('tester')
+        ]);
+        $user->assignRole('curator');
     }
 }

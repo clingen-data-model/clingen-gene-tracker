@@ -11,11 +11,15 @@
         methods: {
             ...mapActions('topics', {
                 getAllTopics: 'getAllItems'
+            }),
+            ...mapActions('topicStatuses', {
+                getAllTopicStatuses: 'getAllItems'
             })
         },
         mounted: function () {
             if (this.$store.state.topics.items.length == 0) {
                 this.getAllTopics();
+                this.getAllTopicStatuses();
             }
         }
     }

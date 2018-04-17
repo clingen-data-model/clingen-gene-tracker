@@ -21,7 +21,7 @@ Route::group([
     Route::resource('/expert-panels', 'ExpertPanelController');
     Route::resource('/topics', 'TopicController');
     Route::resource('/users', 'UserController');
-    Route::resource('/topic-statuses', 'UserController');
+    Route::resource('/topic-statuses', 'TopicStatusController');
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');

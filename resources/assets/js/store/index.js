@@ -4,6 +4,7 @@ import messages from './modules/messages'
 import topics from './modules/topics'
 import panels from './modules/panels'
 import users from './modules/users'
+import topicStatuses from './modules/topic_statuses'
 
 Vue.use(Vuex)
 
@@ -39,6 +40,7 @@ export default new Vuex.Store({
     messages: messages,
     panels: panels,
     topics: topics,
+    topicStatuses: topicStatuses,
     users: users
   },
   actions: actions,

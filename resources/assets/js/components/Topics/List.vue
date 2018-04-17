@@ -77,6 +77,10 @@
                         label: 'Curator',
                         sortable: true,
                     },
+                    topic_status: {
+                        label: 'Status',
+                        sortable: true,
+                    },
                     actions: {
                         label: 'Actions',
                         sortable: false,
@@ -96,6 +100,7 @@
                             gene_symbol: item.gene_symbol,
                             curator: (item.curator) ? item.curator.name : null,
                             expert_panel: (item.expert_panel) ? item.expert_panel.name : null,
+                            topic_status: (item.topic_status) ? item.topic_status.name : null,
                         }
                     });
                 this.totalRows = items.length;

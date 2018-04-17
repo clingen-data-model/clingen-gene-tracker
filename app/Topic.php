@@ -20,7 +20,8 @@ class Topic extends Model
         'notes',
         'mondo_id',
         'curation_date',
-        'disease_entity_notes'
+        'disease_entity_notes',
+        'topic_status_id'
     ];
 
     protected $dates = [

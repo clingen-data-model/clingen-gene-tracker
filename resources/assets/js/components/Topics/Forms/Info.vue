@@ -45,6 +45,13 @@
         <b-form-group horizontal label="Curation Date" label-for="curation_date">
             <date-field v-model="updatedTopic.curation_date" :readonly="true"></date-field>
         </b-form-group>
+
+        <b-form-group horizontal label="Status" label-for="topic_status_id">
+            <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
+                <option :value="null">Select...</option>
+                <option v-for="status in topicStatuses" :value="status.id">{{status.name}}</option>
+            </b-form-select>
+        </b-form-group>
     </div>
 </template>
 <script>
@@ -74,6 +81,9 @@
             ...mapGetters('users', {
                 curators: 'getCurators'
             }),
+            ...mapGetters('topicStatuses', {
+                topicStatuses: 'Items',
+            }),
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },
@@ -82,9 +92,6 @@
             },
         },
         watch: {
-            // 'updatedTopic.gene_symbol': function (to, from) {
-            //     this.checkTopics();
-            // },
             updatedTopic: function (to, from) {
                 this.$emit('input', this.updatedTopic);
             },
