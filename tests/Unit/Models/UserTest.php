@@ -3,6 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Events\User\Created;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -10,6 +11,7 @@ use Tests\TestCase;
  */
 class UserTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * @test
      */

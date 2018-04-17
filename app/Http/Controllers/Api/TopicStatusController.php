@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\TopicStatus;
+use Illuminate\Http\Request;
 
 class TopicStatusController extends Controller
 {
@@ -14,7 +15,7 @@ class TopicStatusController extends Controller
      */
     public function index()
     {
-        //
+        return TopicStatus::all();
     }
 
     /**
@@ -24,7 +25,6 @@ class TopicStatusController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -35,7 +35,6 @@ class TopicStatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -46,7 +45,6 @@ class TopicStatusController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -57,7 +55,6 @@ class TopicStatusController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -69,7 +66,6 @@ class TopicStatusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -80,6 +76,5 @@ class TopicStatusController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

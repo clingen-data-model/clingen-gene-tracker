@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests\Feature\Controllers\Api;
+namespace Tests\Unit\Http\Controllers\Api;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -12,6 +13,7 @@ use Tests\TestCase;
  */
 class OmimControllerTest extends TestCase
 {
+    use RefreshDatabase;
     public function setUp()
     {
         parent::setUp();

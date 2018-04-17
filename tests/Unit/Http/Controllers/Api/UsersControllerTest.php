@@ -1,12 +1,8 @@
 <?php
 
-namespace Tests\Feature\Controllers\Api;
+namespace Tests\Unit\Http\Controllers\Api;
 
-use App\Http\Resources\TopicResource;
-use App\User;
-use Illuminate\Container\Container;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**

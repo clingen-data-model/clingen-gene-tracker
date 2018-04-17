@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Feature\models;
+namespace Tests\Unit\models;
 
 use App\Topic;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -12,6 +13,8 @@ use Tests\TestCase;
  */
 class TopicTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @test
      */

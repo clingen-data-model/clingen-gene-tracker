@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\Api;
+namespace Tests\Unit\Http\Controllers\Api;
 
 use App\Http\Resources\TopicResource;
 use App\Topic;

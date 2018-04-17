@@ -4,11 +4,12 @@ namespace Tests\Unit\Jobs\Topics;
 
 use App\Jobs\Topics\SyncPhenotypes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class SyncPhenotypesTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function setUp()
     {
         parent::setUp();

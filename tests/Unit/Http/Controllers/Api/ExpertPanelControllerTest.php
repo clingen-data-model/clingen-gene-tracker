@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Feature\Controllers\Api;
+namespace Tests\Unit\Http\Controllers\Api;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ExpertPanelControllerTest extends TestCase
 {
