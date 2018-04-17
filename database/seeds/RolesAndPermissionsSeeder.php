@@ -28,7 +28,14 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'update expert-panels']);
         Permission::create(['name' => 'deactivate expert-panels']);
 
-        // create roles and assign existing permissions
+        Permission::create(['name' => 'list topic-statuses']);
+        Permission::create(['name' => 'create topic-statuses']);
+        Permission::create(['name' => 'update topic-statuses']);
+        Permission::create(['name' => 'delete topic-statuses']);
+
+        /**
+         * Programmer role can do everything
+         */
         $role = Role::create(['name' => 'programmer']);
         $role->givePermissionTo('list users');
         $role->givePermissionTo('create users');
@@ -41,6 +48,14 @@ class RolesAndPermissionsSeeder extends Seeder
         $role->givePermissionTo('update expert-panels');
         $role->givePermissionTo('deactivate expert-panels');
 
+        $role->givePermissionTo('list topic-statuses');
+        $role->givePermissionTo('create topic-statuses');
+        $role->givePermissionTo('update topic-statuses');
+        $role->givePermissionTo('delete topic-statuses');
+
+        /**
+         * Admin Role can do most things
+         */
         $role = Role::create(['name' => 'admin']);
         $role->givePermissionTo('list users');
         $role->givePermissionTo('create users');
@@ -53,8 +68,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $role->givePermissionTo('update expert-panels');
         $role->givePermissionTo('deactivate expert-panels');
 
+        $role->givePermissionTo('list topic-statuses');
+        $role->givePermissionTo('create topic-statuses');
+        $role->givePermissionTo('update topic-statuses');
+
         Role::create(['name' => 'coordinator']);
         Role::create(['name' => 'curator']);
-
     }
 }

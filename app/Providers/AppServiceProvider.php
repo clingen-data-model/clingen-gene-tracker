@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
             config(['backpack.base.skin'=>'skin-blue']);
         }
         if ($this->app->environment('local', 'demo')) {
-            config(['backpack.base.logo_lg' => '<b>CHANGE</b> - '.$this->app->environment()]);
+            config(['backpack.base.logo_lg' => '<b>ClinGen</b> - '.$this->app->environment()]);
         }
 
         $this->app->bind(

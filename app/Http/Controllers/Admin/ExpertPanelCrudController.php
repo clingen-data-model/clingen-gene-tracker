@@ -5,13 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
 use App\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Redirect;
 
 class ExpertPanelCrudController extends CrudController
 {
@@ -38,41 +33,15 @@ class ExpertPanelCrudController extends CrudController
 
         $this->crud->setFromDb();
 
-
-        // ------ CRUD FIELDS
-        // $this->crud->addField($options, 'update/create/both');
-        // $this->crud->addFields($array_of_arrays, 'update/create/both');
-        // $this->crud->removeField('name', 'update/create/both');
-        // $this->crud->removeFields($array_of_names, 'update/create/both');
-
-        // ------ CRUD COLUMNS
-        // $this->crud->addColumn(); // add a single column, at the end of the stack
-        // $this->crud->addColumns(); // add multiple columns, at the end of the stack
-        // $this->crud->removeColumn('column_name'); // remove a column from the stack
-        // $this->crud->removeColumns(['column_name_1', 'column_name_2']); // remove an array of columns from the stack
-        // $this->crud->setColumnDetails('column_name', ['attribute' => 'value']); // adjusts the properties of the passed in column (by name)
-        // $this->crud->setColumnsDetails(['column_1', 'column_2'], ['attribute' => 'value']);
-
-        // ------ CRUD BUTTONS
-        // possible positions: 'beginning' and 'end'; defaults to 'beginning' for the 'line' stack, 'end' for the others;
-        // $this->crud->addButton($stack, $name, $type, $content, $position); // add a button; possible types are: view, model_function
-        // $this->crud->addButtonFromModelFunction($stack, $name, $model_function_name, $position); // add a button whose HTML is returned by a method in the CRUD model
-        // $this->crud->addButtonFromView($stack, $name, $view, $position); // add a button whose HTML is in a view placed at resources\views\vendor\backpack\crud\buttons
-        // $this->crud->removeButton($name);
-        // $this->crud->removeButtonFromStack($name, $stack);
-        // $this->crud->removeAllButtons();
-        // $this->crud->removeAllButtonsFromStack('line');
-
-
         // ------ CRUD ACCESS
         $this->crud->denyAccess(['list','create','update','deactivate','delete']);
-        if( $this->user->hasPermissionTo('list expert-panels') ){
+        if ($this->user->hasPermissionTo('list expert-panels')) {
             $this->crud->allowAccess(['list']);
         }
-        if( $this->user->hasPermissionTo('create expert-panels') ){
+        if ($this->user->hasPermissionTo('create expert-panels')) {
             $this->crud->allowAccess(['create']);
         }
-        if( $this->user->hasPermissionTo('update expert-panels') ){
+        if ($this->user->hasPermissionTo('update expert-panels')) {
             $this->crud->allowAccess(['update']);
         }
 

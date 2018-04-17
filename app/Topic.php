@@ -2,10 +2,17 @@
 
 namespace App;
 
+use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Topic extends Model
 {
+    use CrudTrait;
+    use RevisionableTrait;
+
+    protected $revisionCreationsEnabled = true;
+
     protected $fillable = [
         'gene_symbol',
         'expert_panel_id',
@@ -38,6 +45,11 @@ class Topic extends Model
     public function phenotypes()
     {
         return $this->belongsToMany(Phenotype::class);
+    }
+
+    public function topicStatus()
+    {
+        return $this->belongsTo(TopicStatus::class);
     }
 
     public function scopeGene($query, $geneSymbol)

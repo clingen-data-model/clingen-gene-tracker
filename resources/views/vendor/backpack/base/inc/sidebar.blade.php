@@ -19,6 +19,10 @@
               @if(Auth::user()->hasPermissionTo('list expert-panels'))
                   <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-user"></i> <span>Expert Panels</span></a></li>
               @endif
+              @if(Auth::user()->hasPermissionTo('list expert-panels'))
+                <li><a href="{{ backpack_url('topic-status') }}"><i class="fa fa-clock"></i> <span>Topic Statuses</span></a></li>
+              @endif
+
           <!-- ======================================= -->
           {{-- <li class="header">Other menus</li> --}}
         </ul>

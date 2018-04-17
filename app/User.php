@@ -16,6 +16,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, RevisionableTrait, CrudTrait, SoftDeletes, HasRoles;
 
+    protected $revisionCreationsEnabled = true;
+
     /**
      * The attributes that are mass assignable.
      *

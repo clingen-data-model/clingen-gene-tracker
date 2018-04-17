@@ -6,10 +6,14 @@ use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ExpertPanel extends Model
+class TopicStatus extends Model
 {
-    use RevisionableTrait, CrudTrait;
+    use CrudTrait;
+    use RevisionableTrait;
 
     protected $revisionCreationsEnabled = true;
-    protected $fillable = ['name'];
+
+    protected $fillable = [
+        'name'
+    ];
 }

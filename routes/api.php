@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +21,7 @@ Route::group([
     Route::resource('/expert-panels', 'ExpertPanelController');
     Route::resource('/topics', 'TopicController');
     Route::resource('/users', 'UserController');
+    Route::resource('/topic-statuses', 'UserController');
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');

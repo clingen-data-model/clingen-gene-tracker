@@ -75,6 +75,19 @@ class TopicTest extends TestCase
     /**
      * @test
      */
+    public function topic_belongsTo_topic_status()
+    {
+        $topicStatus = factory(\App\TopicStatus::class)->create();
+        $topic = factory(\App\Topic::class)->create();
+        $topic->topicStatus()->associate($topicStatus);
+        $topic->save();
+
+        $this->assertEquals($topicStatus->id, $topic->topicStatus->id);
+    }
+
+    /**
+     * @test
+     */
     public function has_fillable_curation_date()
     {
         $topic = factory(\App\Topic::class)->create();
