@@ -17,10 +17,10 @@
               <li><a href="{{ backpack_url('user') }}"><i class="fa fa-user"></i> <span>Users</span></a></li>
               @endif
               @if(Auth::user()->hasPermissionTo('list expert-panels'))
-                  <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-user"></i> <span>Expert Panels</span></a></li>
+                  <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-users"></i> <span>Expert Panels</span></a></li>
               @endif
               @if(Auth::user()->hasPermissionTo('list expert-panels'))
-                <li><a href="{{ backpack_url('topic-status') }}"><i class="fa fa-clock"></i> <span>Topic Statuses</span></a></li>
+                <li><a href="{{ backpack_url('topic-status') }}"><i class="fa fa-tasks"></i> <span>Topic Statuses</span></a></li>
               @endif
 
           <!-- ======================================= -->
