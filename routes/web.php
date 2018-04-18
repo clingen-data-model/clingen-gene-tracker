@@ -26,3 +26,14 @@ Route::group(['middleware'=>'auth'], function () {
 });
 
 Auth::routes();
+
+$return403 = function () {
+    $data['title'] = '403';
+    $data['name'] = 'Registration is closed';
+
+    return response()
+        ->view('errors.403', $data, 403);
+};
+
+Route::get('/register', $return403);
+Route::post('/register', $return403);
