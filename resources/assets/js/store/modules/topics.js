@@ -20,7 +20,7 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items[id]
+        return state.items[id-1]
     }
 }
 
@@ -30,7 +30,7 @@ const mutations = {
     },
     addItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
-        Vue.set(state.items, item.id, item)
+        Vue.set(state.items, item.id-1, item)
     },
 }
 
