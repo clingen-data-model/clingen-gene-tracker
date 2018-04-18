@@ -1,7 +1,7 @@
 <style></style>
 <template>
-    <b-card>
-        <template slot="header">
+    <div class="card">
+        <div class="card-header">
             <router-link
                 id="new-topic-btn" 
                 class="btn btn-secondary float-right btn-sm" 
@@ -9,8 +9,11 @@
             >
                 Add new Topic
             </router-link>
-             
+ 
             <h3>Topics in curation</h3>
+        </div>
+            
+        <div class="card-body">
             <div class="topics-table-container">
                 <div class="row">
                     <div class="col-md-6 form-inline">
@@ -50,9 +53,8 @@
                     </template>
                 </b-table>
                 <div class="float-right">Total Records: {{totalRows}}</div class="float-right">
-            </div>
-        </template>
-    </b-card>
+            </div>        </div>
+    </div>
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'

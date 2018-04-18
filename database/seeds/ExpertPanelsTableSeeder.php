@@ -1,5 +1,6 @@
 <?php
 
+use App\ExpertPanel;
 use Illuminate\Database\Seeder;
 
 class ExpertPanelsTableSeeder extends Seeder
@@ -11,16 +12,16 @@ class ExpertPanelsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\ExpertPanel::class)->create([
+        ExpertPanel::create([
             'name' => 'Cardiacmyopaphy'
         ]);
-        factory(\App\ExpertPanel::class)->create([
+        ExpertPanel::create([
             'name' => 'Osteoboneopathy'
         ]);
-        factory(\App\ExpertPanel::class)->create([
+        ExpertPanel::create([
             'name' => 'Cardiopulmonary Sadness'
         ]);
-        factory(\App\ExpertPanel::class)->create([
+        ExpertPanel::create([
             'name' => 'Neuropathy'
         ]);
     }

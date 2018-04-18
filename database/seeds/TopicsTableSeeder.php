@@ -16,19 +16,15 @@ class TopicsTableSeeder extends Seeder
     {
         $users = User::all();
         $panels = ExpertPanel::all();
-        factory(Topic::class, 3)->create()
-            ->each(function ($item) use ($panels) {
-                $item->update([
-                    'expert_panel_id' => $panels->random()->id,
-                ]);
-            });
-        factory(Topic::class, 100)->create()
-            ->each(function ($item) use ($users, $panels) {
-                $item->update([
-                    'expert_panel_id' => $panels->random()->id,
-                    'curator_id' => $users->random()->id,
-                ]);
-            });
-        factory(Topic::class, 2)->create();
+        Topic::create([
+            'gene_symbol' => 'MLTN15',
+            'expert_panel_id' => $panels->random()->id,
+        ]);
+
+        Topic::create([
+            'gene_symbol' => 'MYL2',
+            'expert_panel_id' => $panels->random()->id,
+            'curator_id' => User::role('curator')->get()->random()->id
+        ]);
     }
 }
