@@ -19,8 +19,8 @@
               @if(Auth::user()->hasPermissionTo('list expert-panels'))
                   <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-users"></i> <span>Expert Panels</span></a></li>
               @endif
-              @if(Auth::user()->hasPermissionTo('list expert-panels'))
-                <li><a href="{{ backpack_url('topic-status') }}"><i class="fa fa-tasks"></i> <span>Topic Statuses</span></a></li>
+              @if(Auth::user()->hasPermissionTo('list working-groups'))
+                <li><a href="{{ backpack_url('working-group') }}"><i class="fa fa-tasks"></i> <span>Working Groups</span></a></li>
               @endif
 
           <!-- ======================================= -->

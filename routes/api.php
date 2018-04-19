@@ -20,8 +20,9 @@ Route::group([
     // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
     Route::resource('/topics', 'TopicController');
-    Route::resource('/users', 'UserController');
-    Route::resource('/topic-statuses', 'TopicStatusController');
+    Route::resource('/users', 'UserController')->only(['index']);
+    Route::resource('/topic-statuses', 'TopicStatusController')->only(['index']);
+    Route::resource('/working-groups', 'WorkingGroupsController')->only(['index']);
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');

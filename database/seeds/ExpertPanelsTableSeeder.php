@@ -13,16 +13,20 @@ class ExpertPanelsTableSeeder extends Seeder
     public function run()
     {
         ExpertPanel::create([
-            'name' => 'Cardiacmyopaphy'
+            'name' => 'Cardiacmyopaphy',
+            'working_group_id' => 1,
         ]);
         ExpertPanel::create([
-            'name' => 'Osteoboneopathy'
+            'name' => 'Osteoboneopathy',
+            'working_group_id' => 1,
         ]);
         ExpertPanel::create([
-            'name' => 'Cardiopulmonary Sadness'
+            'name' => 'Cardiopulmonary Sadness',
+            'working_group_id' => 2,
         ]);
         ExpertPanel::create([
-            'name' => 'Neuropathy'
+            'name' => 'Neuropathy',
+            'working_group_id' => 2,
         ]);
     }
 }

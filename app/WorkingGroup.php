@@ -4,20 +4,23 @@ namespace App;
 
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ExpertPanel extends Model
+class WorkingGroup extends Model
 {
-    use RevisionableTrait, CrudTrait;
+    use SoftDeletes;
+    use RevisionableTrait;
+    use CrudTrait;
 
     protected $revisionCreationsEnabled = true;
+
     protected $fillable = [
         'name',
-        'working_group_id'
     ];
 
-    public function workingGroup()
+    public function expertPanels()
     {
-        return $this->belongsTo(WorkingGroup::class);
+        return $this->hasMany(ExpertPanel::class);
     }
 }

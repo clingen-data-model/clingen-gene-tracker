@@ -4,6 +4,6 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\ExpertPanel::class, function (Faker $faker) {
     return [
-        'name' => $faker->company.' Panel'
+        'name' => $faker->unique()->company.' Panel'
     ];
 });
