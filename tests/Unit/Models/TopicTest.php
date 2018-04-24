@@ -91,6 +91,18 @@ class TopicTest extends TestCase
     /**
      * @test
      */
+    public function topic_belongs_to_a_curation_type()
+    {
+        $curationType = factory(\App\CurationType::class)->create();
+        $topic = factory(\App\Topic::class)->create();
+        $topic->curationType()->associate($curationType);
+
+        $this->assertEquals($curationType->id, $topic->curationType->id);
+    }
+
+    /**
+     * @test
+     */
     public function has_fillable_curation_date()
     {
         $topic = factory(\App\Topic::class)->create();

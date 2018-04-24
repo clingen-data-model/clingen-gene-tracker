@@ -53,6 +53,11 @@ class Topic extends Model
         return $this->belongsTo(TopicStatus::class);
     }
 
+    public function curationType()
+    {
+        return $this->belongsTo(CurationType::class);
+    }
+
     public function scopeGene($query, $geneSymbol)
     {
         return $query->where('gene_symbol', $geneSymbol);

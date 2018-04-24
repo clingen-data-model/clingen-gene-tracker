@@ -15,4 +15,5 @@ Route::group([
     CRUD::resource('expert-panel', 'ExpertPanelCrudController');
     CRUD::resource('topic-status', 'TopicStatusCrudController');
     CRUD::resource('working-group', 'WorkingGroupCrudController');
+    CRUD::resource('curation-type', 'CurationTypeCrudController');
 });

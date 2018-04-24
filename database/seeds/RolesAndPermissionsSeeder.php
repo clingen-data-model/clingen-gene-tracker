@@ -15,6 +15,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         // create permissions
         Permission::firstOrcreate(['name' => 'list users']);
@@ -37,6 +38,11 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::firstOrcreate(['name' => 'create working-groups']);
         Permission::firstOrcreate(['name' => 'update working-groups']);
         Permission::firstOrcreate(['name' => 'delete working-groups']);
+
+        Permission::firstOrcreate(['name' => 'list curation-types']);
+        Permission::firstOrcreate(['name' => 'create curation-types']);
+        Permission::firstOrcreate(['name' => 'update curation-types']);
+        Permission::firstOrcreate(['name' => 'delete curation-types']);
 
         /**
          * Programmer role can do everything
@@ -95,6 +101,19 @@ class RolesAndPermissionsSeeder extends Seeder
         }
         if (!$role->hasPermissionTo('delete working-groups')) {
             $role->givePermissionTo('delete working-groups');
+        }
+
+        if (!$role->hasPermissionTo('list curation-types')) {
+            $role->givePermissionTo('list curation-types');
+        }
+        if (!$role->hasPermissionTo('create curation-types')) {
+            $role->givePermissionTo('create curation-types');
+        }
+        if (!$role->hasPermissionTo('update curation-types')) {
+            $role->givePermissionTo('update curation-types');
+        }
+        if (!$role->hasPermissionTo('delete curation-types')) {
+            $role->givePermissionTo('delete curation-types');
         }
 
         /**

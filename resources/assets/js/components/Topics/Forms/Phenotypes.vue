@@ -1,7 +1,6 @@
 <style></style>
 <template>
     <div class="component-container">
-        <!-- <div class="alert alert-secondary clearfix" v-show="loading">Loading...</div> -->
         <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
                 <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
