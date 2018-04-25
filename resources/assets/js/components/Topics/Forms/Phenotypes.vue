@@ -71,7 +71,13 @@
         watch: {
             updatedTopic: function (to, from) {
                 if (to != from) {
-                    this.fetchPhenotypes();
+                    this.fetchPhenotypes(this.updatedTopic.gene_symbol)
+                        // .then((response) => {
+                        //     if (this.phenotypes.length == 1 && this.updatedTopic.curation_type_id == 1) {
+                        //         console.log('preselect only phonetype')
+                        //         this.updatedTopic.phenotypes.push(this.phenotypes[0]);
+                        //     }
+                        // })
                 }
             }
         },
@@ -79,18 +85,6 @@
             loading: function () {
                 return this.$store.getters.loading;
             }
-        },
-        methods: {
-            fetchPhenotypes: function () {
-                if (this.updatedTopic.gene_symbol) {
-                    OmimRepo.gene(this.updatedTopic.gene_symbol)
-                        .then( response => this.phenotypes = response.data.phenotypes )
-                        .catch( error => alert(error) )
-                }
-            },
-        },
-        mounted: function () {
-            this.fetchPhenotypes();
         }
     }
 </script>

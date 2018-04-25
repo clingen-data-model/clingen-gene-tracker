@@ -26,10 +26,6 @@
                 <criteria-table></criteria-table>
             </div>
         </div>
-        <pre v-show="Object.keys(errors).length > 0">
-            {{errors}}
-        </pre>
-        <!-- <topic-notifications :topic="updatedTopic"></topic-notifications> -->
     </div>
 </template>
 <script>

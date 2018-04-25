@@ -14,10 +14,13 @@ export default {
     methods: {
         fetchPhenotypes: function (geneSymbol) {
             if (geneSymbol) {
-                OmimRepo.gene(geneSymbol)
+                console.log('fetching phenotypes')
+                return OmimRepo.gene(geneSymbol)
                     .then( response => this.phenotypes = response.data.phenotypes )
                     .catch( error => alert(error) )
             }
+            console.log('no gene symbol');
+            return new Promise((resolve, reject) => { resolve() })
         },
     },
 }
