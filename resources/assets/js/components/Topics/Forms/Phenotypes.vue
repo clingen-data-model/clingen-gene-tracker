@@ -20,6 +20,7 @@
                         ></input>
                     </template>
                 </b-table>
+                <div class="alert alert-info" v-show="message">{{message}}</div>
             </div>
             <div class="col-lg-4">
                 <criteria-table></criteria-table>
@@ -65,19 +66,20 @@
                         sortable: false,
                         label: '&nbsp;&nbsp;&nbsp;',
                     }
-                }
+                },
+                message: ''
             }
         },
         watch: {
             updatedTopic: function (to, from) {
-                if (to != from) {
+                if (to.gene_symbol != from.gene_symbol) {
                     this.fetchPhenotypes(this.updatedTopic.gene_symbol)
-                        // .then((response) => {
-                        //     if (this.phenotypes.length == 1 && this.updatedTopic.curation_type_id == 1) {
-                        //         console.log('preselect only phonetype')
-                        //         this.updatedTopic.phenotypes.push(this.phenotypes[0]);
-                        //     }
-                        // })
+                        .then((response) => {
+                            if (this.phenotypes.length == 1 && this.updatedTopic.curation_type_id == 1 && this.updatedTopic.phenotypes.length == 0) {
+                                Vue.set(this.updatedTopic.phenotypes, 0, this.phenotypes[0].phenotypeMimNumber)
+                                this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedTopic.gene_symbol+' with this single disease entity';
+                            }
+                        })
                 }
             }
         },

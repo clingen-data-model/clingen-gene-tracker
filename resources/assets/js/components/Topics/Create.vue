@@ -71,7 +71,7 @@
                         this.$emit('saved');
                         this.$emit('created');
                         this.addInfo('Topic with '+this.updatedTopic.gene_symbol+' created.')
-                        this.$router.push('/topics/'+response.data.data.id+'/edit/#phenotypes');
+                        this.$router.push('/topics/'+response.data.data.id+'/edit/#curation-type');
                         return response;
                     })
                     .catch( (error) => {
