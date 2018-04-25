@@ -25,6 +25,9 @@
               @if(Auth::user()->hasPermissionTo('list curation-types'))
                 <li><a href="{{ backpack_url('curation-type') }}"><i class="fa fa-star"></i> <span>Curation Types</span></a></li>
               @endif
+              @if(Auth::user()->hasPermissionTo('list pages'))
+                <li><a href="{{ url(config('backpack.base.route_prefix').'/page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
+              @endif
 
           <!-- ======================================= -->
           {{-- <li class="header">Other menus</li> --}}

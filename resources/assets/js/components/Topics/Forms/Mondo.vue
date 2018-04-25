@@ -12,8 +12,12 @@
     </div>
 </template>
 <script>
+    import topicFormMixin from '../../../mixins/topic_form_mixin'
+
     export default {
-        props: ['errors', 'value'],
+        mixins: [
+            topicFormMixin // handles syncing of prop value to updatedTopic
+        ],
         data: function () {
             return {
                 updatedTopic: {}

@@ -5,6 +5,7 @@ import TopicCreate from './components/Topics/Create'
 import TopicEdit from './components/Topics/Edit'
 import TopicShow from './components/Topics/Show'
 import TopicList from './components/Topics/List'
+import CriteriaOverview from './components/CriteriaOverview'
 
 Vue.use(VueRouter)
 
@@ -33,7 +34,7 @@ const routes = [
                 props: true
             },
         ]
-    },
+    }
 ]
 
 const router = new VueRouter({

@@ -1,4 +1,7 @@
 <style>
+    .criteria-table {
+        font-size: .8em;
+    }
 </style>
 <template>
     <div class="criteria-table" style="line-height: 1">
@@ -25,6 +28,7 @@
                 </tr>
             </tbody>
         </table>    
+        <small><a href="/lumping-and-splitting-criteria-overview" target="criteria">Lumping and splitting criteria overview</a></small>
     </div>
 </template>
 <script>

@@ -23,6 +23,7 @@ Route::group([
     Route::resource('/users', 'UserController')->only(['index']);
     Route::resource('/topic-statuses', 'TopicStatusController')->only(['index']);
     Route::resource('/working-groups', 'WorkingGroupsController')->only(['index']);
+    Route::resource('/curation-types', 'CurationTypeController')->only(['index']);
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');

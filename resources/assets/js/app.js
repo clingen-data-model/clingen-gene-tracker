@@ -10,6 +10,7 @@ import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import DateField from './components/DateField'
+import CriteriaTable from './components/Topics/CriteriaTable'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
@@ -37,7 +38,8 @@ if (document.getElementById('app')) {
         components: {
             'clingen-app': require('./components/ClingenApp.vue'),
             'clingen-nav': require('./components/ClingenNav.vue'),
-            'alerts': require('./components/Alerts.vue')
+            'alerts': require('./components/Alerts.vue'),
+            CriteriaTable
         },
         computed: {
             loading: function () {

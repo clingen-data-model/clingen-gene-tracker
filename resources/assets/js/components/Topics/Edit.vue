@@ -52,6 +52,7 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import CurationType from './Forms/CurationType'
     import Phenotypes from './Forms/Phenotypes'
     import Info from './Forms/Info'
     import Mondo from './Forms/Mondo'
@@ -62,6 +63,7 @@
             Phenotypes,
             Info,
             Mondo,
+            CurationType
         },
         data () {
             return {
@@ -69,6 +71,10 @@
                 steps: {
                    info: {
                         title: 'Info',
+                        next: 'curation-type'
+                    },
+                    'curation-type': {
+                        title: 'Curation Type',
                         next: 'phenotypes'
                     },
                     phenotypes: {

@@ -59,20 +59,16 @@
     import _ from 'lodash'
     import TopicNotifications from './ExistingTopicNotification'
     import DateField from '../../DateField'
+    import topicFormMixin from '../../../mixins/topic_form_mixin'
 
     export default {
         name: 'test',
-        props: ['value', 'errors'],
+        mixins: [
+            topicFormMixin // handles syncing of prop value to updatedTopic
+        ],
         components: {
             TopicNotifications,
             DateField
-        },
-        data: function () {
-            return {
-                updatedTopic: {
-                    gene_symbol: null
-                }
-            }
         },
         computed: {
             ...mapGetters('panels', {
@@ -91,33 +87,17 @@
                 return (this.errors && this.errors.expert_panel_id && this.errors.expert_panel_id.length > 0) ? false : null;
             },
         },
-        watch: {
-            updatedTopic: function (to, from) {
-                this.$emit('input', this.updatedTopic);
-            },
-            value: function () {
-                if (this.value != this.updatedTopic) {
-                    this.syncValue();
-                }
-            }
-        },
         methods: {
             ...mapActions('panels', {
                 getAllPanels: 'getAllItems'
             }),
             ...mapActions('users', {
                 getAllUsers: 'getAllItems'
-            }),
-            syncValue: function () {
-                if (this.value) {
-                    this.updatedTopic = JSON.parse(JSON.stringify(this.value));
-                }
-            }
+            })
         },
         mounted: function () {
             this.getAllPanels();
             this.getAllUsers();
-            this.syncValue();
         }
     }
 </script>

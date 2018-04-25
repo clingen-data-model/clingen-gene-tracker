@@ -42,18 +42,20 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import Phenotypes from './Phenotypes/Selection'
-    import Info from './InfoFields'
     import Collapsable from '../Collapsable'
+    import CurationType from './CurationType'
     import DiseaseEntity from './DiseaseEntityFields'
+    import Info from './InfoFields'
+    import Phenotypes from './Phenotypes/Selection'
 
     export default {
         props: ['topic'],
         components: {
-            Phenotypes,
-            Info,
             Collapsable,
+            CurationType,
             DiseaseEntity,
+            Info,
+            Phenotypes,
         },
         data: function () {
             return {
@@ -61,6 +63,10 @@
                 steps: {
                    info: {
                         title: 'Info',
+                        next: 'curation-type'
+                    },
+                    curation-type: {
+                        title: 'Curation Type',
                         next: 'phenotypes'
                     },
                     phenotypes: {

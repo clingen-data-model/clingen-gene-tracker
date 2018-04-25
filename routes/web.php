@@ -37,3 +37,6 @@ $return403 = function () {
 
 Route::get('/register', $return403);
 Route::post('/register', $return403);
+
+Route::get('{page}/{subs?}', ['uses' => 'PageController@index'])
+    ->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);

@@ -32,13 +32,17 @@
     import OmimRepo from './../../../repositories/OmimRepository';
     import CriteriaTable from './../CriteriaTable';
     import TopicNotifications from './ExistingTopicNotification'
+    import topicFormMixin from '../../../mixins/topic_form_mixin'
 
     export default {
         components: {
              CriteriaTable,
              TopicNotifications
         },
-        props: ['value', 'disabled'],
+        props: ['disabled'],
+        mixins: [
+            topicFormMixin // handles syncing of prop value to updatedTopic
+        ],
         data: function () {
             return {
                 phenotypes: [],
@@ -67,16 +71,6 @@
                 return this.$store.getters.loading;
             }
         },
-        watch: {
-            updatedTopic: function () {
-                this.$emit('input', this.updatedTopic);
-            },
-            value: function () {
-                if (this.value != this.updatedTopic) {
-                    this.syncValue();
-                }
-            }
-        },
         methods: {
             fetchPhenotypes: function () {
                 if (this.updatedTopic.gene_symbol) {
@@ -85,16 +79,9 @@
                         .catch( error => alert(error) )
                 }
             },
-            syncValue: function () {
-                if (this.value) {
-                    this.updatedTopic = JSON.parse(JSON.stringify(this.value));
-                    this.fetchPhenotypes()    
-                }
-            }
         },
         mounted: function () {
             this.fetchPhenotypes();
-            this.syncValue();
         }
     }
 </script>

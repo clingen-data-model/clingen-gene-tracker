@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\CurationType;
 use Illuminate\Http\Request;
 
-class CurationTypeController extends Controller
+class CurationTypeController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,9 @@ class CurationTypeController extends Controller
      */
     public function index()
     {
-        //
+        $types = CurationType::all();
+
+        return $types;
     }
 
     /**
@@ -24,7 +26,6 @@ class CurationTypeController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -35,7 +36,6 @@ class CurationTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -46,7 +46,6 @@ class CurationTypeController extends Controller
      */
     public function show(CurationType $curationType)
     {
-        //
     }
 
     /**
@@ -57,7 +56,6 @@ class CurationTypeController extends Controller
      */
     public function edit(CurationType $curationType)
     {
-        //
     }
 
     /**
@@ -69,7 +67,6 @@ class CurationTypeController extends Controller
      */
     public function update(Request $request, CurationType $curationType)
     {
-        //
     }
 
     /**
@@ -80,6 +77,5 @@ class CurationTypeController extends Controller
      */
     public function destroy(CurationType $curationType)
     {
-        //
     }
 }
