@@ -33,6 +33,7 @@
     import CriteriaTable from './../CriteriaTable';
     import TopicNotifications from './ExistingTopicNotification'
     import topicFormMixin from '../../../mixins/topic_form_mixin'
+    import  phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
 
     export default {
         components: {
@@ -41,7 +42,8 @@
         },
         props: ['disabled'],
         mixins: [
-            topicFormMixin // handles syncing of prop value to updatedTopic
+            topicFormMixin, // handles syncing of prop value to updatedTopic
+            phenotypeListMixin
         ],
         data: function () {
             return {
@@ -63,6 +65,13 @@
                         sortable: false,
                         label: '&nbsp;&nbsp;&nbsp;',
                     }
+                }
+            }
+        },
+        watch: {
+            updatedTopic: function (to, from) {
+                if (to != from) {
+                    this.fetchPhenotypes();
                 }
             }
         },

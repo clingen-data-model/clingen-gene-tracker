@@ -17,6 +17,7 @@ export default {
     },
     methods: {
         syncValue() {
+            console.log('topic_form_mixin.syncValue')
             if (this.value) {
                 this.updatedTopic = JSON.parse(JSON.stringify(this.value));
             }

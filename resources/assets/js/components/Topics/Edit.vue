@@ -173,7 +173,7 @@
                         return response;
                     })
                     .catch( (error) => {
-                        this.errors = error.response.errors;
+                        this.errors = error.response.data.errors;
                         return error;
                     });
             },

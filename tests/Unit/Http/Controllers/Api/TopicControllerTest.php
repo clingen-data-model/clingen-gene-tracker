@@ -146,6 +146,50 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
+    public function requires_existing_curation_type_id_on_update()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $curationType = factory(\App\CurationType::class)->create();
+        $data = [
+            'gene_symbol' => 'ABCD',
+            'expert_panel_id' => $this->panel->id,
+            'addingCurationType' => 1
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'curation_type_id' => [
+                        'A curation type is required to continue'
+                    ]
+                ]
+            ]);
+
+        $data['curation_type_id'] = 100000;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'curation_type_id' => [
+                        'The curation type you specified does not exist'
+                    ]
+                ]
+            ]);
+
+        $data['curation_type_id'] = $curationType->id;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
     public function parses_curation_date_for_storage_when_creating()
     {
         $data = [

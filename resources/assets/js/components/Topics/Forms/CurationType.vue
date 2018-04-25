@@ -19,12 +19,16 @@
                         :options="options"
                         stacked
                         name="radioBtnOutline" />
+                    <div class="text-danger" v-for="msg in errors.curation_type_id">{{msg}}</div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <criteria-table></criteria-table>
             </div>
         </div>
+        <pre v-show="Object.keys(errors).length > 0">
+            {{errors}}
+        </pre>
         <!-- <topic-notifications :topic="updatedTopic"></topic-notifications> -->
     </div>
 </template>
@@ -58,10 +62,19 @@
                 }
             }
         },
+        watch: {
+            updatedTopic: function (to, from) {
+                if (to != from) {
+                    this.fetchPhenotypes(this.updatedTopic.gene_symbol);
+                    this.updatedTopic.addingCurationType = 1;
+                }
+            }
+        },
         computed: {
             options: function () {
                 if (this.phenotypes.length == 0) {
-
+                    this.updatedTopic = 2;
+                    return [];
                 }
                 if (this.phenotypes.length == 1) {
                     return this.curationTypes

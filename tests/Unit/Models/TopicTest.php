@@ -40,6 +40,17 @@ class TopicTest extends TestCase
     /**
      * @test
      */
+    public function topic_has_fillable_curation_type_id()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['curation_type_id' => 1]);
+
+        $this->assertEquals(1, $topic->curation_type_id);
+    }
+
+    /**
+     * @test
+     */
     public function topic_has_curator_relationship_to_users()
     {
         $user = factory(\App\User::class)->create();

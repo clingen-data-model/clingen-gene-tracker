@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicCreateRequest;
+use App\Http\Requests\TopicUpdateRequest;
 use App\Http\Resources\TopicResource;
 use App\Jobs\Topics\SyncPhenotypes;
 use App\Services\RequestDataCleaner;
@@ -85,7 +86,7 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TopicCreateRequest $request, $id)
+    public function update(TopicUpdateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
         $topic->update($request->dateParsed('curation_date'));
