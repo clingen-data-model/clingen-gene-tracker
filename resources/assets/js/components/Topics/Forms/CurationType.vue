@@ -4,7 +4,6 @@
         <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
                 <p>The gene <strong>{{ updatedTopic.gene_symbol }}</strong> is not associated with a disease entity per OMIM at this time.</p>
-                If you continue with this topic you will have to assign a temporary MonDO ID.
             </div>
         </div>
         <div class="row" v-show="phenotypes.length > 0">
@@ -68,8 +67,8 @@
         },
         computed: {
             options: function () {
-                if (this.phenotypes.length == 0) {
-                    this.updatedTopic = 2;
+                if (this.phenotypes.length == 0 && this.updatedTopic.curation_type_id === null) {
+                    this.updatedTopic.curation_type_id = 2;
                     return [];
                 }
                 if (this.phenotypes.length == 1) {

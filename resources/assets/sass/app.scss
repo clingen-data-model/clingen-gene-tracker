@@ -24,5 +24,10 @@
     margin-bottom: 1em;
 }
 
+.nav-link.active {
+    background: $primary;
+    color: white;
+}
+
 // ENV color coding
 @import './env.scss';

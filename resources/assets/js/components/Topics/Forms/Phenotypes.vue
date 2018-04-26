@@ -4,12 +4,20 @@
         <div v-show="phenotypes.length == 0 && !loading">
             <div class="alert alert-secondary clearfix">
                 <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
-                If you continue with this topic you will have to assign a temporary MonDO ID.
             </div>
+            <div class="alert alert-info" v-show="message">{{message}}</div>
         </div>
         <div class="row" v-show="phenotypes.length > 0">
             <div class="col-lg-8">
-                <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small>
+                <b-table 
+                    v-show="showTable"
+                    :items="phenotypes"
+                    :fields="fields"
+                    stacked="sm"
+                    striped 
+                    hover 
+                    small
+                >
                     <template slot="checkbox" slot-scope="data">
                         <input 
                             class="form-check-input form-check-input-lg"
@@ -20,13 +28,33 @@
                         ></input>
                     </template>
                 </b-table>
+                
                 <div class="alert alert-info" v-show="message">{{message}}</div>
+
+                <div v-show="showRationale">
+                    <div class="form-group">
+                        <label for="rationale_id">What is your rationale for this curation?</label>
+                        <select id="rationale_id" v-model="updatedTopic.rationale_id" class="form-control"></select>
+                    </div>
+                    <div class="form-group" v-show="showPmids">
+                        <label for="pmids">Supporting PMIDS:</label>
+                        <input id="pmids" v-model="updatedTopic.pmids" class="form-control"></input>
+                    </div>
+                    <div class="form-group" v-show="!showPmids">
+                        <label for="isolated_phenotype">Enter broader OMIM phenotype (MIM phenotype):</label>
+                        <input id="isolated_phenotype" v-model="updatedTopic.isolated_phenotype" class="form-control"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="rationale_notes">Other comments:</label>
+                        <textarea id="rationale_notes" v-model="updatedTopic.rationale_notes" class="form-control"></textarea>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-4">
                 <criteria-table></criteria-table>
             </div>
         </div>
-        <topic-notifications :topic="updatedTopic"></topic-notifications>
+        <topic-notifications :topic="updatedTopic" class="mt-2"></topic-notifications>
     </div>
 </template>
 <script>
@@ -48,6 +76,8 @@
         ],
         data: function () {
             return {
+                showRationale: true,
+                showPmids: true,
                 phenotypes: [],
                 updatedTopic: {},
                 fields: {
@@ -67,7 +97,7 @@
                         label: '&nbsp;&nbsp;&nbsp;',
                     }
                 },
-                message: ''
+                message: null,
             }
         },
         watch: {
@@ -75,10 +105,14 @@
                 if (to.gene_symbol != from.gene_symbol) {
                     this.fetchPhenotypes(this.updatedTopic.gene_symbol)
                         .then((response) => {
+                            if (this.phenotypes.length == 0) {
+                                this.message = 'There is nothing for you to do on this screen b/c the gene symbole '+this.updatedTopic.gene_symbol+' does not have disease entities associated with it in OMIM'                                
+                            }
                             if (this.phenotypes.length == 1 && this.updatedTopic.curation_type_id == 1 && this.updatedTopic.phenotypes.length == 0) {
                                 Vue.set(this.updatedTopic.phenotypes, 0, this.phenotypes[0].phenotypeMimNumber)
                                 this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedTopic.gene_symbol+' with this single disease entity';
                             }
+
                         })
                 }
             }
@@ -86,6 +120,9 @@
         computed: {
             loading: function () {
                 return this.$store.getters.loading;
+            },
+            showTable: function () {
+                return (this.updatedTopic.curation_type_id != 2 && this.updatedTopic.curation_type_id != 3)
             }
         }
     }

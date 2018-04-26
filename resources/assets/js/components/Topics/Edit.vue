@@ -15,13 +15,17 @@
                 <b-form id="new-topic-form">
                     <div class="row">
                         <div class="col-md-2 border-right">
-                            <ul class="nav nav-pills flex-column text-right">
-                                <li class="nav-item" v-for="(step, idx) in steps">
-                                    <router-link :class="{active: (currentStep == idx)}" :to="$route.path+'#'+idx">
-                                        {{ step.title }}
-                                    </router-link>
-                                </li>
-                            </ul>
+                            <nav class="nav flex-column">
+                                <router-link 
+                                     v-for="(step, idx) in steps"
+                                     :key="idx"
+                                    :to="$route.path+'#'+idx" 
+                                    class="nav-link" 
+                                    :class="{active: (currentStep == idx)}"
+                                >
+                                    {{ step.title }}
+                                </router-link>
+                            </nav>
                         </div>
                         <div class="col-md-10">
                             <component 
@@ -75,7 +79,12 @@
                     },
                     'curation-type': {
                         title: 'Curation Type',
-                        next: 'phenotypes'
+                        next: () => {
+                            // if (this.updatedTopic.curation_type_id == 2 && this.updatedTopic.phenotypes.length == 0) {
+                            //     return 'mondo'
+                            // }
+                            return 'phenotypes'; 
+                        }
                     },
                     phenotypes: {
                         title: 'Phenotypes',
@@ -83,7 +92,13 @@
                     },
                     mondo: {
                         title: 'MonDO',
-                        next: null
+                        next: null,
+                        back: () => {
+                            // if (this.updatedTopic.curation_type_id == 2 && this.updatedTopic.phenotypes.length == 0) {
+                            //     return 'curation-type'
+                            // }
+                            return 'phenotypes'; 
+                        }
                     }
 
                 },
@@ -140,9 +155,18 @@
                 return stepKeys.indexOf(this.currentStep);
             },
             nextStep: function () {
-                return this.steps[this.currentStep].next;
+                if (typeof this.steps[this.currentStep].next == 'function') {
+                    return this.steps[this.currentStep].next()
+                }
+                return this.steps[this.currentStep].next
             },
             previousStep: function () {
+                if (this.steps[this.currentStep].back) {
+                    if (typeof this.steps[this.currentStep].back == 'function') {
+                        return this.steps[this.currentStep].back()
+                    }
+                    return this.steps[this.currentStep].back
+                }
                 const stepKeys = Object.keys(this.steps);
                 if (this.currentStepIdx > 0) {
                     return stepKeys[this.currentStepIdx-1];
