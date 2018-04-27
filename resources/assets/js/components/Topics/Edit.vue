@@ -11,7 +11,6 @@
                 <h3>{{ title }}</h3>
             </template>
             <div v-if="this.topics">
-                <!-- <topic-form :topic="topic" @canceled="$router.push('/topics')"></topic-form> -->
                 <b-form id="new-topic-form">
                     <div class="row">
                         <div class="col-md-2 border-right">

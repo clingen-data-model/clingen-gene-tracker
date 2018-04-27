@@ -24,6 +24,7 @@ class TopicControllerTest extends TestCase
         $this->topics = factory(\App\Topic::class, 10)->create();
         $this->user = factory(\App\User::class)->create();
         $this->panel = factory(\App\ExpertPanel::class)->create();
+        $this->rationale = factory(\App\Rationale::class)->create();
     }
 
     /**
@@ -153,7 +154,7 @@ class TopicControllerTest extends TestCase
         $data = [
             'gene_symbol' => 'ABCD',
             'expert_panel_id' => $this->panel->id,
-            'addingCurationType' => 1
+            'page' => 'curation-types',
         ];
 
         $response = $this->actingAs($this->user, 'api')
@@ -167,18 +168,18 @@ class TopicControllerTest extends TestCase
                 ]
             ]);
 
-        $data['curation_type_id'] = 100000;
+        // $data['curation_type_id'] = 100000;
 
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/topics/'.$topic->id, $data)
-            ->assertStatus(422)
-            ->assertJson([
-                'errors'=>[
-                    'curation_type_id' => [
-                        'The curation type you specified does not exist'
-                    ]
-                ]
-            ]);
+        // $response = $this->actingAs($this->user, 'api')
+        //     ->json('PUT', '/api/topics/'.$topic->id, $data)
+        //     ->assertStatus(422)
+        //     ->assertJson([
+        //         'errors'=>[
+        //             'curation_type_id' => [
+        //                 'The curation type you specified does not exist'
+        //             ]
+        //         ]
+        //     ]);
 
         $data['curation_type_id'] = $curationType->id;
 
@@ -216,7 +217,8 @@ class TopicControllerTest extends TestCase
         $data = [
             'gene_symbol' => 'ABCD',
             'expert_panel_id' => $this->panel->id,
-            'curation_date' => '09/16/1977'
+            'curation_date' => '09/16/1977',
+            'page' => 'info'
         ];
 
         $response = $this->actingAs($this->user, 'api')
@@ -325,19 +327,20 @@ class TopicControllerTest extends TestCase
      */
     public function updates_phenotypes_for_new_topic()
     {
-        $this->disableExceptionHandling();
         $phenotype = factory(\App\Phenotype::class)->create();
         $phenotype2 = factory(\App\Phenotype::class)->create();
         $this->topics->first()->phenotypes()->attach($phenotype2->id);
 
         $data = [
+            'page' => 'phenotypes',
             'gene_symbol' => 'ABCD',
             'expert_panel_id' => $this->panel->id,
             'phenotypes' => [
                 12345,
                 67890,
                 $phenotype->mim_number
-            ]
+            ],
+            'rationale_id' => $this->rationale->id
         ];
 
         $this->actingAs($this->user, 'api')
@@ -345,5 +348,23 @@ class TopicControllerTest extends TestCase
             ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
             ->assertSee('"mim_number":"12345"')
             ->assertSee('"mim_number":"67890"');
+    }
+
+    /**
+     * @test
+     */
+    public function stores_isolated_phenotype_on_isolated_phenotype_curation()
+    {
+        $this->disableExceptionHandling();
+        $topic = $this->topics->first();
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationale_id'] = $this->rationale->id;
+        $data['isolated_phenotype'] = '88888888';
+        $response = $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$topic->id, $data);
+
+        $response->assertSee('"mim_number":"88888888"');
     }
 }

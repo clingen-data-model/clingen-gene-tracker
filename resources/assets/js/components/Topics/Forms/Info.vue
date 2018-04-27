@@ -12,9 +12,8 @@
                 placeholder="ATK-1"
                 :state="geneSymbolError"> 
             </b-form-input>
-            <b-form-invalid-feedback id="geneSymbolError">
-                 <div v-for="msg in errors.gene_symbol">{{msg}}</div>
-            </b-form-invalid-feedback>
+
+            <validation-error :messages="errors.gene_symbol"></validation-error>
         </b-form-group>
         <div class="row justify-content-end">
             <div class="col-md-9">
@@ -26,9 +25,7 @@
                 <option :value="null">Select...</option>
                 <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
             </b-form-select>
-            <b-form-invalid-feedback id="expertPanelIdError">
-                <div v-for="msg in errors.expert_panel_id">{{msg}}</div>
-            </b-form-invalid-feedback>
+            <validation-error :messages="errors.expert_panel_id"></validation-error>
         </b-form-group>
     
         <b-form-group horizontal id="expert-panel-select-group" label="Curator" label-for="expert-panel-select">
@@ -60,6 +57,7 @@
     import TopicNotifications from './ExistingTopicNotification'
     import DateField from '../../DateField'
     import topicFormMixin from '../../../mixins/topic_form_mixin'
+    import ValidationError from '../../ValidationError'
 
     export default {
         name: 'test',
@@ -68,7 +66,13 @@
         ],
         components: {
             TopicNotifications,
-            DateField
+            DateField,
+            ValidationError
+        },
+        data() {
+            return {
+                page: 'info'
+            }
         },
         computed: {
             ...mapGetters('panels', {

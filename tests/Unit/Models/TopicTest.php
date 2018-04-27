@@ -3,6 +3,7 @@
 namespace Tests\Unit\models;
 
 use App\Topic;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,6 +15,12 @@ use Tests\TestCase;
 class TopicTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->topic = factory(\App\Topic::class)->create();
+    }
 
     /**
      * @test
@@ -46,6 +53,50 @@ class TopicTest extends TestCase
         $topic->update(['curation_type_id' => 1]);
 
         $this->assertEquals(1, $topic->curation_type_id);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_curation_date()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['curation_date' => today()]);
+
+        $this->assertEquals(today(), $topic->curation_date);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_mondo_id()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['mondo_id' => 'MONDO:00012']);
+
+        $this->assertEquals('MONDO:00012', $topic->mondo_id);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_disease_entity_notes()
+    {
+        $topic = factory(\App\Topic::class)->create();
+        $topic->update(['disease_entity_notes' => 'test beans monkeys']);
+
+        $this->assertEquals('test beans monkeys', $topic->disease_entity_notes);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_rationale_id()
+    {
+        $rationale = factory(\App\Rationale::class)->create();
+        $this->topic->update(['rationale_id'=>$rationale->id]);
+
+        $this->assertEquals($rationale->id, $this->topic->rationale_id);
     }
 
     /**
@@ -114,33 +165,14 @@ class TopicTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_curation_date()
+    public function topic_belongs_to_a_rationale()
     {
+        $rationale = factory(\App\Rationale::class)->create();
         $topic = factory(\App\Topic::class)->create();
-        $topic->update(['curation_date' => today()]);
 
-        $this->assertEquals(today(), $topic->curation_date);
-    }
+        $topic->rationale()->associate($rationale);
 
-    /**
-     * @test
-     */
-    public function has_fillable_mondo_id()
-    {
-        $topic = factory(\App\Topic::class)->create();
-        $topic->update(['mondo_id' => 'MONDO:00012']);
-
-        $this->assertEquals('MONDO:00012', $topic->mondo_id);
-    }
-
-    /**
-     * @test
-     */
-    public function has_fillable_disease_entity_notes()
-    {
-        $topic = factory(\App\Topic::class)->create();
-        $topic->update(['disease_entity_notes' => 'test beans monkeys']);
-
-        $this->assertEquals('test beans monkeys', $topic->disease_entity_notes);
+        $this->assertInstanceOf(BelongsTo::class, $topic->rationale());
+        $this->assertEquals($rationale->id, $topic->rationale->id);
     }
 }

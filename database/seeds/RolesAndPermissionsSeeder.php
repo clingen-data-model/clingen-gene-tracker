@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('topic-statuses');
         $this->createPermissionGroup('working-groups');
         $this->createPermissionGroup('curation-types');
+        $this->createPermissionGroup('rationales');
         $this->createPermissionGroup('pages');
 
         /**
@@ -34,6 +35,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'topic-statuses');
         $this->givePermissionsToRole($role, 'working-groups');
         $this->givePermissionsToRole($role, 'curation-types');
+        $this->givePermissionsToRole($role, 'rationales');
         $this->givePermissionsToRole($role, 'pages');
 
         /**
@@ -44,6 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'expert-panels', ['list', 'create','update', 'deactivate', 'delete']);
         $this->givePermissionsToRole($role, 'topic-statuses');
         $this->givePermissionsToRole($role, 'working-groups');
+        $this->givePermissionsToRole($role, 'rationales', ['list','update']);
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
 
         Role::firstOrcreate(['name' => 'coordinator']);

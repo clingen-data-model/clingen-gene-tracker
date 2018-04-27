@@ -10,7 +10,10 @@ class TopicUpdateRequest extends TopicCreateRequest
     public function rules()
     {
         $rules = parent::rules();
-        $rules['curation_type_id'] = 'required_if:addingCurationType,1';
+        $rules['page'] = 'required';
+        $rules['curation_type_id'] = 'required_if:page,curation-types';
+        $rules['rationale_id'] = 'required_if:page,phenotypes';
+        $rules['rationale_other'] = 'required_if:rationale_id,100';
 
         return $rules;
     }
@@ -19,9 +22,22 @@ class TopicUpdateRequest extends TopicCreateRequest
     {
         $messages = [
             'curation_type_id.required_if' => 'A curation type is required to continue',
-            'curation_type_id.exists' => 'The curation type you specified does not exist'
+            'rationale_id.required_if' => 'You must select a rationale to continue',
+
         ];
 
         return array_merge(parent::messages(), $messages);
+    }
+
+    protected function getValidatorInstance()
+    {
+        $validator = parent::getValidatorInstance();
+
+        // Commented out for now.  keeping for reference when making validation more sophisticated
+        // $validator->sometimes('rationale_id', 'required_if', function ($input) {
+        //     return $input->page == 'phenotypes';
+        // });
+
+        return $validator;
     }
 }

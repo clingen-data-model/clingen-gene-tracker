@@ -31,26 +31,43 @@
                 
                 <div class="alert alert-info" v-show="message">{{message}}</div>
 
-                <div v-show="showRationale">
+                <div>
                     <div class="form-group">
                         <label for="rationale_id">What is your rationale for this curation?</label>
-                        <select id="rationale_id" v-model="updatedTopic.rationale_id" class="form-control"></select>
+                        <b-form-select 
+                            id="expert-panel-select" 
+                            v-model="updatedTopic.rationale_id" 
+                            :options="rationaleOptions"
+                        >
+                        </b-form-select>
+                        <validation-error :messages="errors.rationale_id"></validation-error>
                     </div>
-                    <div class="form-group" v-show="showPmids">
+                    <transition name="fade">
+                        <div class="form-group" v-show="updatedTopic.rationale_id == 100">
+                            <textarea v-model="updatedTopic.rationale_other" placeholder="Other rationale details" class="form-control"></textarea>
+                            <validation-error :messages="errors.rationale_other"></validation-error>
+                        </div>
+                    </transition>
+                    <div class="form-group" v-show="updatedTopic.curation_type_id != 3">
                         <label for="pmids">Supporting PMIDS:</label>
-                        <input id="pmids" v-model="updatedTopic.pmids" class="form-control"></input>
+                        <small>comma separated list</small>
+                        <input id="pmids" v-model="updatedTopic.pmids" class="form-control" placeholder="18183754, 123451, 1231231"></input>
+                        <pre>{{ updatedTopic.pmids }}</pre>
+                        <validation-error :messages="errors.pmids"></validation-error>
                     </div>
-                    <div class="form-group" v-show="!showPmids">
+                    <div class="form-group" v-show="updatedTopic.curation_type_id == 3">
                         <label for="isolated_phenotype">Enter broader OMIM phenotype (MIM phenotype):</label>
                         <input id="isolated_phenotype" v-model="updatedTopic.isolated_phenotype" class="form-control"></input>
+                        <validation-error :messages="errors.isolated_phentotype"></validation-error>
                     </div>
                     <div class="form-group">
                         <label for="rationale_notes">Other comments:</label>
                         <textarea id="rationale_notes" v-model="updatedTopic.rationale_notes" class="form-control"></textarea>
+                        <validation-error :messages="errors.rationale_notes"></validation-error>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-4" v-show="showTable">
                 <criteria-table></criteria-table>
             </div>
         </div>
@@ -58,16 +75,19 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
     import OmimRepo from './../../../repositories/OmimRepository';
     import CriteriaTable from './../CriteriaTable';
     import TopicNotifications from './ExistingTopicNotification'
     import topicFormMixin from '../../../mixins/topic_form_mixin'
-    import  phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
+    import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
+    import ValidationError from '../../ValidationError'
 
     export default {
         components: {
              CriteriaTable,
-             TopicNotifications
+             TopicNotifications,
+             ValidationError
         },
         props: ['disabled'],
         mixins: [
@@ -76,8 +96,7 @@
         ],
         data: function () {
             return {
-                showRationale: true,
-                showPmids: true,
+                page: 'phenotypes',
                 phenotypes: [],
                 updatedTopic: {},
                 fields: {
@@ -118,6 +137,26 @@
             }
         },
         computed: {
+            ...mapGetters('rationales', {
+                rationales: 'Items',
+            }),
+            rationaleOptions: function () {
+                let options = this.rationales
+                                .filter(item => {
+                                    if (this.updatedTopic.curation_type_id != 4 && item.id == 4) {
+                                        return false;
+                                    }
+                                    return true;
+                                })
+                                .map((item) => {
+                                    return {text: item.name, value: item.id};
+                                })
+                options.unshift({'value': null, 'text': 'Select...'});
+                return options
+            },
+            showPmids: function () {
+                return 
+            },
             loading: function () {
                 return this.$store.getters.loading;
             },

@@ -12,10 +12,9 @@ use Illuminate\Queue\SerializesModels;
 
 class SyncPhenotypes implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $topic;
     protected $mimNumbers;
-
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.

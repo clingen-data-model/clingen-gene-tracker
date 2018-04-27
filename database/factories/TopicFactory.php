@@ -1,11 +1,16 @@
 <?php
 
+use App\ExpertPanel;
 use Faker\Generator as Faker;
 
-$factory->define(App\Topic::class, function (Faker $faker) {
+$expertPanels = ExpertPanel::all();
+
+$factory->define(App\Topic::class, function (Faker $faker) use ($expertPanels) {
     return [
         'gene_symbol' => strtoupper($faker->randomLetter.$faker->randomLetter.$faker->randomLetter.$faker->randomLetter.'-'.$faker->randomDigit),
-        'expert_panel_id' => null,
+        'expert_panel_id' => ($expertPanels->count() > 0)
+                                ? $expertPanels->random()->id
+                                : factory(\App\ExpertPanel::class)->create()->id,
         'curator_id' => null,
         'notes' => null
     ];

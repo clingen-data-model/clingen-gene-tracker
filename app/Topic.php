@@ -22,11 +22,18 @@ class Topic extends Model
         'curation_date',
         'disease_entity_notes',
         'topic_status_id',
-        'curation_type_id'
+        'curation_type_id',
+        'rationale_id',
+        'rational_other',
+        'pmids',
     ];
 
     protected $dates = [
         'curation_date'
+    ];
+
+    protected $casts = [
+        'pmids' => 'array'
     ];
 
     public static function boot()
@@ -57,6 +64,11 @@ class Topic extends Model
     public function curationType()
     {
         return $this->belongsTo(CurationType::class);
+    }
+
+    public function rationale()
+    {
+        return $this->belongsTo(Rationale::class);
     }
 
     public function scopeGene($query, $geneSymbol)

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CurationTypesTableSeeder::class);
         $this->call(WorkingGroupsTableSeeder::class);
         $this->call(ExpertPanelsTableSeeder::class);
+        $this->call(RationalesTableSeeder::class);
         $this->call(TopicsTableSeeder::class);
     }
 }

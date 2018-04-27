@@ -59,7 +59,9 @@ class TopicController extends Controller
         $topicData = $request->dateParsed('curation_date');
 
         $topic = Topic::create($topicData);
-        \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        if ($request->phenotypes) {
+            \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        }
         $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
 
         return new TopicResource($topic);
@@ -90,7 +92,12 @@ class TopicController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $topic->update($request->dateParsed('curation_date'));
-        \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        if ($request->phenotypes) {
+            \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        }
+        if ($request->isolated_phenotype) {
+            \Bus::dispatch(new SyncPhenotypes($topic, [$request->isolated_phenotype]));
+        }
         $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
 
         return new TopicResource($topic);

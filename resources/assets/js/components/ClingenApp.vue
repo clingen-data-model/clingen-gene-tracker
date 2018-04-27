@@ -14,12 +14,16 @@
             }),
             ...mapActions('topicStatuses', {
                 getAllTopicStatuses: 'getAllItems'
+            }),
+            ...mapActions('rationales', {
+                getAllRationales: 'getAllItems'
             })
         },
         mounted: function () {
             if (this.$store.state.topics.items.length == 0) {
                 this.getAllTopics();
                 this.getAllTopicStatuses();
+                this.getAllRationales();
             }
         }
     }

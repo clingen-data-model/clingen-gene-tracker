@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TopicCreateRequest extends FormRequest
+class RationaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,6 +14,7 @@ class TopicCreateRequest extends FormRequest
      */
     public function authorize()
     {
+        // only allow updates if the user is logged in
         return \Auth::check();
     }
 
@@ -24,16 +26,31 @@ class TopicCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'gene_symbol'=>'required',
-            'expert_panel_id' => 'required',
-            'curation_date' => 'nullable|date',
+            // 'name' => 'required|min:5|max:255'
         ];
     }
 
+    /**
+     * Get the validation attributes that apply to the request.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
-            'rationale_other.required_if' => 'Please provide details about your rational'
+            //
         ];
     }
 }

@@ -18,7 +18,7 @@
                         :options="options"
                         stacked
                         name="radioBtnOutline" />
-                    <div class="text-danger" v-for="msg in errors.curation_type_id">{{msg}}</div>
+                    <validation-error :messages="errors.curation_type_id"></validation-error>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -31,6 +31,7 @@
     import topicFormMixin from '../../../mixins/topic_form_mixin'
     import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
     import CriteriaTable from './../CriteriaTable';
+    import ValidationError from '../../ValidationError';
 
     export default {
         mixins: [
@@ -39,9 +40,11 @@
         ],
         components: {
             CriteriaTable,
+            ValidationError
         },
         data() {
             return {
+                page: 'curation-types',
                 curationTypes: [],
                 fields: {
                     'phenotype': {
