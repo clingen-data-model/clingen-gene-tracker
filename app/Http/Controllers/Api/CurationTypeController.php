@@ -12,7 +12,7 @@ class CurationTypeController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $types = CurationType::all();
 

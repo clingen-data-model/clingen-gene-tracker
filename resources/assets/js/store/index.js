@@ -6,6 +6,7 @@ import panels from './modules/panels'
 import users from './modules/users'
 import topicStatuses from './modules/topic_statuses'
 import rationales from './modules/rationales'
+import workingGroups from './modules/working_groups'
 
 Vue.use(Vuex)
 
@@ -43,7 +44,8 @@ export default new Vuex.Store({
     topics: topics,
     topicStatuses: topicStatuses,
     users: users,
-    rationales: rationales
+    rationales: rationales,
+    workingGroups: workingGroups,
   },
   actions: actions,
   strict: debug,

@@ -29,7 +29,6 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-                console.log(item)
         item.phenotypes = transformPhenotypes(item.phenotypes);
         Vue.set(state.items, item.id-1, item)
     },

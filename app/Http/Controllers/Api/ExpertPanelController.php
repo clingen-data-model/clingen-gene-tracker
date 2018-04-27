@@ -13,9 +13,10 @@ class ExpertPanelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $panels = ExpertPanel::all();
+
         return $panels;
     }
 
@@ -27,7 +28,6 @@ class ExpertPanelController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -38,7 +38,6 @@ class ExpertPanelController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -50,7 +49,6 @@ class ExpertPanelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -61,6 +59,5 @@ class ExpertPanelController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

@@ -20,4 +20,9 @@ class ExpertPanel extends Model
     {
         return $this->belongsTo(WorkingGroup::class);
     }
+
+    public function topics()
+    {
+        return $this->hasMany(Topic::class);
+    }
 }

@@ -14,6 +14,7 @@ class WorkingGroup extends Model
     use CrudTrait;
 
     protected $revisionCreationsEnabled = true;
+    protected $hidden = ['deleted_at'];
 
     protected $fillable = [
         'name',
