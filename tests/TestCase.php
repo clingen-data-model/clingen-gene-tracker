@@ -9,6 +9,12 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    public function callApiAs($user, $method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
+    {
+        return $this->actingAs($user, 'api')
+            ->call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null);
+    }
+
     protected function disableExceptionHandling()
     {
         $this->app->instance(ExceptionHandler::class, new class extends Handler {

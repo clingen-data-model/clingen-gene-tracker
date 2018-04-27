@@ -6,20 +6,24 @@
 </style>
 <template>
     <div class="component-container">
-        <h3>Phenotypes</h3>
         <div v-show="phenotypes.length == 0">
             <div class="alert alert-secondary clearfix">
                 The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
             </div>
         </div>
-        <ul v-show="usedPhenotypes.length > 0">
-            <li v-for="phenotype in usedPhenotypes">
-                {{ phenotype.phenotype }}
-            </li>
-        </ul>
+
+        <div v-if="usedPhenotypes.length > 0">
+            <strong>In this curation</strong>
+            <ul>
+                <li v-for="phenotype in usedPhenotypes">
+                    {{ phenotype.phenotype }}
+                </li>
+            </ul>
+        </div>
+        <strong v-else>No phenotypes in this curation</strong>
 
         <div v-show="unusedPhenotypes.length > 0" class="text-muted">
-            <h5>Not in this curation</h5>
+            <strong>Not in this curation</strong>
             <ul>
                 <li v-for="phenotype in unusedPhenotypes">
                     {{ phenotype.phenotype }}

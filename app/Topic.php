@@ -24,7 +24,8 @@ class Topic extends Model
         'topic_status_id',
         'curation_type_id',
         'rationale_id',
-        'rational_other',
+        'rationale_other',
+        'rationale_notes',
         'pmids',
     ];
 

@@ -25,6 +25,7 @@ class TopicControllerTest extends TestCase
         $this->user = factory(\App\User::class)->create();
         $this->panel = factory(\App\ExpertPanel::class)->create();
         $this->rationale = factory(\App\Rationale::class)->create();
+        $this->curationType = factory(\App\CurationType::class)->create();
     }
 
     /**
@@ -233,7 +234,7 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function does_not_include_phenotypes_when_not_requested()
+    public function index_does_not_include_phenotypes_when_not_requested()
     {
         $this->disableExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
@@ -249,7 +250,7 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function includes_phenotypes_when_requested()
+    public function index_includes_phenotypes_when_requested()
     {
         $this->disableExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
@@ -265,7 +266,7 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function includes_status_by_default()
+    public function index_includes_status_by_default()
     {
         $this->disableExceptionHandling();
         $status = factory(\App\TopicStatus::class)->create();
@@ -284,7 +285,6 @@ class TopicControllerTest extends TestCase
      */
     public function topic_show_includes_phenotypes_by_default()
     {
-        $this->disableExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->topics->each(function ($t) use ($phenotypes) {
             $t->phenotypes()->sync($phenotypes->pluck('id'));
@@ -293,6 +293,29 @@ class TopicControllerTest extends TestCase
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/1')
             ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+    }
+
+    /**
+     * @test
+     */
+    public function topic_show_includes_rationale_by_default()
+    {
+        $this->topics->first()->rationale()->associate($this->rationale);
+        $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics/'.$this->topics->first()->id)
+            ->assertSee('"rationale":');
+    }
+
+    /**
+     * @test
+     */
+    public function topic_show_includes_curationType_by_default()
+    {
+        $this->topics->first()->curationType()->associate($this->curationType);
+        // dd($this->topics->first()->curationType);
+        $this->actingAs($this->user, 'api')
+            ->call('GET', '/api/topics/'.$this->topics->first()->id)
+            ->assertSee('"curation_type":');
     }
 
     /**
@@ -348,6 +371,28 @@ class TopicControllerTest extends TestCase
             ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
             ->assertSee('"mim_number":"12345"')
             ->assertSee('"mim_number":"67890"');
+    }
+
+    /**
+     * @test
+     */
+    public function store_transforms_comma_separated_pmds_into_array()
+    {
+        $data = array_merge($this->topics->first()->toArray(), [
+            'page'=>'info',
+            'pmids'=> 'test,beans,monkeys'
+        ]);
+        $response = $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$this->topics->first()->id, $data)
+            ->assertSee('"pmids":["test","beans","monkeys"]');
+
+        $data = array_merge($this->topics->first()->toArray(), [
+            'page'=>'info',
+            'pmids'=> ["test","beans","monkeys"]
+        ]);
+        $response = $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$this->topics->first()->id, $data)
+            ->assertSee('"pmids":["test","beans","monkeys"]');
     }
 
     /**

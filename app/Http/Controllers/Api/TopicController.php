@@ -62,7 +62,7 @@ class TopicController extends Controller
         if ($request->phenotypes) {
             \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         }
-        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
+        $this->loadRelations($topic);
 
         return new TopicResource($topic);
     }
@@ -76,7 +76,7 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = Topic::findOrFail($id);
-        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
+        $this->loadRelations($topic);
 
         return new TopicResource($topic);
     }
@@ -91,14 +91,20 @@ class TopicController extends Controller
     public function update(TopicUpdateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
-        $topic->update($request->dateParsed('curation_date'));
+        $data = $request->dateParsed('curation_date');
+        if (isset($data['pmids']) && is_string($data['pmids'])) {
+            $data['pmids'] = array_map(function ($i) {
+                return trim($i);
+            }, explode(',', $data['pmids']));
+        }
+        $topic->update($data);
         if ($request->phenotypes) {
             \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         }
         if ($request->isolated_phenotype) {
             \Bus::dispatch(new SyncPhenotypes($topic, [$request->isolated_phenotype]));
         }
-        $topic->load('phenotypes', 'expertPanel', 'curator', 'topicStatus');
+        $this->loadRelations($topic);
 
         return new TopicResource($topic);
     }
@@ -111,5 +117,10 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
+    }
+
+    private function loadRelations(&$topic)
+    {
+        $topic->load(['phenotypes', 'expertPanel', 'curator', 'topicStatus', 'rationale', 'curationType']);
     }
 }

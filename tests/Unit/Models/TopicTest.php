@@ -102,6 +102,38 @@ class TopicTest extends TestCase
     /**
      * @test
      */
+    public function topic_has_fillable_rationale_other()
+    {
+        $rationale = factory(\App\Rationale::class)->create();
+        $content = 'This is a bunch of text for rationale other notes.';
+        $this->topic->update(['rationale_other'=>$content]);
+
+        $this->assertEquals($content, $this->topic->rationale_other);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_pmids()
+    {
+        $this->topic->update(['pmids'=>[12345,123455,1231523523]]);
+
+        $this->assertEquals([12345,123455,1231523523], $this->topic->pmids);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_fillable_rationale_notes()
+    {
+        $content = 'some notes about rationale.';
+        $this->topic->update(['rationale_notes' => $content]);
+        $this->assertEquals($content, $this->topic->rationale_notes);
+    }
+
+    /**
+     * @test
+     */
     public function topic_has_curator_relationship_to_users()
     {
         $user = factory(\App\User::class)->create();

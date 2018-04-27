@@ -1,11 +1,12 @@
 <style></style>
 <template>
-    <div>
-        <p>
+    <div class="topic-show-container">
+        <div>
             <router-link to="/topics">
                     &lt; Back to topics
             </router-link>
-        </p>
+        
+        </div>
         <b-card
             id="show-topic"
         >
@@ -21,15 +22,71 @@
                 </h3>
            </template>
             <div v-if="this.topics">
-                <p><strong>Gene Symbol</strong>: {{ topic.gene_symbol }}</p>
-                <p><strong>Expert Panel</strong>: {{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</p>
-                <p><strong>Curator</strong>: {{ (topic.curator) ? topic.curator.name : '--'}}</p>
-                <p><strong>MonDO ID</strong>: {{ (topic.mondo_id) ? topic.mondo_id : '--'}}</p>
-                <p><strong>Status</strong>: {{ (topic.topic_status) ? topic.topic_status.name : '--'}}</p>
-                <p><strong>Notes</strong>: {{ (topic.notes) ? topic.notes : '--' }}</p>
-                <p><strong>Notes on disease entity</strong>: {{ (topic.disease_entity_notes) ? topic.disease_entity_notes : '--' }}</p>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Gene Symbol:</strong> 
+                    <div class="col-md">{{ topic.gene_symbol }}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Expert Panel:</strong> 
+                    <div class="col-md">{{ (topic.expert_panel) ? topic.expert_panel.name : '--'}}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Curator:</strong> 
+                    <div class="col-md">{{ (topic.curator) ? topic.curator.name : '--'}}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Curation Type:</strong>
+                    <div class="col-md">
+                        {{topic.curation_type ? topic.curation_type.description : '--'}}
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Phenotypes:</strong>
+                    <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol" class="col-md"></phenotype-list>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Rationale:</strong>
+                    <div class="col-md">
+                        {{
+                            (topic.rationale) 
+                                ? topic.rationale.name + ((topic.rationale_other) ? ' - '+topic.rationale_other : '')
+                                : '--'
+                        }} 
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">PMIDS</strong>
+                    <div class="col-md" v-if="topic.pmids">
+                        <ul class="list-inline">
+                            <li v-for="(pmid, idx) in topic.pmids" class="list-inline-item">
+                                {{pmid}}<span v-if="topic.pmids && topic.pmids.length > idx+1">,</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Notes on Rationale</strong>
+                    <div class="col-md">
+                        {{topic.rationale_notes}}
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">MonDO ID:</strong> 
+                    <div class="col-md">{{ (topic.mondo_id) ? topic.mondo_id : '--'}}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Status:</strong>
+                    <div class="col-md">{{ (topic.topic_status) ? topic.topic_status.name : '--'}}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Notes:</strong> 
+                    <div class="col-md">{{ (topic.notes) ? topic.notes : '--' }}</div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Disease entity notes:</strong> 
+                    <div class="col-md">{{ (topic.disease_entity_notes) ? topic.disease_entity_notes : '--' }}</div>
+                </div>
             </div>
-            <phenotype-list :topic="topic" :gene-symbol="topic.gene_symbol"></phenotype-list>
         </b-card>
     </div>
 </template>
