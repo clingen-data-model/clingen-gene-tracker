@@ -22,10 +22,9 @@ class ExpertPanelControllerTest extends TestCase
     public function lists_all_expert_panels()
     {
         $response = $this->actingAs($this->user, 'api')
-                        ->call('GET', '/api/expert-panels');
+                        ->call('GET', '/api/expert-panels')
+                        ->assertStatus(200);
 
-        $response
-            ->assertStatus(200)
-            ->assertExactJson($this->panels->toArray());
+        $this->assertEquals($this->panels->toArray(), $response->original->toArray());
     }
 }
