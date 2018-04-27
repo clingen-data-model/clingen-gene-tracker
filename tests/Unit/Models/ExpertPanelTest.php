@@ -56,6 +56,6 @@ class ExpertPanelTest extends TestCase
     {
         $this->panel->topics()->save(factory(\App\Topic::class)->create());
 
-        $this->assertInstance(HasMany::class, $this->panel->topics());
+        $this->assertInstanceOf(HasMany::class, $this->panel->topics());
     }
 }
