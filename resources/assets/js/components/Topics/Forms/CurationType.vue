@@ -70,7 +70,7 @@
         },
         computed: {
             options: function () {
-                if (this.phenotypes.length == 0 && this.updatedTopic.curation_type_id === null) {
+                if (this.phenotypesLoaded && this.phenotypes.length == 0 && this.updatedTopic.curation_type_id === null) {
                     this.updatedTopic.curation_type_id = 2;
                     return [];
                 }

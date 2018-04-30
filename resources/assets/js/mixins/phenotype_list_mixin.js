@@ -4,6 +4,7 @@ export default {
     data() {
         return {
             phenotypes: [],
+            phenotypesLoaded: false,
         }
     },
     computed: {
@@ -15,7 +16,10 @@ export default {
         fetchPhenotypes: function (geneSymbol) {
             if (geneSymbol) {
                 return OmimRepo.gene(geneSymbol)
-                    .then( response => this.phenotypes = response.data.phenotypes )
+                    .then( response => {
+                        this.phenotypes = response.data.phenotypes
+                        this.phenotypesLoaded = true
+                    })
                     .catch( error => alert(error) )
             }
             return new Promise((resolve, reject) => { resolve() })
