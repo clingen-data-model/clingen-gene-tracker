@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Rationale;
+use Illuminate\Http\Request;
 
 class RationaleController extends ApiController
 {
@@ -11,7 +12,7 @@ class RationaleController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         return Rationale::all();
     }

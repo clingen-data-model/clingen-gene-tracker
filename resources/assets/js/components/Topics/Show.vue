@@ -119,7 +119,6 @@
             },
             topic: function(){
                 if (this.topics.length == 0) {
-                    console.log("no topics");
                     return {}
                 }
 

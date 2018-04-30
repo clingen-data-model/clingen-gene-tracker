@@ -6,10 +6,28 @@ import TopicEdit from './components/Topics/Edit'
 import TopicShow from './components/Topics/Show'
 import TopicList from './components/Topics/List'
 import CriteriaOverview from './components/CriteriaOverview'
+import WorkingGroups from './components/WorkingGroups/Index'
+import GroupList from './components/WorkingGroups/List'
+import GroupShow from './components/WorkingGroups/Show'
 
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path: '/working-groups',
+        component: WorkingGroups,
+        children: [
+            {
+                path: '',
+                component: GroupList
+            },
+            {
+                path: ':id',
+                component: GroupShow,
+                props: true
+            }
+        ]
+    },
     { 
         path: '/topics',
         alias: '' ,

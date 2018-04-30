@@ -12,9 +12,26 @@ class WorkingGroupsTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0; $i < 2; $i++) {
+        $names = [
+            'milton',
+            'tj',
+            'courtney',
+            'jenny',
+            'maria',
+            'jonathan',
+            'barry',
+            'morticia',
+            'gomez',
+            'wednesday',
+            'bob',
+            'louise',
+            'gene',
+            'linda',
+            'tina'
+        ];
+        foreach ($names as $name) {
             WorkingGroup::create([
-                'name' => 'Working Group '.$i
+                'name' => ucfirst($name)."'s Working Group"
             ]);
         }
     }

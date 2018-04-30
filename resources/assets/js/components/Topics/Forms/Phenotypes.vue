@@ -52,7 +52,6 @@
                         <label for="pmids">Supporting PMIDS:</label>
                         <small>comma separated list</small>
                         <input id="pmids" v-model="updatedTopic.pmids" class="form-control" placeholder="18183754, 123451, 1231231"></input>
-                        <pre>{{ updatedTopic.pmids }}</pre>
                         <validation-error :messages="errors.pmids"></validation-error>
                     </div>
                     <div class="form-group" v-show="updatedTopic.curation_type_id == 3">

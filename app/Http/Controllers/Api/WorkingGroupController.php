@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-class WorkingGroupController extends Controller
+use App\WorkingGroup;
+
+class WorkingGroupController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    protected $modelClass = WorkingGroup::class;
+
+    public function show($id)
     {
+        $group = parent::show($id);
+        $group->load('expertPanels', 'expertPanels.topics');
+
+        return $group;
     }
 }

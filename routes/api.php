@@ -22,7 +22,7 @@ Route::group([
     Route::resource('/topics', 'TopicController');
     Route::resource('/users', 'UserController')->only(['index']);
     Route::resource('/topic-statuses', 'TopicStatusController')->only(['index']);
-    Route::resource('/working-groups', 'WorkingGroupsController')->only(['index']);
+    Route::resource('/working-groups', 'WorkingGroupController')->only(['index', 'show']);
     Route::resource('/curation-types', 'CurationTypeController')->only(['index']);
     Route::resource('/rationales', 'RationaleController')->only(['index']);
 
