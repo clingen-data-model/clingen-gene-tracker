@@ -16,6 +16,30 @@ class TopicTest extends DuskTestCase
         parent::setUp();
         $this->user = factory(\App\User::class)->create();
         $this->panels = factory(\App\ExpertPanel::class, 3)->create();
+        $this->statuses = factory(\App\TopicStatus::class, 4)->create();
+    }
+
+    /**
+     * @test
+     */
+    public function index_lists_all_topics()
+    {
+        $topics = factory(\App\Topic::class, 22)->create();
+
+        $this->browse(function (Browser $browser) use ($topics) {
+            $sequence = $browser->loginAs($this->user)
+                ->visit('/')
+                ->waitFor('.topics-table')
+                ->pause(1000)
+                ->waitFor('.topics-table-pagination')
+                ;
+            foreach ($topics as $idx => $topic) {
+                $sequence->assertSee($topic->gene_symbol);
+                if (($idx+1)%10 == 0) {
+                    $sequence->click(".topics-table-pagination .page-item:last-child .page-link");
+                }
+            }
+        });
     }
 
     /**
@@ -48,9 +72,11 @@ class TopicTest extends DuskTestCase
                     ->click('#new-topic-btn')
                     ->waitFor('#new-topic-form')
                     ->type('#gene-symbol-input', 'TEST-1')
+                    ->waitFor('#expert-panel-select option[value="1"]')
                     ->select('#expert-panel-select', 1)
-                    ->click('#new-topic-form-save')
+                    ->click('#create-and-continue-btn')
                     ->waitFor('#topics-container')
+                    ->pause(1000)
                     ->assertSee('TEST-1')
                     ->assertSee($this->panels->first()->name);
         });

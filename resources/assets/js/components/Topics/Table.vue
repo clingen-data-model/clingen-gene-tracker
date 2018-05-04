@@ -7,7 +7,7 @@
                 <input v-model="filter" placeholder="filter results" class="form-control" id="topics-filter-input" />
             </div>
             <div class="col-md-6">
-                <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-right" />    
+                <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="topics-table-pagination my-0 float-right" />    
             </div>
         </div>
         <b-table striped hover 

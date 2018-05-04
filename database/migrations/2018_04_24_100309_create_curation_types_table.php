@@ -33,11 +33,11 @@ class CreateCurationTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('curation_types');
-
         Schema::table('topics', function (Blueprint $table) {
             $table->dropForeign(['curation_type_id']);
             $table->dropColumn('curation_type_id');
         });
+
+        Schema::dropIfExists('curation_types');
     }
 }
