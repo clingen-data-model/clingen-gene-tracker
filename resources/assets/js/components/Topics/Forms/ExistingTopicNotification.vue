@@ -8,20 +8,32 @@
                     <button class="btn btn-sm btn-warning float-right" v-b-toggle.matching-topics-details>Details</button>
                 </div>
                 <b-collapse id="matching-topics-details" class="mt-2">
-                    <div class="card mb-3 ml-3" v-for="match in matchedGenes">
-                        <div class="card-body">
-                            <strong>{{match.gene_symbol}} for {{match.expert_panel.name}}</strong>
-                            <div>
-                                Phenotypes: 
-                                <ul class="list-inline">
-                                    <li class="list-inline-item" v-for="phenotype in match.phenotypes">
-                                        <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}},</strong>
-                                        <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}},</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    <table class="table table-striped table-bordered table-small bg-white">
+                        <thead>
+                            <tr>
+                                <th>Gene</th>
+                                <th>Expert Panel</th>
+                                <th>Status</th>
+                                <th>Phenotypes</th>
+                            </tr>
+                        </thead>
+                        <tbody v-for="match in matchedGenes">
+                            <tr>
+                                <td>{{match.gene_symbol}}</td>
+                                <td>{{match.expert_panel.name}}</td>
+                                <td>{{(match.topic_status) ? match.topic_status.name : 'no status'}}</td>
+                                <td>
+                                    <ul class="list-inline mb-0" v-if="match.phenotypes.length > 0">
+                                        <li class="list-inline-item" v-for="(phenotype, idx) in match.phenotypes">
+                                            <span v-if="idx != 0">,</span>
+                                            <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}}*</strong>
+                                            <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}}</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </b-collapse>
             </div>
         </transition>

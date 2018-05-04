@@ -29,5 +29,13 @@
     color: white;
 }
 
+.table.table-small th,
+.table.table-small td
+{
+    font-size: .8rem;
+    padding: .25rem;
+    padding-left: .5rem;
+}
+
 // ENV color coding
 @import './env.scss';
