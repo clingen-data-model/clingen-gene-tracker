@@ -23,7 +23,7 @@ add('writable_dirs', []);
 // Hosts
 host('web3demo.schsr.unc.edu')
     ->stage('dep')
-    ->set('deploy_path', '/mnt/web/project/{{application}}-dep');
+    ->set('deploy_path', '/mnt/web/project/deployer-test-project');
 
 // Tasks
 
@@ -36,7 +36,7 @@ after('deploy:failed', 'deploy:unlock');
 
 // Migrate database before symlink new release.
 
-before('deploy:symlink', 'artisan:migrate');
+// before('deploy:symlink', 'artisan:migrate');
 
 task('pwd', function () {
     $result = run('cd /mnt/web/project/{{application}}-test && pwd');
