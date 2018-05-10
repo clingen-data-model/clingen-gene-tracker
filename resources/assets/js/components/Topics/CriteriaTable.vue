@@ -28,7 +28,7 @@
                 </tr>
             </tbody>
         </table>    
-        <small><a href="/lumping-and-splitting-criteria-overview" target="criteria">Lumping and splitting criteria overview</a></small>
+        <small><a href="https://www.clinicalgenome.org/site/assets/files/9703/lumping_and_splitting_guidelines_gene_curation_final.pdf" target="criteria">Lumping and splitting criteria overview</a></small>
     </div>
 </template>
 <script>
