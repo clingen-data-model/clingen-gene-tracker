@@ -35,9 +35,9 @@
                             return 0;
                         }
                         if (moment(a.pivot.created_at).isBefore(b)) {
-                            return 1;
+                            return -1;
                         }
-                        return -1;
+                        return 1;
                     })
                 }
                 return [];

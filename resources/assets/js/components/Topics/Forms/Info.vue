@@ -39,15 +39,12 @@
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
         </b-form-group>
 
-        <b-form-group horizontal label="Curation Date" label-for="curation_date">
-            <date-field v-model="updatedTopic.curation_date" :readonly="true"></date-field>
-        </b-form-group>
-
         <b-form-group horizontal label="Status" label-for="topic_status_id">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
                 <option :value="null">Select...</option>
                 <option v-for="status in topicStatuses" :value="status.id">{{status.name}}</option>
             </b-form-select>
+            <topic-status-history :topic="updatedTopic"></topic-status-history>
         </b-form-group>
     </div>
 </template>
@@ -58,6 +55,7 @@
     import DateField from '../../DateField'
     import topicFormMixin from '../../../mixins/topic_form_mixin'
     import ValidationError from '../../ValidationError'
+    import TopicStatusHistory from '../StatusHistory'
 
     export default {
         name: 'test',
@@ -67,7 +65,8 @@
         components: {
             TopicNotifications,
             DateField,
-            ValidationError
+            ValidationError,
+            TopicStatusHistory
         },
         data() {
             return {
