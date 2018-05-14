@@ -3,8 +3,6 @@
 namespace Tests\Unit\Http\Controllers\Api;
 
 use App\Http\Resources\TopicResource;
-use App\Topic;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -120,34 +118,6 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function curation_date_must_be_a_date_if_included()
-    {
-        $data = [
-            'gene_symbol' => 'ABCD',
-            'expert_panel_id' => $this->panel->id,
-        ];
-
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/topics/', $data)
-            ->assertStatus(201);
-
-        $data['curation_date'] = 'beans';
-
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/topics/', $data)
-            ->assertStatus(422)
-            ->assertJson([
-                'errors'=>[
-                    'curation_date' => [
-                        'The curation date is not a valid date.'
-                    ]
-                ]
-            ]);
-    }
-
-    /**
-     * @test
-     */
     public function requires_existing_curation_type_id_on_update()
     {
         $topic = factory(\App\Topic::class)->create();
@@ -169,66 +139,11 @@ class TopicControllerTest extends TestCase
                 ]
             ]);
 
-        // $data['curation_type_id'] = 100000;
-
-        // $response = $this->actingAs($this->user, 'api')
-        //     ->json('PUT', '/api/topics/'.$topic->id, $data)
-        //     ->assertStatus(422)
-        //     ->assertJson([
-        //         'errors'=>[
-        //             'curation_type_id' => [
-        //                 'The curation type you specified does not exist'
-        //             ]
-        //         ]
-        //     ]);
-
         $data['curation_type_id'] = $curationType->id;
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/topics/'.$topic->id, $data)
             ->assertStatus(200);
-    }
-
-    /**
-     * @test
-     */
-    public function parses_curation_date_for_storage_when_creating()
-    {
-        $data = [
-            'gene_symbol' => 'ABCD',
-            'expert_panel_id' => $this->panel->id,
-            'curation_date' => '09/16/1977'
-        ];
-
-        $response = $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/topics/', $data)
-            ->assertStatus(201);
-
-        $topic = Topic::gene('ABCD')->first();
-
-        $this->assertEquals(Carbon::parse('1977-09-16'), $topic->curation_date);
-    }
-
-    /**
-     * @test
-     */
-    public function parses_curation_date_for_storage_when_updating()
-    {
-        $topic = factory(\App\Topic::class)->create();
-        $data = [
-            'gene_symbol' => 'ABCD',
-            'expert_panel_id' => $this->panel->id,
-            'curation_date' => '09/16/1977',
-            'page' => 'info'
-        ];
-
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/topics/'.$topic->id, $data)
-            ->assertStatus(200);
-
-        $topic = Topic::gene('ABCD')->first();
-
-        $this->assertEquals(Carbon::parse('1977-09-16'), $topic->curation_date);
     }
 
     /**
@@ -271,8 +186,7 @@ class TopicControllerTest extends TestCase
         $this->disableExceptionHandling();
         $status = factory(\App\TopicStatus::class)->create();
         $this->topics->each(function ($t) use ($status) {
-            $t->topicStatus()->associate($status);
-            $t->save();
+            $t->topicStatuses()->attach($status->id);
         });
 
         $response = $this->actingAs($this->user, 'api')
@@ -323,7 +237,6 @@ class TopicControllerTest extends TestCase
      */
     public function store_saves_phenotypes_for_new_topic()
     {
-        $this->disableExceptionHandling();
         $phenotype = factory(\App\Phenotype::class)->create();
         $curator = factory(\App\User::class)->create();
 
@@ -343,6 +256,55 @@ class TopicControllerTest extends TestCase
             ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
             ->assertSee('"mim_number":"12345"')
             ->assertSee('"mim_number":"67890"');
+    }
+
+    /**
+     * @test
+     */
+    public function store_saves_new_topic_status_when_set()
+    {
+        $statuses = factory(\App\TopicStatus::class, 3)->create();
+        $curator = factory(\App\User::class)->create();
+
+        $data = [
+            'gene_symbol' => 'MLTN1',
+            'expert_panel_id' => $this->panel->id,
+            'curator_id' => $curator->id,
+            'topic_status_id' => $statuses->first()->id
+        ];
+
+        $this->actingAs($this->user, 'api')
+            ->call('POST', '/api/topics', $data)
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->first()->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function update_saves_new_topic_status_when_set()
+    {
+        $statuses = factory(\App\TopicStatus::class, 3)->create();
+        $curator = factory(\App\User::class)->create();
+
+        $topic = $this->topics->first();
+        $topic->topicStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
+
+        $data = [
+            'page' => 'info',
+            'gene_symbol' => $topic->gene_symbol,
+            'expert_panel_id' => $this->panel->id,
+            'curator_id' => $curator->id,
+            'topic_status_id' => $statuses->get(1)->id,
+        ];
+
+        $this->disableExceptionHandling();
+        $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->get(1)->id, 'created_at'=>now()]);
     }
 
     /**

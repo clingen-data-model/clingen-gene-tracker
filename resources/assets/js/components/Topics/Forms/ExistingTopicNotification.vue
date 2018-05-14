@@ -21,7 +21,7 @@
                             <tr>
                                 <td>{{match.gene_symbol}}</td>
                                 <td>{{match.expert_panel.name}}</td>
-                                <td>{{(match.topic_status) ? match.topic_status.name : 'no status'}}</td>
+                                <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                                 <td>
                                     <ul class="list-inline mb-0" v-if="match.phenotypes.length > 0">
                                         <li class="list-inline-item" v-for="(phenotype, idx) in match.phenotypes">

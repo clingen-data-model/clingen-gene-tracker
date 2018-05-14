@@ -58,17 +58,6 @@ class TopicTest extends TestCase
     /**
      * @test
      */
-    public function topic_has_fillable_curation_date()
-    {
-        $topic = factory(\App\Topic::class)->create();
-        $topic->update(['curation_date' => today()]);
-
-        $this->assertEquals(today(), $topic->curation_date);
-    }
-
-    /**
-     * @test
-     */
     public function topic_has_fillable_mondo_id()
     {
         $topic = factory(\App\Topic::class)->create();
@@ -172,14 +161,33 @@ class TopicTest extends TestCase
     /**
      * @test
      */
-    public function topic_belongsTo_topic_status()
+    public function topic_belongsToMany_topic_status()
     {
-        $topicStatus = factory(\App\TopicStatus::class)->create();
+        $topicStatuses = factory(\App\TopicStatus::class, 2)->create();
         $topic = factory(\App\Topic::class)->create();
-        $topic->topicStatus()->associate($topicStatus);
-        $topic->save();
 
-        $this->assertEquals($topicStatus->id, $topic->topicStatus->id);
+        $this->assertInstanceOf(BelongsToMany::class, $topic->topicStatuses());
+
+        $topic->topicStatuses()->attach($topicStatuses->last()->id);
+
+        $this->assertEquals($topicStatuses->pluck('id'), $topic->topicStatuses->pluck('id'));
+        $this->assertNotNull($topic->topicStatuses->first()->pivot->created_at);
+        $this->assertNotNull($topic->topicStatuses->last()->pivot->updated_at);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_has_one_current_status()
+    {
+        $topicStatuses = factory(\App\TopicStatus::class, 2)->create();
+        $topic = factory(\App\Topic::class)->create();
+        $statusesAtTime = $topicStatuses->transform(function ($item, $idx) {
+            return ['id' => $item->id, 'pivotData' => ['created_at' => today()->addDays($idx)]];
+        });
+        $topic->topicStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));
+
+        $this->assertEquals($topicStatuses->last()['id'], $topic->currentStatus->id);
     }
 
     /**
@@ -206,5 +214,15 @@ class TopicTest extends TestCase
 
         $this->assertInstanceOf(BelongsTo::class, $topic->rationale());
         $this->assertEquals($rationale->id, $topic->rationale->id);
+    }
+
+    /**
+     * @test
+     */
+    public function topic_given_uploaded_status_when_created()
+    {
+        \Artisan::call('db:seed', ['--class'=>'TopicStatusesTableSeeder']);
+        $topic = factory(\App\Topic::class)->create();
+        $this->assertEquals($topic->currentStatus->id, 1);
     }
 }

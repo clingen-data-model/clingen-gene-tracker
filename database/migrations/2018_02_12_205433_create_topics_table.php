@@ -19,7 +19,6 @@ class CreateTopicsTable extends Migration
             $table->integer('expert_panel_id')->unsigned()->nullable();
             $table->integer('curator_id')->unsigned()->nullable();
             $table->string('mondo_id')->nullable();
-            $table->date('curation_date')->nullable();
             $table->text('notes')->nullable();
             $table->text('rationale_notes')->nullable();
             $table->json('pmids')->nullable();

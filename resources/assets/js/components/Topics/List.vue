@@ -45,7 +45,7 @@
                         label: 'Curator',
                         sortable: true,
                     },
-                    topic_status: {
+                    current_status: {
                         label: 'Status',
                         sortable: true,
                     },

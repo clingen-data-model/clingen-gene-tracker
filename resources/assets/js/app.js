@@ -11,10 +11,10 @@ import store from './store/index'
 import router from './routing.js'
 import DateField from './components/DateField'
 import CriteriaTable from './components/Topics/CriteriaTable'
+import filters from './filters'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
-
 
 window.axios.interceptors.request.use(function (config) {
     store.commit('addRequest');

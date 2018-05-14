@@ -1,4 +1,3 @@
-<style></style>
 <template>
     <div class="topic-show-container">
         <div>
@@ -74,9 +73,11 @@
                     <strong class="col-md-2">MonDO ID:</strong> 
                     <div class="col-md">{{ (topic.mondo_id) ? topic.mondo_id : '--'}}</div>
                 </div>
-                <div class="row mt-1">
-                    <strong class="col-md-2">Status:</strong>
-                    <div class="col-md">{{ (topic.topic_status) ? topic.topic_status.name : '--'}}</div>
+                <div class="row mt-3">
+                    <strong class="col-md-2">Status History:</strong>
+                    <div class="col-md-6">
+                        <topic-status-history :topic="topic"></topic-status-history>
+                    </div>
                 </div>
                 <div class="row mt-1">
                     <strong class="col-md-2">Notes:</strong> 
@@ -93,11 +94,13 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
+    import TopicStatusHistory from './StatusHistory'
 
     export default {
         props: ['id'],
         components: {
-            'phenotype-list': PhenotypeList
+            PhenotypeList,
+            TopicStatusHistory
         },
         computed: {
             ...mapGetters('topics', {
@@ -119,11 +122,11 @@
             },
             topic: function(){
                 if (this.topics.length == 0) {
-                    return {}
+                    return {
+                    }
                 }
-
-                return this.getTopic(this.id);
-            }
+                return this.getTopic(this.id)
+            },
 
         },
         methods: {

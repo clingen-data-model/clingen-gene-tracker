@@ -34,7 +34,7 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Topic::with('topicStatus');
+        $query = Topic::with('topicStatuses');
         foreach ($request->all() as $key => $value) {
             if ($key == 'with') {
                 $query->with($value);
@@ -56,11 +56,13 @@ class TopicController extends Controller
      */
     public function store(TopicCreateRequest $request)
     {
-        $topicData = $request->dateParsed('curation_date');
-
-        $topic = Topic::create($topicData);
+        $data = $request->except('phenotypes', 'topic_status_id');
+        $topic = Topic::create($data);
         if ($request->phenotypes) {
             \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
+        }
+        if ($request->topic_status_id) {
+            $topic->topicStatuses()->attach($request->topic_status_id);
         }
         $this->loadRelations($topic);
 
@@ -91,19 +93,25 @@ class TopicController extends Controller
     public function update(TopicUpdateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
-        $data = $request->dateParsed('curation_date');
+        $data = $request->except('topic_status_id');
         if (isset($data['pmids']) && is_string($data['pmids'])) {
             $data['pmids'] = array_map(function ($i) {
                 return trim($i);
             }, explode(',', $data['pmids']));
         }
         $topic->update($data);
+
         if ($request->phenotypes) {
             \Bus::dispatch(new SyncPhenotypes($topic, $request->phenotypes));
         }
         if ($request->isolated_phenotype) {
             \Bus::dispatch(new SyncPhenotypes($topic, [$request->isolated_phenotype]));
         }
+
+        if ($request->topic_status_id) {
+            $topic->topicStatuses()->attach($request->topic_status_id);
+        }
+
         $this->loadRelations($topic);
 
         return new TopicResource($topic);
@@ -121,6 +129,6 @@ class TopicController extends Controller
 
     private function loadRelations(&$topic)
     {
-        $topic->load(['phenotypes', 'expertPanel', 'curator', 'topicStatus', 'rationale', 'curationType']);
+        $topic->load(['phenotypes', 'expertPanel', 'curator', 'topicStatuses', 'rationale', 'curationType']);
     }
 }

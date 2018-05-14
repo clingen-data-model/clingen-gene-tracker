@@ -37,9 +37,19 @@ class Topic extends Model
         'pmids' => 'array'
     ];
 
+    protected $with = [
+        'currentStatus'
+    ];
+
     public static function boot()
     {
         parent::boot();
+
+        static::created(function ($topic) {
+            if (TopicStatus::count() > 0) {
+                $topic->topicStatuses()->attach(TopicStatus::find(1));
+            }
+        });
     }
 
     public function expertPanel()
@@ -57,9 +67,23 @@ class Topic extends Model
         return $this->belongsToMany(Phenotype::class);
     }
 
-    public function topicStatus()
+    public function topicStatuses()
     {
-        return $this->belongsTo(TopicStatus::class);
+        return $this->belongsToMany(TopicStatus::class)
+                ->withPivot('created_at', 'updated_at')
+                ->withTimestamps();
+    }
+
+    public function currentStatus()
+    {
+        return $this->topicStatuses()
+                    ->orderBy('topic_topic_status.created_at', 'desc')
+                    ->limit(1);
+    }
+
+    public function getCurrentStatusAttribute()
+    {
+        return $this->currentStatus()->first();
     }
 
     public function curationType()
