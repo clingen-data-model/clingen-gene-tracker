@@ -9,6 +9,7 @@ use App\Http\Resources\TopicResource;
 use App\Jobs\Topics\SyncPhenotypes;
 use App\Services\RequestDataCleaner;
 use App\Topic;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -109,7 +110,8 @@ class TopicController extends Controller
         }
 
         if ($request->topic_status_id) {
-            $topic->topicStatuses()->attach($request->topic_status_id);
+            $created_at = ($request->topic_status_timestamp) ? Carbon::parse($request->topic_status_timestamp) : now();
+            $topic->topicStatuses()->attach([$request->topic_status_id => ['created_at' => $created_at]]);
         }
 
         $this->loadRelations($topic);

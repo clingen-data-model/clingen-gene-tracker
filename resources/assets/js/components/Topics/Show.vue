@@ -74,9 +74,15 @@
                     <div class="col-md">{{ (topic.mondo_id) ? topic.mondo_id : '--'}}</div>
                 </div>
                 <div class="row mt-3">
-                    <strong class="col-md-2">Status History:</strong>
+                    <strong class="col-md-2">Currnt Status:</strong>
                     <div class="col-md-6">
-                        <topic-status-history :topic="topic"></topic-status-history>
+                        <div class="mb-2">
+                            {{ topic.current_status.name }} 
+                            <button class="btn btn-sm"><small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small></button>
+                        </div>
+                        <transition name="fade">
+                            <topic-status-history :topic="topic" v-show="showStatusHistory"></topic-status-history>
+                        </transition>
                     </div>
                 </div>
                 <div class="row mt-1">
@@ -102,11 +108,19 @@
             PhenotypeList,
             TopicStatusHistory
         },
+        data() {
+            return {
+                showStatusHistory: false,
+            }
+        },
         computed: {
             ...mapGetters('topics', {
                 topics: 'Items',
                 getTopic: 'getItemById'
             }),            
+            statusHistoryButtonText: function() {
+                return (this.showStatusHistory) ? 'Hide history' : 'Show history';
+            },
             title: function () {
                 let title = 'Topic: ';
                 if (this.topic.gene_symbol) {

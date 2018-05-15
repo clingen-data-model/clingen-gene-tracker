@@ -1,4 +1,14 @@
-<style></style>
+<style>
+    .small-calendar{
+        font-size: .8em;
+        width: 226px;
+    }
+    .small-calendar .cell {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+    }
+</style>
 <template>
     <div id="topic-info-fields">
         <b-form-group horizontal id="new-gene-symbol-group"
@@ -39,12 +49,25 @@
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedTopic.notes"></textarea>
         </b-form-group>
 
-        <b-form-group horizontal label="Status" label-for="topic_status_id">
-            <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
-                <option :value="null">Select...</option>
-                <option v-for="status in topicStatuses" :value="status.id">{{status.name}}</option>
-            </b-form-select>
-            <topic-status-history :topic="updatedTopic"></topic-status-history>
+        <b-form-group horizontal label="Status" label-for="topic_status_id" v-if="updatedTopic && updatedTopic.topic_statuses">
+            <div class="form-inline">
+
+                <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
+                    <option :value="null">Select...</option>
+                    <option v-for="status in topicStatuses" :value="status.id">{{status.name}}</option>
+                </b-form-select>
+                &nbsp;
+                <datepicker 
+                    v-model="updatedTopic.topic_status_timestamp"
+                    input-class="form-control"
+                    clear-button
+                    format='yyyy-MM-dd'
+                    calendar-class="small-calendar"
+                    placeholder="Select a date"
+                    :highlighted="highlighted"
+                    ></datepicker>
+            </div>
+            <topic-status-history :topic="updatedTopic" class="mt-1"></topic-status-history>
         </b-form-group>
     </div>
 </template>
@@ -56,24 +79,34 @@
     import topicFormMixin from '../../../mixins/topic_form_mixin'
     import ValidationError from '../../ValidationError'
     import TopicStatusHistory from '../StatusHistory'
+    import Datepicker from 'vuejs-datepicker'
+    import moment from 'moment'
 
     export default {
         name: 'test',
         mixins: [
-            topicFormMixin // handles syncing of prop value to updatedTopic
+            topicFormMixin, // handles syncing of prop value to updatedTopic
         ],
         components: {
             TopicNotifications,
             DateField,
             ValidationError,
-            TopicStatusHistory
+            TopicStatusHistory,
+            Datepicker
         },
         data() {
             return {
-                page: 'info'
+                page: 'info',
+                highlighted: {
+                    from: new moment().hour(0),
+                    to: new moment().hour(24)
+                }
             }
         },
         computed: {
+            today: function () {
+                return moment();
+            },
             ...mapGetters('panels', {
                 panels: 'Items',
             }),
@@ -91,6 +124,9 @@
             },
         },
         methods: {
+            handleDateSelected(evt) {
+                console.log(evt);
+            },
             ...mapActions('panels', {
                 getAllPanels: 'getAllItems'
             }),

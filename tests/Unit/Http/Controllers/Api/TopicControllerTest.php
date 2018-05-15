@@ -283,7 +283,34 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_saves_new_topic_status_when_set()
+    public function update_saves_new_topic_status_with_default_status_date()
+    {
+        $statuses = factory(\App\TopicStatus::class, 3)->create();
+        $curator = factory(\App\User::class)->create();
+
+        $topic = $this->topics->first();
+        $topic->topicStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
+
+        $data = [
+            'page' => 'info',
+            'gene_symbol' => $topic->gene_symbol,
+            'expert_panel_id' => $this->panel->id,
+            'curator_id' => $curator->id,
+            'topic_status_id' => $statuses->get(1)->id
+        ];
+
+        $this->disableExceptionHandling();
+        $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->get(1)->id, 'created_at'=>now()]);
+    }
+
+    /**
+     * @test
+     */
+    public function update_saves_new_topic_status_and_status_date_when_set()
     {
         $statuses = factory(\App\TopicStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
@@ -297,6 +324,7 @@ class TopicControllerTest extends TestCase
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
             'topic_status_id' => $statuses->get(1)->id,
+            'topic_status_timestamp' => now()->subDays(2)
         ];
 
         $this->disableExceptionHandling();
@@ -304,7 +332,7 @@ class TopicControllerTest extends TestCase
             ->call('PUT', '/api/topics/'.$topic->id, $data)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->get(1)->id, 'created_at'=>now()]);
+        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->get(1)->id, 'created_at'=>now()->subDays(2)]);
     }
 
     /**

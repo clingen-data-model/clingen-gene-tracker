@@ -17,13 +17,13 @@
         "laravel-mix": "^2.0",
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
-        "vue": "^2.5.7"
-    },
-    "dependencies": {
+        "vue": "^2.5.7",
         "bootstrap-datepicker": "^1.8.0",
         "bootstrap-vue": "^2.0.0-rc.1",
         "moment": "^2.22.0",
         "vue-router": "^3.0.1",
+        "vuejs-datepicker": "^1.2.0",
         "vuex": "^3.0.1"
-    }
+    },
+    "dependencies": {}
 }
