@@ -33,6 +33,17 @@ class ExpertPanelCrudController extends CrudController
 
         $this->crud->setFromDb();
         $this->crud->removeField('working_group_id', 'both');
+
+        $this->crud->addField([
+            'label' => 'Users',
+            'type' => 'select2_multiple',
+            'name' => 'users',
+            'entity' => 'users',
+            'attribute' => 'name',
+            'model' => User::class,
+            'pivot' => true
+        ], 'both');
+
         $this->crud->addField([
             'name' => 'working_group_id',
             'label' => 'Working Group',

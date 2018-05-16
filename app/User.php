@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->hasMany(Topic::class, 'curator_id');
     }
 
+    public function expertPanels()
+    {
+        return $this->belongsToMany(ExpertPanel::class)->withTimestamps();
+    }
+
     /**
      * Send the password reset notification.
      *

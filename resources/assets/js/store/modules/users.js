@@ -34,7 +34,7 @@ const mutations = {
 
 const actions = {
     getAllItems: function ( {commit} ) {
-        return window.axios.get(baseUrl+'?with=roles')
+        return window.axios.get(baseUrl+'?with=roles,expertPanels')
             .then(function (response) {
                 commit('setItems', response.data.data)
             })

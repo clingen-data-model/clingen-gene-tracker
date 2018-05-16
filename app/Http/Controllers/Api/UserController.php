@@ -17,7 +17,7 @@ class UserController extends Controller
         }
 
         if ($request->has('with')) {
-            $query->with($request->with);
+            $query->with(explode(',', $request->with));
         }
 
         return UserResource::collection($query->get());

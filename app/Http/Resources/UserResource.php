@@ -16,6 +16,8 @@ class UserResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['roles'] = RoleResource::collection($this->whenLoaded('roles'));
+        $data['expert_panels'] = ExpertPanelResource::collection($this->whenLoaded('expertPanels'));
+
         return $data;
     }
 }

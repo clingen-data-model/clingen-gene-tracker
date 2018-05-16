@@ -41,7 +41,7 @@
         <b-form-group horizontal id="expert-panel-select-group" label="Curator" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in curators" :value="curator.id">{{curator.name}}</option>
+                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}}</option>
             </b-form-select>
         </b-form-group>
     
@@ -116,6 +116,23 @@
             ...mapGetters('topicStatuses', {
                 topicStatuses: 'Items',
             }),
+            panelCurators: function () {
+                const curators = this.curators.filter(user => {
+                    return (
+                        user.expert_panels 
+                        && user.expert_panels.find(panel => panel.id == this.updatedTopic.expert_panel_id)
+                    )
+                });
+
+                if (curators && curators.length == 1) {
+                    this.updatedTopic.curator_id = curators[0].id
+                } else {
+                    this.updatedTopic.curator_id = null
+                }
+
+                return curators;
+
+            },
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },

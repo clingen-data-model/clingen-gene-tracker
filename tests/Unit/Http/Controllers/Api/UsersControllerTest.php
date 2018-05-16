@@ -77,4 +77,20 @@ class UsersControllerTest extends TestCase
             ->call('GET', 'api/users?with=role')
             ->assertSee('name: curator');
     }
+
+    /**
+     * @test
+     */
+    public function index_can_return_users_with_expert_panels()
+    {
+        $this->disableExceptionHandling();
+        $curators = factory(\App\User::class, 2)->create()
+                        ->each(function ($user) {
+                            $user->assignRole('curator');
+                        });
+
+        $this->actingAs($this->user, 'api')
+            ->call('GET', 'api/users?with=roles,expertPanels')
+            ->assertSee('"expert_panels":');
+    }
 }

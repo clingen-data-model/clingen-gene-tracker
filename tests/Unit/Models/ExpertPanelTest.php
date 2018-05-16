@@ -3,6 +3,7 @@
 namespace Tests\Unit\models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -57,5 +58,13 @@ class ExpertPanelTest extends TestCase
         $this->panel->topics()->save(factory(\App\Topic::class)->create());
 
         $this->assertInstanceOf(HasMany::class, $this->panel->topics());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_users()
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->panel->users());
     }
 }
