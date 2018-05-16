@@ -58,6 +58,14 @@ class UsersTableSeeder extends Seeder
             ]);
             $user->assignRole('curator');
             $user->expertPanels()->attach([2, 4]);
+
+            $user = User::create([
+                'name' => 'Eugenia Kirator',
+                'email' => 'eugenia-kirator@med.unc.edu',
+                'password' => \Hash::make('tester')
+            ]);
+            $user->assignRole('curator');
+            $user->expertPanels()->attach([1, 4]);
         }
     }
 }
