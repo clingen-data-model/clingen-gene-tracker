@@ -13,7 +13,7 @@ class ApiController extends Controller
     {
         $query = $this->getBaseQuery();
         if ($request->with) {
-            $query->with($request->with);
+            $query->with(explode(',', $request->with));
         }
 
         return $query->get();

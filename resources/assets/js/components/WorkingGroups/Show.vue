@@ -12,15 +12,37 @@
                 <h3>{{group.name}}</h3>
             </div>
             <div class="card-body">
-                <div class="row mt-1">
-                    <strong class="col-md-2">Expert panels:</strong>
-                    <div class="col-md">
-                        <ul class="list-unstyled" v-for="panel in group.expert_panels" v-show="hasPanels">
-                            <li class="border-bottom">
-                                <h4 class="border-bottom pb-1 mb-2">{{panel.name}}</h4>
-                                <div class="row">
-                                    <div class="col-md-2">Topics</div>
-                                    <div class="col-md">
+                <h4>Expert Panels</h4>
+                <b-tabs pills card vertical v-show="hasPanels">
+                    <b-tab v-for="(panel, idx) in group.expert_panels" :key="panel.id" :title="panel.name">
+                        <b-tabs>
+                           <b-tab title="People">
+                                <template slot="title">
+                                    People &nbsp;<span class="badge  badge-pill badge-primary">{{panel.users.length}}</span>
+                                </template>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Roles</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="user in panel.users">
+                                            <td>{{user.name}}</td>
+                                            <td>{{user.email}}</td>
+                                            <td>{{user.roles.map(role=>role.name).join(', ')}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </b-tab> 
+                            <b-tab>
+                                <template slot="title">
+                                    Curation Topics <span class="badge  badge-pill badge-primary">{{panel.topics.length}}</span>
+                                </template>
+                                <ul class="list-unstyled mt-2">
+                                    <li class="border-bottom">
                                         <topics-table 
                                             v-if="panel.topics && panel.topics.length > 0" 
                                             :topics="panel.topics"
@@ -29,14 +51,15 @@
                                         <div v-else class="alert alert-secondary">
                                             {{panel.name}} doesn't have any topics yet.
                                         </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="alert alert-secondary" v-show="!hasPanels">
-                            This working group does not have any expert panels
-                        </div>
-                    </div>
+                                    </li>
+                                </ul>
+                            </b-tab>
+                        </b-tabs>
+                    </b-tab>
+
+                </b-tabs>
+                <div class="alert alert-secondary" v-show="!hasPanels">
+                    This working group does not have any expert panels
                 </div>
             </div>
         </div>
