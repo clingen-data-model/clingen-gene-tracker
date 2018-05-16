@@ -39,6 +39,7 @@ class UsersTableSeeder extends Seeder
             'password' => \Hash::make('tester')
         ]);
         $user->assignRole('admin');
+        $user->expertPanels()->attach([1]);
 
         $user = User::create([
             'name' => 'Courtney Lynn Thaxton',
@@ -47,6 +48,7 @@ class UsersTableSeeder extends Seeder
         ]);
         $user->assignRole('admin');
         $user->assignRole('curator');
+        $user->expertPanels()->attach([1, 3]);
 
         if (!env('production')) {
             $user = User::create([
@@ -55,6 +57,7 @@ class UsersTableSeeder extends Seeder
                 'password' => \Hash::make('tester')
             ]);
             $user->assignRole('curator');
+            $user->expertPanels()->attach([2, 4]);
         }
     }
 }
