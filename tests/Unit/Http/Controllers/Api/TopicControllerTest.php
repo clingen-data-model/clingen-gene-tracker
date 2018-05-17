@@ -212,12 +212,12 @@ class TopicControllerTest extends TestCase
     /**
      * @test
      */
-    public function topic_show_includes_rationale_by_default()
+    public function topic_show_includes_rationales_by_default()
     {
-        $this->topics->first()->rationale()->associate($this->rationale);
+        $this->topics->first()->rationales()->attach($this->rationale->id);
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/'.$this->topics->first()->id)
-            ->assertSee('"rationale":');
+            ->assertSee('"rationales":[');
     }
 
     /**
@@ -353,7 +353,7 @@ class TopicControllerTest extends TestCase
                 67890,
                 $phenotype->mim_number
             ],
-            'rationale_id' => $this->rationale->id
+            'rationale_ids' => [$this->rationale->id]
         ];
 
         $this->actingAs($this->user, 'api')
@@ -390,16 +390,34 @@ class TopicControllerTest extends TestCase
      */
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
-        $this->disableExceptionHandling();
         $topic = $this->topics->first();
 
         $data = $topic->toArray();
         $data['page'] = 'phenotypes';
-        $data['rationale_id'] = $this->rationale->id;
+        $data['rationale_ids'] = [$this->rationale->id];
         $data['isolated_phenotype'] = '88888888';
         $response = $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/topics/'.$topic->id, $data);
+            ->call('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
 
         $response->assertSee('"mim_number":"88888888"');
+    }
+
+    /**
+     * @test
+     */
+    public function update_syncs_rationales_when_given()
+    {
+        $topic = $this->topics->first();
+        $otherRationale = factory(\App\Rationale::class)->create();
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationale_ids'] = [$this->rationale->id, $otherRationale->id];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->call('PUT', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+        $this->assertEquals(collect([$this->rationale->id, $otherRationale->id]), $response->original->rationales->pluck('id'));
     }
 }

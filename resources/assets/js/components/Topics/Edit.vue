@@ -38,11 +38,12 @@
                     </div>
                         <hr>
                     <div class="row">
-                        <div class="col-md-1">
+                        <div class="col-md-3">
                             <button type="button" class="btn btn-secondary pull-left" id="topic-proceed" @click="$router.push('/topics')">Cancel</button>
                         </div>
-                        <div class="col-md-11 text-right">
+                        <div class="col-md-9 text-right">
                             <b-button variant="default" id="topic-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                            <button type="button" class="btn btn-secondary" id="topic" @click="updateTopic()">Save</button>
                             <button type="button" class="btn btn-secondary" id="topic-proceed" @click="updateTopic(exit)">Save &amp; exit</button>
                             <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navBack)" v-show="currentStepIdx > 0">Back</b-button>
                             <b-button variant="primary" id="new-topic-form-save" @click="updateTopic(navNext)">Next</b-button>
@@ -78,12 +79,7 @@
                     },
                     'curation-type': {
                         title: 'Curation Type',
-                        next: () => {
-                            // if (this.updatedTopic.curation_type_id == 2 && this.updatedTopic.phenotypes.length == 0) {
-                            //     return 'mondo'
-                            // }
-                            return 'phenotypes'; 
-                        }
+                        next: 'phenotypes'
                     },
                     phenotypes: {
                         title: 'Phenotypes',
@@ -92,16 +88,13 @@
                     mondo: {
                         title: 'MonDO',
                         next: null,
-                        back: () => {
-                            // if (this.updatedTopic.curation_type_id == 2 && this.updatedTopic.phenotypes.length == 0) {
-                            //     return 'curation-type'
-                            // }
-                            return 'phenotypes'; 
-                        }
+                        back: 'phenotypes' 
                     }
 
                 },
-                updatedTopic: {},
+                updatedTopic: {
+                    rationals: []
+                },
                 errors: {},
             }
         },
@@ -131,7 +124,8 @@
             topic: function(){
                 if (this.topics.length == 0) {
                     return {
-                        expert_panel: {}
+                        expert_panel: {},
+                        rationales: []
                     }
                 }
 
@@ -192,7 +186,9 @@
                     .then( (response) => {
                         this.addInfo('Updates saved for '+this.updatedTopic.gene_symbol+'.')
                         this.$emit('saved');
-                        callback(response);
+                        if (callback) {
+                            callback(response);
+                        }
                         return response;
                     })
                     .catch( (error) => {

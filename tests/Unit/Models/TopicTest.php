@@ -3,7 +3,6 @@
 namespace Tests\Unit\models;
 
 use App\Topic;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -75,29 +74,6 @@ class TopicTest extends TestCase
         $topic->update(['disease_entity_notes' => 'test beans monkeys']);
 
         $this->assertEquals('test beans monkeys', $topic->disease_entity_notes);
-    }
-
-    /**
-     * @test
-     */
-    public function topic_has_fillable_rationale_id()
-    {
-        $rationale = factory(\App\Rationale::class)->create();
-        $this->topic->update(['rationale_id'=>$rationale->id]);
-
-        $this->assertEquals($rationale->id, $this->topic->rationale_id);
-    }
-
-    /**
-     * @test
-     */
-    public function topic_has_fillable_rationale_other()
-    {
-        $rationale = factory(\App\Rationale::class)->create();
-        $content = 'This is a bunch of text for rationale other notes.';
-        $this->topic->update(['rationale_other'=>$content]);
-
-        $this->assertEquals($content, $this->topic->rationale_other);
     }
 
     /**
@@ -205,15 +181,14 @@ class TopicTest extends TestCase
     /**
      * @test
      */
-    public function topic_belongs_to_a_rationale()
+    public function topic_belongs_to_many_rationales()
     {
         $rationale = factory(\App\Rationale::class)->create();
         $topic = factory(\App\Topic::class)->create();
 
-        $topic->rationale()->associate($rationale);
+        $topic->rationales()->attach($rationale->id);
 
-        $this->assertInstanceOf(BelongsTo::class, $topic->rationale());
-        $this->assertEquals($rationale->id, $topic->rationale->id);
+        $this->assertInstanceOf(BelongsToMany::class, $topic->rationales());
     }
 
     /**

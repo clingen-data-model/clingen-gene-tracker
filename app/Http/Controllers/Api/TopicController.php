@@ -35,7 +35,7 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Topic::with('topicStatuses');
+        $query = Topic::with('topicStatuses', 'rationales');
         foreach ($request->all() as $key => $value) {
             if ($key == 'with') {
                 $query->with($value);
@@ -80,6 +80,11 @@ class TopicController extends Controller
     {
         $topic = Topic::findOrFail($id);
         $this->loadRelations($topic);
+        $topic->rationals = $topic->rationales->transform(function ($item) {
+            unset($item->pivot);
+
+            return $item;
+        });
 
         return new TopicResource($topic);
     }
@@ -108,6 +113,9 @@ class TopicController extends Controller
         if ($request->isolated_phenotype) {
             \Bus::dispatch(new SyncPhenotypes($topic, [$request->isolated_phenotype]));
         }
+        if ($request->rationales) {
+            $topic->rationales()->sync(collect($request->rationales)->pluck('id'));
+        }
 
         if ($request->topic_status_id) {
             $created_at = ($request->topic_status_timestamp) ? Carbon::parse($request->topic_status_timestamp) : now();
@@ -131,6 +139,6 @@ class TopicController extends Controller
 
     private function loadRelations(&$topic)
     {
-        $topic->load(['phenotypes', 'expertPanel', 'curator', 'topicStatuses', 'rationale', 'curationType']);
+        $topic->load(['phenotypes', 'expertPanel', 'curator', 'topicStatuses', 'rationales', 'curationType']);
     }
 }

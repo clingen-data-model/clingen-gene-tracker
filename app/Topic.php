@@ -23,7 +23,6 @@ class Topic extends Model
         'disease_entity_notes',
         'topic_status_id',
         'curation_type_id',
-        'rationale_id',
         'rationale_other',
         'rationale_notes',
         'pmids',
@@ -91,9 +90,9 @@ class Topic extends Model
         return $this->belongsTo(CurationType::class);
     }
 
-    public function rationale()
+    public function rationales()
     {
-        return $this->belongsTo(Rationale::class);
+        return $this->belongsToMany(Rationale::class);
     }
 
     public function scopeGene($query, $geneSymbol)

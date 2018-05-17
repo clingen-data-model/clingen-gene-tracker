@@ -18,7 +18,7 @@ class TopicResource extends JsonResource
         $data['curator'] = new UserResource($this->curator) ?? null;
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
-        $data['rationale'] = $this->whenLoaded('rationale');
+        $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
         $data['current_status'] = $this->whenLoaded('currentStatus');
         $data['curation_type'] = $this->whenLoaded('curationType');
         $data['created_at'] = $this->created_at;

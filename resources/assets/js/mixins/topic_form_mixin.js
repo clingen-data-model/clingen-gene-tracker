@@ -2,7 +2,9 @@ export default {
     props: ['value', 'errors'],
     data() {
         return {
-            updatedTopic: {},
+            updatedTopic: {
+                ratonionales: []
+            },
             page: null
         }
     },
@@ -18,11 +20,9 @@ export default {
     },
     methods: {
         syncValue() {
-            // console.log('topic_form_mixin.syncValue')
             if (this.value) {
                 this.updatedTopic = JSON.parse(JSON.stringify(this.value));
                 this.updatedTopic.page = this.page;
-                console.log("topic's page: "+this.updatedTopic.page)
             }
         }
     },
