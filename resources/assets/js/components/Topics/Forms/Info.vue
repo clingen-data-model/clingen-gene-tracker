@@ -41,7 +41,7 @@
         <b-form-group horizontal id="expert-panel-select-group" label="Curator" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}}</option>
+                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}} {{curator.id}}</option>
             </b-form-select>
         </b-form-group>
     
@@ -126,8 +126,10 @@
 
                 if (curators && curators.length == 1) {
                     this.updatedTopic.curator_id = curators[0].id
+                } else if (curators && curators.length > 0) {
+                    this.updatedTopic.curator_id = (this.updatedTopic.curator_id) ? this.updatedTopic.curator_id : null
                 } else {
-                    this.updatedTopic.curator_id = null
+                    this.updatedTopic.curator_id = null;
                 }
 
                 return curators;
