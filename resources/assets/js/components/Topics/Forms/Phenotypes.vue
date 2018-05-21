@@ -3,8 +3,8 @@
     <div class="component-container">
         <div class="row">
             <div class="col-lg-8">
-                <div class="alert alert-info" v-show="loading">Loading phenotype information...</div>
-                <div  v-show="!loading">
+                <div class="alert alert-info" v-show="loading && phenotypes.length < 1">Loading phenotype information...</div>
+                <div  v-show="!loading || phenotypes.length > 0">
                     <div class="alert alert-secondary clearfix" v-show="phenotypes.length == 0">
                         <p>The gene <strong>{{ updatedTopic.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
                     </div>
