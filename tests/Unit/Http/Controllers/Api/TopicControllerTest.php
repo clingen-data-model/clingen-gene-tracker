@@ -353,7 +353,7 @@ class TopicControllerTest extends TestCase
                 67890,
                 $phenotype->mim_number
             ],
-            'rationale_ids' => [$this->rationale->id]
+            'rationales' => [$this->rationale->id]
         ];
 
         $this->actingAs($this->user, 'api')
@@ -394,7 +394,7 @@ class TopicControllerTest extends TestCase
 
         $data = $topic->toArray();
         $data['page'] = 'phenotypes';
-        $data['rationale_ids'] = [$this->rationale->id];
+        $data['rationales'] = [$this->rationale];
         $data['isolated_phenotype'] = '88888888';
         $response = $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/topics/'.$topic->id, $data)
@@ -413,11 +413,12 @@ class TopicControllerTest extends TestCase
 
         $data = $topic->toArray();
         $data['page'] = 'phenotypes';
-        $data['rationale_ids'] = [$this->rationale->id, $otherRationale->id];
+        $data['rationales'] = [$this->rationale, $otherRationale];
 
         $response = $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/topics/'.$topic->id, $data)
             ->assertStatus(200);
+
         $this->assertEquals(collect([$this->rationale->id, $otherRationale->id]), $response->original->rationales->pluck('id'));
     }
 }

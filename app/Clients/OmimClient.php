@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Clients;
 
-use GuzzleHttp\Client;
 use App\Contracts\OmimClient as OmimClientContract;
+use GuzzleHttp\Client;
 
 /**
 * Client for interacting with OMIM APi
@@ -22,7 +23,7 @@ class OmimClient implements OmimClientContract
         if (!$this->client) {
             $this->client = $this->getClient();
         }
-        
+
         $this->baseQuery = ['format'=>'json'];
     }
 
@@ -34,6 +35,7 @@ class OmimClient implements OmimClientContract
         $query = $this->buildQuery(compact('mimNumber'));
         $response = $this->client->request('GET', 'entry', compact('query'));
         $response = json_decode($response->getBody()->getContents());
+
         return $response->omim->entryList;
     }
 
@@ -42,6 +44,7 @@ class OmimClient implements OmimClientContract
         $query = $this->buildQuery($searchData);
         $response = $this->client->request('GET', 'entry/search', compact('query'));
         $response = json_decode($response->getBody()->getContents());
+
         return collect($response->omim->searchResponse->entryList)
                 ->transform(function ($entry) {
                     return $entry->entry;
@@ -54,13 +57,14 @@ class OmimClient implements OmimClientContract
                     'search'=>'approved_gene_symbol:'.$geneSymbol,
                     'include'=> 'geneMap'
                 ]);
-        if (count($entryList) == 0) {
-            return [];
+        if ($this->responseHasPhenotypeMapList($entryList)) {
+            return collect($entryList[0]->geneMap->phenotypeMapList)
+                    ->transform(function ($item) {
+                        return $item->phenotypeMap;
+                    });
         }
-        return collect($entryList[0]->geneMap->phenotypeMapList)
-                ->transform(function ($item) {
-                    return $item->phenotypeMap;
-                });
+
+        return [];
     }
 
     private function buildQuery($params)
@@ -76,5 +80,11 @@ class OmimClient implements OmimClientContract
                 'ApiKey' => config('app.omim_key')
             ]
         ]);
+    }
+
+    private function responseHasPhenotypeMapList($entryList)
+    {
+        return count($entryList) > 0
+                && isset($entryList[0]->geneMap->phenotypeMapList);
     }
 }
