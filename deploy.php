@@ -21,22 +21,17 @@ add('shared_dirs', []);
 add('writable_dirs', []);
 
 // Hosts
-
-// host('web3demo.schsr.unc.edu')
-//     ->stage('deptest')
-//     ->set('deploy_path', '/mnt/web/project/deployer-test');
-
 host('web3demo.schsr.unc.edu')
     ->stage('test')
     ->set('deploy_path', '/mnt/web/project/{{application}}-test');
 
-// host('web3demo.schsr.unc.edu')
-//     ->stage('demo')
-//     ->set('deploy_path', '/mnt/web/project/{{application}}');
+host('web3demo.schsr.unc.edu')
+    ->stage('demo')
+    ->set('deploy_path', '/mnt/web/project/{{application}}');
 
-// host('web3.schsr.unc.edu')
-//     ->stage('production')
-//     ->set('deploy_path', '/mnt/web/project/{{application}}');
+host('web3.schsr.unc.edu')
+    ->stage('production')
+    ->set('deploy_path', '/mnt/web/project/{{application}}');
 
 // Tasks
 
