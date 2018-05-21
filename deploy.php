@@ -25,7 +25,7 @@ host('test')
     ->hostname('web3demo.schsr.unc.edu')
     ->stage('test')
     ->set('branch', 'demo')
-    ->set('deploy_path', '/mnt/web/project/{{application}}-deployer');
+    ->set('deploy_path', '/mnt/web/project/{{application}}-test');
 
 host('demo')
     ->hostname('web3demo.schsr.unc.edu')
