@@ -21,16 +21,21 @@ add('shared_dirs', []);
 add('writable_dirs', []);
 
 // Hosts
-host('web3demo.schsr.unc.edu')
+host('test')
+    ->hostname('web3demo.schsr.unc.edu')
     ->stage('test')
-    ->set('deploy_path', '/mnt/web/project/{{application}}-test');
+    ->set('branch', 'demo')
+    ->set('deploy_path', '/mnt/web/project/{{application}}-deployer');
 
-host('web3demo.schsr.unc.edu')
+host('demo')
+    ->hostname('web3demo.schsr.unc.edu')
     ->stage('demo')
+    ->set('branch', 'demo')
     ->set('deploy_path', '/mnt/web/project/{{application}}');
 
 host('web3.schsr.unc.edu')
     ->stage('production')
+    ->set('branch', 'master')
     ->set('deploy_path', '/mnt/web/project/{{application}}');
 
 // Tasks
