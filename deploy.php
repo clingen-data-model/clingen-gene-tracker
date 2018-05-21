@@ -40,10 +40,6 @@ host('web3.schsr.unc.edu')
 
 // Tasks
 
-task('build', function () {
-    run('cd {{release_path}} && build');
-});
-
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
 
