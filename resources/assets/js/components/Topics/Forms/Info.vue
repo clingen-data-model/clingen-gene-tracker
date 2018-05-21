@@ -41,7 +41,7 @@
         <b-form-group horizontal id="expert-panel-select-group" label="Curator" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}} {{curator.id}}</option>
+                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}}</option>
             </b-form-select>
         </b-form-group>
     
