@@ -161,7 +161,15 @@
                 return (this.updatedTopic.curation_type_id != 2 && this.updatedTopic.curation_type_id != 3 && this.phenotypes.length > 0)
             },
             showRationale: function () {
-                return !(this.updatedTopic.curation_type && (this.updatedTopic.curation_type.id == 1 && this.phenotypes.length == 1));
+                if (this.updatedTopic.curation_type) {
+                    if (this.updatedTopic.curation_type.id == 1 && this.phenotypes.length == 1) {
+                        return false
+                    }
+                }
+                if (this.phenotypes.length == 0) {
+                    return false
+                }
+                return true;
             }
         }
     }
