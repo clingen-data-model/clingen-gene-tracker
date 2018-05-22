@@ -1,5 +1,8 @@
 node {
     stage("composer_install") {
+        //which dir are we in
+        sh 'pwd'
+        sh 'ls -al'
         // Run `composer update` as a shell script
         sh '/usr/local/bin/composer install'
     }
