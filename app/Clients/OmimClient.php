@@ -64,7 +64,7 @@ class OmimClient implements OmimClientContract
                     });
         }
 
-        return [];
+        return collect([]);
     }
 
     private function buildQuery($params)

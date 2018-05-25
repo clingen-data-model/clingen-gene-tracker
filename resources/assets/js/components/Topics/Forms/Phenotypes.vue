@@ -42,7 +42,7 @@
                         :select-size="rationaleOptions.length" 
                     >
                     </b-form-select>
-                    <validation-error :messages="errors.rationale_id"></validation-error>
+                    <validation-error :messages="errors.rationales"></validation-error>
                 </div>
                 <transition name="fade">
                     <div class="form-group" v-show="updatedTopic.rationale_id == 100">

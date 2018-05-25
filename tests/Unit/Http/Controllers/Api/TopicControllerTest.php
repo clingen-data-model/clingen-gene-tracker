@@ -5,6 +5,7 @@ namespace Tests\Unit\Http\Controllers\Api;
 use App\Http\Resources\TopicResource;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Http\Requests\TopicUpdateRequest;
 
 /**
  * @group api
@@ -421,4 +422,106 @@ class TopicControllerTest extends TestCase
 
         $this->assertEquals(collect([$this->rationale->id, $otherRationale->id]), $response->original->rationales->pluck('id'));
     }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function rationales_not_required_when_page_not_phenotypes()
+    {
+        $topic = $this->topics->first();
+        $data = $topic->toArray();
+        $data['page'] = 'info';
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('put', '/api/topics/'.$topic->id, $data)
+            ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function rationales_not_required_when_topic_type_single_and_1_phenotype()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 1,
+            'gene_symbol' => 'MLTN1',
+        ]);
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = null;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('put', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function rationales_not_required_if_1_phenotype_and_type_single_omim()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 1,
+            'gene_symbol' => 'myl2',
+        ]);
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = null;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('put', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function rationales_required_if_1_phenotype_and_topic_type_other_than_single_omim()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 2,
+            'gene_symbol' => 'myl2',
+        ]);
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = null;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(422);
+        
+        $this->assertArrayHasKey('rationales', $response->original['errors']);
+    }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function rationales_required_when_gene_has_more_than_1_phenotype()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 2,
+            'gene_symbol' => 'brca2',
+        ]);
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = null;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(422);
+
+        $this->assertArrayHasKey('rationales', $response->original['errors']);
+    }
+    
 }

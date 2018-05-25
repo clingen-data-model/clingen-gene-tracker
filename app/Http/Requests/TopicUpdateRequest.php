@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Clients\OmimClient;
+
 /**
 * Request for a topic update request
 */
@@ -12,7 +14,7 @@ class TopicUpdateRequest extends TopicCreateRequest
         $rules = parent::rules();
         $rules['page'] = 'required';
         $rules['curation_type_id'] = 'required_if:page,curation-types';
-        $rules['rationales'] = 'required_if:page,phenotypes';
+        $rules['rationales'] = 'sometimes';
         $rules['rationale_other'] = 'required_if:rationale_id,100';
 
         return $rules;
@@ -34,9 +36,14 @@ class TopicUpdateRequest extends TopicCreateRequest
         $validator = parent::getValidatorInstance();
 
         // Commented out for now.  keeping for reference when making validation more sophisticated
-        // $validator->sometimes('rationale_id', 'required_if', function ($input) {
-        //     return $input->page == 'phenotypes';
-        // });
+        $validator->sometimes('rationales', 'required', function ($input) {
+            $genePhenos = (new OmimClient())->getGenePhenotypes($input->gene_symbol);
+            $test = $input->page == 'phenotypes'
+                    && ($genePhenos->count() > 1
+                        || ($genePhenos->count() == 1
+                            && $input->curation_type_id != 1));
+            return $test;
+        });
 
         return $validator;
     }
