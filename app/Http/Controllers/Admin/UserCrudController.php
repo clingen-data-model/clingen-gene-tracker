@@ -85,6 +85,7 @@ class UserCrudController extends CrudController
         ], 'both');
 
         $this->crud->removeField('deactivated_at');
+        $this->crud->removeField('password');
 
         // ------ CRUD FIELDS
         // $this->crud->addField($options, 'update/create/both');

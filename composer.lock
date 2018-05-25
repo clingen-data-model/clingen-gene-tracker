@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb4ca6a45f6cba62881326063615b4b5",
+    "content-hash": "32a1a38bd6e446608956bf06d662e3a1",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -4662,6 +4662,38 @@
                 }
             ],
             "time": "2016-06-13T19:28:20+00:00"
+        },
+        {
+            "name": "deployer/dist",
+            "version": "v6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deployphp/distribution.git",
+                "reference": "fb5b78f24a4c025f44f52ce74ddd53af639061d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deployphp/distribution/zipball/fb5b78f24a4c025f44f52ce74ddd53af639061d9",
+                "reference": "fb5b78f24a4c025f44f52ce74ddd53af639061d9",
+                "shasum": ""
+            },
+            "bin": [
+                "dep"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anton Medvedev",
+                    "email": "anton@medv.io"
+                }
+            ],
+            "description": "Deployer Phar Distribution",
+            "homepage": "https://deployer.org",
+            "time": "2018-04-21T03:52:25+00:00"
         },
         {
             "name": "doctrine/instantiator",

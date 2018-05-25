@@ -5,9 +5,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'pwd'
-                sh 'ls -al'
-                // Run `composer update` as a shell script
                 sh '/usr/local/bin/composer install'
             }
         }
@@ -19,6 +16,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                sh 'php vendor/bin/dep deploy test'
             }
         }
     }

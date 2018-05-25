@@ -20,6 +20,7 @@
     "require-dev": {
         "backpack/generators": "^1.1",
         "barryvdh/laravel-ide-helper": "^2.4",
+        "deployer/dist": "^6.2",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "laracasts/generators": "dev-master",

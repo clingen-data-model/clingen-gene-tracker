@@ -8,6 +8,7 @@ use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -40,6 +41,15 @@ class User extends Authenticatable
         'created' => Created::class
     ];
 
+    public static function boot()
+    {
+        static::creating(function ($model) {
+            if (is_null($model->password)) {
+                $model->password = uniqid();
+            }
+        });
+    }
+
     public function topics()
     {
         return $this->hasMany(Topic::class, 'curator_id');
@@ -64,5 +74,10 @@ class User extends Authenticatable
     public function deactivateUser($crud = false)
     {
         return '<a class="btn btn-xs btn-default" href="'.\Request::root().'/admin/user/'.$crud->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user." onClick="return confirm(\'Are you sure?\');"><i class="fa fa-ban"></i> Deactviate</a>';
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 }
