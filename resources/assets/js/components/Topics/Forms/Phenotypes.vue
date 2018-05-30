@@ -59,7 +59,7 @@
                 <div class="form-group" v-show="updatedTopic.curation_type_id == 3">
                     <label for="isolated_phenotype">Enter broader OMIM phenotype (MIM phenotype):</label>
                     <input id="isolated_phenotype" v-model="updatedTopic.isolated_phenotype" class="form-control"></input>
-                    <validation-error :messages="errors.isolated_phentotype"></validation-error>
+                    <validation-error :messages="errors.isolated_phenotype"></validation-error>
                 </div>
                 <div class="form-group">
                     <label for="rationale_notes">Other comments:</label>

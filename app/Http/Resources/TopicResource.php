@@ -24,6 +24,10 @@ class TopicResource extends JsonResource
         $data['created_at'] = $this->created_at;
         $data['updated_at'] = $this->updated_at;
 
+        if ($this->curation_type_id == 3) {
+            $data['isolated_phenotype'] = $this->phenotypes->first()->mim_number ?? null;
+        }
+
         return $data;
     }
 }

@@ -9,7 +9,6 @@
         props: ['messages'],
         computed: {
             hasErrors: function () {
-                console.log(this.messages);
                 if (typeof this.messages == 'undefined') {
                     return false
                 }

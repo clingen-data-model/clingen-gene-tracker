@@ -5,7 +5,6 @@ namespace Tests\Unit\Http\Controllers\Api;
 use App\Http\Resources\TopicResource;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Http\Requests\TopicUpdateRequest;
 
 /**
  * @group api
@@ -497,7 +496,7 @@ class TopicControllerTest extends TestCase
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/topics/' . $topic->id, $data)
             ->assertStatus(422);
-        
+
         $this->assertArrayHasKey('rationales', $response->original['errors']);
     }
 
@@ -523,5 +522,52 @@ class TopicControllerTest extends TestCase
 
         $this->assertArrayHasKey('rationales', $response->original['errors']);
     }
-    
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function isolated_phenotype_required_when_curation_type_id_is_3()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 3,
+            'gene_symbol' => 'brca2',
+        ]);
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = [1,2];
+        $data['isolated_phenotype'] = null;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(422);
+
+        $this->assertArrayHasKey('isolated_phenotype', $response->original['errors']);
+    }
+
+    /**
+     * @test
+     * @group topic-validation
+     */
+    public function isolated_phenotype_must_be_valid_mim_number_when_present()
+    {
+        $topic = $this->topics->first();
+        $topic->update([
+            'curation_type_id' => 3,
+            'gene_symbol' => 'brca2',
+        ]);
+
+        $data = $topic->toArray();
+        $data['page'] = 'phenotypes';
+        $data['rationales'] = [1,2];
+        $data['isolated_phenotype'] = 123456;
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/topics/' . $topic->id, $data)
+            ->assertStatus(422);
+
+        $this->assertArrayHasKey('isolated_phenotype', $response->original['errors']);
+    }
 }
