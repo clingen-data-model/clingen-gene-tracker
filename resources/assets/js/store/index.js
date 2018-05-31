@@ -13,13 +13,13 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
-  requestCount: 0
+  requestCount: 0,
 }
 
 const getters = {
   loading (state) {
     return state.requestCount > 0
-  }
+  },
 }
 
 const mutations = {

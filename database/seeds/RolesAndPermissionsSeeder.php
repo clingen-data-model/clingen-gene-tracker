@@ -25,6 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('curation-types');
         $this->createPermissionGroup('rationales');
         $this->createPermissionGroup('pages');
+        $this->createPermissionGroup('topics');
 
         /**
          * Programmer role can do everything
@@ -37,6 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'curation-types');
         $this->givePermissionsToRole($role, 'rationales');
         $this->givePermissionsToRole($role, 'pages');
+        $this->givePermissionsToRole($role, 'topics');
 
         /**
          * Admin Role can do most things
@@ -48,8 +50,10 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'working-groups');
         $this->givePermissionsToRole($role, 'rationales', ['list','update']);
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
+        $this->givePermissionsToRole($role, 'topics');
 
-        Role::firstOrcreate(['name' => 'coordinator']);
+        $role = Role::firstOrcreate(['name' => 'coordinator']);
+
         Role::firstOrcreate(['name' => 'curator']);
     }
 

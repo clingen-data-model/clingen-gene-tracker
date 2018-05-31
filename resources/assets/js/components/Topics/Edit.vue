@@ -10,7 +10,10 @@
             <template slot="header">
                 <h3>{{ title }}</h3>
             </template>
-            <div v-if="this.topics">
+            <div v-if="!user.canEditTopic(this.topic)" class="alert alert-danger">
+                Sorry.  You don't have permission to edit this topic.
+            </div>
+            <div v-if="topics && user.canEditTopic(this.topic)">
                 <b-form id="new-topic-form">
                     <div class="row">
                         <div class="col-md-2 border-right">
@@ -71,6 +74,7 @@
         },
         data () {
             return {
+                user: user,
                 currentStep: 'info',
                 steps: {
                    info: {

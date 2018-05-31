@@ -26,7 +26,7 @@ class TopicUpdateRequest extends TopicCreateRequest
     {
         $messages = [
             'curation_type_id.required_if' => 'A curation type is required to continue',
-            'rationale_ids.required_if' => 'You must select a rationale to continue',            
+            'rationale_ids.required_if' => 'You must select a rationale to continue',
         ];
 
         return array_merge(parent::messages(), $messages);

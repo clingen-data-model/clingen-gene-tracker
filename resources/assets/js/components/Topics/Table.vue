@@ -26,8 +26,18 @@
                     {{data.item.gene_symbol}}
                 </router-link>
             </template>
+            <template slot="expert_panel" slot-scope="data">
+                {{(data.item.expert_panel) ? data.item.expert_panel.name : null}}
+            </template>
+            <template slot="curator" slot-scope="data">
+                {{(data.item.curator) ? data.item.curator.name : null}}
+            </template>
+            <template slot="current_status" slot-scope="data">
+                {{(data.item.current_status) ? data.item.current_status.name : null}}
+            </template>
             <template slot="actions" slot-scope="data">
                 <router-link
+                    v-if="user.canEditTopic(data.item)"
                     :id="'edit-topic-'+data.item.id+'-btn'" 
                     class="btn btn-secondary float-right btn-sm" 
                     :to="'/topics/'+data.item.id+'/edit'"
@@ -53,6 +63,7 @@
         },
         data() {
             return {
+                user: user,
                 filter: null,
                 currentPage: 1,
                 totalRows: null,
@@ -74,7 +85,7 @@
                         sortable: true,
                     },
                     actions: {
-                        label: 'Actions',
+                        label: '',
                         sortable: false,
                     }
                 },
@@ -82,16 +93,7 @@
         },
         computed: {
             tableItems: function () {
-                let items = Object.values(this.topics)
-                    .map(function (item){
-                        return {
-                            id: item.id,
-                            gene_symbol: item.gene_symbol,
-                            curator: (item.curator) ? item.curator.name : null,
-                            expert_panel: (item.expert_panel) ? item.expert_panel.name : null,
-                            current_status: (item.current_status) ? item.current_status.name : null,
-                        }
-                    });
+                let items = Object.values(this.topics);
                 this.totalRows = items.length;
                 return items;
             },            

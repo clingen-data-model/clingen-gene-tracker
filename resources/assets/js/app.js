@@ -12,9 +12,12 @@ import router from './routing.js'
 import DateField from './components/DateField'
 import CriteriaTable from './components/Topics/CriteriaTable'
 import filters from './filters'
+import User from './User'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
+
+user = new User(user);
 
 window.axios.interceptors.request.use(function (config) {
     store.commit('addRequest');

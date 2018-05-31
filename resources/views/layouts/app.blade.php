@@ -73,6 +73,9 @@
     </div>
 
     <!-- Scripts -->
+    <script>
+        let user = {!! json_encode($user) !!}.user
+    </script>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

@@ -11,14 +11,15 @@
         >
             <template slot="header">
                 <h3>{{ title }}
-                 <router-link
+                <router-link
+                    v-if="user.canEditTopic(topic)"
                     :id="'edit-topic-'+topic.id+'-btn'" 
                     class="btn btn-secondary float-right btn-sm" 
                     :to="'/topics/'+topic.id+'/edit'"
                 >
                     Edit
                 </router-link>
-                </h3>
+            </h3>
            </template>
             <div v-if="this.topics">
                 <div class="row mt-1">
@@ -110,6 +111,7 @@
         },
         data() {
             return {
+                user: user,
                 showStatusHistory: false,
             }
         },
