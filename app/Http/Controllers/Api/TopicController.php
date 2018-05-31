@@ -57,6 +57,7 @@ class TopicController extends Controller
      */
     public function store(TopicCreateRequest $request)
     {
+        $this->authorize('create', Topic::class)
         $data = $request->except('phenotypes', 'topic_status_id');
         $topic = Topic::create($data);
         if ($request->phenotypes) {
@@ -99,6 +100,8 @@ class TopicController extends Controller
     public function update(TopicUpdateRequest $request, $id)
     {
         $topic = Topic::findOrFail($id);
+        $this->authorize('update', $topic);
+
         $data = $request->except('topic_status_id');
         if (isset($data['pmids']) && is_string($data['pmids'])) {
             $data['pmids'] = array_map(function ($i) {
