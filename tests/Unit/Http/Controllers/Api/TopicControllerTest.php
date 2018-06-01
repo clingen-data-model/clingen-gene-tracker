@@ -19,8 +19,8 @@ class TopicControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->topics = factory(\App\Topic::class, 10)->create();
         $this->user = factory(\App\User::class)->create();
+        $this->topics = factory(\App\Topic::class, 10)->create(['curator_id' => $this->user->id]);
         $this->panel = factory(\App\ExpertPanel::class)->create();
         $this->rationale = factory(\App\Rationale::class)->create();
         $this->curationType = factory(\App\CurationType::class)->create();
@@ -38,9 +38,10 @@ class TopicControllerTest extends TestCase
         ]);
 
         $topicResource = new TopicResource($this->topics);
+        $this->disableExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics')
-            ->assertStatus(200);
+             ->assertStatus(200);
     }
 
     /**
@@ -120,7 +121,7 @@ class TopicControllerTest extends TestCase
      */
     public function requires_existing_curation_type_id_on_update()
     {
-        $topic = factory(\App\Topic::class)->create();
+        $topic = factory(\App\Topic::class)->create(['curator_id' => $this->user->id]);
         $curationType = factory(\App\CurationType::class)->create();
         $data = [
             'gene_symbol' => 'ABCD',

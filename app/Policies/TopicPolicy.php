@@ -33,7 +33,7 @@ class TopicPolicy
 
     public function update(User $user, Topic $topic)
     {
-        if ($user->id === $topic->curator_id) {
+        if ($user->id == $topic->curator_id) {
             return true;
         }
 

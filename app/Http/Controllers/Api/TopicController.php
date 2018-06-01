@@ -57,7 +57,7 @@ class TopicController extends Controller
      */
     public function store(TopicCreateRequest $request)
     {
-        $this->authorize('create', Topic::class)
+        $this->authorize('create', Topic::class);
         $data = $request->except('phenotypes', 'topic_status_id');
         $topic = Topic::create($data);
         if ($request->phenotypes) {
