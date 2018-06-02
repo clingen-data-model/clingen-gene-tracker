@@ -80,4 +80,17 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
+    public function inExpertPanel($panel){
+        if (is_int($panel)) {
+            return $this->expertPanels->contains(function ($ep) use ($panel) {
+                return $ep->id == $panel;
+            });
+        }
+        if (is_object($panel) && get_class($panel) == ExpertPanel::class) {
+            return $this->expertPanels->contains(function ($ep) use ($paen) {
+                return $ep->id = $panel->id;
+            });
+        }
+    }
 }

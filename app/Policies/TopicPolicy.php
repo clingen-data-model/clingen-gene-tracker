@@ -37,7 +37,10 @@ class TopicPolicy
             return true;
         }
 
-        //if user has manage_topics priv for expert panel
+
+        if ($user->hasRole('coordinator') && $user->inExpertPanel($topic->expert_panel_id)) {
+            return true;
+        }
 
         return false;
     }
