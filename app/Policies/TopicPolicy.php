@@ -37,8 +37,7 @@ class TopicPolicy
             return true;
         }
 
-
-        if ($user->hasRole('coordinator') && $user->inExpertPanel($topic->expert_panel_id)) {
+        if ($user->hasPermissionTo('manage panel topics') && $user->inExpertPanel($topic->expert_panel_id)) {
             return true;
         }
 

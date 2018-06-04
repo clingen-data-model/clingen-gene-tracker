@@ -26,6 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('rationales');
         $this->createPermissionGroup('pages');
         $this->createPermissionGroup('topics');
+        $managePanelTopics = Permission::firstOrcreate(['name' => 'manage panel topics']);
 
         /**
          * Programmer role can do everything
@@ -53,6 +54,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'topics');
 
         $role = Role::firstOrcreate(['name' => 'coordinator']);
+        if (!$role->hasPermissionTo($managePanelTopics->name)) {
+            $role->givePermissionTo($managePanelTopics->name);
+        }
 
         Role::firstOrcreate(['name' => 'curator']);
     }

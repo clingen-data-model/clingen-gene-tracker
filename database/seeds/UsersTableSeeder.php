@@ -12,60 +12,68 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::create([
+        $user = User::updateOrCreate([
             'name' => 'Sirs Programmer',
             'email' => 'sirs@unc.edu',
-            'password' => \Hash::make('tester')
+            'password' => 'tester'
         ]);
         $user->assignRole('programmer');
 
-        $user = User::create([
+        $user = User::updateOrCreate([
             'name' => 'TJ Ward',
             'email' => 'jward3@email.unc.edu',
-            'password' => \Hash::make('tester')
+            'password' => 'tester'
         ]);
         $user->assignRole('programmer');
 
-        $user = User::create([
+        $user = User::updateOrCreate([
             'name' => 'Maria Tobin',
             'email' => 'maria.tobin@unc.edu',
-            'password' => \Hash::make('tester')
+            'password' => 'tester'
         ]);
         $user->assignRole('programmer');
 
-        $user = User::create([
+        $user = User::updateOrCreate([
             'name' => 'Jenny Goldstein',
             'email' => 'goldjen@email.unc.edu',
-            'password' => \Hash::make('tester')
+            'password' => 'tester'
         ]);
         $user->assignRole('admin');
         $user->expertPanels()->attach([1]);
 
-        $user = User::create([
+        $user = User::updateOrCreate([
             'name' => 'Courtney Lynn Thaxton',
             'email' => 'courtney_thaxton@med.unc.edu',
-            'password' => \Hash::make('tester')
+            'password' => 'tester'
         ]);
         $user->assignRole('admin');
         $user->assignRole('curator');
         $user->expertPanels()->attach([1, 3]);
 
         if (!env('production')) {
-            $user = User::create([
+            $user = User::updateOrCreate([
                 'name' => 'James A Curator',
                 'email' => 'james-curatorn@med.unc.edu',
-                'password' => \Hash::make('tester')
+                'password' => 'tester'
             ]);
             $user->assignRole('curator');
             $user->expertPanels()->attach([2, 4]);
 
-            $user = User::create([
+            $user = User::updateOrCreate([
                 'name' => 'Eugenia Kirator',
                 'email' => 'eugenia-kirator@med.unc.edu',
-                'password' => \Hash::make('tester')
+                'password' => 'tester'
             ]);
             $user->assignRole('curator');
             $user->expertPanels()->attach([1, 4]);
+
+            $user = User::updateOrCreate([
+                'name' => 'Sarah Coordinator',
+                'email' => 'sara-coordinator@med.unc.edu',
+                'password' => 'tester'
+            ]);
+            $user->assignRole('coordinator');
+            $user->expertPanels()->attach([1]);
         }
     }
 }

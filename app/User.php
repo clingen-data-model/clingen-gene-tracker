@@ -45,7 +45,11 @@ class User extends Authenticatable
     {
         static::creating(function ($model) {
             if (is_null($model->password)) {
-                $model->password = uniqid();
+                if (env('production')) {
+                    $model->password = uniqid();
+                } else {
+                    $model->password = 'tester';
+                }
             }
         });
     }
@@ -81,7 +85,8 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
 
-    public function inExpertPanel($panel){
+    public function inExpertPanel($panel)
+    {
         if (is_int($panel)) {
             return $this->expertPanels->contains(function ($ep) use ($panel) {
                 return $ep->id == $panel;
