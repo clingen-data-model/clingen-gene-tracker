@@ -31,6 +31,7 @@ class ComposerServiceProvider extends ServiceProvider
             $userModel->load(['roles', 'expertPanels']);
             $user = $userModel->toArray();
             $user['permissions'] = $userModel->getAllPermissions()->toArray();
+            $user['panel_summary'] = $userModel->panel_summary;
             $view->with('user', compact('user'));
         });
     }

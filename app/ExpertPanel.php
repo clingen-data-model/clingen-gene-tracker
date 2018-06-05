@@ -30,4 +30,18 @@ class ExpertPanel extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function curators()
+    {
+        return $this->belongsToMany(User::class)
+                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->wherePivot('is_curator', 1);
+    }
+
+    public function coordinators()
+    {
+        return $this->belongsToMany(User::class)
+                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->wherePivot('is_coordinator', 1);
+    }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Events\User\Created;
+use App\ExpertPanel;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -76,5 +77,53 @@ class UserTest extends TestCase
 
         $this->assertNotEquals('test', $u->password);
         $this->assertTrue(\Hash::check('test', $u->password));
+    }
+
+    /**
+     * @test
+     */
+    public function can_get_wether_user_can_edit_panel_topics()
+    {
+        $panel = factory(ExpertPanel::class)->create();
+        $this->assertFalse($this->user->canEditPanelTopics($panel));
+
+        $this->user->expertPanels()->attach($panel->id);
+        $this->assertFalse($this->user->fresh()->canEditPanelTopics($panel));
+
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_topics'=>1]]);
+        $this->assertTrue($this->user->fresh()->canEditPanelTopics($panel));
+
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_topics'=>0, 'is_coordinator'=>1]]);
+        $this->assertTrue($this->user->fresh()->canEditPanelTopics($panel));
+    }
+
+    /**
+     * @test
+     */
+    public function knows_if_user_is_panel_coordinator()
+    {
+        $panel = factory(ExpertPanel::class)->create();
+        $this->assertFalse($this->user->isPanelCoordinator($panel));
+
+        $this->user->expertPanels()->attach($panel->id);
+        $this->assertFalse($this->user->fresh()->isPanelCoordinator($panel));
+
+        $this->user->expertPanels()->sync([$panel->id => ['is_coordinator'=>1]]);
+        $this->assertTrue($this->user->fresh()->isPanelCoordinator($panel));
+    }
+
+    /**
+     * @test
+     */
+    public function knows_if_user_is_panel_curator()
+    {
+        $panel = factory(ExpertPanel::class)->create();
+        $this->assertFalse($this->user->isPanelCurator($panel));
+
+        $this->user->expertPanels()->attach($panel->id);
+        $this->assertFalse($this->user->fresh()->isPanelCurator($panel));
+
+        $this->user->expertPanels()->sync([$panel->id => ['is_curator'=>1]]);
+        $this->assertTrue($this->user->fresh()->isPanelCurator($panel));
     }
 }

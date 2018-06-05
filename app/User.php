@@ -61,7 +61,9 @@ class User extends Authenticatable
 
     public function expertPanels()
     {
-        return $this->belongsToMany(ExpertPanel::class)->withTimestamps();
+        return $this->belongsToMany(ExpertPanel::class)
+                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->withTimestamps();
     }
 
     /**
@@ -97,5 +99,26 @@ class User extends Authenticatable
                 return $ep->id = $panel->id;
             });
         }
+    }
+
+    public function canEditPanelTopics($panel)
+    {
+        return $this->expertPanels->contains(function ($value, $key) use ($panel) {
+            return $value->id == $panel->id && ((boolean)$value->pivot->can_edit_topics || (boolean)$value->pivot->is_coordinator);
+        });
+    }
+
+    public function isPanelCoordinator($panel)
+    {
+        return $this->expertPanels->contains(function ($value, $key) use ($panel) {
+            return $value->id == $panel->id && (boolean)$value->pivot->is_coordinator;
+        });
+    }
+
+    public function isPanelCurator($panel)
+    {
+        return $this->expertPanels->contains(function ($value, $key) use ($panel) {
+            return $value->id == $panel->id && (boolean)$value->pivot->is_curator;
+        });
     }
 }

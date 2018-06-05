@@ -14,7 +14,7 @@ class AlterTableExpertPanelUserAddRolePermissionFlags extends Migration
     public function up()
     {
         Schema::table('expert_panel_user', function (Blueprint $table) {
-            $table->boolean('update_panel_topics')->default(0);
+            $table->boolean('can_edit_topics')->default(0);
             $table->boolean('is_curator')->default(0);
             $table->boolean('is_coordinator')->default(0);
         });
@@ -28,7 +28,7 @@ class AlterTableExpertPanelUserAddRolePermissionFlags extends Migration
     public function down()
     {
         Schema::table('expert_panel_user', function (Blueprint $table) {
-            $table->dropColumn('update_panel_topics');
+            $table->dropColumn('can_edit_topics');
             $table->dropColumn('is_curator');
             $table->dropColumn('is_coordinator');
         });

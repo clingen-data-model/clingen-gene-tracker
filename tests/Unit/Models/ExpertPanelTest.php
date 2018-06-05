@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -66,5 +67,31 @@ class ExpertPanelTest extends TestCase
     public function panel_belongsToMany_users()
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->panel->users());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_curators()
+    {
+        $u = factory(User::class)->create();
+        $u2 = factory(User::class)->create();
+        $this->panel->users()->sync([$u->id => ['is_curator' => true], $u2->id => ['is_curator' => false]]);
+        $panel = $this->panel->fresh();
+
+        $this->assertEquals(1, $panel->fresh()->curators->count());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_coordinators()
+    {
+        $u = factory(User::class)->create();
+        $u2 = factory(User::class)->create();
+        $this->panel->users()->sync([$u->id => ['is_coordinator' => true], $u2->id => ['is_coordinator' => false]]);
+        $panel = $this->panel->fresh();
+
+        $this->assertEquals(1, $panel->fresh()->coordinators->count());
     }
 }

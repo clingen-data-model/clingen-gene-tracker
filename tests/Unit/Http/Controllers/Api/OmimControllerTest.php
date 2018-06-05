@@ -44,7 +44,7 @@ class OmimControllerTest extends TestCase
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][3]['entry'])
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][4]['entry'])
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][5]['entry'])
-            ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][6]['entry'])
+            // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][6]['entry'])
             // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][8]['entry'])
             // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][9]['entry'])
             ;
