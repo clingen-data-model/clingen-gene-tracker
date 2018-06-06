@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, RevisionableTrait, CrudTrait, SoftDeletes, HasRoles;
+    use HasApiTokens, Notifiable, RevisionableTrait, CrudTrait, SoftDeletes, HasRoles, Impersonate;
 
     protected $revisionCreationsEnabled = true;
 
@@ -120,5 +121,19 @@ class User extends Authenticatable
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
             return $value->id == $panel->id && (boolean)$value->pivot->is_curator;
         });
+    }
+
+    public function canImpersonate()
+    {
+        return $this->hasRole('programmer|admin');
+    }
+
+    public function canBeImpersonated()
+    {
+        if (\Auth::user()->hasRole('admin')) {
+            return !$this->hasRole("programmer|admin");
+        }
+
+        return !$this->hasRole("programmer");
     }
 }

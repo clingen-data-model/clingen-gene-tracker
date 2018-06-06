@@ -10,6 +10,7 @@
         "backpack/crud": "^3.3",
         "backpack/pagemanager": "^1.1",
         "fideloper/proxy": "~4.0",
+        "lab404/laravel-impersonate": "^1.2",
         "laravel/framework": "5.6.*",
         "laravel/passport": "^5.0",
         "laravel/tinker": "~1.0",

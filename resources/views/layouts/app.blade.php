@@ -70,8 +70,29 @@
         <main class="py-4">
             @yield('content')
         </main>
-    </div>
 
+        @role('programmer|admin')
+            <div class="container form-inline">
+                Impersonate a user:
+                &nbsp;
+                <select name="impersonate_id" class="form-control" onchange="location.href = '/impersonate/take/'+this.value">
+                    <option value="">Select user...</option>
+                    @foreach($impersonatable as $u)
+                        <option value="{{$u->id}}">{{$u->name}}</option>
+                    @endforeach
+                </select>
+            </div>
+        @endrole
+        @impersonating
+            <div class="container">
+                <div class="alert alert-warning">
+                    You are impersonating {{ \Auth::user()->name }}
+                    &nbsp;
+                    <a href="/impersonate/leave" class="btn btn-secondary btn-sm">Stop impersonating</a>
+                </div>
+            </div>
+        @endImpersonating
+    </div>
     <!-- Scripts -->
     <script>
         let user = {!! json_encode($user) !!}.user
