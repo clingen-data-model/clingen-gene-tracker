@@ -24,6 +24,8 @@ window.axios.interceptors.request.use(function (config) {
     return config;
 })
 
+// console.log('beans');
+
 axios.interceptors.response.use(function (response) {
     store.commit('removeRequest');
     return response;

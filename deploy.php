@@ -39,6 +39,12 @@ host('web3.schsr.unc.edu')
     ->set('deploy_path', '/mnt/web/project/{{application}}');
 
 // Tasks
+desc('Build for deploy, merge, and push');
+task('build', function () {
+    runLocally('npm run prod');
+    runLocally('git ci -am "build js and css for deploy"');
+    runLocally('git push');
+})->local();
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
