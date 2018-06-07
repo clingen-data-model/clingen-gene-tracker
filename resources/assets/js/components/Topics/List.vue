@@ -1,15 +1,7 @@
 <style></style>
 <template>
     <div class="card">
-        <div class="card-header">
-            <router-link
-                id="new-topic-btn" 
-                class="btn btn-secondary float-right btn-sm" 
-                to="/topics/create"
-            >
-                Add new Topic
-            </router-link>
- 
+        <div class="card-header"> 
             <h3>Topics in curation</h3>
         </div>
             
@@ -28,32 +20,6 @@
         },
         data: function () {
             return {
-                filter: null,
-                pageLength: 8,
-                currentPage: 1,
-                totalRows: null,
-                fields: {
-                    gene_symbol: {
-                        label: 'Gene Symbol',
-                        sortable: true
-                    },
-                    expert_panel: {
-                        label: 'Expert Panel',
-                        sortable: true,
-                    },
-                    curator: {
-                        label: 'Curator',
-                        sortable: true,
-                    },
-                    current_status: {
-                        label: 'Status',
-                        sortable: true,
-                    },
-                    actions: {
-                        label: 'Actions',
-                        sortable: false,
-                    }
-                },
             }
         },
         computed: {

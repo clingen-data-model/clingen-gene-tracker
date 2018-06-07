@@ -9,10 +9,15 @@ import CriteriaOverview from './components/CriteriaOverview'
 import WorkingGroups from './components/WorkingGroups/Index'
 import GroupList from './components/WorkingGroups/List'
 import GroupShow from './components/WorkingGroups/Show'
+import UserDashboard from './components/UserDashboard'
 
 Vue.use(VueRouter)
 
 const routes = [
+    {
+        path: '',
+        component: UserDashboard
+    },
     {
         path: '/working-groups',
         component: WorkingGroups,
@@ -30,7 +35,6 @@ const routes = [
     },
     { 
         path: '/topics',
-        alias: '' ,
         component: Topics,
         children: [
             {

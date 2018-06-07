@@ -33,7 +33,11 @@
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.expert_panel_id" :state="expertPanelIdError">
                 <option :value="null">Select...</option>
-                <option v-for="panel in panels" :value="panel.id">{{panel.name}}</option>
+                <option v-for="panel in panelOptions" 
+                    :value="panel.id"
+                >
+                    {{panel.name}}
+                </option>
             </b-form-select>
             <validation-error :messages="errors.expert_panel_id"></validation-error>
         </b-form-group>
@@ -41,7 +45,11 @@
         <b-form-group horizontal id="expert-panel-select-group" label="Curator" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in panelCurators" :value="curator.id">{{curator.name}}</option>
+                <option v-for="curator in panelCurators" 
+                    :value="curator.id"
+                >
+                    {{curator.name}}
+                </option>
             </b-form-select>
         </b-form-group>
     
@@ -54,7 +62,11 @@
 
                 <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
                     <option :value="null">Select...</option>
-                    <option v-for="status in topicStatuses" :value="status.id">{{status.name}}</option>
+                    <option v-for="status in statusOptions" 
+                        :value="status.id"
+                    >
+                        {{status.name}}
+                    </option>
                 </b-form-select>
                 &nbsp;
                 <datepicker 
@@ -116,6 +128,12 @@
             ...mapGetters('topicStatuses', {
                 topicStatuses: 'Items',
             }),
+            panelOptions: function () {
+                return this.panels.filter(panel => user.canSelectExpertPanel(panel))
+            },
+            statusOptions: function () {
+                return this.topicStatuses.filter(status => user.canSelectTopicStatus(status, this.updatedTopic))
+            },
             panelCurators: function () {
                 const curators = this.curators.filter(user => {
                     return (
