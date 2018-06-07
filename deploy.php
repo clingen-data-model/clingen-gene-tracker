@@ -2,6 +2,8 @@
 
 namespace Deployer;
 
+use Symfony\Component\Console\Input\InputOption;
+
 require 'recipe/laravel.php';
 
 // Project name
@@ -38,6 +40,7 @@ host('web3.schsr.unc.edu')
     ->set('branch', 'master')
     ->set('deploy_path', '/mnt/web/project/{{application}}');
 
+option('with-build', null, InputOption::VALUE_OPTIONAL, 'Build before deploy (optional)');
 // Tasks
 desc('Build for deploy, merge, and push');
 task('build', function () {
@@ -46,10 +49,10 @@ task('build', function () {
     runLocally('git push');
 })->local();
 
-before('deploy:prepare', 'build');
-
-// [Optional] if deploy fails automatically unlock.
-after('deploy:failed', 'deploy:unlock');
+task('build-and-deploy', [
+    'build',
+    'deploy'
+]);
 
 // Migrate database before symlink new release.
 
