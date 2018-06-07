@@ -46,6 +46,8 @@ task('build', function () {
     runLocally('git push');
 })->local();
 
+before('deploy:prepare', 'build');
+
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
 
