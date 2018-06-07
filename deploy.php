@@ -45,11 +45,13 @@ option('with-build', null, InputOption::VALUE_OPTIONAL, 'Build before deploy (op
 desc('Build for deploy, merge, and push');
 task('build', function () {
     runLocally('npm run prod');
+    write('Committing build js and css assets');
     runLocally('git ci -am "build js and css for deploy"');
+    write('pushing changes');
     runLocally('git push');
 })->local();
 
-task('build-and-deploy', [
+task('build-deploy', [
     'build',
     'deploy'
 ]);
