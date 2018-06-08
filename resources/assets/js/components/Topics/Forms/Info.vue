@@ -35,6 +35,7 @@
                 <option :value="null">Select...</option>
                 <option v-for="panel in panelOptions" 
                     :value="panel.id"
+                    :key="panel.id"
                 >
                     {{panel.name}}
                 </option>
@@ -46,6 +47,7 @@
             <b-form-select id="expert-panel-select" v-model="updatedTopic.curator_id">
                 <option :value="null">Select...</option>
                 <option v-for="curator in panelCurators" 
+                    :key="curator.id"
                     :value="curator.id"
                 >
                     {{curator.name}}
@@ -62,7 +64,8 @@
 
                 <b-form-select id="expert-panel-select" v-model="updatedTopic.topic_status_id">
                     <option :value="null">Select...</option>
-                    <option v-for="status in statusOptions" 
+                    <option v-for="status in statusOptions"
+                        :key="status.id"
                         :value="status.id"
                     >
                         {{status.name}}
