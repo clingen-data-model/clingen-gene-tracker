@@ -1,6 +1,14 @@
 <style></style>
 <template>
     <div class="topics-table">
+        <div v-show="loading" class="text-center">
+            <p class="lead">loading...</p>
+        </div>
+        <div v-show="!loading && topics.length == 0"
+            class="alert alert-secondary pl-2 pr-2 pt-2 pb-2"
+        >
+            <slot name="no-topics">No topics found.</slot>
+        </div>
         <div class="row mb-2" v-show="totalRows > pageLength">
             <div class="col-md-6 form-inline">
                 <label for="#topics-filter-input">Filter:</label>&nbsp;
@@ -17,6 +25,7 @@
             :per-page="pageLength"
             :current-page="currentPage"
             @filtered="onFiltered"
+            v-show="!$store.state.loading && topics.length >0"
         >            
             <template slot="gene_symbol" slot-scope="data">
                 <router-link
@@ -46,7 +55,7 @@
                 </router-link>
             </template>
         </b-table>
-        <div class="float-right">Total Records: {{totalRows}}</div class="float-right">
+        <div class="float-right mr-3 mb-3">Total Records: {{totalRows}}</div>
     </div>
 </template>
 <script>
@@ -96,7 +105,10 @@
                 let items = Object.values(this.topics);
                 this.totalRows = items.length;
                 return items;
-            },            
+            },
+            loading: function () {
+                return this.$store.getters.loading && this.topics.length == 0;
+            },
         },
         methods: {
             onFiltered (filteredItems) {

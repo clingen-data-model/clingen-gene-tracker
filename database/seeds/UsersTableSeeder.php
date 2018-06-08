@@ -57,7 +57,7 @@ class UsersTableSeeder extends Seeder
                 'password' => 'tester'
             ]);
             $user->assignRole('curator');
-            $user->expertPanels()->attach([2, 4]);
+            $user->expertPanels()->attach([2=>['is_curator'=>1], 4=>['is_curator'=>1]]);
 
             $user = User::updateOrCreate([
                 'name' => 'Eugenia Kirator',
@@ -65,7 +65,8 @@ class UsersTableSeeder extends Seeder
                 'password' => 'tester'
             ]);
             $user->assignRole('curator');
-            $user->expertPanels()->attach([1, 4]);
+            $user->expertPanels()->attach([1=>['is_curator'=>1]]);
+            $user->expertPanels()->attach([4=>['is_curator'=>1, 'can_edit_topics'=>1]]);
 
             $user = User::updateOrCreate([
                 'name' => 'Sarah Coordinator',
@@ -73,7 +74,7 @@ class UsersTableSeeder extends Seeder
                 'password' => 'tester'
             ]);
             $user->assignRole('coordinator');
-            $user->expertPanels()->attach([1]);
+            $user->expertPanels()->attach([1 => ['is_coordinator'=>1, 'can_edit_topics'=>1]]);
         }
     }
 }

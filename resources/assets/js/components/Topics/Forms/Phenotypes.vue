@@ -25,7 +25,7 @@
                                 v-model="updatedTopic.phenotypes"
                                 :value="data.item.phenotypeMimNumber"
                                 :disabled="disabled"
-                            ></input>
+                            >
                         </template>
                     </b-table>
                     
@@ -53,12 +53,12 @@
                 <div class="form-group" v-show="updatedTopic.curation_type_id != 3">
                     <label for="pmids">Supporting PMIDS:</label>
                     <small>comma separated list</small>
-                    <input id="pmids" v-model="updatedTopic.pmids" class="form-control" placeholder="18183754, 123451, 1231231"></input>
+                    <input id="pmids" v-model="updatedTopic.pmids" class="form-control" placeholder="18183754, 123451, 1231231">
                     <validation-error :messages="errors.pmids"></validation-error>
                 </div>
                 <div class="form-group" v-show="updatedTopic.curation_type_id == 3">
                     <label for="isolated_phenotype">Enter broader OMIM phenotype (MIM phenotype):</label>
-                    <input id="isolated_phenotype" v-model="updatedTopic.isolated_phenotype" class="form-control"></input>
+                    <input id="isolated_phenotype" v-model="updatedTopic.isolated_phenotype" class="form-control">
                     <validation-error :messages="errors.isolated_phenotype"></validation-error>
                 </div>
                 <div class="form-group">
