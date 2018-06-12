@@ -42,3 +42,6 @@
   AddOutputFilterByType DEFLATE text/javascript
   AddOutputFilterByType DEFLATE text/plain
 </IfModule>
+<filesMatch ".(css|js)$">
+ Header set Cache-Control "max-age=31536000, public"
+</filesMatch>
