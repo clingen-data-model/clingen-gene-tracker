@@ -37,6 +37,10 @@ $return403 = function () {
         ->view('errors.403', $data, 403);
 };
 
+Route::get('admin/password/reset/{token}', function ($token) {
+    return redirect('/password/reset/'.$token);
+});
+
 Route::get('/register', $return403);
 Route::post('/register', $return403);
 
