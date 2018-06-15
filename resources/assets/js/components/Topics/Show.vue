@@ -75,7 +75,7 @@
                     <div class="col-md">{{ (topic.mondo_id) ? topic.mondo_id : '--'}}</div>
                 </div>
                 <div class="row mt-3">
-                    <strong class="col-md-2">Currnt Status:</strong>
+                    <strong class="col-md-2">Current Status:</strong>
                     <div class="col-md-6">
                         <div class="mb-2">
                             {{ topic.current_status.name }} 
