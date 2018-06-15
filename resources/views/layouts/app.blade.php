@@ -26,7 +26,11 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
+                    @if (!Auth::guest())
                     <ul class="navbar-nav mr-auto">
+                        <li>
+                            <a class="nav-link" href="/#/">Dashboard</a>
+                        </li>
                         <li>
                             <a class="nav-link" href="/#/topics">Topics</a>
                         </li>
@@ -34,6 +38,7 @@
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
                     </ul>
+                    @endif
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
