@@ -44,7 +44,7 @@ class UserCrudController extends CrudController
 
         $this->crud->addField([
             'label' => 'Expert Panels',
-            'type' => 'select2_multiple',
+            'type' => 'expert_panel_field',
             'name' => 'expertPanels',
             'entity' => 'expertPanels',
             'attribute' => 'name',
@@ -59,28 +59,6 @@ class UserCrudController extends CrudController
             'entity' => 'roles',
             'attribute' => 'name',
             'model' => Role::class,
-            'pivot' => true
-        ], 'both');
-
-        /*// ------ CRUD FIELDS
-        $this->crud->addField([
-            'label' => 'Topics',
-            'type' => 'select2_multiple',
-            'name' => 'topics',
-            'entity' => 'topics',
-            'attribute' => 'gene_symbol',
-            'model' => Topic::class,
-            'pivot' => false
-        ], 'both');*/
-
-        // ------ CRUD FIELDS
-        $this->crud->addField([
-            'label' => 'Permissions',
-            'type' => 'select2_multiple',
-            'name' => 'permissions',
-            'entity' => 'permissions',
-            'attribute' => 'name',
-            'model' => Permission::class,
             'pivot' => true
         ], 'both');
 

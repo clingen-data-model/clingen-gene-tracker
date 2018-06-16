@@ -9,22 +9,21 @@ require('./bootstrap');
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
-import DateField from './components/DateField'
 import CriteriaTable from './components/Topics/CriteriaTable'
-import filters from './filters'
 import User from './User'
+import ExpertPanelField from './components/admin/ExpertPanelField'
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
 
-user = new User(user);
+if (user) {
+    user = new User(user);
+}
 
 window.axios.interceptors.request.use(function (config) {
     store.commit('addRequest');
     return config;
 })
-
-// console.log('beans');
 
 axios.interceptors.response.use(function (response) {
     store.commit('removeRequest');
@@ -50,6 +49,15 @@ if (document.getElementById('app')) {
             loading: function () {
                 return this.$store.getters.loading;
             }
+        }
+    });
+}
+
+if (document.getElementById('expert-panel-field')) {
+    const app = new Vue({
+        el: '#expert-panel-field',
+        components: {
+            ExpertPanelField
         }
     });
 }
