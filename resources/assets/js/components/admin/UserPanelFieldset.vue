@@ -2,7 +2,7 @@
 
 <template>
     <div  class="form-group form-inline">
-        <pre>{{updatedPanel}}</pre>
+        <!-- <pre>{{updatedPanel}}</pre> -->
         <select v-model="updatedPanel.expert_panel_id" class="form-control">
             <option>Select...</option>
             <option v-for="option in panelOptions" v-bind:key="option.id" :value="option.id">{{option.name}}</option>

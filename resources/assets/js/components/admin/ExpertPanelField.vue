@@ -2,8 +2,8 @@
 
 <template>
     <div>
-        <!-- <pre>{{selectedPanels}}</pre> -->
-        <input type="hidden" :value="serializedSelections"></input>
+        <!-- <pre>{{selectedPanels.length}}</pre> -->
+        <input type="hidden" :value="serializedSelections" name="expert_panels_json"></input>
         <table 
             class="table table-striped" 
         >
@@ -37,7 +37,7 @@
                     <input type="checkbox" v-model="panel.pivot.can_create_topics">
                 </td>
                 <td>
-                    <button class="btn btn-xs btn-danger" @click="removePanel(idx)">
+                    <button type="button" class="btn btn-xs btn-danger" @click="removePanel(idx)">
                         <span class="fa fa-close"></span>
                     </button>
                 </td>
@@ -108,6 +108,7 @@
             }
         },
         mounted() {
+            console.log('mounted')
             this.syncSelectedPanels()
         }
     }

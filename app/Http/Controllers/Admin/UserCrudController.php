@@ -155,6 +155,8 @@ class UserCrudController extends CrudController
         $redirect_location = parent::storeCrud($request);
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
+
+        $this->processExpertPanels($request);
         return $redirect_location;
     }
 
@@ -164,11 +166,11 @@ class UserCrudController extends CrudController
         if ($request['password'] === null) {
             unset($request['password']);
         }
-
         // your additional operations before save here
         $redirect_location = parent::updateCrud($request);
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
+        $this->processExpertPanels($request);
         return $redirect_location;
     }
 
@@ -182,5 +184,19 @@ class UserCrudController extends CrudController
         }
 
         return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);
+    }
+
+    private function processExpertPanels(Request $request)
+    {
+        if ($request->expert_panels_json) {
+            $expertPanels = [];
+            foreach (json_decode($request->expert_panels_json) as $panel) {
+                if (!isset($panel->id)) {
+                    continue;
+                }
+                $expertPanels[$panel->id] = (array)$panel->pivot;
+            }
+            $this->crud->entry->expertPanels()->sync($expertPanels);
+        }
     }
 }

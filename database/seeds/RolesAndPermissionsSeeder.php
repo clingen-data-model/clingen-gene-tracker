@@ -53,12 +53,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
         $this->givePermissionsToRole($role, 'topics');
 
-        $role = Role::firstOrcreate(['name' => 'coordinator']);
-        if (!$role->hasPermissionTo($managePanelTopics->name)) {
-            $role->givePermissionTo($managePanelTopics->name);
-        }
+        // $role = Role::firstOrcreate(['name' => 'coordinator']);
+        // if (!$role->hasPermissionTo($managePanelTopics->name)) {
+        //     $role->givePermissionTo($managePanelTopics->name);
+        // }
 
-        Role::firstOrcreate(['name' => 'curator']);
+        // Role::firstOrcreate(['name' => 'curator']);
     }
 
     protected function givePermissionsToRole($role, $entity, $actions = null)
