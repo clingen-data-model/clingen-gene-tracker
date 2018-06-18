@@ -12,7 +12,7 @@
                 <th class="text-center"><small>Curator</small></th>
                 <th class="text-center"><small>Coordinator</small></th>
                 <th class="text-center"><small>Edit Topics</small></th>
-                <th class="text-center"><small>Add Topics</small></th>
+                <!-- <th class="text-center"><small>Add Topics</small></th> -->
                 <th class="text-center"></th>
             </tr>
             <tr v-for="(panel, idx) in selectedPanels" v-bind:key="panel.id" class="text-center">
@@ -33,9 +33,9 @@
                 <td>
                     <input type="checkbox" v-model="panel.pivot.can_edit_topics">
                 </td>
-                <td>
+                <!-- <td>
                     <input type="checkbox" v-model="panel.pivot.can_create_topics">
-                </td>
+                </td> -->
                 <td>
                     <button type="button" class="btn btn-xs btn-danger" @click="removePanel(idx)">
                         <span class="fa fa-close"></span>
