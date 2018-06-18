@@ -4,7 +4,9 @@
     @include('crud::inc.field_translatable_icon')
     <div id="expert-panel-field">
         @php 
-            $prepopValue = (old($field['name'])) ? old($field['value']) : $field['value'];
+            $prepopValue = (old($field['name'])) 
+                                ? old($field['value']) 
+                                : ($field['value']) ?? '[]';
         @endphp
         <expert-panel-field 
             :connected-panels="{{$prepopValue}}" 

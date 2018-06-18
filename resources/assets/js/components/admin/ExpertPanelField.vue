@@ -2,57 +2,59 @@
 
 <template>
     <div>
+        <!-- <pre>{{selectedPanels}}</pre> -->
         <input type="hidden" :value="serializedSelections"></input>
-        <ul class="list-unstyled" v-if="selectedPanels.length > 0">
-            <li v-for="panel in selectedPanels" v-bind:key="panel.id" class="form-group form-inline">
-                <div  class="form-group form-inline">
-                    <pre>{{updatedPanel}}</pre>
-                    <select v-model="panel.expert_panel_id" class="form-control">
-                        <option>Select...</option>
-                        <option v-for="option in panelOptions" v-bind:key="option.id" :value="option.id">{{option.name}}</option>
-                    </select>
-                    <label>
-                        <input type="checkbox" v-model="panel.is_curator">
-                        Curator
-                    </label>
-                    <label>
-                        <input type="checkbox" v-model="panel.is_coordinator">
-                        Coordinator
-                    </label>
-                    <label>
-                        <input type="checkbox" v-model="panel.can_edit_topics">
-                        Can edit topics
-                    </label>
-                    <label>
-                        <input type="checkbox" v-model="panel.can_create_topics">
-                        Can create topics
-                    </label>
-                </div>
-            </li>
-        </ul>
-        <div  class="form-group form-inline">
-            <pre>{{panel}}</pre>
-            <select v-model="newPanel.expert_panel_id" class="form-control">
-                <option>Select...</option>
-                <option v-for="option in panelOptions" v-bind:key="option.id" :value="option.id">{{option.name}}</option>
-            </select>
-            <label>
-                <input type="checkbox" v-model="newPanel.is_curator">
-                Curator
-            </label>
-            <label>
-                <input type="checkbox" v-model="newPanel.is_coordinator">
-                Coordinator
-            </label>
-            <label>
-                <input type="checkbox" v-model="newPanel.can_edit_topics">
-                Can edit topics
-            </label>
-            <label>
-                <input type="checkbox" v-model="newPanel.can_create_topics">
-                Can create topics
-            </label>
-        </div>
+        <table 
+            class="table table-striped" 
+        >
+            <tr v-if="selectedPanels.length > 0">
+                <th><small>Expert Panel</small></th>
+                <th class="text-center"><small>Curator</small></th>
+                <th class="text-center"><small>Coordinator</small></th>
+                <th class="text-center"><small>Edit Topics</small></th>
+                <th class="text-center"><small>Add Topics</small></th>
+                <th class="text-center"></th>
+            </tr>
+            <tr v-for="(panel, idx) in selectedPanels" v-bind:key="panel.id" class="text-center">
+                <td>
+                    <small>
+                        <select v-model="panel.id" class="form-control">
+                            <option>Select...</option>
+                            <option v-for="option in panelOptions" v-bind:key="option.id" :value="option.id">{{option.name}}</option>
+                        </select>
+                    </small>
+                </td>
+                <td>
+                    <input type="checkbox" v-model="panel.pivot.is_curator">
+                </td>
+                <td>
+                    <input type="checkbox" v-model="panel.pivot.is_coordinator">
+                </td>
+                <td>
+                    <input type="checkbox" v-model="panel.pivot.can_edit_topics">
+                </td>
+                <td>
+                    <input type="checkbox" v-model="panel.pivot.can_create_topics">
+                </td>
+                <td>
+                    <button class="btn btn-xs btn-danger" @click="removePanel(idx)">
+                        <span class="fa fa-close"></span>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: .5em 0 .5em 0">
+                    <strong>
+                        <button 
+                            @click="addNewPanel()"
+                            type="button" 
+                            class="btn btn-sm btn-primary">
+                            Add expert panel
+                        </button>
+                    </strong>
+                </td>
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -65,7 +67,8 @@
         },
         props: {
             connectedPanels: {
-                required: true
+                required: true,
+                default: []
             },
             panelOptions: {
                 required: true
@@ -74,7 +77,9 @@
         data() {
             return {
                 selectedPanels: [],
-                newPanel: {}
+                newPanel: {
+                    pivot: {}
+                }
             }
         },
         computed: {
@@ -85,6 +90,21 @@
         methods: {
             syncSelectedPanels() {
                 this.selectedPanels = JSON.parse(JSON.stringify(this.connectedPanels))
+                this.selectedPanels.map((panel) => {
+                    console.log('map');
+                    panel.pivot.is_curator = (panel.pivot.is_curator == 1)
+                    panel.pivot.is_coordinator = (panel.pivot.is_coordinator == 1)
+                    panel.pivot.can_edit_topics = (panel.pivot.can_edit_topics == 1)
+                    return panel;
+                });
+            },
+            addNewPanel() {
+                this.selectedPanels.push({
+                    pivot: {}
+                });
+            },
+            removePanel(idx) {
+                this.selectedPanels.splice(idx, 1)
             }
         },
         mounted() {
