@@ -5,7 +5,7 @@
             <div class="alert alert-warning" v-show="matchedCount > 0">
                 <div class="clearfix">
                     There are already <strong>{{matchedCount}}</strong> topics in curation or pre-curation with this gene symbol.
-                    <button class="btn btn-sm btn-warning float-right" v-b-toggle.matching-topics-details>Details</button>
+                    <button type="button" class="btn btn-sm btn-warning float-right" v-b-toggle.matching-topics-details>Details</button>
                 </div>
                 <b-collapse id="matching-topics-details" class="mt-2">
                     <table class="table table-striped table-bordered table-small bg-white">
