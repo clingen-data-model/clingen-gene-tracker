@@ -8,20 +8,33 @@
 </style>
 <template>
     <div class="alerts-container">
-        <div class="alert alert-info" v-for="(msg, idx) in info">
-            <a class="float-right crsr-pointer" @click="removeInfo(idx)">x</a>
-            {{msg}}
-        </div>
-        <div class="alert alert-danger" v-for="(msg, idx) in errors">
-            <a class="float-right crsr-pointer" @click="removeError(idx)">x</a>
-            {{msg}}
-        </div>
+        <transition name="fade">
+            <notice v-for="(msg, idx) in info"
+                v-bind:key="idx"
+                class="alert-info"
+                v-on:cleared="removeInfo(idx)"
+            >
+                {{msg}}
+            </notice>
+            <notice v-for="(msg, idx) in errors"
+                v-bind:key="idx"
+                class="alert-danger"
+                :auto-close="false"
+                v-on:cleared="removeError(idx)"
+            >
+                {{msg}}
+            </notice>
+        </transition>
     </div>
 </template>
 <script>
     import {mapState, mapMutations} from 'vuex';
+    import notice from './Notice'
 
     export default {
+        components: {
+            notice
+        },
         computed: {
             ...mapState('messages', {
                 info: state => state.info,
@@ -36,5 +49,6 @@
                 'removeError'
             ])
         },
+
     }
 </script>
