@@ -24,7 +24,7 @@ class TopicsTableSeeder extends Seeder
         Topic::create([
             'gene_symbol' => 'MYL2',
             'expert_panel_id' => $panels->random()->id,
-            'curator_id' => User::role('curator')->get()->random()->id
+            'curator_id' => User::all()->random()->id
         ]);
     }
 }

@@ -47,7 +47,6 @@ class UsersTableSeeder extends Seeder
             'password' => 'tester'
         ]);
         $user->assignRole('admin');
-        $user->assignRole('curator');
         $user->expertPanels()->attach([1, 3]);
 
         if (!env('production')) {
@@ -56,7 +55,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'james-curatorn@med.unc.edu',
                 'password' => 'tester'
             ]);
-            $user->assignRole('curator');
             $user->expertPanels()->attach([2=>['is_curator'=>1], 4=>['is_curator'=>1]]);
 
             $user = User::updateOrCreate([
@@ -64,7 +62,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'eugenia-kirator@med.unc.edu',
                 'password' => 'tester'
             ]);
-            $user->assignRole('curator');
             $user->expertPanels()->attach([1=>['is_curator'=>1]]);
             $user->expertPanels()->attach([4=>['is_curator'=>1, 'can_edit_topics'=>1]]);
 
@@ -73,7 +70,6 @@ class UsersTableSeeder extends Seeder
                 'email' => 'sara-coordinator@med.unc.edu',
                 'password' => 'tester'
             ]);
-            $user->assignRole('coordinator');
             $user->expertPanels()->attach([1 => ['is_coordinator'=>1, 'can_edit_topics'=>1]]);
         }
     }
