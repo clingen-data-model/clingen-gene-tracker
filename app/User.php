@@ -86,12 +86,10 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         if (Hash::needsRehash($value)) {
-            dump('hash value '.$value.' to '.Hash::make($value));
             $this->attributes['password'] = Hash::make($value);
         } else {
             $this->attributes['password'] = $value;
         }
-        dump('password attribute value:  '.$this->attributes['password']);
     }
 
     public function inExpertPanel($panel)

@@ -62,7 +62,7 @@
                     <validation-error :messages="errors.isolated_phenotype"></validation-error>
                 </div>
                 <div class="form-group">
-                    <label for="rationale_notes">Other comments:</label>
+                    <label for="rationale_notes">Provide your Rationale:</label>
                     <textarea id="rationale_notes" v-model="updatedTopic.rationale_notes" class="form-control"></textarea>
                     <validation-error :messages="errors.rationale_notes"></validation-error>
                 </div>
