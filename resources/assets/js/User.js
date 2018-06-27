@@ -12,6 +12,9 @@ class User {
     }
 
     inExpertPanel(expertPanel) {
+        if (!expertPanel) {
+            return false;
+        }
         return this.user.expert_panels.filter(panel => panel.id == expertPanel.id).length > 0
     }
 
@@ -22,8 +25,8 @@ class User {
         }).length > 0;
     }
 
-    isTopicCurator(topic) {
-        return this.user.id == topic.curator_id
+    isCurationCurator(curation) {
+        return this.user.id == curation.curator_id
     }
 
     canSelectExpertPanel(expertPanel) {
@@ -31,44 +34,47 @@ class User {
     }
 
     
-    canEditPanelTopics(expertPanel) {
+    canEditPanelCurations(expertPanel) {
+        if (this.hasRole('programmer') || this.hasRole('admin')) {
+            return true;
+        }
         if (!this.inExpertPanel(expertPanel)) {
             return false;
         }
         return this.user.expert_panels.filter(function (panel) {
             return panel.id == expertPanel.id 
-                && (panel.pivot.can_edit_topics === 1 
+                && (panel.pivot.can_edit_curations === 1 
                     || panel.pivot.is_coordinator === 1);
         }).length > 0;
     }
 
-    canSelectTopicStatus(status, topic) {
+    canSelectCurationStatus(status, curation) {
         switch (status.name) {
             case 'Recuration assigned':
-                return this.isPanelCoordinator(topic.expert_panel);            
+                return this.isPanelCoordinator(curation.expert_panel);            
                 break;
         
             default:
-                return this.canEditTopic(topic)
+                return this.canEditCuration(curation)
         }
     }
 
-    canEditTopic(topic) {
-        if (topic.curator_id == this.user.id) {
+    canEditCuration(curation) {
+        if (curation.curator_id == this.user.id) {
             return true
         }
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
         }
 
-        if (this.canEditPanelTopics(topic.expert_panel)) {
+        if (this.canEditPanelCurations(curation.expert_panel)) {
             return true;
         }
         
         return false;
     }
 
-    canAddTopics() {
+    canAddCurations() {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
         }

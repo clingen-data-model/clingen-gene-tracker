@@ -82,19 +82,19 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function can_get_wether_user_can_edit_panel_topics()
+    public function can_get_wether_user_can_edit_panel_curations()
     {
         $panel = factory(ExpertPanel::class)->create();
-        $this->assertFalse($this->user->canEditPanelTopics($panel));
+        $this->assertFalse($this->user->canEditPanelCurations($panel));
 
         $this->user->expertPanels()->attach($panel->id);
-        $this->assertFalse($this->user->fresh()->canEditPanelTopics($panel));
+        $this->assertFalse($this->user->fresh()->canEditPanelCurations($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['can_edit_topics'=>1]]);
-        $this->assertTrue($this->user->fresh()->canEditPanelTopics($panel));
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations'=>1]]);
+        $this->assertTrue($this->user->fresh()->canEditPanelCurations($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['can_edit_topics'=>0, 'is_coordinator'=>1]]);
-        $this->assertTrue($this->user->fresh()->canEditPanelTopics($panel));
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations'=>0, 'is_coordinator'=>1]]);
+        $this->assertTrue($this->user->fresh()->canEditPanelCurations($panel));
     }
 
     /**

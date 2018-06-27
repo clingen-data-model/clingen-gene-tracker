@@ -16,12 +16,12 @@
             Coordinator
         </label>
         <label>
-            <input type="checkbox" v-model="updatedPanel.can_edit_topics">
-            Can edit topics
+            <input type="checkbox" v-model="updatedPanel.can_edit_curations">
+            Can edit curations
         </label>
         <label>
-            <input type="checkbox" v-model="updatedPanel.can_edit_topics">
-            Can create topics
+            <input type="checkbox" v-model="updatedPanel.can_edit_curations">
+            Can create curations
         </label>
     </div>
 </template>

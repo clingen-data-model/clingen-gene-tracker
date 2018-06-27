@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Topics from './components/Topics/Topics'
-import TopicCreate from './components/Topics/Create'
-import TopicEdit from './components/Topics/Edit'
-import TopicShow from './components/Topics/Show'
-import TopicList from './components/Topics/List'
+import Curations from './components/Curations/Curation'
+import CurationCreate from './components/Curations/Create'
+import CurationEdit from './components/Curations/Edit'
+import CurationShow from './components/Curations/Show'
+import CurationList from './components/Curations/List'
 import CriteriaOverview from './components/CriteriaOverview'
 import WorkingGroups from './components/WorkingGroups/Index'
 import GroupList from './components/WorkingGroups/List'
@@ -34,25 +34,25 @@ const routes = [
         ]
     },
     { 
-        path: '/topics',
-        component: Topics,
+        path: '/curations',
+        component: Curations,
         children: [
             {
                 path: '',
-                component: TopicList
+                component: CurationList
             },
             { 
                 path: 'create', 
-                component: TopicCreate
+                component: CurationCreate
             },
             {
                 path: ':id',
-                component: TopicShow,
+                component: CurationShow,
                 props: true
             },
             { 
                 path: ':id/edit', 
-                component: TopicEdit,
+                component: CurationEdit,
                 props: true
             },
         ]

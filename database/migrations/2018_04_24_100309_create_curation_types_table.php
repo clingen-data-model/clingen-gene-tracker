@@ -20,7 +20,7 @@ class CreateCurationTypesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table('topics', function (Blueprint $table) {
+        Schema::table('curations', function (Blueprint $table) {
             $table->integer('curation_type_id')->unsigned()->nullable()->after('gene_symbol');
             $table->foreign('curation_type_id')->references('id')->on('curation_types');
         });
@@ -33,7 +33,7 @@ class CreateCurationTypesTable extends Migration
      */
     public function down()
     {
-        Schema::table('topics', function (Blueprint $table) {
+        Schema::table('curations', function (Blueprint $table) {
             $table->dropForeign(['curation_type_id']);
             $table->dropColumn('curation_type_id');
         });

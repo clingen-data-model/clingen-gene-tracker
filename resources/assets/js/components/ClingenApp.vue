@@ -9,20 +9,20 @@
 
     export default {
         methods: {
-            ...mapActions('topics', {
-                getAllTopics: 'getAllItems'
+            ...mapActions('curations', {
+                getAllCurations: 'getAllItems'
             }),
-            ...mapActions('topicStatuses', {
-                getAllTopicStatuses: 'getAllItems'
+            ...mapActions('curationStatuses', {
+                getAllCurationStatuses: 'getAllItems'
             }),
             ...mapActions('rationales', {
                 getAllRationales: 'getAllItems'
             })
         },
         mounted: function () {
-            if (this.$store.state.topics.items.length == 0) {
-                this.getAllTopics();
-                this.getAllTopicStatuses();
+            if (this.$store.state.curations.items.length == 0) {
+                this.getAllCurations();
+                this.getAllCurationStatuses();
                 this.getAllRationales();
             }
         }

@@ -12,10 +12,7 @@ const getters = {
     },
     getCurators: (state) => {
         return state.items.filter(item => { 
-            if (!item.roles || item.roles.lenght == 0) {
-                return false
-            }
-            return item.roles.filter(i => i.name === 'curator').length > 0
+            return item.expert_panels.filter(panel => panel.pivot.is_curator).length > 0
         })
     }
 }

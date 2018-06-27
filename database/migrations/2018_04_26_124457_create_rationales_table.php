@@ -19,7 +19,7 @@ class CreateRationalesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::table("topics", function (Blueprint $table) {
+        Schema::table("curations", function (Blueprint $table) {
             $table->integer('rationale_id')->unsigned()->nullable()->after('pmids');
             $table->foreign('rationale_id')->references('id')->on('rationales');
         });
@@ -32,7 +32,7 @@ class CreateRationalesTable extends Migration
      */
     public function down()
     {
-        Schema::table("topics", function (Blueprint $table) {
+        Schema::table("curations", function (Blueprint $table) {
             $table->dropForeign(['rationale_id']);
             $table->dropColumn('rationale_id');
         });

@@ -21,9 +21,9 @@ class ExpertPanel extends Model
         return $this->belongsTo(WorkingGroup::class);
     }
 
-    public function topics()
+    public function curations()
     {
-        return $this->hasMany(Topic::class);
+        return $this->hasMany(Curation::class);
     }
 
     public function users()
@@ -34,14 +34,14 @@ class ExpertPanel extends Model
     public function curators()
     {
         return $this->belongsToMany(User::class)
-                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->wherePivot('is_curator', 1);
     }
 
     public function coordinators()
     {
         return $this->belongsToMany(User::class)
-                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->wherePivot('is_coordinator', 1);
     }
 }

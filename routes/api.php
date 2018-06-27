@@ -19,9 +19,9 @@ Route::group([
 
     // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
-    Route::resource('/topics', 'TopicController');
+    Route::resource('/curations', 'CurationController');
     Route::resource('/users', 'UserController')->only(['index']);
-    Route::resource('/topic-statuses', 'TopicStatusController')->only(['index']);
+    Route::resource('/curation-statuses', 'CurationStatusController')->only(['index']);
     Route::resource('/working-groups', 'WorkingGroupController')->only(['index', 'show']);
     Route::resource('/curation-types', 'CurationTypeController')->only(['index']);
     Route::resource('/rationales', 'RationaleController')->only(['index']);

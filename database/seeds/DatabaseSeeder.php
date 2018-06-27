@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
         $this->call(WorkingGroupsTableSeeder::class);
         $this->call(ExpertPanelsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
-        $this->call(TopicStatusesTableSeeder::class);
+        $this->call(CurationStatusesTableSeeder::class);
         $this->call(CurationTypesTableSeeder::class);
         $this->call(RationalesTableSeeder::class);
-        $this->call(TopicsTableSeeder::class);
+        $this->call(CurationsTableSeeder::class);
     }
 }

@@ -13,10 +13,10 @@ class WorkingGroupController extends ApiController
         $group = parent::show($id);
         $group->load(
             'expertPanels',
-            'expertPanels.topics',
-            'expertPanels.topics.curator',
-            'expertPanels.topics.currentStatus',
-            'expertPanels.topics.expertPanel',
+            'expertPanels.curations',
+            'expertPanels.curations.curator',
+            'expertPanels.curations.currentStatus',
+            'expertPanels.curations.expertPanel',
             'expertPanels.users',
             'expertPanels.users.roles'
         );

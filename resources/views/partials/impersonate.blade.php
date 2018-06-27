@@ -28,7 +28,7 @@
                         {{ $panel->name }}
                         {{ ($panel->pivot->is_coordinator == 1) ? '| coordinator' : '' }}
                         {{ ($panel->pivot->is_curator == 1) ? '| curator' : '' }}
-                        {{ ($panel->pivot->can_edit_topics == 1) ? ', can edit all topics' : '' }}
+                        {{ ($panel->pivot->can_edit_curations == 1) ? ', can edit all curations' : '' }}
                     </li>
                     @endforeach
                 </ul>

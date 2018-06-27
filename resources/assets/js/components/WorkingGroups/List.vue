@@ -5,11 +5,11 @@
             <h3>Working Groups</h3>
         </div>
         <div class="card-body">
-            <div class="topics-table-container">
+            <div class="curations-table-container">
                 <div class="row">
                     <div class="col-md-6 form-inline">
-                        <label for="#topics-filter-input">Filter:</label>&nbsp;
-                        <input v-model="filter" placeholder="filter results" class="form-control" id="topics-filter-input" />
+                        <label for="#curations-filter-input">Filter:</label>&nbsp;
+                        <input v-model="filter" placeholder="filter results" class="form-control" id="curations-filter-input" />
                     </div>
                     <div class="col-md-6">
                         <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-right" />    

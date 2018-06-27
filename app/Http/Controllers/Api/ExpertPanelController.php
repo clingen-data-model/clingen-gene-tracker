@@ -13,7 +13,7 @@ class ExpertPanelController extends ApiController
     public function show($id)
     {
         $panel = parent::show($id);
-        $panel->load('users', 'users.roles', 'topics');
+        $panel->load('users', 'users.roles', 'curations');
 
         return $panel;
     }

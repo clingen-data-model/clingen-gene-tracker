@@ -63,14 +63,14 @@ class UsersTableSeeder extends Seeder
                 'password' => 'tester'
             ]);
             $user->expertPanels()->attach([1=>['is_curator'=>1]]);
-            $user->expertPanels()->attach([4=>['is_curator'=>1, 'can_edit_topics'=>1]]);
+            $user->expertPanels()->attach([4=>['is_curator'=>1, 'can_edit_curations'=>1]]);
 
             $user = User::updateOrCreate([
                 'name' => 'Sarah Coordinator',
                 'email' => 'sara-coordinator@med.unc.edu',
                 'password' => 'tester'
             ]);
-            $user->expertPanels()->attach([1 => ['is_coordinator'=>1, 'can_edit_topics'=>1]]);
+            $user->expertPanels()->attach([1 => ['is_coordinator'=>1, 'can_edit_curations'=>1]]);
         }
     }
 }

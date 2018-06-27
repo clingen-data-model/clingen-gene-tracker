@@ -91,7 +91,7 @@ class WorkingGroupControllerTest extends TestCase
     public function show_includes_curations_for_expert_panels_by_default()
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
-        $topics = factory(\App\Topic::class, 2)->create([
+        $curations = factory(\App\Curation::class, 2)->create([
             'expert_panel_id' => $expertPanels->first()->id
         ]);
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\ExpertPanel;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
-use App\Topic;
+use App\Curation;
 use App\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Carbon\Carbon;

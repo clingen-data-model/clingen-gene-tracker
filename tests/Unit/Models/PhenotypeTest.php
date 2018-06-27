@@ -68,13 +68,13 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_has_many_topics_relationship()
+    public function phenotype_has_many_curations_relationship()
     {
         $phenotype = factory(\App\Phenotype::class)->create();
-        $topics = factory(\App\Topic::class, 3)->create();
-        $phenotype->topics()->attach($topics->pluck('id'));
+        $curations = factory(\App\Curation::class, 3)->create();
+        $phenotype->curations()->attach($curations->pluck('id'));
 
-        $this->assertInstanceOf(BelongsToMany::class, $phenotype->topics());
-        $this->assertEquals(3, $phenotype->topics->count());
+        $this->assertInstanceOf(BelongsToMany::class, $phenotype->curations());
+        $this->assertEquals(3, $phenotype->curations->count());
     }
 }

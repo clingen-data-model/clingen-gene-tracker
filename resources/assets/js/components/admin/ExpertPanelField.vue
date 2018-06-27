@@ -11,8 +11,8 @@
                 <th><small>Expert Panel</small></th>
                 <th class="text-center"><small>Curator</small></th>
                 <th class="text-center"><small>Coordinator</small></th>
-                <th class="text-center"><small>Edit Topics</small></th>
-                <!-- <th class="text-center"><small>Add Topics</small></th> -->
+                <th class="text-center"><small>Edit Curations</small></th>
+                <!-- <th class="text-center"><small>Add Curations</small></th> -->
                 <th class="text-center"></th>
             </tr>
             <tr v-for="(panel, idx) in selectedPanels" v-bind:key="panel.id" class="text-center">
@@ -31,10 +31,10 @@
                     <input type="checkbox" v-model="panel.pivot.is_coordinator">
                 </td>
                 <td>
-                    <input type="checkbox" v-model="panel.pivot.can_edit_topics">
+                    <input type="checkbox" v-model="panel.pivot.can_edit_curations">
                 </td>
                 <!-- <td>
-                    <input type="checkbox" v-model="panel.pivot.can_create_topics">
+                    <input type="checkbox" v-model="panel.pivot.can_create_curations">
                 </td> -->
                 <td>
                     <button type="button" class="btn btn-xs btn-danger" @click="removePanel(idx)">
@@ -94,7 +94,7 @@
                     console.log('map');
                     panel.pivot.is_curator = (panel.pivot.is_curator == 1)
                     panel.pivot.is_coordinator = (panel.pivot.is_coordinator == 1)
-                    panel.pivot.can_edit_topics = (panel.pivot.can_edit_topics == 1)
+                    panel.pivot.can_edit_curations = (panel.pivot.can_edit_curations == 1)
                     return panel;
                 });
             },

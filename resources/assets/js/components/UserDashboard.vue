@@ -4,28 +4,28 @@
     <div class="card">
         <div class="card-header">
             <router-link
-                id="new-topic-btn" 
+                id="new-curation-btn" 
                 class="btn btn-secondary float-right btn-sm" 
-                to="/topics/create"
-                v-if="user.canAddTopics()"
+                to="/curations/create"
+                v-if="user.canAddCurations()"
             >
-                Add new Topic
+                Add new Curation
             </router-link>
  
-            <h3>Your Topics</h3>
+            <h3>Your Curations</h3>
         </div>
         
-        <topics-table :topics="userTopics"></topics-table>
+        <curations-table :curations="userCurations"></curations-table>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import TopicsTable from './Topics/Table'
+    import CurationsTable from './Curations/Table'
     
     export default {
         components: {
-            TopicsTable
+            CurationsTable
         },
         data() {
             return {
@@ -33,29 +33,29 @@
             }
         },
         computed: {
-            ...mapGetters('topics', {
-                topics: 'Items'
+            ...mapGetters('curations', {
+                curations: 'Items'
             }),
-            userTopics: function() {
-                let userTopics = [];
-                if (this.topics.length > 0) {
-                    userTopics = this.topics.filter(topic => {
-                        const canEdit = user.canEditTopic(topic);
+            userCurations: function() {
+                let userCurations = [];
+                if (this.curations.length > 0) {
+                    userCurations = this.curations.filter(curation => {
+                        const canEdit = user.canEditCuration(curation);
                         return canEdit;
                     })
                 }
-                return userTopics
+                return userCurations
             }
         },
         methods: {
-            ...mapActions('topics', {
-                getAllTopics: 'getAllItems'
+            ...mapActions('curations', {
+                getAllCurations: 'getAllItems'
             }),
         },
         mounted: function () {
-            if (this.topics.length == 0) {
-                console.log('no topics in memory.  get them')
-                this.getAllTopics();
+            if (this.curations.length == 0) {
+                console.log('no curations in memory.  get them')
+                this.getAllCurations();
             }
         }
     }

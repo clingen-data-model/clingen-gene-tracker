@@ -32,12 +32,12 @@ class CurationTypeTest extends TestCase
     /**
      * @test
      */
-    public function has_many_topics()
+    public function has_many_curations()
     {
-        $topic = factory(\App\Topic::class)->create();
-        $this->curationType->topics()->save($topic);
+        $curation = factory(\App\Curation::class)->create();
+        $this->curationType->curations()->save($curation);
 
-        $this->assertInstanceOf(HasMany::class, $this->curationType->topics());
-        $this->assertEquals($topic->id, $this->curationType->topics->first()->id);
+        $this->assertInstanceOf(HasMany::class, $this->curationType->curations());
+        $this->assertEquals($curation->id, $this->curationType->curations->first()->id);
     }
 }

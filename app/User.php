@@ -55,15 +55,15 @@ class User extends Authenticatable
         });
     }
 
-    public function topics()
+    public function curations()
     {
-        return $this->hasMany(Topic::class, 'curator_id');
+        return $this->hasMany(Curation::class, 'curator_id');
     }
 
     public function expertPanels()
     {
         return $this->belongsToMany(ExpertPanel::class)
-                ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
+                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->withTimestamps();
     }
 
@@ -106,10 +106,10 @@ class User extends Authenticatable
         }
     }
 
-    public function canEditPanelTopics($panel)
+    public function canEditPanelCurations($panel)
     {
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
-            return $value->id == $panel->id && ((boolean)$value->pivot->can_edit_topics || (boolean)$value->pivot->is_coordinator);
+            return $value->id == $panel->id && ((boolean)$value->pivot->can_edit_curations || (boolean)$value->pivot->is_coordinator);
         });
     }
 

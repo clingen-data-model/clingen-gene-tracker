@@ -17,11 +17,11 @@ php artisan passport:keys  # generates keys for api auth. see https://laravel.co
 * **Gene** - A gene.  Usually represented by a [HGNC](https://www.genenames.org/) gene symbol.
 * **Phenotype** - The set of observable characteristics of an individual resulting from the interaction of its genotype with the environment.
 * **Disease Entity** - A disease of clinical interest.  May be composed of many phenotypes.
-* **Curation Topic** - A gene & disease entity pair.
-* **ExpertPanel** - AKA GCEP. A group of experts consulting on the curation of a curation topic.
+* **Curation Curation** - A gene & disease entity pair.
+* **ExpertPanel** - AKA GCEP. A group of experts consulting on the curation of a curation curation.
 * **WorkingGroup** - A group working on genetic disorders.  Has many ExpertPanels.
 
 ## Other Resources
 * **[OMIM](https://www.omim.org/)** - Online Mendelian Inheritance in Man catalog of genes and genetic disorders
 * **[MONDO](https://www.ebi.ac.uk/ols/ontologies/mondo)** - Monarch Disease Ontology: ontology of disease ontologies
-* **[GCI](https://curation.clinicalgenome.org/)** - DB and interface for ClinGen Curators to manage classification of curation topics
+* **[GCI](https://curation.clinicalgenome.org/)** - DB and interface for ClinGen Curators to manage classification of curation curations

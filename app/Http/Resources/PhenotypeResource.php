@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\TopicResource;
+use App\Http\Resources\CurationResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PhenotypeResource extends JsonResource
@@ -18,7 +18,7 @@ class PhenotypeResource extends JsonResource
         return [
             'id' => $this->id,
             'mim_number' => $this->mim_number,
-            'topics' => TopicResource::collection($this->whenLoaded('topics'))
+            'curations' => CurationResource::collection($this->whenLoaded('curations'))
         ];
     }
 }

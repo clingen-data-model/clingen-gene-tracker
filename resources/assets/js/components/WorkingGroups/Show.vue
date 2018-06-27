@@ -39,17 +39,17 @@
                             </b-tab> 
                             <b-tab>
                                 <template slot="title">
-                                    Curation Topics <span class="badge  badge-pill badge-primary">{{panel.topics.length}}</span>
+                                    Curation Curations <span class="badge  badge-pill badge-primary">{{panel.curations.length}}</span>
                                 </template>
                                 <ul class="list-unstyled mt-2">
                                     <li class="border-bottom">
-                                        <topics-table 
-                                            v-if="panel.topics && panel.topics.length > 0" 
-                                            :topics="panel.topics"
+                                        <curations-table 
+                                            v-if="panel.curations && panel.curations.length > 0" 
+                                            :curations="panel.curations"
                                             :page-length="5"
-                                        ></topics-table>
+                                        ></curations-table>
                                         <div v-else class="alert alert-secondary">
-                                            {{panel.name}} doesn't have any topics yet.
+                                            {{panel.name}} doesn't have any curations yet.
                                         </div>
                                     </li>
                                 </ul>
@@ -67,12 +67,12 @@
 </template>
 <script>
     import {mapGetters, mapActions} from 'vuex'
-    import TopicsTable from '../Topics/Table'
+    import CurationsTable from '../Curations/Table'
 
     export default {
         props: ['id'],
         components: {
-            TopicsTable
+            CurationsTable
         },
         beforeRouteUpdate (to, from, next) {
             this.fetchGroup(this.id);

@@ -9,7 +9,7 @@ require('./bootstrap');
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
-import CriteriaTable from './components/Topics/CriteriaTable'
+import CriteriaTable from './components/Curations/CriteriaTable'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField'
 

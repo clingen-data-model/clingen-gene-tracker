@@ -32,7 +32,7 @@
                             <a class="nav-link" href="/#/">Dashboard</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="/#/topics">Topics</a>
+                            <a class="nav-link" href="/#/curations">Curations</a>
                         </li>
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>

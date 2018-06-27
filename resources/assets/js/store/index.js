@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import messages from './modules/messages'
-import topics from './modules/topics'
+import curations from './modules/curations'
 import panels from './modules/panels'
 import users from './modules/users'
-import topicStatuses from './modules/topic_statuses'
+import curationStatuses from './modules/curation_statuses'
 import rationales from './modules/rationales'
 import workingGroups from './modules/working_groups'
 
@@ -41,8 +41,8 @@ export default new Vuex.Store({
   modules: {
     messages: messages,
     panels: panels,
-    topics: topics,
-    topicStatuses: topicStatuses,
+    curations: curations,
+    curationStatuses: curationStatuses,
     users: users,
     rationales: rationales,
     workingGroups: workingGroups,

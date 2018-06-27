@@ -33,12 +33,12 @@ class RationaleTest extends TestCase
     /**
      * @test
      */
-    public function rationale_has_many_topics()
+    public function rationale_has_many_curations()
     {
-        $topic = factory(\App\Topic::class)->create();
-        $this->rationale->topics()->save($topic);
+        $curation = factory(\App\Curation::class)->create();
+        $this->rationale->curations()->save($curation);
 
-        $this->assertInstanceOf(HasMany::class, $this->rationale->topics());
-        $this->assertEquals($topic->id, $this->rationale->topics->first()->id);
+        $this->assertInstanceOf(HasMany::class, $this->rationale->curations());
+        $this->assertEquals($curation->id, $this->rationale->curations->first()->id);
     }
 }

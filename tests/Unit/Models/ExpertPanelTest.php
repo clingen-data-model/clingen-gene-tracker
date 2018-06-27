@@ -54,11 +54,11 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function panel_hasMany_topics()
+    public function panel_hasMany_curations()
     {
-        $this->panel->topics()->save(factory(\App\Topic::class)->create());
+        $this->panel->curations()->save(factory(\App\Curation::class)->create());
 
-        $this->assertInstanceOf(HasMany::class, $this->panel->topics());
+        $this->assertInstanceOf(HasMany::class, $this->panel->curations());
     }
 
     /**

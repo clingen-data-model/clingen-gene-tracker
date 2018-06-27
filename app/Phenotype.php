@@ -11,8 +11,8 @@ class Phenotype extends Model
 
     protected $fillable = ['mim_number'];
 
-    public function topics()
+    public function curations()
     {
-        return $this->belongsToMany(Topic::class);
+        return $this->belongsToMany(Curation::class);
     }
 }

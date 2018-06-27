@@ -16,8 +16,8 @@ class Rationale extends Model
         'name'
     ];
 
-    public function topics()
+    public function curations()
     {
-        return $this->hasMany(Topic::class);
+        return $this->hasMany(Curation::class);
     }
 }
