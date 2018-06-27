@@ -5,7 +5,7 @@ namespace Tests\Unit\Listeners;
 use App\Events\User\Created;
 use App\Listeners\SendWelcomeEmail;
 use App\Mail\UserWelcome;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -14,7 +14,7 @@ use Tests\TestCase;
  */
 class SendWelcomeEmailTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
     /**
      * @test
      */

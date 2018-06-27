@@ -3,11 +3,19 @@
 namespace Tests;
 
 use Illuminate\Foundation\Exceptions\Handler;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use DatabaseTransactions;
+
+    public function setUp()
+    {
+        parent::setUp();
+    }
+    
 
     public function callApiAs($user, $method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
     {

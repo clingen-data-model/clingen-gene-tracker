@@ -4,8 +4,9 @@ namespace Tests\Unit\models;
 
 use App\Topic;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\TopicStatus;
 
 /**
  * @group topics
@@ -13,7 +14,7 @@ use Tests\TestCase;
  */
 class TopicTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
@@ -139,7 +140,7 @@ class TopicTest extends TestCase
      */
     public function topic_belongsToMany_topic_status()
     {
-        $topicStatuses = factory(\App\TopicStatus::class, 2)->create();
+        $topicStatuses = TopicStatus::limit(2)->get();
         $topic = factory(\App\Topic::class)->create();
 
         $this->assertInstanceOf(BelongsToMany::class, $topic->topicStatuses());
@@ -156,7 +157,7 @@ class TopicTest extends TestCase
      */
     public function topic_has_one_current_status()
     {
-        $topicStatuses = factory(\App\TopicStatus::class, 2)->create();
+        $topicStatuses = TopicStatus::limit(2)->get();
         $topic = factory(\App\Topic::class)->create();
         $statusesAtTime = $topicStatuses->transform(function ($item, $idx) {
             return ['id' => $item->id, 'pivotData' => ['created_at' => today()->addDays($idx)]];
@@ -196,7 +197,6 @@ class TopicTest extends TestCase
      */
     public function topic_given_uploaded_status_when_created()
     {
-        \Artisan::call('db:seed', ['--class'=>'TopicStatusesTableSeeder']);
         $topic = factory(\App\Topic::class)->create();
         $this->assertEquals($topic->currentStatus->id, 1);
     }

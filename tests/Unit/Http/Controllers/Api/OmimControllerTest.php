@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -13,7 +13,7 @@ use Tests\TestCase;
  */
 class OmimControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
     public function setUp()
     {
         parent::setUp();

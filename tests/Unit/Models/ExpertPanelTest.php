@@ -6,7 +6,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -15,7 +15,7 @@ use Tests\TestCase;
  */
 class ExpertPanelTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
@@ -93,24 +93,5 @@ class ExpertPanelTest extends TestCase
         $panel = $this->panel->fresh();
 
         $this->assertEquals(1, $panel->fresh()->coordinators->count());
-    }
-
-    /**
-     * @test
-     */
-    public function can_add_user_to_panel()
-    {
-        $u = factory(User::class)->create();
-        $this->panel->addUser($u);
-        $this->assertTrue($this->panel->fresh()->users->contains(function ($user) use ($u) {
-            return $user->id == $u->id;
-        }));
-
-        $u2 = factory(User::class)->create();
-        $this->panel->addUser($u2, ['is_curator'=>1, 'can_edit_topics'=>1]);
-        $this->assertTrue($this->panel->fresh()->users->contains(function ($user) use ($u2) {
-            dd($user->toArray());
-            return $user->id == $u2->id && $user->pivot->can_edit_topics == 1 && $user->pivot->is_curator == 1;
-        }));
     }
 }

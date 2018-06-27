@@ -3,12 +3,12 @@
 namespace Tests\Unit\Jobs\Topics;
 
 use App\Jobs\Topics\SyncPhenotypes;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class SyncPhenotypesTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {

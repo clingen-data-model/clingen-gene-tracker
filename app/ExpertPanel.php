@@ -44,9 +44,4 @@ class ExpertPanel extends Model
                 ->withPivot('can_edit_topics', 'is_curator', 'is_coordinator')
                 ->wherePivot('is_coordinator', 1);
     }
-
-    public function addUser(User $user, $options = [])
-    {
-        $this->users()->attach($user->id, []);
-    }
 }

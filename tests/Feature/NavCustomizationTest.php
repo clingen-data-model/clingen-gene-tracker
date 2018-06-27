@@ -4,19 +4,19 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group roles
  */
 class NavCustomizationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
         parent::setUp();
-        \Artisan::call('db:seed');
+        \Artisan::call('db:seed', ['--class'=> 'RolesAndPermissionsSeeder']);
         $this->pr = factory(\App\User::class)->create();
         $this->pr->assignRole('programmer');
 
@@ -24,11 +24,6 @@ class NavCustomizationTest extends TestCase
         $this->ad->assignRole('admin');
 
         $this->cu = factory(\App\User::class)->create();
-        $this->cu->assignRole('curator');
-
-        $this->co = factory(\App\User::class)->create();
-        $this->co->assignRole('coordinator');
-
     }
 
     /**
@@ -57,18 +52,7 @@ class NavCustomizationTest extends TestCase
      * @test
      * @group nav
      */
-    public function coordinators_cannot_see_admin_link()
-    {
-        $this->actingAs($this->co)
-            ->call('GET', '/')
-            ->assertDontSee('Admin');
-    }
-
-    /**
-     * @test
-     * @group nav
-     */
-    public function curators_cannot_see_admin_link()
+    public function others_cannot_see_admin_link()
     {
         $this->actingAs($this->cu)
             ->call('GET', '/')

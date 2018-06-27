@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -11,7 +11,7 @@ use Tests\TestCase;
  */
 class UsersControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
@@ -51,11 +51,11 @@ class UsersControllerTest extends TestCase
     {
         $curators = factory(\App\User::class, 2)->create()
                         ->each(function ($user) {
-                            $user->assignRole('curator');
+                            $user->assignRole('admin');
                         });
 
         $this->actingAs($this->user, 'api')
-            ->call('GET', 'api/users?role=curator')
+            ->call('GET', 'api/users?role=admin')
             ->assertSee($curators->first()->name)
             ->assertSee($curators->last()->name)
             ->assertDontSee($this->users->first()->name)
@@ -70,7 +70,7 @@ class UsersControllerTest extends TestCase
         $this->disableExceptionHandling();
         $curators = factory(\App\User::class, 2)->create()
                         ->each(function ($user) {
-                            $user->assignRole('curator');
+                            $user->assignRole('admin');
                         });
 
         $this->actingAs($this->user, 'api')
@@ -84,10 +84,7 @@ class UsersControllerTest extends TestCase
     public function index_can_return_users_with_expert_panels()
     {
         $this->disableExceptionHandling();
-        $curators = factory(\App\User::class, 2)->create()
-                        ->each(function ($user) {
-                            $user->assignRole('curator');
-                        });
+        $curators = factory(\App\User::class, 2)->create();
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?with=roles,expertPanels')

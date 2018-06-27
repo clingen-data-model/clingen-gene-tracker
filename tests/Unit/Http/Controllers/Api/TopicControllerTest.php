@@ -2,9 +2,10 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use App\Http\Resources\TopicResource;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\CurationType;
+use App\Http\Resources\TopicResource;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group api
@@ -14,7 +15,7 @@ use Tests\TestCase;
  */
 class TopicControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
@@ -168,7 +169,6 @@ class TopicControllerTest extends TestCase
      */
     public function index_includes_phenotypes_when_requested()
     {
-        $this->disableExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->topics->each(function ($t) use ($phenotypes) {
             $t->phenotypes()->sync($phenotypes->pluck('id'));
@@ -176,7 +176,8 @@ class TopicControllerTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/topics/?with=phenotypes')
-            ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+            ->assertSee('mim_number')
+            ->assertSee($phenotypes->first()->mim_number);
     }
 
     /**
@@ -206,8 +207,10 @@ class TopicControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/topics/1')
-            ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
+            ->call('GET', '/api/topics/'.$this->topics->first()->id)
+            ->assertSee('mim_number')
+            ->assertSee($phenotypes->first()->mim_number);
+        // ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
     }
 
     /**
@@ -254,9 +257,9 @@ class TopicControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->call('POST', '/api/topics', $data)
-            ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
-            ->assertSee('"mim_number":"12345"')
-            ->assertSee('"mim_number":"67890"');
+            ->assertSee('"mim_number":'.$phenotype->mim_number)
+            ->assertSee('"mim_number":12345')
+            ->assertSee('"mim_number":67890');
     }
 
     /**
@@ -323,8 +326,9 @@ class TopicControllerTest extends TestCase
             'page' => 'info',
             'gene_symbol' => $topic->gene_symbol,
             'expert_panel_id' => $this->panel->id,
+            'curation_type_id' => $this->curationType->id,
             'curator_id' => $curator->id,
-            'topic_status_id' => $statuses->get(1)->id,
+            'topic_status_id' => 1,
             'topic_status_timestamp' => now()->subDays(2)
         ];
 
@@ -333,7 +337,13 @@ class TopicControllerTest extends TestCase
             ->call('PUT', '/api/topics/'.$topic->id, $data)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('topic_topic_status', ['topic_status_id'=>$statuses->get(1)->id, 'created_at'=>now()->subDays(2)]);
+        $this->assertDatabaseHas(
+            'topic_topic_status',
+            [
+                'topic_status_id'=>1,
+                'created_at'=>now()->subDays(2)->format('Y-m-d H:i:s')
+            ]
+        );
     }
 
     /**
@@ -354,14 +364,15 @@ class TopicControllerTest extends TestCase
                 67890,
                 $phenotype->mim_number
             ],
-            'rationales' => [$this->rationale->id]
+            'rationales' => [['id' => $this->rationale->id]]
         ];
 
         $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/topics/'.$this->topics->first()->id, $data)
-            ->assertSee('"mim_number":"'.$phenotype->mim_number.'"')
-            ->assertSee('"mim_number":"12345"')
-            ->assertSee('"mim_number":"67890"');
+            ->assertStatus(200)
+            ->assertSee('"mim_number":'.$phenotype->mim_number)
+            ->assertSee('"mim_number":12345')
+            ->assertSee('"mim_number":67890');
     }
 
     /**
@@ -401,7 +412,7 @@ class TopicControllerTest extends TestCase
             ->call('PUT', '/api/topics/'.$topic->id, $data)
             ->assertStatus(200);
 
-        $response->assertSee('"mim_number":"88888888"');
+        $response->assertSee('"mim_number":88888888');
     }
 
     /**

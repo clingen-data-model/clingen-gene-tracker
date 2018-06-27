@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 /**
@@ -10,12 +10,11 @@ use Tests\TestCase;
  */
 class AdminNavigationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
         parent::setUp();
-        // \Artisan::call('db:seed');
         $seeder = new \RolesAndPermissionsSeeder();
         $seeder->run();
         $this->u = factory(\App\User::class)->create();
@@ -48,26 +47,13 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function curators_can_not_see_dashboard()
+    public function others_can_not_see_dashboard()
     {
-        $this->u->assignRole('curator');
-
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
-    public function coordinators_can_not_see_dashboard()
-    {
-        $this->u->assignRole('coordinator');
-
-        $this->actingAs($this->u)
-            ->call('GET', '/admin/dashboard')
-            ->assertStatus(403);
-    }
 
     /**
      * @test
@@ -96,22 +82,8 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function curators_can_not_see_users()
+    public function others_can_not_see_users()
     {
-        $this->u->assignRole('curator');
-
-        $this->actingAs($this->u)
-            ->call('GET', '/admin/dashboard')
-            ->assertDontSee('Users');
-    }
-
-    /**
-     * @test
-     */
-    public function coordinators_can_not_see_users()
-    {
-        $this->u->assignRole('coordinator');
-
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
             ->assertDontSee('Users');

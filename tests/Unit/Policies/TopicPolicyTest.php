@@ -6,12 +6,12 @@ use App\ExpertPanel;
 use App\Policies\TopicPolicy;
 use App\Topic;
 use App\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class TopicPolicyTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {

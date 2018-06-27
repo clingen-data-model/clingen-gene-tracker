@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\WorkingGroup;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group api
@@ -11,11 +12,16 @@ use Tests\TestCase;
  */
 class WorkingGroupControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function setUp()
     {
         parent::setUp();
+
+        WorkingGroup::all()->each(function ($grp) {
+            $grp->delete();
+        });
+
         $this->user = factory(\App\User::class)->create();
         $this->groups = factory(\App\WorkingGroup::class, 20)->create();
         $this->group = $this->groups->first();
