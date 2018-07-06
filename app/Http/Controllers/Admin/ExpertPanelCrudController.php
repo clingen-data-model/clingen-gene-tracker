@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\UserRequest as StoreRequest;
-use App\Http\Requests\UserRequest as UpdateRequest;
+use App\Http\Requests\ExpertPanelRequest as StoreRequest;
+use App\Http\Requests\ExpertPanelRequest as UpdateRequest;
 use App\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Illuminate\Support\Facades\Auth;
