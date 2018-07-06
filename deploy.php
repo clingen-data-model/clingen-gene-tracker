@@ -41,6 +41,7 @@ host('web3.schsr.unc.edu')
     ->set('deploy_path', '/mnt/web/project/{{application}}');
 
 option('with-build', null, InputOption::VALUE_OPTIONAL, 'Build before deploy (optional)');
+
 // Tasks
 desc('Build for deploy, merge, and push');
 task('build', function () {

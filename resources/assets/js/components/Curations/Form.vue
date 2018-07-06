@@ -30,7 +30,7 @@
                         <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
                     </div>
                     <div v-else>
-                        <b-button variant="default" id="curation-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                        <!-- <b-button variant="default" id="curation-proceed" @click="proceed()">Proceed</b-button> -->
                         <button type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
                         <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack)" v-show="currentStepIdx > 0">Back</b-button>
                         <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext)">Next</b-button>
@@ -65,7 +65,7 @@
                         title: 'Info',
                         next: 'curation-type'
                     },
-                    curation-type: {
+                    'curation-type': {
                         title: 'Curation Type',
                         next: 'phenotypes'
                     },

@@ -12,10 +12,11 @@
                 Add new Curation
             </router-link>
  
-            <h3>Your Curations</h3>
+            <h3>Dashboard: Your Curations</h3>
         </div>
-        
-        <curations-table :curations="userCurations"></curations-table>
+        <div class="card-body">
+            <curations-table :curations="userCurations"></curations-table>
+        </div>
     </div>
 </template>
 

@@ -9,10 +9,10 @@
         >
             <slot name="no-curations">No curations found.</slot>
         </div>
-        <div class="row mb-2" v-show="totalRows > pageLength">
+        <div class="row mb-2">
             <div class="col-md-6 form-inline">
-                <label for="#curations-filter-input">Filter:</label>&nbsp;
-                <input v-model="filter" placeholder="filter results" class="form-control" id="curations-filter-input" />
+                <label for="#curations-filter-input">Search:</label>&nbsp;
+                <input v-model="filter" placeholder="search curations" class="form-control" id="curations-filter-input" />
             </div>
             <div class="col-md-6">
                 <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="curations-table-pagination my-0 float-right" />    
@@ -91,6 +91,10 @@
                     },
                     current_status: {
                         label: 'Status',
+                        sortable: true,
+                    },
+                    mondo_id: {
+                        label: 'MonDO ID',
                         sortable: true,
                     },
                     actions: {
