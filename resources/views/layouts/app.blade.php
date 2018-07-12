@@ -57,6 +57,10 @@
                                             <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
                                         @endrole
                                     @endrole
+
+                                    @if (\Auth::user()->hasAnyRole('programmer|admin') || \Auth::user()->isCoordinator())
+                                        <a class="dropdown-item" href="/bulk-uploads">Bulk Upload</a>
+                                    @endif
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

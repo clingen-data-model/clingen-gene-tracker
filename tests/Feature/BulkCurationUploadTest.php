@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+/**
+ * @group bulk-curations
+ */
 class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,6 +35,7 @@ class BulkCurationUploadTest extends TestCase
             ->call('GET', '/bulk-uploads')
             ->assertStatus(200)
             ->assertSee('Download Template')
+            ->assertSee('Expert Panel:')
             ->assertSee('Upload File:');
     }
 
@@ -40,13 +44,13 @@ class BulkCurationUploadTest extends TestCase
      */
     public function bulkUploadHandler_dispatched_on_upload()
     {
-        Bus::fake();
+        \DB::table('curations')->delete();
 
         $this->actingAs($this->user)
             ->call('POST', '/bulk-uploads', [
                 'bulk_curations' => file_get_contents(base_path('tests/files/bulk_curation_upload_good.xlsx'))
             ]);
-
-        // Bus::assertDispatched(BulkCurationProcessor::class);
+        
+        $this->assertEquals(3, \DB::table('curations')->count());
     }
 }

@@ -66,7 +66,7 @@ class User extends Authenticatable
                 ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->withTimestamps();
     }
-
+    
     /**
      * Send the password reset notification.
      *
@@ -124,6 +124,13 @@ class User extends Authenticatable
     {
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
             return $value->id == $panel->id && (boolean)$value->pivot->is_curator;
+        });
+    }
+
+    public function isCoordinator()
+    {
+        return $this->expertPanels->contains(function ($value, $key) {
+            return $value->pivot->is_coordinator;
         });
     }
 
