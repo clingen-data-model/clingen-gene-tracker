@@ -147,4 +147,12 @@ class User extends Authenticatable
 
         return !$this->hasRole("programmer");
     }
+
+    public function getPanelsCoordinating()
+    {
+        if ($this->hasAnyRole('admin|programmer')) {
+            return ExpertPanel::all();
+        }
+        return $this->expertPanels->where('pivot.is_coordinator', 1);
+    }
 }

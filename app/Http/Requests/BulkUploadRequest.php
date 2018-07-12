@@ -13,7 +13,7 @@ class BulkUploadRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::user()->isCoordinator() || Auth::user()->role('programmer|admin');
+        return \Auth::user()->isCoordinator() || \Auth::user()->hasAnyRole('programmer|admin');
     }
 
     /**

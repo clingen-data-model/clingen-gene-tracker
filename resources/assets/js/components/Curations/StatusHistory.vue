@@ -10,9 +10,9 @@
                 <th>Status</th>
                 <th>Date</th>
             </tr>
-            <tr v-for="(status, idx) in orderedStatuses" :class="{'table-primary highlight': (idx == 0)}">
+            <tr v-for="(status, idx) in orderedStatuses" :key="status.id" :class="{'table-primary highlight': (status.id == curation.current_status.id)}">
                 <td>{{status.name}}</td>
-                <td>{{status.pivot.created_at | formatDate('Y-M-D') }}</td>
+                <td>{{status.pivot.created_at | formatDate('Y-MM-DD') }}</td>
             </tr>
         </table>
     </div>

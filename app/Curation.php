@@ -45,7 +45,7 @@ class Curation extends Model
         parent::boot();
 
         static::created(function ($curation) {
-            if (CurationStatus::count() > 0) {
+            if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
                 $curation->curationStatuses()->attach(CurationStatus::find(1));
             }
         });

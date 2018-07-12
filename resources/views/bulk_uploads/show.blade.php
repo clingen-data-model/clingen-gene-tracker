@@ -44,7 +44,7 @@
                         <label for="expert_panel_id">Expert Panel:</label>
                         &nbsp;
                         <select name="expert_panel_id" id="expert_panel_id" class="form-control">
-                            @foreach (\Auth::user()->expertPanels->where('pivot.is_coordinator', 1) as $panel)
+                            @foreach (\Auth::user()->getPanelsCoordinating() as $panel)
                                 <option value="{{$panel->id}}">{{$panel->name}}</option>
                             @endforeach
                         </select>

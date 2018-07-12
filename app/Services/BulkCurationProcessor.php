@@ -58,6 +58,7 @@ class BulkCurationProcessor
     
     public function processRow($rowData, $expertPanelId, $rowNum = 0)
     {
+        config(['app.bulk_uploading' => true]);
         if (!$this->rowIsValid($rowData, $rowNum)) {
             throw new InvalidRowException($rowData, $this->validationErrors);
         }
@@ -95,6 +96,7 @@ class BulkCurationProcessor
         $this->addStatus($curation, 5, $rowData['curation_provisional_date']);
         $this->addStatus($curation, 6, $rowData['curation_approved_date']);
 
+        config(['app.bulk_uploading' => false]);
         return $curation;
     }
 
