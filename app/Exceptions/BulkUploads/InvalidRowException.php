@@ -3,9 +3,8 @@
 namespace App\Exceptions\BulkUploads;
 
 use Exception;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 
-class InvalidRowException extends InvalidArgumentException
+class InvalidRowException extends \InvalidArgumentException
 {
     protected $rowData;
 
