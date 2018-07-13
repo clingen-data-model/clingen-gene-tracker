@@ -44,6 +44,9 @@
             <template slot="current_status" slot-scope="data">
                 {{(data.item.current_status) ? data.item.current_status.name : null}}
             </template>
+            <template slot="mondo_id" slot-scope="data">
+                {{ getDiseaseEntityColumn(data.item) }}
+            </template>
             <template slot="actions" slot-scope="data">
                 <router-link
                     v-if="user.canEditCuration(data.item)"
@@ -94,7 +97,7 @@
                         sortable: true,
                     },
                     mondo_id: {
-                        label: 'MonDO ID',
+                        label: 'Disease Entity',
                         sortable: true,
                     },
                     actions: {
@@ -115,6 +118,21 @@
             },
         },
         methods: {
+            getDiseaseEntityColumn (item) {
+                if (item.mondo_id) {
+                    return item.mondo_id
+                }
+
+                if (item.disease_entity_notes) {
+                    let entity = item.disease_entity_notes;
+                    if (entity.length > 32) {
+                        entity = entity.substr(0, 32)+'…'
+                    }
+                    return entity
+                }
+
+                return null
+            },
             onFiltered (filteredItems) {
               // Trigger pagination to update the number of buttons/pages due to filtering
               this.currentPage = 1
