@@ -71,25 +71,14 @@ class BulkCurationProcessor
             'mondo_id' => $rowData['mondo_id'],
             'disease_entity_if_there_is_no_mondo_id' => $rowData['disease_entity_if_there_is_no_mondo_id'],
             'rationale_notes' => $rowData['rationale_notes'],
+            'pmids' => $this->getPmids($rowData)
         ];
         $curation = Curation::create($attributes);
-        $phenotypes = [];
-        for ($i=0; $i < 10; $i++) {
-            if (isset($rowData['omim_id_'.$i])) {
-                $phenotypes[] = $rowData['omim_id_'.$i];
-            }
-        }
-        \Bus::dispatch(new SyncPhenotypes($curation, $phenotypes));
 
-        $rationales = [];
-        for ($i=0; $i < 4; $i++) {
-            if (isset($rowData['rationale_'.$i])) {
-                $rationales[] = $this->rationales->firstWhere('name', $rowData['rationale_'.$i])->id;
-            }
-        }
-        $curation->rationales()->sync($rationales);
+        \Bus::dispatch(new SyncPhenotypes($curation, $this->getPhenotypes($rowData)));
+        $curation->rationales()->sync($this->getRationales($rowData));
         
-        $this->addStatus($curation, 1, $rowData['date_uploaded']);
+        $this->addStatus($curation, 1, $rowData['uploaded_date']);
         $this->addStatus($curation, 2, $rowData['precuration_date']);
         $this->addStatus($curation, 3, $rowData['disease_entity_assigned_date']);
         $this->addStatus($curation, 4, $rowData['curation_in_progress_date']);
@@ -103,6 +92,39 @@ class BulkCurationProcessor
     private function addStatus($curation, $status_id, $date)
     {
         $curation->curationStatuses()->attach([$status_id => ['created_at' => $date]]);
+    }
+
+    private function getPmids($rowData)
+    {
+        $pmids = [];
+        for ($i=0; $i < 10; $i++) {
+            if (isset($rowData['pmid_'.$i])) {
+                $pmids[] = $rowData['pmid_'.$i];
+            }
+        }
+        return $pmids;
+    }
+
+    private function getPhenotypes($rowData)
+    {
+        $phenotypes = [];
+        for ($i=0; $i < 10; $i++) {
+            if (isset($rowData['omim_id_'.$i])) {
+                $phenotypes[] = $rowData['omim_id_'.$i];
+            }
+        }
+        return $phenotypes;
+    }
+
+    private function getRationales($rowData)
+    {
+        $rationales = [];
+        for ($i=0; $i < 4; $i++) {
+            if (isset($rowData['rationale_'.$i])) {
+                $rationales[] = $this->rationales->firstWhere('name', $rowData['rationale_'.$i])->id;
+            }
+        }
+        return $rationales;
     }
 
     public function rowIsValid($rowData, $rowNum = 0)

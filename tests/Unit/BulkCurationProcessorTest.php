@@ -27,12 +27,34 @@ class BulkCurationProcessorTest extends TestCase
             "curator_email" => "sirs@unc.edu",
             "curation_type" => "single-omim",
             "omim_id_1" => 93849384,
+            "omim_id_2" => null,
+            "omim_id_3" => null,
+            "omim_id_4" => null,
+            "omim_id_5" => null,
+            "omim_id_6" => null,
+            "omim_id_7" => null,
+            "omim_id_8" => null,
+            "omim_id_9" => null,
+            "omim_id_10" => null,
             "mondo_id" => null,
             "disease_entity_if_there_is_no_mondo_id" => null,
             "rationale_1" => "Assertion",
             "rationale_2" => "Molecular mechanism",
+            "rationale_3" => null,
+            "rationale_4" => null,
+            "rationale_5" => null,
             "rationale_notes" => "notes on the rationale",
-            "date_uploaded" => '2016-01-01',
+            "pmid_1" => 819281721,
+            "pmid_2" => 123198121,
+            "pmid_3" => null,
+            "pmid_4" => null,
+            "pmid_5" => null,
+            "pmid_6" => null,
+            "pmid_7" => null,
+            "pmid_8" => null,
+            "pmid_9" => null,
+            "pmid_10" => null,
+            "uploaded_date" => '2016-01-01',
             "precuration_date" => '2016-01-02',
             "disease_entity_assigned_date" => null,
             "curation_in_progress_date" => '2016-01-10',
@@ -65,7 +87,7 @@ class BulkCurationProcessorTest extends TestCase
     public function adds_new_curations_for_valid_file()
     {
         \DB::table('curations')->delete();
-        $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), 1);
+        $curations = $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), 1);
 
         $this->assertEquals(3, \DB::table('curations')->count());
     }
@@ -92,21 +114,26 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function creates_curation_from_valid_row_data()
     {
+        \DB::table('curations')->delete();
         $curation = $this->svc->processRow($this->data, 1);
         $this->assertInstanceOf(Curation::class, $curation);
         $this->assertDatabaseHas(
             'curations',
             [
                 'gene_symbol' => $this->data['gene_symbol'],
-                'curator_id' => 1,
                 'curation_type_id' => 1,
                 'expert_panel_id' => 1,
-                'rationale_notes' => $this->data['rationale_notes'],
+                'curator_id' => 1,
                 'mondo_id' => $this->data['mondo_id'],
+                'rationale_notes' => $this->data['rationale_notes'],
                 'disease_entity_notes' => $this->data['disease_entity_if_there_is_no_mondo_id'],
                 'rationale_notes' => $this->data['rationale_notes'],
             ]
         );
+
+        // Separate assertion b/c assertion above doesn't like json field?
+        $this->assertEquals([819281721, 123198121], $curation->pmids);
+
         $this->assertDatabaseHas('curation_rationale', [
             'curation_id' => $curation->id,
             'rationale_id' => 1

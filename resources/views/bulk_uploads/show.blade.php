@@ -6,35 +6,9 @@
         <div class="card-header">
             <h2>Curations: Bulk Upload</h2>
         </div>
-        <div class="card-body">            
-            @if (isset($errors) && count($errors) > 0)
-                <div class="alert alert-danger">
-                    There are problems with your data:
-                    <ul>
-                    @foreach ($errors as $idx => $row)
-                        <li>
-                            <strong> Row {{($idx+1)}} - </strong>
-                            @foreach ($row as $field => $message)
-                                <strong>{{$field}}:</strong> {{$message}}
-                            @endforeach
-                        </li>
-                    @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            @if (isset($newCurations) && $newCurations->count() > 0)
-                <div class="alert alert-info">
-                    Created {{$newCurations->count()}} new curations for {{$newCurations->first()->expertPanel->name}}
-                    <ul>
-                    @foreach ($newCurations as $curation)
-                        <li>
-                            <a href="/#/curations/{{$curation->id}}">{{$curation->gene_symbol}}</a>
-                        </li>
-                    @endforeach
-                    </ul>
-                </div>
-            @endif
+        <div class="card-body">
+            @include('bulk_uploads.errors')
+            @include('bulk_uploads.new_curations')
     
             <div class="d-flex justify-content-between">
 
