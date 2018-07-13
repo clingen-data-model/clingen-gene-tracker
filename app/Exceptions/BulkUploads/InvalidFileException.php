@@ -3,9 +3,8 @@
 namespace App\Exceptions\BulkUploads;
 
 use Exception;
-use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
-class InvalidFileException extends InvalidArgumentException
+class InvalidFileException extends \InvalidArgumentException
 {
     protected $validationErrors;
 
