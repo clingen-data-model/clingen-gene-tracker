@@ -125,7 +125,7 @@
             },
             title: function () {
                 let title = 'Curation: ';
-                if (this.curation.gene_symbol) {
+                if (this.curation && this.curation.gene_symbol) {
                     title += this.curation.gene_symbol
                     if (this.curation.mondo_id) {
                         title += ' / ' + this.curation.mondo_id
