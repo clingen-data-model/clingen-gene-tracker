@@ -26,6 +26,9 @@ class User {
     }
 
     isCurationCurator(curation) {
+        if (!curation) {
+            return false;
+        }
         return this.user.id == curation.curator_id
     }
 
