@@ -78,7 +78,7 @@
                     <strong class="col-md-2">Current Status:</strong>
                     <div class="col-md-6">
                         <div class="mb-2">
-                            {{ curation.current_status.name }} 
+                            {{ (curation.current_status) ? curation.current_status.name : 'No status set' }} 
                             <button class="btn btn-sm"><small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small></button>
                         </div>
                         <transition name="fade">
