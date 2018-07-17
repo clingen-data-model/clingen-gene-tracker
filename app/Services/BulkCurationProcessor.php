@@ -78,12 +78,24 @@ class BulkCurationProcessor
         \Bus::dispatch(new SyncPhenotypes($curation, $this->getPhenotypes($rowData)));
         $curation->rationales()->sync($this->getRationales($rowData));
         
-        $this->addStatus($curation, 1, $rowData['uploaded_date']);
-        $this->addStatus($curation, 2, $rowData['precuration_date']);
-        $this->addStatus($curation, 3, $rowData['disease_entity_assigned_date']);
-        $this->addStatus($curation, 4, $rowData['curation_in_progress_date']);
-        $this->addStatus($curation, 5, $rowData['curation_provisional_date']);
-        $this->addStatus($curation, 6, $rowData['curation_approved_date']);
+        if (isset($rowData['uploaded_date'])) {
+            $this->addStatus($curation, 1, $rowData['uploaded_date']);
+        }
+        if (isset($rowData['precuration_date'])) {
+            $this->addStatus($curation, 2, $rowData['precuration_date']);
+        }
+        if (isset($rowData['disease_entity_assigned_date'])) {
+            $this->addStatus($curation, 3, $rowData['disease_entity_assigned_date']);
+        }
+        if (isset($rowData['curation_in_progress_date'])) {
+            $this->addStatus($curation, 4, $rowData['curation_in_progress_date']);
+        }
+        if (isset($rowData['curation_provisional_date'])) {
+            $this->addStatus($curation, 5, $rowData['curation_provisional_date']);
+        }
+        if (isset($rowData['curation_approved_date'])) {
+            $this->addStatus($curation, 6, $rowData['curation_approved_date']);
+        }
 
         config(['app.bulk_uploading' => false]);
         return $curation;
