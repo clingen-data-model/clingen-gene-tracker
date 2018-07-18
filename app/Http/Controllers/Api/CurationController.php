@@ -20,7 +20,8 @@ class CurationController extends Controller
         'gene_symbol',
         'expert_panel_id',
         'curator_id',
-        'phenotype'
+        'phenotype',
+        'mondo_id'
     ];
 
     public function __construct(RequestDataCleaner $cleaner)
