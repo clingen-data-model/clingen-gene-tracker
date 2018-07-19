@@ -12,7 +12,7 @@ class InvalidRowException extends \InvalidArgumentException
 
     public function __construct($rowData, $validationErrors)
     {
-        parent::__construct('Invalide data in upload row.');
+        parent::__construct('Invalid data in upload row.');
         $this->rowData = $rowData;
         $this->validationErrors = $validationErrors;
     }

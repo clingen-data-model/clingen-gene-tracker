@@ -2,11 +2,12 @@
 
 namespace Tests\Unit\models;
 
+use App\Curation;
 use App\Phenotype;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Tests\TestCase;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @group phenotypes
@@ -28,11 +29,10 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_has_mim_number()
+    public function phenotype_has_fillable_mim_number()
     {
-        $phenotype = new Phenotype();
-        $phenotype->mim_number = 1234;
-        $phenotype->save();
+        $phenotype = factory(Phenotype::class)->create();
+        $phenotype->update(['mim_number' => 1234]);
 
         $this->assertNotNull($phenotype->mim_number);
     }
@@ -40,9 +40,20 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    public function phenotype_has_name()
+    {
+        $phenotype = factory(Phenotype::class)->create();
+        $phenotype->update(['name' => 'bobism']);
+
+        $this->assertNotNull($phenotype->name);
+    }
+    
+    /**
+     * @test
+     */
     public function can_create_new_phenotype()
     {
-        $phenotype = factory(\App\Phenotype::class)->create([
+        $phenotype = factory(Phenotype::class)->create([
             'mim_number' => 12345
         ]);
 
@@ -55,12 +66,12 @@ class PhenotypeTest extends TestCase
      */
     public function mim_number_must_be_unique()
     {
-        $phenotype = factory(\App\Phenotype::class)->create([
+        $phenotype = factory(Phenotype::class)->create([
             'mim_number' => 12345
         ]);
 
         $this->expectException(QueryException::class);
-        $phenotype2 = factory(\App\Phenotype::class)->create([
+        $phenotype2 = factory(Phenotype::class)->create([
             'mim_number' => 12345
         ]);
     }
@@ -70,8 +81,8 @@ class PhenotypeTest extends TestCase
      */
     public function phenotype_has_many_curations_relationship()
     {
-        $phenotype = factory(\App\Phenotype::class)->create();
-        $curations = factory(\App\Curation::class, 3)->create();
+        $phenotype = factory(Phenotype::class)->create();
+        $curations = factory(Curation::class, 3)->create();
         $phenotype->curations()->attach($curations->pluck('id'));
 
         $this->assertInstanceOf(BelongsToMany::class, $phenotype->curations());

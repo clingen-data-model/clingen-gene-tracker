@@ -33,9 +33,9 @@
             }),
         },
         mounted: function () {
-            if (this.curations.length == 0) {
-                this.getAllCurations();
-            }
+            // if (this.curations.length == 0) {
+            this.getAllCurations();
+            // }
         }
     }
 </script>

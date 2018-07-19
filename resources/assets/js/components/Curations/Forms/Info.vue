@@ -25,11 +25,7 @@
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
         </b-form-group>
-        <div class="row justify-content-end">
-            <div class="col-md-9">
-                <curation-notifications :curation="updatedCuration"></curation-notifications>
-            </div> 
-        </div>
+<curation-notifications :curation="updatedCuration"></curation-notifications>
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
             <b-form-select id="expert-panel-select" v-model="updatedCuration.expert_panel_id" :state="expertPanelIdError">
                 <option :value="null">Select...</option>

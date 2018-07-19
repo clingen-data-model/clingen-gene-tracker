@@ -17,7 +17,7 @@ export default {
             if (geneSymbol) {
                 return OmimRepo.gene(geneSymbol)
                     .then( response => {
-                        this.phenotypes = response.data.phenotypes
+                        this.phenotypes = response.data.phenotypes;
                         this.phenotypesLoaded = true
                     })
                     .catch( error => alert(error) )

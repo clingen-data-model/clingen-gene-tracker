@@ -29,7 +29,8 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        item.phenotypes = transformPhenotypes(item.phenotypes);
+        // item.phenotypes = transformPhenotypes(item.phenotypes);
+        console.log(item)
         Vue.set(state.items, item.id-1, item)
     },
 }
@@ -62,7 +63,8 @@ const actions = {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
                 let item = response.data.data;
-                item.phenotypes = transformPhenotypes(item.phenotypes);
+                // item.phenotypes = transformPhenotypes(item.phenotypes);
+                console.log(item)
                 commit('addItem', item);
                 return response;
             })

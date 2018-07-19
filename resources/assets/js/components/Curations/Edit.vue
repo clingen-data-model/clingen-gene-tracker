@@ -214,8 +214,6 @@
                 this.$router.push('/')
             },
             setUpdatedCuration: function (to, from) {
-                console.log(to);
-                console.log(from);
                 if (to.id != from.id) {
                     this.fetchCuration(this.curation.id);
                 }

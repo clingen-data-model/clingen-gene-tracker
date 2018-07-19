@@ -21,11 +21,10 @@
                             <td>{{match.expert_panel.name}}</td>
                             <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                             <td>
-                                <ul class="list-inline mb-0" v-if="match.phenotypes.length > 0">
-                                    <li class="list-inline-item" v-for="(phenotype, idx) in match.phenotypes">
-                                        <span v-if="idx != 0">,</span>
-                                        <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}}*</strong>
-                                        <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.mim_number}}</span>
+                                <ul class="mb-0" v-if="match.phenotypes.length > 0">
+                                    <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
+                                        <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
+                                        <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>
                                     </li>
                                 </ul>
                             </td>
@@ -77,7 +76,7 @@
                     })
             }, 500),
             hasMatchingPhenotypes: function (phenotype) {
-                return this.curation && this.curation.phenotypes && this.curation.phenotypes.indexOf(phenotype.mim_number) > -1
+                return this.curation && this.curation.phenotypes && this.curation.phenotypes.map((ph) => ph.mim_number).indexOf(phenotype.mim_number) > -1
             }            
         }
         //component definition
