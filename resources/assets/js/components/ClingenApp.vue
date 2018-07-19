@@ -21,7 +21,6 @@
         },
         mounted: function () {
             if (this.$store.state.curations.items.length == 0) {
-                this.getAllCurations();
                 this.getAllCurationStatuses();
                 this.getAllRationales();
             }

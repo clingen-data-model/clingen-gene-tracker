@@ -23,7 +23,7 @@
                                 class="form-check-input form-check-input-lg"
                                 type="checkbox" 
                                 v-model="updatedCuration.phenotypes"
-                                :value="data.item.phenotypeMimNumber"
+                                :value="data.value"
                                 :disabled="disabled"
                             >
                         </template>
@@ -114,6 +114,12 @@
                         tdClass: 'text-right',
                         sortable: false,
                         label: '&nbsp;&nbsp;&nbsp;',
+                        formatter: (value, key, item) => {
+                            return {
+                                'mim_number': item.phenotypeMimNumber,
+                                'name': item.phenotype
+                            }
+                        }
                     }
                 },
                 message: null,

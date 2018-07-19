@@ -22,29 +22,29 @@
             </h3>
            </template>
             <div v-if="this.curations">
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Gene Symbol:</strong> 
                     <div class="col-md">{{ curation.gene_symbol }}</div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Expert Panel:</strong> 
                     <div class="col-md">{{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}</div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Curator:</strong> 
                     <div class="col-md">{{ (curation.curator) ? curation.curator.name : '--'}}</div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Curation Type:</strong>
                     <div class="col-md">
                         {{curation.curation_type ? curation.curation_type.description : '--'}}
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Phenotypes:</strong>
                     <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" class="col-md"></phenotype-list>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Rationale:</strong>
                     <div class="col-md">
                         <ul class="list-inline">
@@ -54,7 +54,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">PMIDS</strong>
                     <div class="col-md" v-if="curation.pmids">
                         <ul class="list-inline">
@@ -64,13 +64,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">Notes on Rationale</strong>
                     <div class="col-md">
                         {{curation.rationale_notes}}
                     </div>
                 </div>
-                <div class="row mt-1">
+                <div class="row mt-2">
                     <strong class="col-md-2">MonDO ID:</strong> 
                     <div class="col-md">{{ (curation.mondo_id) ? curation.mondo_id : '--'}}</div>
                 </div>

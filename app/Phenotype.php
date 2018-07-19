@@ -9,7 +9,10 @@ class Phenotype extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['mim_number'];
+    protected $fillable = [
+        'mim_number',
+        'name'
+    ];
 
     public function curations()
     {

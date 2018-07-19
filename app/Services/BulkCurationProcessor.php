@@ -7,9 +7,11 @@ use App\Curation;
 use App\Rationale;
 use App\ExpertPanel;
 use App\CurationType;
+use App\Clients\OmimClient;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\Curations\SyncPhenotypes;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Validator;
 use App\Exceptions\BulkUploads\InvalidRowException;
 use App\Exceptions\BulkUploads\InvalidFileException;
@@ -21,6 +23,7 @@ class BulkCurationProcessor
     public $curationTypes;
     public $rationales;
     public $panels;
+    protected $omim;
     
     public function __construct()
     {
@@ -29,6 +32,7 @@ class BulkCurationProcessor
         $this->rationales = Rationale::all();
         $this->panels = ExpertPanel::all();
         $this->validationErrors = collect();
+        $this->omim = new OmimClient();
     }
     
     public function processFile($path, $expertPanelId)
@@ -119,11 +123,21 @@ class BulkCurationProcessor
 
     private function getPhenotypes($rowData)
     {
+        $badMimNumbers = [];
         $phenotypes = [];
         for ($i=0; $i < 10; $i++) {
             if (isset($rowData['omim_id_'.$i])) {
-                $phenotypes[] = $rowData['omim_id_'.$i];
+                $mimNumber = $rowData['omim_id_'.$i];
+                try {
+                    $omimData = $this->omim->getEntry($mimNumber)[0]->entry;
+                    $phenotypes[] = ['mim_number'=>$omimData->mimNumber, 'name'=> $omimData->titles->preferredTitle];
+                } catch (ClientException $e) {
+                    $badMimNumbers[] = 'Bad mim number at OMIM ID '.$i.': '.$mimNumber;
+                }
             }
+        }
+        if (count($badMimNumbers) > 0) {
+            throw new InvalidRowException($rowData, $badMimNumbers);
         }
         return $phenotypes;
     }
@@ -157,6 +171,18 @@ class BulkCurationProcessor
         if (!is_null($rowData['curation_type']) && !$this->curationTypes->pluck('name')->contains($rowData['curation_type'])) {
             $errors['curation_type'] = 'Curation type '.$rowData['curation_type'].' was not found in the system';
             $valid = false;
+        }
+
+        for ($i=0; $i < 10; $i++) {
+            if (isset($rowData['omim_id_'.$i]) && !empty('omim_id_'.$i)) {
+                $mimNumber = $rowData['omim_id_'.$i];
+                try {
+                    $this->omim->getEntry($mimNumber)[0]->entry;
+                } catch (ClientException $e) {
+                    $errors['OMIM ID '.$i] = 'Bad mim number: '.$mimNumber;
+                    $valid = false;
+                }
+            }
         }
 
         for ($i=1; $i < 5; $i++) {

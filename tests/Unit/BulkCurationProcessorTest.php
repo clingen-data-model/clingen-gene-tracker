@@ -26,7 +26,7 @@ class BulkCurationProcessorTest extends TestCase
             "gene_symbol" => "BRCA1",
             "curator_email" => "sirs@unc.edu",
             "curation_type" => "single-omim",
-            "omim_id_1" => 93849384,
+            "omim_id_1" => 605724,
             "omim_id_2" => null,
             "omim_id_3" => null,
             "omim_id_4" => null,
@@ -76,7 +76,7 @@ class BulkCurationProcessorTest extends TestCase
             $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad.xlsx'), 1);
             $this->fail('InvalidRowException not thrown for data with bad rows');
         } catch (InvalidFileException $e) {
-            $this->assertEquals(3, count($e->getValidationErrors()));
+            $this->assertEquals(4, count($e->getValidationErrors()));
             $this->assertEquals(0, \DB::table('curations')->count());
         }
     }
@@ -205,6 +205,20 @@ class BulkCurationProcessorTest extends TestCase
         $this->assertTrue($this->svc->rowIsValid($this->data));
         
         $this->data['rationale_2'] = 'Bobs yer uncle';
+        $this->assertFalse($this->svc->rowIsValid($this->data));
+    }
+
+    /**
+     * @test
+     */
+    public function checks_omim_ids_are_valid_mim_numbers()
+    {
+        $this->assertTrue($this->svc->rowIsValid($this->data));
+        
+        $this->data['omim_id_1'] = 12983;
+        $this->assertFalse($this->svc->rowIsValid($this->data));
+        
+        $this->data['omim_id_2'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
     }
 }

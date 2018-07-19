@@ -6,30 +6,21 @@
 </style>
 <template>
     <div class="component-container">
-        <div v-show="phenotypes.length == 0">
+        <!-- <div v-show="curation.phenotypes.length == 0">
             <div class="alert alert-secondary clearfix">
                 The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
             </div>
-        </div>
+        </div> -->
 
-        <div v-if="usedPhenotypes.length > 0">
+        <div v-if="curation.phenotypes.length > 0">
             <strong>In this curation</strong>
             <ul>
-                <li v-for="phenotype in usedPhenotypes">
-                    {{ phenotype.phenotype }}
+                <li v-for="phenotype in curation.phenotypes">
+                    {{ phenotype.name }}
                 </li>
             </ul>
         </div>
-        <strong v-else>No phenotypes in this curation</strong>
-
-        <div v-show="unusedPhenotypes.length > 0" class="text-muted">
-            <strong>Not in this curation</strong>
-            <ul>
-                <li v-for="phenotype in unusedPhenotypes">
-                    {{ phenotype.phenotype }}
-                </li>
-            </ul>
-        </div>
+        <div v-else>No phenotypes in this curation</div>
     </div>
 </template>
 <script>
@@ -61,17 +52,17 @@
                 return this.phenotypes;
             },
         },
-        methods: {
-            fetchPhenotypes: function () {
-                if (this.geneSymbol) {
-                    OmimRepo.gene(this.geneSymbol)
-                        .then(response  => this.phenotypes = response.data.phenotypes)
-                        .catch(error => alert(error))
-                }
-            }
-        },
+        // methods: {
+        //     fetchPhenotypes: function () {
+        //         if (this.geneSymbol) {
+        //             OmimRepo.gene(this.geneSymbol)
+        //                 .then(response  => this.phenotypes = response.data.phenotypes)
+        //                 .catch(error => alert(error))
+        //         }
+        //     }
+        // },
         mounted: function () {
-            this.fetchPhenotypes();
+            // this.fetchPhenotypes();
         }
     }
 </script>

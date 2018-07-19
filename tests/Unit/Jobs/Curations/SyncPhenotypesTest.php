@@ -13,7 +13,12 @@ class SyncPhenotypesTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->phs = factory(\App\Phenotype::class, 3)->create()->pluck('mim_number');
+        $this->phs = factory(\App\Phenotype::class, 3)->create()->transform(function ($item) {
+            return [
+                'mim_number' => $item->mim_number,
+                'name' => $item->name
+            ];
+        });
         $this->curation = factory(\App\Curation::class)->create();
     }
 
@@ -35,14 +40,23 @@ class SyncPhenotypesTest extends TestCase
      */
     public function creates_new_phenotypes_and_adds_to_curation()
     {
-        $newMims = collect([123456, 768910]);
-        $phs = $this->phs->merge($newMims);
+        $newMims = collect([
+            [
+                'mim_number' => 123456,
+                'name' => 'transsubstantiation'
+            ],
+            [
+                'mim_number' => 768910,
+                'name' => 'tetrisitis'
+            ]
+        ]);
+        $phs = $this->phs->toBase()->merge($newMims);
         $job = new SyncPhenotypes($this->curation, $phs);
         $job->handle();
 
         $this->assertEquals(5, $this->curation->phenotypes()->count());
-        $this->assertDatabaseHas('phenotypes', ['mim_number' => 123456]);
-        $this->assertDatabaseHas('phenotypes', ['mim_number' => 768910]);
+        $this->assertDatabaseHas('phenotypes', ['mim_number' => 123456, 'name' => 'transsubstantiation']);
+        $this->assertDatabaseHas('phenotypes', ['mim_number' => 768910, 'name' => 'tetrisitis']);
     }
 
     /**

@@ -14,17 +14,17 @@ class SyncPhenotypes implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     protected $curation;
-    protected $mimNumbers;
+    protected $phenotypes;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation, $mimNumbers)
+    public function __construct(Curation $curation, $phenotypes)
     {
         $this->curation = $curation;
-        $this->mimNumbers = collect($mimNumbers);
+        $this->phenotypes = collect($phenotypes);
     }
 
     /**
@@ -34,13 +34,17 @@ class SyncPhenotypes implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->mimNumbers && $this->mimNumbers->count() > 0) {
+        if (!$this->phenotypes && $this->phenotypes->count() > 0) {
             return;
         }
-        $phenotypes = Phenotype::whereIn('mim_number', $this->mimNumbers)->get();
-        $newMims = $this->mimNumbers->diff($phenotypes->pluck('mim_number'));
+        $phenotypes = Phenotype::whereIn('mim_number', $this->phenotypes->pluck('mim_number'))->get();
+        $newMims = $this->phenotypes->pluck('mim_number')->diff($phenotypes->pluck('mim_number'));
         $newMims->each(function ($mimNumber) use ($phenotypes) {
-            $phenotypes->push(Phenotype::create(['mim_number'=>$mimNumber]));
+            $data = [
+                'mim_number' => $mimNumber,
+                'name' => $this->phenotypes->firstWhere('mim_number', $mimNumber)['name']
+            ];
+            $phenotypes->push(Phenotype::create($data));
         });
         $this->curation->phenotypes()->sync($phenotypes->pluck('id'));
     }

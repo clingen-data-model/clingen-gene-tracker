@@ -249,9 +249,18 @@ class CurationControllerTest extends TestCase
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
             'phenotypes' => [
-                12345,
-                67890,
-                $phenotype->mim_number
+                [
+                    'mim_number' => 12345,
+                    'name' => 'test pheno1'
+                ],
+                [
+                    'mim_number' => 67890,
+                    'name' => 'test pheno2'
+                ],
+                [
+                    'mim_number' => $phenotype->mim_number,
+                    'name' => $phenotype->name
+                ]
             ]
         ];
 
@@ -360,9 +369,18 @@ class CurationControllerTest extends TestCase
             'gene_symbol' => 'ABCD',
             'expert_panel_id' => $this->panel->id,
             'phenotypes' => [
-                12345,
-                67890,
-                $phenotype->mim_number
+                [
+                    'mim_number' => 12345,
+                    'name' => 'test pheno1'
+                ],
+                [
+                    'mim_number' => 67890,
+                    'name' => 'test pheno2'
+                ],
+                [
+                    'mim_number' => $phenotype->mim_number,
+                    'name' => $phenotype->name
+                ]
             ],
             'rationales' => [['id' => $this->rationale->id]]
         ];
@@ -407,12 +425,12 @@ class CurationControllerTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = [$this->rationale];
-        $data['isolated_phenotype'] = '88888888';
+        $data['isolated_phenotype'] = '605724';
         $response = $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
 
-        $response->assertSee('"mim_number":88888888');
+        $response->assertSee('"mim_number":605724');
     }
 
     /**
