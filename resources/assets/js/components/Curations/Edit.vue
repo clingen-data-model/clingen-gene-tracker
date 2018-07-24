@@ -45,11 +45,12 @@
                             <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.push('/curations')">Cancel</button>
                         </div>
                         <div class="col-md-9 text-right">
-                            <b-button variant="default" id="curation-proceed" v-show="" @click="proceed()">Proceed</b-button>
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
-                            <button type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
+                            <button v-if="nextStep" type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
                             <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack)" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext)">Next</b-button>
+                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext)">
+                                {{ (!nextStep) ? 'Save and exit' : 'Next'}}
+                            </b-button>
                         </div>
                     </div>
                 </b-form>
@@ -203,7 +204,9 @@
             navNext (response) {
                 if (this.nextStep) {
                     this.$router.push(this.$route.path+'#'+this.nextStep)
+                    return;
                 }
+                this.$router.push('/');
             },
             navBack (response) {
                 if (this.previousStep) {
