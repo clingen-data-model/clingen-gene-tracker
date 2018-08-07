@@ -37,5 +37,28 @@
     padding-left: .5rem;
 }
 
+.btn-help {
+    @extend .btn;
+    // @extend .btn-secondary; 
+    // @extend .text-light;
+    border: solid 1px;
+    border-radius: 50%;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    line-height: 14px;
+    margin-top: 0.3rem;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    font-weight: bold;
+
+    &:hover {
+        transition: all .25s;
+        @extend .btn-secondary;
+        @extend .text-light;   
+    }
+}
+
+
 // ENV color coding
 @import './env.scss';
