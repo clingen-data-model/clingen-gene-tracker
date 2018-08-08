@@ -30,9 +30,13 @@ const mutations = {
     },
     addItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
-        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        const itemIdx = state.items.findIndex(i => i.id == item.id);
         Vue.set(state.items, itemIdx, item)
     },
+    removeItem: function (state, id) {
+        const itemIdx = state.items.findIndex(i => i.id = id);
+        Vue.delete(state.items, itemIdx);
+    }
 }
 
 const actions = {
@@ -70,6 +74,18 @@ const actions = {
             })
             .catch(function (error) {
                 alert(error);
+                return Promise.reject(error.response);
+            })
+    },
+    destroyItem ( {commit}, id) {
+        console.log(id);
+        return window.axios.delete(baseUrl+'/'+id)
+            .then(function (response) {
+                commit('removeItem', id);
+                return response;
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
             })
     }
 }
