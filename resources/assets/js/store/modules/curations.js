@@ -30,7 +30,8 @@ const mutations = {
     },
     addItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
-        Vue.set(state.items, item.id-1, item)
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        Vue.set(state.items, itemIdx, item)
     },
 }
 

@@ -24,8 +24,9 @@ const mutations = {
     addItem: function (state, item) {
         state.items.push(item)
     },
-    updateItem: function (state, id, item) {
-        state.items[id] = item
+    updateItem: function (state, item) {
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        Vue.set(state.items, itemIdx, item)
     },
 }
 
