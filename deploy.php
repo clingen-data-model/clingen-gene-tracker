@@ -27,18 +27,21 @@ host('test')
     ->hostname('web3demo.schsr.unc.edu')
     ->stage('test')
     ->set('branch', 'demo')
-    ->set('deploy_path', '/mnt/web/project/{{application}}-test');
+    ->set('deploy_path', '/mnt/web/project/{{application}}-test')
+    ->roles(['test']);
 
 host('demo')
     ->hostname('web3demo.schsr.unc.edu')
     ->stage('demo')
     ->set('branch', 'demo')
-    ->set('deploy_path', '/mnt/web/project/{{application}}');
+    ->set('deploy_path', '/mnt/web/project/{{application}}')
+    ->roles(['demo']);
 
 host('web3.schsr.unc.edu')
     ->stage('production')
     ->set('branch', 'master')
-    ->set('deploy_path', '/mnt/web/project/{{application}}');
+    ->set('deploy_path', '/mnt/web/project/{{application}}')
+    ->roles(['prodution']);
 
 option('with-build', null, InputOption::VALUE_OPTIONAL, 'Build before deploy (optional)');
 
