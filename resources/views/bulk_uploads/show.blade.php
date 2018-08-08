@@ -36,7 +36,7 @@
 
                 <div class="w-25">
                     <div class="alert alert-info">
-                        <p>Please download the fill out the excel template for best results." needs to change to "Please download and fill out the excel template for best results.</p>
+                        <p>Please download and fill out the excel template for best results.</p>
                         <a href="/files/bulk_curation_template.xlsx" class="btn btn-info form-control">
                             Download Template
                         </a>
