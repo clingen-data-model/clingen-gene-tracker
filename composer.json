@@ -17,6 +17,7 @@
         "maatwebsite/excel": "~2.1.0",
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^0.11.0",
+        "sirs/dbimport": "^1.3",
         "spatie/laravel-permission": "^2.9"
     },
     "require-dev": {

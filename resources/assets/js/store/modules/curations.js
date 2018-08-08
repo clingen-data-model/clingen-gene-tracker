@@ -20,7 +20,7 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items[id-1]
+        return state.items.find( (item) => item.id == id)
     }
 }
 
@@ -29,9 +29,9 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        // item.phenotypes = transformPhenotypes(item.phenotypes);
-        console.log(item)
-        Vue.set(state.items, item.id-1, item)
+        item.phenotypes = transformPhenotypes(item.phenotypes);
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        Vue.set(state.items, itemIdx, item)
     },
 }
 
