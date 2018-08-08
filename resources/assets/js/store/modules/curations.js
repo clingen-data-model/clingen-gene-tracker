@@ -20,7 +20,7 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items[id-1]
+        return state.items.find( (item) => item.id == id)
     }
 }
 
