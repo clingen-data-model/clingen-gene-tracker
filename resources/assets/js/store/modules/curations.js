@@ -29,9 +29,17 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
+        state.items.push(item)
+    },
+    updateItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
-        const itemIdx = state.items.findIndex(i => i.id == item.id);
-        Vue.set(state.items, itemIdx, item)
+
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        if (itemIdx > -1) {
+            Vue.set(state.items, itemIdx, item)
+            return
+        }
+        commit('addItem', item);
     },
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id = id);
@@ -59,7 +67,7 @@ const actions = {
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
-                commit('addItem', response.data.data);
+                commit('updateItem', response.data.data);
                 return response;
             });
     },
@@ -67,9 +75,8 @@ const actions = {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
                 let item = response.data.data;
-                // item.phenotypes = transformPhenotypes(item.phenotypes);
-                console.log(item)
-                commit('addItem', item);
+                item.phenotypes = transformPhenotypes(item.phenotypes);
+                commit('updateItem', item);
                 return response;
             })
             .catch(function (error) {
