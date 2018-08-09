@@ -29,10 +29,17 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
+        state.items.push(item)
+    },
+    updateItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
         let itemIdx = state.items.findIndex(i => i.id == item.id);
-        Vue.set(state.items, itemIdx, item)
-    },
+        if (itemIdx > -1) {
+            Vue.set(state.items, itemIdx, item)
+            return
+        }
+        commit('addItem', item);
+    }
 }
 
 const actions = {
@@ -55,7 +62,7 @@ const actions = {
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
-                commit('addItem', response.data.data);
+                commit('updateItem', response.data.data);
                 return response;
             });
     },
@@ -64,7 +71,7 @@ const actions = {
             .then(function (response) {
                 let item = response.data.data;
                 item.phenotypes = transformPhenotypes(item.phenotypes);
-                commit('addItem', item);
+                commit('updateItem', item);
                 return response;
             })
             .catch(function (error) {
