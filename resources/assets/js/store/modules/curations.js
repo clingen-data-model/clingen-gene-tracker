@@ -42,7 +42,7 @@ const mutations = {
         commit('addItem', item);
     },
     removeItem: function (state, id) {
-        const itemIdx = state.items.findIndex(i => i.id = id);
+        const itemIdx = state.items.findIndex(i => i.id == id);
         Vue.delete(state.items, itemIdx);
     }
 }
