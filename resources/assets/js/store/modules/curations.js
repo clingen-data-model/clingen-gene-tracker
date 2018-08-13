@@ -33,7 +33,6 @@ const mutations = {
     },
     updateItem: function (state, item) {
         item.phenotypes = transformPhenotypes(item.phenotypes);
-
         let itemIdx = state.items.findIndex(i => i.id == item.id);
         if (itemIdx > -1) {
             Vue.set(state.items, itemIdx, item)
@@ -43,6 +42,7 @@ const mutations = {
     },
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
+        
         Vue.delete(state.items, itemIdx);
     }
 }

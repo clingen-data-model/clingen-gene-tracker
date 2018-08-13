@@ -48,8 +48,8 @@
                         <div class="col-md-8 text-right">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
                             <button v-if="nextStep" type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack)" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext)">
+                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
+                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext, 'next')">
                                 {{ (!nextStep) ? 'Save and exit' : 'Next'}}
                             </b-button>
                         </div>
@@ -191,7 +191,8 @@
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'
             }),
-            updateCuration (callback) {
+            updateCuration (callback, nav) {
+                this.updatedCuration.nav = nav;
                 return this.storeItemUpdates(this.updatedCuration)
                     .then( (response) => {
                         this.addInfo('Updates saved for '+this.updatedCuration.gene_symbol+'.')
@@ -203,6 +204,7 @@
                     })
                     .catch( (error) => {
                         this.errors = error.response.data.errors;
+                        console.log(this.errors)
                         return error;
                     });
             },
