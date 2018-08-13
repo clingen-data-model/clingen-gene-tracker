@@ -76,6 +76,18 @@ const actions = {
             })
             .catch(function (error) {
                 alert(error);
+                return Promise.reject(error.response);
+            })
+    },
+    destroyItem ( {commit}, id) {
+        console.log(id);
+        return window.axios.delete(baseUrl+'/'+id)
+            .then(function (response) {
+                commit('removeItem', id);
+                return response;
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
             })
     }
 }

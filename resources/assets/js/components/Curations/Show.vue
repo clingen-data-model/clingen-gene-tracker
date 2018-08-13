@@ -11,15 +11,19 @@
         >
             <template slot="header">
                 <h3>{{ title }}
-                <router-link
-                    v-if="user.canEditCuration(curation)"
-                    :id="'edit-curation-'+curation.id+'-btn'" 
-                    class="btn btn-secondary float-right btn-sm" 
-                    :to="'/curations/'+curation.id+'/edit'"
-                >
-                    Edit
-                </router-link>
-            </h3>
+
+                    <div class="float-right d-block">
+                        <router-link
+                            v-if="user.canEditCuration(curation)"
+                            :id="'edit-curation-'+curation.id+'-btn'" 
+                            class="btn btn-secondary btn-sm" 
+                            :to="'/curations/'+curation.id+'/edit'"
+                        >
+                            Edit
+                        </router-link>
+                        <delete-button class="btn-sm" :curation="curation"></delete-button>
+                    </div>                
+                </h3>
            </template>
             <div v-if="this.curations">
                 <div class="row mt-1">
@@ -102,12 +106,14 @@
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
     import CurationStatusHistory from './StatusHistory'
+    import DeleteButton from './DeleteButton'
 
     export default {
         props: ['id'],
         components: {
             PhenotypeList,
-            CurationStatusHistory
+            CurationStatusHistory,
+            DeleteButton
         },
         data() {
             return {
@@ -147,8 +153,8 @@
         },
         methods: {
             ...mapActions('curations', {
-                fetchCuration: 'fetchItem'
-            })
+                fetchCuration: 'fetchItem',
+            }),
         },
         mounted: function () {
             this.fetchCuration(this.id);

@@ -27,6 +27,7 @@ class CurationController extends Controller
     public function __construct(RequestDataCleaner $cleaner)
     {
         $this->cleaner = $cleaner;
+        $this->middleware('role:programmer|admin')->only(['destroy']);
     }
 
     /**
@@ -139,6 +140,10 @@ class CurationController extends Controller
      */
     public function destroy($id)
     {
+        $curation = Curation::findOrFail($id);
+        $curation->delete();
+        
+        return response()->json(['message' => 'You successfully deleted curation with id '.$id]);
     }
 
     private function loadRelations(&$curation)

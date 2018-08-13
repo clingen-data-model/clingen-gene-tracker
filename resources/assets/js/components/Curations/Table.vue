@@ -1,15 +1,12 @@
 <style></style>
 <template>
     <div class="curations-table">
-        <div v-show="loading" class="text-center">
-            <p class="lead">loading...</p>
-        </div>
         <div v-show="!loading && curations.length == 0"
             class="alert alert-secondary pl-2 pr-2 pt-2 pb-2"
         >
             <slot name="no-curations">No curations found.</slot>
         </div>
-        <div class="row mb-2">
+        <div class="row mb-2" v-show="!loading">
             <div class="col-md-6 form-inline">
                 <label for="#curations-filter-input">Search:</label>&nbsp;
                 <input v-model="filter" placeholder="search curations" class="form-control" id="curations-filter-input" />
@@ -18,6 +15,10 @@
                 <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="curations-table-pagination my-0 float-right" />    
             </div>
         </div>
+        <div v-show="loading" class="text-center">
+            <p class="lead">loading...</p>
+        </div>
+
         <b-table striped hover 
             :items="tableItems" 
             :fields="fields" 
@@ -26,7 +27,7 @@
             :current-page="currentPage"
             @filtered="onFiltered"
             v-show="!$store.state.loading && curations.length >0"
-        >            
+        >     
             <template slot="gene_symbol" slot-scope="data">
                 <router-link
                     :id="'show-curation-'+data.item.id+'-link'" 
@@ -47,22 +48,30 @@
             <template slot="mondo_id" slot-scope="data">
                 {{ getDiseaseEntityColumn(data.item) }}
             </template>
-            <template slot="actions" slot-scope="data">
+            <div slot="actions" slot-scope="data" class="text-right">
                 <router-link
                     v-if="user.canEditCuration(data.item)"
                     :id="'edit-curation-'+data.item.id+'-btn'" 
-                    class="btn btn-secondary float-right btn-sm" 
+                    class="btn btn-secondary btn-sm" 
                     :to="'/curations/'+data.item.id+'/edit'"
                 >
                     Edit
                 </router-link>
-            </template>
+                <delete-button :curation="data.item" class="btn-sm">
+                    <span class="fa fa-trash">X</span>
+                </delete-button>
+            </div>
         </b-table>
         <div class="float-right mr-3 mb-3">Total Records: {{totalRows}}</div>
     </div>
 </template>
 <script>
+    import DeleteButton from './DeleteButton'
+
     export default {
+        components: {
+            DeleteButton
+        },
         props: {
             curations: {
                 required: true,
