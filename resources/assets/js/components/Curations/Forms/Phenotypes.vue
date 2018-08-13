@@ -34,14 +34,14 @@
 
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
-                    <b-form-select 
-                        id="expert-panel-select" 
-                        v-model="updatedCuration.rationales" 
-                        :options="rationaleOptions"
-                        multiple 
-                        :select-size="rationaleOptions.length" 
-                    >
-                    </b-form-select>
+                    <select v-model="updatedCuration.rationales" multiple class="form-control" style="height: 8.5em">
+                        <option v-for="rationale in rationaleOptions" :key="rationale.id"
+                            :value="rationale.id" 
+                            :selected="updatedCuration.rationales.indexOf(rationale.id) > -1"
+                        >
+                            {{ rationale.name }}
+                        </option>
+                    </select>
                     <validation-error :messages="errors.rationales"></validation-error>
                 </div>
                 <transition name="fade">
@@ -144,11 +144,7 @@
                                         return false;
                                     }
                                     return true;
-                                })
-                                .map((item) => {
-                                    return {text: item.name, value: item};
-                                })
-                options.unshift({'value': null, 'text': 'Select...'});
+                                });
                 return options
             },
             showPmids: function () {

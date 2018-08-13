@@ -14,9 +14,9 @@ class CurationUpdateRequest extends CurationCreateRequest
     {
         $rules = parent::rules();
         $rules['page'] = 'required';
-        $rules['curation_type_id'] = 'required_if:page,curation-types';
+        $rules['curation_type_id'] = 'sometimes';
         $rules['rationales'] = 'sometimes';
-        $rules['rationale_other'] = 'required_if:rationale_id,100';
+        $rules['rationale_other'] = 'sometimes';
         $rules['isolated_phenotype'] = 'sometimes';
 
         return $rules;
@@ -36,8 +36,27 @@ class CurationUpdateRequest extends CurationCreateRequest
     {
         $validator = parent::getValidatorInstance();
 
-        // Commented out for now.  keeping for reference when making validation more sophisticated
+        // Curation Type
+        $validator->sometimes('curation_type_id', 'required', function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
+            return $input->page == 'curation-types';
+        });
+
+        // Rationale Other
+        $validator->sometimes('rationale_other', 'required', function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
+            return $input->rationale_id == 100;
+        });
+
+        // Rationales
         $validator->sometimes('rationales', 'required', function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
             $genePhenos = (new OmimClient())->getGenePhenotypes($input->gene_symbol);
             $test = $input->page == 'phenotypes'
                     && ($genePhenos->count() > 1
@@ -47,11 +66,23 @@ class CurationUpdateRequest extends CurationCreateRequest
             return $test;
         });
 
+        // Isolated Phenotype
         $validator->sometimes('isolated_phenotype', ['required', new ValidOmimId], function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
             return $input->page == 'phenotypes'
                     && $input->curation_type_id == 3;
         });
 
         return $validator;
+    }
+
+    private function shouldValidate($input)
+    {
+        if ($input->nav == 'next' || $input->nav == 'finish') {
+            return true;
+        }
+        return false;
     }
 }
