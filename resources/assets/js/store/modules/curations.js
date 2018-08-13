@@ -1,15 +1,5 @@
 import Vue from 'vue'
 
-function transformPhenotypes(phenotypes) {
-    const out = phenotypes.map(p => {
-        if (p.mim_number) {
-            return p.mim_number
-        }
-        return p
-    });
-    return out;
-}
-
 const baseUrl = '/api/curations'
 const state = {
     items: []
@@ -32,7 +22,6 @@ const mutations = {
         state.items.push(item)
     },
     updateItem: function (state, item) {
-        item.phenotypes = transformPhenotypes(item.phenotypes);
         let itemIdx = state.items.findIndex(i => i.id == item.id);
         if (itemIdx > -1) {
             Vue.set(state.items, itemIdx, item)
@@ -75,7 +64,6 @@ const actions = {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
                 let item = response.data.data;
-                item.phenotypes = transformPhenotypes(item.phenotypes);
                 commit('updateItem', item);
                 return response;
             })
