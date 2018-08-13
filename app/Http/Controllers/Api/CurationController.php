@@ -11,10 +11,12 @@ use App\Services\RequestDataCleaner;
 use App\Curation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Contracts\OmimClient;
 
 class CurationController extends Controller
 {
     protected $cleaner;
+    protected $omim;
 
     protected $validFilters = [
         'gene_symbol',
@@ -24,9 +26,10 @@ class CurationController extends Controller
         'mondo_id'
     ];
 
-    public function __construct(RequestDataCleaner $cleaner)
+    public function __construct(RequestDataCleaner $cleaner, OmimClient $omim)
     {
         $this->cleaner = $cleaner;
+        $this->omim = $omim;
         $this->middleware('role:programmer|admin')->only(['destroy']);
     }
 
@@ -116,7 +119,10 @@ class CurationController extends Controller
             \Bus::dispatch(new SyncPhenotypes($curation, $request->phenotypes));
         }
         if ($request->isolated_phenotype) {
-            \Bus::dispatch(new SyncPhenotypes($curation, [$request->isolated_phenotype]));
+            $pheno = $this->omim->getEntry($request->isolated_phenotype)[0]->entry;
+            \Bus::dispatch(new SyncPhenotypes($curation, [
+                ['mim_number'=>$pheno->mimNumber, 'name'=> $pheno->titles->preferredTitle]
+            ]));
         }
         if ($request->rationales) {
             $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
