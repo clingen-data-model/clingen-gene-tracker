@@ -1,15 +1,5 @@
 import Vue from 'vue'
 
-function transformPhenotypes(phenotypes) {
-    const out = phenotypes.map(p => {
-        if (p.mim_number) {
-            return p.mim_number
-        }
-        return p
-    });
-    return out;
-}
-
 const baseUrl = '/api/curations'
 const state = {
     items: []
@@ -20,7 +10,7 @@ const getters = {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items[id-1]
+        return state.items.find( (item) => item.id == id)
     }
 }
 
@@ -29,10 +19,21 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        // item.phenotypes = transformPhenotypes(item.phenotypes);
-        console.log(item)
-        Vue.set(state.items, item.id-1, item)
+        state.items.push(item)
     },
+    updateItem: function (state, item) {
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        if (itemIdx > -1) {
+            Vue.set(state.items, itemIdx, item)
+            return
+        }
+        commit('addItem', item);
+    },
+    removeItem: function (state, id) {
+        const itemIdx = state.items.findIndex(i => i.id == id);
+        
+        Vue.delete(state.items, itemIdx);
+    }
 }
 
 const actions = {
@@ -55,7 +56,7 @@ const actions = {
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
-                commit('addItem', response.data.data);
+                commit('updateItem', response.data.data);
                 return response;
             });
     },
@@ -63,13 +64,23 @@ const actions = {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
                 let item = response.data.data;
-                // item.phenotypes = transformPhenotypes(item.phenotypes);
-                console.log(item)
-                commit('addItem', item);
+                commit('updateItem', item);
                 return response;
             })
             .catch(function (error) {
                 alert(error);
+                return Promise.reject(error.response);
+            })
+    },
+    destroyItem ( {commit}, id) {
+        console.log(id);
+        return window.axios.delete(baseUrl+'/'+id)
+            .then(function (response) {
+                commit('removeItem', id);
+                return response;
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
             })
     }
 }

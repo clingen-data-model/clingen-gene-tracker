@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+
 </head>
 <body>
     <div>
@@ -75,7 +76,8 @@
                                     </form>
                                 </div>
                             </li>
-                        @endguest
+                            @include('partials.help')
+                         @endguest
                     </ul>
                 </div>
             </div>

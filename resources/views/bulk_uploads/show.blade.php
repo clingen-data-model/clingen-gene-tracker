@@ -29,14 +29,14 @@
                         <input type="file" name="bulk_curations" id="upload-field" class="form-control" />
                     </div>
                     <div class="alert alert-warning pt-1 pb-1 pl-2 pr-2">
-                        <small>Please note that uploads are for curations in a single expert Panel</small>
+                        <small>Please note that all genes in a bulk upload must be for a single Expert Panel. The minimum requirement for upload is the gene name (HGVS).</small>
                     </div>
                     <button class="btn btn-primary" type="submit">Upload</button>
                 </form>
 
                 <div class="w-25">
                     <div class="alert alert-info">
-                        <p>Please download the fill out the excel template for best results.</p>
+                        <p>Please download and fill out the excel template for best results.</p>
                         <a href="/files/bulk_curation_template.xlsx" class="btn btn-info form-control">
                             Download Template
                         </a>

@@ -1,30 +1,35 @@
 <style></style>
 <template>
     <div class="curation-curation-container">
-        <div v-show="phenotypes.length == 0 && !loading">
-            <div class="alert alert-secondary clearfix">
-                <p>The gene <strong>{{ updatedCuration.gene_symbol }}</strong> is not associated with a disease entity per OMIM at this time.</p>
-            </div>
-        </div>
-        <div class="row" v-show="phenotypes.length > 0">
-            <div class="col-lg-8">
-                <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small bordered>
-                </b-table>
-                <div class="form-group">
-                    <label><strong>How would you like to proceed?</strong></label>
-                    <b-form-radio-group id="btnradios2"
-                        size="lg"
-                        v-model="updatedCuration.curation_type_id"
-                        :options="options"
-                        stacked
-                        name="radioBtnOutline" />
-                    <validation-error :messages="errors.curation_type_id"></validation-error>
+            <div v-show="phenotypes.length == 0 && !loading">
+                <div class="alert alert-secondary clearfix">
+                    <p>The gene <strong>{{ updatedCuration.gene_symbol }}</strong> is not associated with a disease entity per OMIM at this time.</p>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <criteria-table></criteria-table>
+            <div class="row">
+                <div class="col-lg-8">
+                    <omim-loading></omim-loading>
+                    <transition name="fade">
+                        <div v-show="phenotypes.length > 0">
+                            <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small bordered>
+                            </b-table>
+                            <div class="form-group">
+                                <label><strong>How would you like to proceed?</strong></label>
+                                <b-form-radio-group id="btnradios2"
+                                    size="lg"
+                                    v-model="updatedCuration.curation_type_id"
+                                    :options="options"
+                                    stacked
+                                    name="radioBtnOutline" />
+                                <validation-error :messages="errors.curation_type_id"></validation-error>
+                            </div>
+                        </div>
+                    </transition>
+                </div>
+                <div class="col-lg-4">
+                    <criteria-table></criteria-table>
+                </div>
             </div>
-        </div>
     </div>
 </template>
 <script>
@@ -32,6 +37,7 @@
     import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
     import CriteriaTable from './../CriteriaTable';
     import ValidationError from '../../ValidationError';
+    import OmimLoading from '../../OmimLoading'
 
     export default {
         mixins: [
@@ -40,7 +46,8 @@
         ],
         components: {
             CriteriaTable,
-            ValidationError
+            ValidationError,
+            OmimLoading,
         },
         data() {
             return {
@@ -63,8 +70,10 @@
         watch: {
             updatedCuration: function (to, from) {
                 if (to != from) {
-                    this.fetchPhenotypes(this.updatedCuration.gene_symbol);
-                    this.updatedCuration.addingCurationType = 1;
+                    if (to.gene_symbol != from.gene_symbol || to.curation_type_id != from.curation_type_id) {
+                        this.fetchPhenotypes(this.updatedCuration.gene_symbol);
+                    }
+                    // this.updatedCuration.addingCurationType = 1;
                 }
             }
         },
@@ -92,9 +101,9 @@
             }
         },
         mounted() {
-            if (this.updatedCuration.gene_symbol) {
-                this.fetchPhenotypes(this.updatedCuration.gene_symbol)
-            }
+            // if (this.updatedCuration.gene_symbol) {
+            //     this.fetchPhenotypes(this.updatedCuration.gene_symbol)
+            // }
             this.fetchCurationTypes();
         }
     }

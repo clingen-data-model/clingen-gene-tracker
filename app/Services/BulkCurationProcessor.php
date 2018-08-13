@@ -67,11 +67,14 @@ class BulkCurationProcessor
             throw new InvalidRowException($rowData, $this->validationErrors);
         }
 
+        $curator = $this->users->firstWhere('email', $rowData['curator_email']);
+        $curationTypes = $this->curationTypes->firstWhere('name', $rowData['curation_type']);
+
         $attributes = [
             'gene_symbol' => $rowData['gene_symbol'],
             'expert_panel_id' => $expertPanelId,
-            'curator_id' => $this->users->firstWhere('email', $rowData['curator_email'])->id,
-            'curation_type_id' => $this->curationTypes->firstWhere('name', $rowData['curation_type'])->id,
+            'curator_id' => ($curator) ? $curator->id : null,
+            'curation_type_id' => ($curationTypes) ? $curationTypes->id : null,
             'mondo_id' => $rowData['mondo_id'],
             'disease_entity_if_there_is_no_mondo_id' => $rowData['disease_entity_if_there_is_no_mondo_id'],
             'rationale_notes' => $rowData['rationale_notes'],

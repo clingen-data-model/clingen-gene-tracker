@@ -41,15 +41,17 @@
                     </div>
                         <hr>
                     <div class="row">
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.push('/curations')">Cancel</button>
+                        <div class="col-md-4">
+                            <delete-button :curation="curation"></delete-button>
+                            <button type="button" class="btn btn-secondary" id="curation-proceed" @click="$router.push('/curations')">Cancel</button>
                         </div>
-                        <div class="col-md-9 text-right">
-                            <b-button variant="default" id="curation-proceed" v-show="" @click="proceed()">Proceed</b-button>
+                        <div class="col-md-8 text-right">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
-                            <button type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack)" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext)">Next</b-button>
+                            <button v-if="nextStep" type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
+                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
+                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext, 'next')">
+                                {{ (!nextStep) ? 'Save and exit' : 'Next'}}
+                            </b-button>
                         </div>
                     </div>
                 </b-form>
@@ -61,6 +63,7 @@
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import CurationType from './Forms/CurationType'
     import Phenotypes from './Forms/Phenotypes'
+    import DeleteButton from './DeleteButton'
     import Info from './Forms/Info'
     import Mondo from './Forms/Mondo'
 
@@ -70,7 +73,8 @@
             Phenotypes,
             Info,
             Mondo,
-            CurationType
+            CurationType,
+            DeleteButton
         },
         data () {
             return {
@@ -107,7 +111,9 @@
                 this.setCurrentStep();
             },
             curation: function (to, from) {
-                this.setUpdatedCuration(to, from);
+                if (typeof to != 'undefined') {
+                    this.setUpdatedCuration(to, from);
+                }
             }
         },
         computed: {
@@ -185,7 +191,8 @@
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'
             }),
-            updateCuration (callback) {
+            updateCuration (callback, nav) {
+                this.updatedCuration.nav = nav;
                 return this.storeItemUpdates(this.updatedCuration)
                     .then( (response) => {
                         this.addInfo('Updates saved for '+this.updatedCuration.gene_symbol+'.')
@@ -197,13 +204,16 @@
                     })
                     .catch( (error) => {
                         this.errors = error.response.data.errors;
+                        console.log(this.errors)
                         return error;
                     });
             },
             navNext (response) {
                 if (this.nextStep) {
                     this.$router.push(this.$route.path+'#'+this.nextStep)
+                    return;
                 }
+                this.$router.push('/');
             },
             navBack (response) {
                 if (this.previousStep) {
@@ -214,6 +224,9 @@
                 this.$router.push('/')
             },
             setUpdatedCuration: function (to, from) {
+                if (typeof to == 'undefined' ) {
+                    return;
+                }
                 if (to.id != from.id) {
                     this.fetchCuration(this.curation.id);
                 }

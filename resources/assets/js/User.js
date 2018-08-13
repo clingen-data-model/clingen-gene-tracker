@@ -86,6 +86,13 @@ class User {
         }).length > 0;
     }
 
+    canDeleteCuration(curation) {
+        if (this.hasRole('programmer') || this.hasRole('admin')) {
+            return true;
+        }
+        false;
+    }
+
 }
 
 export default User
