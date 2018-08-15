@@ -39,7 +39,7 @@
                             </b-tab> 
                             <b-tab>
                                 <template slot="title">
-                                    Curation Curations <span class="badge  badge-pill badge-primary">{{panel.curations.length}}</span>
+                                    Curations <span class="badge  badge-pill badge-primary">{{panel.curations.length}}</span>
                                 </template>
                                 <ul class="list-unstyled mt-2">
                                     <li class="border-bottom">
