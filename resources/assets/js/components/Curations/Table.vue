@@ -18,7 +18,6 @@
         <div v-show="loading" class="text-center">
             <p class="lead">loading...</p>
         </div>
-
         <b-table striped hover 
             :items="tableItems" 
             :fields="fields" 
@@ -26,6 +25,8 @@
             :per-page="pageLength"
             :current-page="currentPage"
             @filtered="onFiltered"
+            :sort-by.sync="sortKey"
+            :sort-desc.sync="sortDesc"
             v-show="!$store.state.loading && curations.length >0"
         >     
             <template slot="gene_symbol" slot-scope="data">
@@ -79,8 +80,16 @@
             },
             pageLength: {
                 type: Number,
-                default: 10,
-            }   
+                default: 100,
+            },
+            sortBy: {
+                type: String,
+                default: 'gene_symbol'
+            },
+            sortDir: {
+                type: Boolean,
+                default: false
+            }
         },
         data() {
             return {
@@ -88,6 +97,8 @@
                 filter: null,
                 currentPage: 1,
                 totalRows: null,
+                sortDesc: false,
+                sortKey: null,
                 fields: {
                     gene_symbol: {
                         label: 'Gene Symbol',
@@ -147,6 +158,10 @@
               this.currentPage = 1
               this.totalRows = filteredItems.length
             }
+        },
+        mounted() {
+            this.sortKey = JSON.parse(JSON.stringify(this.sortBy));
+            this.sortDesc = (this.sortDir == 'desc');
         }
     }
 </script>

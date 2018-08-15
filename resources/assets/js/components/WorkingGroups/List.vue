@@ -23,6 +23,7 @@
                     :filter="filter"
                     :per-page="pageLength"
                     :current-page="currentPage"
+                    sort-by="name"
                     @filtered="onFiltered"
                     @row-clicked="handleRowClick"
                     tbody-tr-class="crsr-pointer"
