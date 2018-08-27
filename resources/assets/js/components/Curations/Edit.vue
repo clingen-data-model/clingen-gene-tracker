@@ -119,7 +119,7 @@
         computed: {
             ...mapGetters('curations', {
                 curations: 'Items',
-                getCuration: 'getItemById'
+                getCuration: 'getItemById',
             }),            
             title: function () {
                 let title = 'Edit Curation: ';
@@ -176,7 +176,6 @@
                 }
                 return null
             }
-
         },
         methods: {
             ...mapActions('curations', {

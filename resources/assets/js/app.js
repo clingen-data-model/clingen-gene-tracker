@@ -30,20 +30,29 @@ axios.interceptors.request.use(function (config) {
     return config;
 })
 
-axios.interceptors.response.use(function (response) {
-    store.commit('removeRequest');
-    const url = new URL(response.request.responseURL);
-    const apiParts = url.pathname.split(/[\/?&]/)
-    try {
-        store.commit('removeApiRequest', apiParts[2])
-    } catch (error) {
+axios.interceptors.response.use(
+    function (response) {
+        store.commit('removeRequest');
+        const url = new URL(response.request.responseURL);
+        const apiParts = url.pathname.split(/[\/?&]/)
+        try {
+            store.commit('removeApiRequest', apiParts[2])
+        } catch (error) {
+        }
+        return response;
+    }, 
+    function (error) {
+        store.commit('removeRequest');
+        const url = new URL(error.response.request.responseURL);
+        const apiParts = url.pathname.split(/[\/?&]/)
+        try {
+            store.commit('removeApiRequest', apiParts[2])
+        } catch (error) {
+            console.log(error)
+        }
+        return Promise.reject(error);
     }
-    return response;
-  }, function (error) {
-    // Do something with response error
-    store.commit('removeRequest');
-    return Promise.reject(error);
-  });
+);
 
 if (document.getElementById('app')) {
     const app = new Vue({

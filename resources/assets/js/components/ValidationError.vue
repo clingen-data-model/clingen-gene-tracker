@@ -1,8 +1,10 @@
 <style></style>
 <template>
-    <div class="text-danger mt-1" v-show="hasErrors">
-        <div v-for="msg in messages"><small>{{msg}}</small></div>
-    </div>
+    <transition name="fade">
+        <div class="text-danger mt-1" v-show="hasErrors">
+            <div v-for="msg in messages"><small>{{msg}}</small></div>
+        </div>
+    </transition>
 </template>
 <script>
     export default {

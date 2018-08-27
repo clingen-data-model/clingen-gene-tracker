@@ -20,7 +20,9 @@ export default {
                         this.phenotypes = response.data.phenotypes;
                         this.phenotypesLoaded = true
                     })
-                    .catch( error => alert(error) )
+                    .catch( error => {
+                        alert(error) 
+                    })
             }
             return new Promise((resolve, reject) => { resolve() })
         },

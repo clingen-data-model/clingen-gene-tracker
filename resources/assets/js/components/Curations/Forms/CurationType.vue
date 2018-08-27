@@ -73,7 +73,7 @@
                     if (to.gene_symbol != from.gene_symbol || to.curation_type_id != from.curation_type_id) {
                         this.fetchPhenotypes(this.updatedCuration.gene_symbol);
                     }
-                    // this.updatedCuration.addingCurationType = 1;
+                    this.updatedCuration.addingCurationType = 1;
                 }
             }
         },
