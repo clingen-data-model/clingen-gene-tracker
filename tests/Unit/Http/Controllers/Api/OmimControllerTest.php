@@ -43,10 +43,21 @@ class OmimControllerTest extends TestCase
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][2]['entry'])
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][3]['entry'])
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][4]['entry'])
-            ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][5]['entry'])
-            // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][6]['entry'])
-            // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][8]['entry'])
-            // ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][9]['entry'])
-            ;
+            ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][5]['entry']);
+    }
+
+    /**
+     * @test
+     */
+    public function checks_to_see_if_gene_symbol_is_valid()
+    {
+        $this->actingAs($this->u, 'api')
+            ->call('GET', '/api/omim/gene/MLTN1')
+            ->assertStatus(404)
+            ->assertSee('No HGNC gene symbol was found for MLTN1');
+
+        $this->actingAs($this->u, 'api')
+            ->call('GET', '/api/omim/gene/BRCA1')
+            ->assertStatus(200);
     }
 }

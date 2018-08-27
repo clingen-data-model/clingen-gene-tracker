@@ -29,5 +29,5 @@ Route::group([
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');
     Route::get('/omim/search', 'OmimController@search');
-    Route::get('/omim/gene', 'OmimController@gene');
+    Route::get('/omim/gene/{geneSymbol}', 'OmimController@gene');
 });

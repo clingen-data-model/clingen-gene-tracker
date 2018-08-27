@@ -20,7 +20,7 @@ class OmimController extends Controller
 
     public function entry(Request $request)
     {
-        if (!$request->has('mim_number')) {
+        if (!$request->mim_number) {
             return new JsonResponse(['errors' => ['You must provide a mim_number to get a omim record.']], 422);
         }
         $entry = $this->omim->getEntry($request->mim_number);
@@ -37,15 +37,19 @@ class OmimController extends Controller
         return $searchResults;
     }
 
-    public function gene(Request $request)
+    public function gene($geneSymbol)
     {
-        if (!$request->has('gene_symbol')) {
+        if (!$geneSymbol) {
             return new JsonResponse(['errors' => ['You must provide a gene_symbol to get the gene\'s phenotypes.']], 422);
         }
 
-        $searchResults = $this->omim->getGenePhenotypes($request->gene_symbol);
+        if (!$this->omim->geneSymbolIsValid($geneSymbol)) {
+            return new JsonResponse(['errors' => ['No HGNC gene symbol was found for '.$geneSymbol]], 404);
+        }
+
+        $searchResults = $this->omim->getGenePhenotypes($geneSymbol);
         return [
-            'gene_symbol' => $request->gene_symbol,
+            'gene_symbol' => $geneSymbol,
             'phenotypes' => $searchResults
         ];
     }

@@ -67,6 +67,43 @@ class OmimClientTest extends TestCase
                                 });
         $this->assertEquals($expectedEntries, $results);
     }
+
+    /**
+     * @test
+     */
+    public function determines_whether_omim_has_a_gene_symbol()
+    {
+        $notFoundJson = json_encode([
+            'omim' => [
+                'searchResponse' => [
+                    'entryList' => []
+                ]
+            ]
+        ]);
+        $omim = $this->getOmimClient([new Response(200, [], $notFoundJson)]);
+        $this->assertFalse($omim->geneSymbolIsValid('MLTN1'));
+
+        $foundJson = json_encode([
+            'omim' => [
+                'searchResponse' => [
+                    'entryList' => [
+                        [
+                            'entry' => [
+                                'mimNumber' => '113705',
+                                'titles' => [
+                                    'preferredTitle' => 'BREAST CANCER 1 GENE; BRCA1'
+                                ],
+                                'matches' => 'brca1'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+        $omim = $this->getOmimClient([new Response(200, [], $foundJson)]);
+        $this->assertTrue($omim->geneSymbolIsValid('BRCA1'));
+    }
+    
     
 
     private function getOmimClient($responses)

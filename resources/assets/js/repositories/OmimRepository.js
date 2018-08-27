@@ -27,7 +27,7 @@ OmimRepo.search = function (search) {
 }
 
 OmimRepo.gene = function (geneSymbol) {
-    return this.makeRequest('get', this.baseUrl+'/gene?gene_symbol='+geneSymbol);
+    return this.makeRequest('get', this.baseUrl+'/gene/'+geneSymbol);
 }
 
 module.exports = OmimRepo;
