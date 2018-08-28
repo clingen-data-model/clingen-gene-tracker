@@ -20,12 +20,10 @@
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
-                :state="geneSymbolError"
-                v-on:change="checkGeneSymbol"> 
+                :state="geneSymbolError"> 
             </b-form-input>
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
-            <validation-error :messages="geneSymbolInvalid ? ['HGNC Gene symbole not found for '+updatedCuration.gene_symbol] : undefined"></validation-error>
         </b-form-group>
         <curation-notifications :curation="updatedCuration"></curation-notifications>
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">

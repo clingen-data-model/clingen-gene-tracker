@@ -25,8 +25,8 @@ class CurationUpdateRequest extends CurationCreateRequest
     public function messages()
     {
         $messages = [
-            'curation_type_id.required_if' => 'A curation type is required to continue',
-            'rationale_ids.required_if' => 'You must select a rationale to continue',
+            'curation_type_id.required' => 'A curation type is required to continue',
+            'rationale_ids.required' => 'You must select a rationale to continue',
         ];
 
         return array_merge(parent::messages(), $messages);
@@ -38,6 +38,7 @@ class CurationUpdateRequest extends CurationCreateRequest
 
         // Curation Type
         $validator->sometimes('curation_type_id', 'required', function ($input) {
+            return true;
             if (! $this->shouldValidate($input)) {
                 return false;
             }

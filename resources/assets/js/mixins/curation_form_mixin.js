@@ -9,7 +9,7 @@ export default {
                 gene_symbol: null,
                 ratonionales: []
             },
-            geneSymbolInvalid: false,
+            // geneSymbolInvalid: false,
             page: null
         }
     },
@@ -32,21 +32,21 @@ export default {
                 this.updatedCuration.page = this.page;
             }
         },
-        checkGeneSymbol() {
-            if (typeof this.updatedCuration.gene_symbol == 'undefined' || this.updatedCuration.gene_symbol === null) {
-                this.geneSymbolInvalid = false;
-            }
+        // checkGeneSymbol() {
+        //     if (typeof this.updatedCuration.gene_symbol == 'undefined' || this.updatedCuration.gene_symbol === null) {
+        //         this.geneSymbolInvalid = false;
+        //     }
 
-            OmimRepo.gene(this.updatedCuration.gene_symbol)
-                .then(response => {
-                    this.geneSymbolInvalid = false;
-                })
-                .catch(error => {
-                    if (error.response.status == 404) {
-                        this.geneSymbolInvalid = true;
-                    }
-                })
-        }
+        //     OmimRepo.gene(this.updatedCuration.gene_symbol)
+        //         .then(response => {
+        //             this.geneSymbolInvalid = false;
+        //         })
+        //         .catch(error => {
+        //             if (error.response.status == 404) {
+        //                 this.geneSymbolInvalid = true;
+        //             }
+        //         })
+        // }
     },
     mounted() {
         this.syncValue();

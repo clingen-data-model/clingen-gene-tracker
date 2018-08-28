@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\ValidHgncGeneSymbol;
 
 class CurationCreateRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class CurationCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'gene_symbol'=>'required',
+            'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
             'expert_panel_id' => 'required',
         ];
     }

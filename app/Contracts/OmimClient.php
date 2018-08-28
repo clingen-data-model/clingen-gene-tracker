@@ -11,4 +11,8 @@ interface OmimClient
     public function getEntry($mimNumber);
 
     public function search($searchData);
+
+    public function geneSymbolIsValid($geneSumbol);
+
+    public function getGenePhenotypes($geneSymbol);
 }

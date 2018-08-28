@@ -50,7 +50,7 @@ class CurationControllerTest extends TestCase
      */
     public function index_lists_curations_filtered_by_gene_sybmol()
     {
-        $testGene = 'TEST123';
+        $testGene = 'BRCA1';
         $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
 
         $response = $this->actingAs($this->user, 'api')
@@ -65,8 +65,9 @@ class CurationControllerTest extends TestCase
     public function stores_new_curation()
     {
         $data = [
-            'gene_symbol' => 'MILTON-1',
-            'expert_panel_id' => $this->panel->id
+            'gene_symbol' => 'BRCA1',
+            'expert_panel_id' => $this->panel->id,
+            'nav' => 'next'
         ];
 
         $this->actingAs($this->user, 'api')
@@ -99,10 +100,31 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    public function checks_for_valid_gene_symbol()
+    {
+        $data = [
+            'gene_symbol' => 'MLTN1',
+            'expert_panel' => $this->panel->id
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('POST', '/api/curations/', $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors'=>[
+                    'gene_symbol'=>['MLTN1 is not a valid HGNC gene symbol according to OMIM']
+                ]
+            ]);
+    }
+    
+
+    /**
+     * @test
+     */
     public function requires_expert_panel_id()
     {
         $data = [
-            'gene_symbol' => 'ABCD'
+            'gene_symbol' => 'BRCA1'
         ];
 
         $response = $this->actingAs($this->user, 'api')
@@ -125,9 +147,11 @@ class CurationControllerTest extends TestCase
         $curation = factory(\App\Curation::class)->create(['curator_id' => $this->user->id]);
         $curationType = factory(\App\CurationType::class)->create();
         $data = [
-            'gene_symbol' => 'ABCD',
+            'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'page' => 'curation-types',
+            'nav' => 'next',
+            'curation_type_id' => ''
         ];
 
         $response = $this->actingAs($this->user, 'api')
@@ -261,7 +285,8 @@ class CurationControllerTest extends TestCase
                     'mim_number' => $phenotype->mim_number,
                     'name' => $phenotype->name
                 ]
-            ]
+            ],
+            'nav' => 'next'
         ];
 
         $this->actingAs($this->user, 'api')
@@ -283,7 +308,8 @@ class CurationControllerTest extends TestCase
             'gene_symbol' => 'MLTN1',
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
-            'curation_status_id' => $statuses->first()->id
+            'curation_status_id' => $statuses->first()->id,
+            'nav' => 'next'
         ];
 
         $this->actingAs($this->user, 'api')
@@ -309,7 +335,8 @@ class CurationControllerTest extends TestCase
             'gene_symbol' => $curation->gene_symbol,
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
-            'curation_status_id' => $statuses->get(1)->id
+            'curation_status_id' => $statuses->get(1)->id,
+            'nav' => 'next'
         ];
 
         $this->disableExceptionHandling();
@@ -338,7 +365,8 @@ class CurationControllerTest extends TestCase
             'curation_type_id' => $this->curationType->id,
             'curator_id' => $curator->id,
             'curation_status_id' => 1,
-            'curation_status_timestamp' => now()->subDays(2)
+            'curation_status_timestamp' => now()->subDays(2),
+            'nav' => 'next'
         ];
 
         $this->disableExceptionHandling();
@@ -366,7 +394,7 @@ class CurationControllerTest extends TestCase
 
         $data = [
             'page' => 'phenotypes',
-            'gene_symbol' => 'ABCD',
+            'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'phenotypes' => [
                 [
@@ -382,7 +410,8 @@ class CurationControllerTest extends TestCase
                     'name' => $phenotype->name
                 ]
             ],
-            'rationales' => [['id' => $this->rationale->id]]
+            'rationales' => [['id' => $this->rationale->id]],
+            'nav' => 'next'
         ];
 
         $this->actingAs($this->user, 'api')
@@ -426,6 +455,7 @@ class CurationControllerTest extends TestCase
         $data['page'] = 'phenotypes';
         $data['rationales'] = [$this->rationale];
         $data['isolated_phenotype'] = '605724';
+        $data['nav'] = 'next';
         $response = $this->actingAs($this->user, 'api')
             ->call('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
@@ -461,6 +491,7 @@ class CurationControllerTest extends TestCase
         $curation = $this->curations->first();
         $data = $curation->toArray();
         $data['page'] = 'info';
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/'.$curation->id, $data)
@@ -481,6 +512,7 @@ class CurationControllerTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/' . $curation->id, $data)
@@ -501,6 +533,7 @@ class CurationControllerTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/' . $curation->id, $data)
@@ -522,6 +555,7 @@ class CurationControllerTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/' . $curation->id, $data)
@@ -545,6 +579,7 @@ class CurationControllerTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/' . $curation->id, $data)
@@ -569,6 +604,7 @@ class CurationControllerTest extends TestCase
         $data['page'] = 'phenotypes';
         $data['rationales'] = [1,2];
         $data['isolated_phenotype'] = null;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/' . $curation->id, $data)
@@ -593,6 +629,7 @@ class CurationControllerTest extends TestCase
         $data['page'] = 'phenotypes';
         $data['rationales'] = [1,2];
         $data['isolated_phenotype'] = 123456;
+        $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/' . $curation->id, $data)
