@@ -29,7 +29,7 @@
                         <input type="file" name="bulk_curations" id="upload-field" class="form-control" />
                     </div>
                     <div class="alert alert-warning pt-1 pb-1 pl-2 pr-2">
-                        <small>Please note that all genes in a bulk upload must be for a single Expert Panel. The minimum requirement for upload is the gene name (HGVS).</small>
+                        <small>Please note that all genes in a bulk upload must be for a single Expert Panel. The minimum requirement for upload is the gene name (HGNC).</small>
                     </div>
                     <button class="btn btn-primary" type="submit">Upload</button>
                 </form>
