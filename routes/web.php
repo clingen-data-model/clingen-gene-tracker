@@ -26,6 +26,8 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('bulk-uploads', 'BulkUploadController@show')->name('bulk-uploads.show');
     Route::post('bulk-uploads', 'BulkUploadController@upload')->name('bulk-uploads.upload');
 
+    Route::get('curations/export/form', 'CurationExportController@getForm')->name('curations.export');
+    Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
     Route::impersonate();
 });
