@@ -44,4 +44,9 @@ class ExpertPanel extends Model
                 ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->wherePivot('is_coordinator', 1);
     }
+
+    public function getFileSafeNameAttribute()
+    {
+        return preg_replace('/[\\:\\/\*\?"<>\| ]/', '-', $this->name);
+    }
 }

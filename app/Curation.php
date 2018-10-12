@@ -37,7 +37,7 @@ class Curation extends Model
     ];
 
     protected $with = [
-        'currentStatus'
+        // 'currentStatus'
     ];
 
     public static function boot()
@@ -73,16 +73,16 @@ class Curation extends Model
                 ->withTimestamps();
     }
 
-    public function currentStatus()
-    {
-        return $this->curationStatuses()
-                    ->orderBy('curation_curation_status.created_at', 'desc')
-                    ->limit(1);
-    }
+    // public function currentStatus()
+    // {
+    //     return $this->curationStatuses()
+    //                 ->orderBy('curation_curation_status.created_at', 'desc')
+    //                 ->limit(1);
+    // }
 
     public function getCurrentStatusAttribute()
     {
-        return $this->currentStatus()->first();
+        return $this->curationStatuses->sortByDesc('created_at')->first();
     }
 
     public function curationType()

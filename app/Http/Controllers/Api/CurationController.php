@@ -40,7 +40,7 @@ class CurationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Curation::with('curationStatuses', 'rationales');
+        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel');
         foreach ($request->all() as $key => $value) {
             if ($key == 'with') {
                 $query->with($value);

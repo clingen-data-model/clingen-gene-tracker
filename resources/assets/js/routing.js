@@ -10,6 +10,7 @@ import WorkingGroups from './components/WorkingGroups/Index'
 import GroupList from './components/WorkingGroups/List'
 import GroupShow from './components/WorkingGroups/Show'
 import UserDashboard from './components/UserDashboard'
+import CurationExportForm from './components/Curations/ExportForm'
 
 Vue.use(VueRouter)
 
@@ -44,6 +45,10 @@ const routes = [
             { 
                 path: 'create', 
                 component: CurationCreate
+            },
+            {
+                path: 'export',
+                component: CurationExportForm
             },
             {
                 path: ':id',

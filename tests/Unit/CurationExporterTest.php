@@ -46,7 +46,8 @@ class CurationExporterTest extends TestCase
                 'Expert Panel',
                 'Curator',
                 'Status',
-                'Disease Entity'
+                'Disease Entity',
+                'Created'
             ],
             array_keys($curationData->first())
         );
@@ -108,7 +109,7 @@ class CurationExporterTest extends TestCase
         $this->assertFileExists($path);
         
         $content = explode("\n", file_get_contents($path));
-        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,Status,"Disease Entity"', $content[0]);
+        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,Status,"Disease Entity",Created', $content[0]);
         $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
 
         unline($path);

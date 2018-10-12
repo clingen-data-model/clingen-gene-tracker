@@ -2,6 +2,9 @@
 <template>
     <div class="card">
         <div class="card-header"> 
+            <span class="float-right">
+                <router-link :to="'/curations/export'" class="btn btn-secondary btn-sm">Download CSV</router-link>
+            </span>
             <h3>All Curations</h3>
         </div>
             

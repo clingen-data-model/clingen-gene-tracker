@@ -123,6 +123,9 @@
                     actions: {
                         label: '',
                         sortable: false,
+                        thStyle: {
+                            width: "5rem"
+                        }
                     }
                 },
             }

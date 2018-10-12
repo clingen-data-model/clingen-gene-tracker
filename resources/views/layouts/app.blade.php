@@ -53,6 +53,13 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a
+                                        class="dropdown-item" 
+                                        href="/#/curations/export"
+                                    >
+                                        Curation Export
+                                    </a>
+
                                     @if (\Auth::user()->hasAnyRole('programmer|admin') || \Auth::user()->isCoordinator())
                                         <a class="dropdown-item" href="/bulk-uploads">Bulk Upload</a>
                                         <div class="dropdown-divider"></div>
