@@ -38,7 +38,6 @@ class CurationUpdateRequest extends CurationCreateRequest
 
         // Curation Type
         $validator->sometimes('curation_type_id', 'required', function ($input) {
-            return true;
             if (! $this->shouldValidate($input)) {
                 return false;
             }
