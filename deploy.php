@@ -16,8 +16,8 @@ set('repository', 'git@bitbucket.org:shepsweb/clingen.git');
 // set('git_tty', true);
 
 // Shared files/dirs between deploys
-add('shared_files', []);
-add('shared_dirs', []);
+add('shared_files', ['.env']);
+add('shared_dirs', ['storage']);
 
 // Writable dirs by web server
 add('writable_dirs', []);
