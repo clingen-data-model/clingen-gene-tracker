@@ -73,7 +73,7 @@ class CurationControllerTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('POST', '/api/curations', $data)
             ->assertStatus(201)
-            ->assertJsonFragment(['gene_symbol' => 'MILTON-1']);
+            ->assertJsonFragment(['gene_symbol' => 'BRCA1']);
     }
 
     /**

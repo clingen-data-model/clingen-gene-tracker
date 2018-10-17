@@ -17,9 +17,22 @@ const mutations = {
         state.items = items
     },
     addItem: function (state, item) {
-        let itemIdx = state.items.findIndex(i => i.id == item.id);
-        Vue.set(state.items, itemIdx, item)
+        state.items.push(item)
     },
+    updateItem: function (state, item) {
+        console.log('updateItem');
+        let itemIdx = state.items.findIndex(i => i.id == item.id);
+        if (itemIdx > -1) {
+            Vue.set(state.items, itemIdx, item)
+            return
+        }
+        commit('addItem', item);
+    },
+    removeItem: function (state, id) {
+        const itemIdx = state.items.findIndex(i => i.id == id);
+
+        Vue.delete(state.items, itemIdx);
+    }
 }
 
 const actions = {
@@ -35,8 +48,8 @@ const actions = {
     fetchItem ( {commit}, id ) {
         return window.axios.get(baseUrl+'/'+id)
             .then(function (response) {
-                let item = response.data;
-                commit('addItem', item);
+                let item = response.data.data;
+                commit('updateItem', item);
                 return response;
             })
             .catch(function (error) {

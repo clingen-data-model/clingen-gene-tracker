@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\WorkingGroup;
+use App\Http\Resources\WorkingGroupResource;
 
 class WorkingGroupController extends ApiController
 {
@@ -15,12 +16,12 @@ class WorkingGroupController extends ApiController
             'expertPanels',
             'expertPanels.curations',
             'expertPanels.curations.curator',
-            'expertPanels.curations.currentStatus',
+            'expertPanels.curations.curationStatuses',
             'expertPanels.curations.expertPanel',
             'expertPanels.users',
             'expertPanels.users.roles'
         );
 
-        return $group;
+        return new WorkingGroupResource($group);
     }
 }

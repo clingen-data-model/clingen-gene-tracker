@@ -115,16 +115,22 @@
                     current_status: {
                         label: 'Status',
                         sortable: true,
+                        thStyle: {
+                            width: "8rem"
+                        }
                     },
                     mondo_id: {
                         label: 'Disease Entity',
                         sortable: true,
+                        thStyle: {
+                            width: "9rem"
+                        }
                     },
                     actions: {
                         label: '',
                         sortable: false,
                         thStyle: {
-                            width: "5rem"
+                            width: "7rem"
                         }
                     }
                 },

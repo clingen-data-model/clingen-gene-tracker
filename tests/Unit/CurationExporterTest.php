@@ -112,6 +112,6 @@ class CurationExporterTest extends TestCase
         $this->assertEquals('"Gene Symbol","Expert Panel",Curator,Status,"Disease Entity",Created', $content[0]);
         $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
 
-        unline($path);
+        unlink($path);
     }
 }

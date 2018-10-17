@@ -159,12 +159,14 @@ class CurationTest extends TestCase
     {
         $curationStatuses = CurationStatus::limit(2)->get();
         $curation = factory(\App\Curation::class)->create();
-        $statusesAtTime = $curationStatuses->transform(function ($item, $idx) {
+
+        $statusesAtTime = $curationStatuses->map(function ($item, $idx) {
             return ['id' => $item->id, 'pivotData' => ['created_at' => today()->addDays($idx)]];
         });
+
         $curation->curationStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));
 
-        $this->assertEquals($curationStatuses->last()['id'], $curation->currentStatus->id);
+        $this->assertEquals($curationStatuses->last()['id'], $curation->fresh()->currentStatus->id);
     }
 
     /**

@@ -29,7 +29,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="user in panel.users">
+                                        <tr v-for="user in panel.users" :key="user.id">
                                             <td>{{user.name}}</td>
                                             <td>{{user.email}}</td>
                                             <td>{{user.roles.map(role=>role.name).join(', ')}}</td>
@@ -58,8 +58,11 @@
                     </b-tab>
 
                 </b-tabs>
-                <div class="alert alert-secondary" v-show="!hasPanels">
+                <div class="alert alert-secondary" v-show="!hasPanels && !loading">
                     This working group does not have any expert panels
+                </div>
+                <div class="alert alert-secondary" v-show="loading">
+                    Loading &hellip;
                 </div>
             </div>
         </div>
@@ -80,7 +83,8 @@
         },
         data() {
             return {
-                hasPanels: false
+                hasPanels: false,
+                loading: false
             };
         },
         computed: {
@@ -93,6 +97,7 @@
                     return {};
                 }
                 const group = this.getGroup(this.id)
+                
                 this.hasPanels = group && group.expert_panels && group.expert_panels.length > 0
                 return group
             },
@@ -103,7 +108,14 @@
             }),
         },
         mounted() {
-            this.fetchGroup(this.id);
+            this.loading = true;
+            this.fetchGroup(this.id)
+                .then(response => {
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.loading = false;
+                });
         }
     }
 </script>

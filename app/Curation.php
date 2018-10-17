@@ -73,16 +73,9 @@ class Curation extends Model
                 ->withTimestamps();
     }
 
-    // public function currentStatus()
-    // {
-    //     return $this->curationStatuses()
-    //                 ->orderBy('curation_curation_status.created_at', 'desc')
-    //                 ->limit(1);
-    // }
-
     public function getCurrentStatusAttribute()
     {
-        return $this->curationStatuses->sortByDesc('created_at')->first();
+        return $this->curationStatuses->sortByDesc('pivot.created_at')->first();
     }
 
     public function curationType()
