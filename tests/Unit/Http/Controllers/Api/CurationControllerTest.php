@@ -112,7 +112,7 @@ class CurationControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors'=>[
-                    'gene_symbol'=>['MLTN1 is not a valid HGNC gene symbol according to OMIM']
+                    'gene_symbol'=>['BRCA1 is not a valid HGNC gene symbol according to OMIM']
                 ]
             ]);
     }
@@ -269,7 +269,7 @@ class CurationControllerTest extends TestCase
         $curator = factory(\App\User::class)->create();
 
         $data = [
-            'gene_symbol' => 'MLTN1',
+            'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
             'phenotypes' => [
@@ -305,7 +305,7 @@ class CurationControllerTest extends TestCase
         $curator = factory(\App\User::class)->create();
 
         $data = [
-            'gene_symbol' => 'MLTN1',
+            'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
             'curation_status_id' => $statuses->first()->id,
@@ -507,7 +507,7 @@ class CurationControllerTest extends TestCase
         $curation = $this->curations->first();
         $curation->update([
             'curation_type_id' => 1,
-            'gene_symbol' => 'MLTN1',
+            'gene_symbol' => 'BRCA1',
         ]);
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
