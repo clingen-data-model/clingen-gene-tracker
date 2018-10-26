@@ -6,16 +6,10 @@
 </style>
 <template>
     <div class="component-container">
-        <!-- <div v-show="curation.phenotypes.length == 0">
-            <div class="alert alert-secondary clearfix">
-                The gene {{ geneSymbol }} is not associated with a disease entity per OMIM at this time.
-            </div>
-        </div> -->
-
-        <div v-if="curation.phenotypes.length > 0">
+        <div v-if="phenotypes.length > 0">
             <strong>In this curation</strong>
             <ul>
-                <li v-for="phenotype in curation.phenotypes">
+                <li v-for="phenotype in phenotypes" :key="phenotype.id">
                     {{ phenotype.name }}
                 </li>
             </ul>
@@ -27,16 +21,24 @@
     import OmimRepo from './../../../repositories/OmimRepository';
 
     export default {
-        props: ['gene-symbol', 'curation'],
+        props: {
+            geneSymbol: {
+                required: true,
+            }, 
+            curation: {
+                required: true,
+                type: Object
+            },
+        },
         data: function () {
             return {
                 phenotypes: []
             }
         },
         watch: {
-            geneSymbol: function (to, from) {
-                this.fetchPhenotypes()
-            }
+            '$route': function (to, from) {
+                this.phenotypes = this.curation.phenotypes || [];
+            },
         },
         computed: {
             usedPhenotypes: function () {
@@ -62,7 +64,7 @@
         //     }
         // },
         mounted: function () {
-            // this.fetchPhenotypes();
+            this.phenotypes = this.curation.phenotypes || [];
         }
     }
 </script>

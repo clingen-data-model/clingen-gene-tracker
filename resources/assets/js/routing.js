@@ -40,11 +40,13 @@ const routes = [
         children: [
             {
                 path: '',
-                component: CurationList
+                component: CurationList,
+                name: 'curations-index'
             },
             { 
                 path: 'create', 
-                component: CurationCreate
+                component: CurationCreate,
+                name: 'curations-create'
             },
             {
                 path: 'export',
@@ -53,12 +55,14 @@ const routes = [
             {
                 path: ':id',
                 component: CurationShow,
-                props: true
+                props: true,
+                name: 'curations-show'
             },
             { 
                 path: ':id/edit', 
                 component: CurationEdit,
-                props: true
+                props: true,
+                name: 'curations-edit'
             },
         ]
     }

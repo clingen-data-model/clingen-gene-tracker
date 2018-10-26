@@ -202,8 +202,8 @@
                         return response;
                     })
                     .catch( (error) => {
-                        this.errors = error.response.data.errors;
-                        console.log(this.errors)
+                        // this.errors = error.response.data.errors;
+                        console.log(error)
                         return error;
                     });
             },

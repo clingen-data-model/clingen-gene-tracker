@@ -6,13 +6,17 @@
             </router-link>
         
         </div>
+        <transition name="fade">
         <b-card
             id="show-curation"
+            v-if="!loading"
+            key="curation-details"
+            style="max-heigh: 1000px"
         >
             <template slot="header">
                 <h3>{{ title }}
 
-                    <div class="float-right d-block">
+                    <div class="float-right d-block" v-if="!loading">
                         <router-link
                             v-if="user.canEditCuration(curation)"
                             :id="'edit-curation-'+curation.id+'-btn'" 
@@ -62,7 +66,7 @@
                     <strong class="col-md-2">PMIDS</strong>
                     <div class="col-md" v-if="curation.pmids">
                         <ul class="list-inline">
-                            <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item">
+                            <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item" :key="idx">
                                 {{pmid}}<span v-if="curation.pmids && curation.pmids.length > idx+1">,</span>
                             </li>
                         </ul>
@@ -100,6 +104,10 @@
                 </div>
             </div>
         </b-card>
+        <div v-else class="alert alert-secondary lead text-center mt-4" key="loading">
+            Loading...
+        </div>
+        </transition>
     </div>
 </template>
 <script>
@@ -119,6 +127,13 @@
             return {
                 user: user,
                 showStatusHistory: false,
+                loading: true
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                // console.log(to);
+                this.loadCuration()
             }
         },
         computed: {
@@ -154,10 +169,21 @@
         methods: {
             ...mapActions('curations', {
                 fetchCuration: 'fetchItem',
+                fetchAllCurations: 'getAllItems'
             }),
+            loadCuration() {
+                this.loading = true;
+                this.fetchCuration(this.id)
+                    .then(respones => {
+                        this.loading = false;
+                    })
+                    .catch(error => {
+                        this.loading = false;
+                    });
+            }
         },
         mounted: function () {
-            this.fetchCuration(this.id);
+            this.loadCuration();
         }
     }
 </script>

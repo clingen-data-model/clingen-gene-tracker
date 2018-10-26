@@ -5,6 +5,15 @@ const state = {
     items: []
 }
 
+const addOrUpdateItem = function (commit, item) {
+    let itemIdx = state.items.findIndex(i => i.id == item.id);
+    if (itemIdx > -1) {
+        commit('updateItem', item);
+        return
+    }
+    commit('addItem', item);
+}
+
 const getters = {
     Items: function (state) {
         return state.items;
@@ -27,7 +36,7 @@ const mutations = {
             Vue.set(state.items, itemIdx, item)
             return
         }
-        commit('addItem', item);
+        console.error('curation is not found in store.  you should commit(\'addItem\', item) instead');
     },
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
@@ -56,19 +65,18 @@ const actions = {
     storeItemUpdates: function ( {commit}, data ) {
         return window.axios.put(baseUrl+'/'+data.id, data)
             .then(function (response) {
-                commit('updateItem', response.data.data);
+                addOrUpdateItem(commit, response.data.data);
                 return response;
             });
     },
     fetchItem ( {commit}, id ) {
         return window.axios.get(baseUrl+'/'+id)
-            .then(function (response) {
+            .then((response) => {
                 let item = response.data.data;
-                commit('updateItem', item);
+                addOrUpdateItem(commit, item);
                 return response;
             })
-            .catch(function (error) {
-                alert(error);
+            .catch((error) => {
                 return Promise.reject(error.response);
             })
     },

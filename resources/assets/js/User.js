@@ -63,7 +63,7 @@ class User {
     }
 
     canEditCuration(curation) {
-        if (curation.curator_id == this.user.id) {
+        if (curation && curation.curator_id == this.user.id) {
             return true
         }
         if (this.hasRole('programmer') || this.hasRole('admin')) {

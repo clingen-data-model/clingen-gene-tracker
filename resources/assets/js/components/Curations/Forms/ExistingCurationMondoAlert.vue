@@ -20,7 +20,11 @@
                     </thead>
                     <tbody v-for="match in matchedCurations">
                         <tr>
-                            <td>{{match.gene_symbol}}</td>
+                            <td>
+                                <a :href="'/#/curations/'+match.id" :target="'show-'+match.id">
+                                    {{match.gene_symbol}}
+                                </a>                                
+                            </td>
                             <td>{{match.expert_panel.name}}</td>
                             <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                         </tr>
