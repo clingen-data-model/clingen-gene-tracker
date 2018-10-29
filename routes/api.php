@@ -16,9 +16,10 @@ Route::group([
     'middleware' => ['auth:api'],
     'namespace' => 'Api'
 ], function () {
-
+    
     // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
+    Route::resource('/curations/{id}/statuses', 'CurationCurationStatusController');
     Route::resource('/curations', 'CurationController');
     Route::resource('/users', 'UserController')->only(['index']);
     Route::resource('/curation-statuses', 'CurationStatusController')->only(['index']);

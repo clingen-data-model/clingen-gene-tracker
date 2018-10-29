@@ -69,13 +69,19 @@ class Curation extends Model
     public function curationStatuses()
     {
         return $this->belongsToMany(CurationStatus::class)
-                ->withPivot('created_at', 'updated_at')
+                ->using(CurationCurationStatus::class)
+                ->withPivot('id', 'status_date', 'created_at', 'updated_at')
                 ->withTimestamps();
+    }
+
+    public function statuses()
+    {
+        return $this->curationStatuses();
     }
 
     public function getCurrentStatusAttribute()
     {
-        return $this->curationStatuses->sortByDesc('pivot.created_at')->first();
+        return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
     }
 
     public function curationType()
