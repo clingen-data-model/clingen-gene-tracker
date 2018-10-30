@@ -56,29 +56,7 @@
         </b-form-group>
 
         <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">
-            <div class="form-inline">
-
-                <b-form-select id="expert-panel-select" v-model="updatedCuration.curation_status_id">
-                    <option :value="null">Select...</option>
-                    <option v-for="status in statusOptions"
-                        :key="status.id"
-                        :value="status.id"
-                    >
-                        {{status.name}}
-                    </option>
-                </b-form-select>
-                &nbsp;
-                <datepicker 
-                    v-model="updatedCuration.curation_status_timestamp"
-                    input-class="form-control"
-                    clear-button
-                    format='yyyy-MM-dd'
-                    calendar-class="small-calendar"
-                    placeholder="Select a date"
-                    :highlighted="highlighted"
-                    ></datepicker>
-            </div>
-            <curation-status-history :curation="updatedCuration" class="mt-1"></curation-status-history>
+            <status-form v-model="updatedCuration" class="mt-1"></status-form>
         </b-form-group>
     </div>
 </template>
@@ -90,7 +68,7 @@
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import ValidationError from '../../ValidationError'
     import CurationStatusHistory from '../StatusHistory'
-    import Datepicker from 'vuejs-datepicker'
+    import StatusForm from './StatusForm'
     import moment from 'moment'
 
     export default {
@@ -102,16 +80,13 @@
             CurationNotifications,
             DateField,
             ValidationError,
-            CurationStatusHistory,
-            Datepicker
+            StatusForm,
         },
         data() {
             return {
                 page: 'info',
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                }
+                newStatusDate: null,
+                newStatusId: null
             }
         },
         watch: {

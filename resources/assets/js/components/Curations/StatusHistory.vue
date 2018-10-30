@@ -10,9 +10,13 @@
                 <th>Status</th>
                 <th>Date</th>
             </tr>
-            <tr v-for="(status, idx) in orderedStatuses" :key="status.id" :class="{'table-primary highlight': (status.id == curation.current_status.id)}">
+            <tr 
+                v-for="(status, idx) in orderedStatuses" 
+                :key="status.id" 
+                :class="{'table-primary highlight': (idx == 0)}"
+            >
                 <td>{{status.name}}</td>
-                <td>{{status.pivot.created_at | formatDate('Y-MM-DD') }}</td>
+                <td>{{status.pivot.status_date | formatDate('YYYY-MM-DD') }}</td>
             </tr>
         </table>
     </div>
@@ -32,7 +36,7 @@
             orderedStatuses: function () {
                 if (this.curation.curation_statuses) {
                     return this.curation.curation_statuses.concat().sort((a, b) => {
-                        if (moment(a.pivot.created_at).isSame(b.pivot.created_at)) {
+                        if (moment(a.pivot.status_date).isSame(b.pivot.status_date)) {
                             if(a.id == b.id) {
                                 return 0
                             }
@@ -41,7 +45,7 @@
                             }
                             return -1;
                         }
-                        if (moment(a.pivot.created_at).isBefore(b.pivot.created_at)) {
+                        if (moment(a.pivot.status_date).isBefore(b.pivot.status_date)) {
                             return 1;
                         }
                         return -1;

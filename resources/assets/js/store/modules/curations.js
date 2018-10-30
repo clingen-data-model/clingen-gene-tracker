@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import moment from 'moment';
 
 const baseUrl = '/api/curations'
 const state = {
@@ -81,7 +82,6 @@ const actions = {
             })
     },
     destroyItem ( {commit}, id) {
-        console.log(id);
         return window.axios.delete(baseUrl+'/'+id)
             .then(function (response) {
                 commit('removeItem', id);
@@ -90,6 +90,45 @@ const actions = {
             .catch(function (error) {
                 return Promise.reject(error.response);
             })
+    },
+    linkNewStatus ({commit}, {curation, data}) {
+        return window.axios.post(baseUrl+'/'+curation.id+'/statuses', data)
+            .then((response) => {
+                curation.curation_statuses.push(response.data);
+                addOrUpdateItem(commit, curation);
+                return response
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
+            });
+    },
+    updateStatusDate ({commit}, {curation, pivotId, statusDate}) {
+        return window.axios.put(baseUrl + '/' + curation.id + '/statuses/'+pivotId, {'status_date': statusDate})
+            .then((response) => {
+                const updatedStatusEntry = response.data;
+                const curationStatusEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == updatedStatusEntry.pivot.id);
+                curation.curation_statuses[curationStatusEntryIdx] = updatedStatusEntry;
+                addOrUpdateItem(commit, curation);
+                return response
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
+            });
+    },
+    unlinkStatus ({commit}, {curation, pivotId}) {
+        return window.axios.delete(baseUrl+'/'+curation.id+'/statuses/'+pivotId)
+            .then(response => {
+                console.log(response);
+                const deletedEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == pivotId);
+                console.log('deletedEntryIdx: '+deletedEntryIdx);
+                console.log(curation.curation_statuses);
+                curation.curation_statuses.splice(deletedEntryIdx, 1);
+                console.log(curation.curation_statuses);
+                addOrUpdateItem(commit, curation);
+            })
+            .catch(errors => {
+                return Promise.reject(errors.response)
+            });
     }
 }
 

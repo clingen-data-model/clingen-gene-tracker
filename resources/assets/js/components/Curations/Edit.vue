@@ -8,6 +8,9 @@
         </p>
         <b-card id="edit-curation-modal">
             <template slot="header">
+                <router-link :to="'/curations/'+curation.id" class='float-right'>
+                    view
+                </router-link>
                 <h3>{{ title }}</h3>
             </template>
             <div v-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
@@ -35,6 +38,7 @@
                                 :value="updatedCuration"  
                                 :errors="errors" 
                                 @input="updatedCuration = $event"
+                                ref="editPage"
                             >
                             </component>                    
                         </div>
