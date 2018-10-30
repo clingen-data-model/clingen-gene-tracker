@@ -37,7 +37,7 @@ class CurationCurationStatusControllerTest extends TestCase
                 'status_date' => '1977-09-16'
             ])
             ->assertStatus(200)
-            ->assertJson($this->curation->fresh()->curationStatuses->toArray());
+            ->assertJson($this->curation->fresh()->curationStatuses->last()->toArray());
 
         $this->assertEquals(4, $this->curation->fresh()->curationStatuses->count());
         $this->assertEquals('1977-09-16', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
@@ -95,7 +95,7 @@ class CurationCurationStatusControllerTest extends TestCase
     public function test_removes_related_curation_status()
     {
         $this->json('DELETE', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id)
-            ->assertStatus(200);
-        $this->assertDatabaseMissing('curation_curation_status', ['id' => $this->curation]);
+            ->assertStatus(204);
+        $this->assertDatabaseMissing('curation_curation_status', ['id' => $this->curation->statuses->first()->pivot->id]);
     }
 }

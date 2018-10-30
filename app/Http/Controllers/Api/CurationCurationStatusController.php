@@ -39,7 +39,7 @@ class CurationCurationStatusController extends Controller
             ]
         ]);
 
-        return $curation->curationStatuses;
+        return $curation->curationStatuses->sortByDesc('created_at')->last();
     }
 
     /**
@@ -85,8 +85,11 @@ class CurationCurationStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($curationId, $pivotId)
     {
-        //
+        $curation = Curation::findOrFail($curationId);
+        $curation->statuses->firstWhere('pivot.id', $pivotId)->pivot->delete();
+
+        return response()->json([], 204);
     }
 }
