@@ -116,7 +116,8 @@
         watch: {
             value: {
                 handler: 'syncCuration',
-                immediate: true
+                immediate: true,
+                deep: true
             }
         },
         computed: {
