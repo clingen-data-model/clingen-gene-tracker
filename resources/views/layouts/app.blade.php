@@ -83,8 +83,8 @@
                                     </form>
                                 </div>
                             </li>
-                            @include('partials.help')
                          @endguest
+                        @include('partials.help')
                     </ul>
                 </div>
             </div>
