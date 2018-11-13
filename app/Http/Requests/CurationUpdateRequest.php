@@ -57,13 +57,18 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
-            $genePhenos = (new OmimClient())->getGenePhenotypes($input->gene_symbol);
-            $test = $input->page == 'phenotypes'
-                    && ($genePhenos->count() > 1
-                        || ($genePhenos->count() == 1
-                            && $input->curation_type_id != 1));
+            $omim = resolve(OmimClient::class);
 
-            return $test;
+            $genePhenos = $omim->getGenePhenotypes($input->gene_symbol);
+            if ($input->page == 'phenotypes') {
+                if ($genePhenos->count() > 1) {
+                    return true;
+                }
+                if ($genePhenos->count() == 1 && $input->curation_type_id != 1) {
+                    return true;
+                }
+            }
+            return false;
         });
 
         // Isolated Phenotype

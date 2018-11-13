@@ -4,6 +4,11 @@ namespace Tests\Unit\Http\Controllers\Api;
 
 use Tests\TestCase;
 use App\CurationType;
+use GuzzleHttp\Client;
+use App\Clients\OmimClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Handler\MockHandler;
 use App\Http\Resources\CurationResource;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -41,7 +46,7 @@ class CurationControllerTest extends TestCase
         $curationResource = new CurationResource($this->curations);
         $this->disableExceptionHandling();
         $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations')
+            ->json('GET', '/api/curations')
              ->assertStatus(200);
     }
 
@@ -54,7 +59,7 @@ class CurationControllerTest extends TestCase
         $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations?gene_symbol='.$testGene);
+            ->json('GET', '/api/curations?gene_symbol='.$testGene);
 
         $this->assertEquals(16, $response->original->count());
     }
@@ -112,7 +117,7 @@ class CurationControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors'=>[
-                    'gene_symbol'=>['BRCA1 is not a valid HGNC gene symbol according to OMIM']
+                    'gene_symbol'=>['MLTN1 is not a valid HGNC gene symbol according to OMIM']
                 ]
             ]);
     }
@@ -184,7 +189,7 @@ class CurationControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations/')
+            ->json('GET', '/api/curations/')
             ->assertDontSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
     }
 
@@ -199,7 +204,7 @@ class CurationControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations/?with=phenotypes')
+            ->json('GET', '/api/curations/?with=phenotypes')
             ->assertSee('mim_number')
             ->assertSee($phenotypes->first()->mim_number);
     }
@@ -216,7 +221,7 @@ class CurationControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations')
+            ->json('GET', '/api/curations')
             ->assertJsonFragment($status->toArray());
     }
 
@@ -231,7 +236,7 @@ class CurationControllerTest extends TestCase
         });
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations/'.$this->curations->first()->id)
+            ->json('GET', '/api/curations/'.$this->curations->first()->id)
             ->assertSee('mim_number')
             ->assertSee($phenotypes->first()->mim_number);
         // ->assertSee('"mim_number":"'.$phenotypes->first()->mim_number.'"');
@@ -244,7 +249,7 @@ class CurationControllerTest extends TestCase
     {
         $this->curations->first()->rationales()->attach($this->rationale->id);
         $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations/'.$this->curations->first()->id)
+            ->json('GET', '/api/curations/'.$this->curations->first()->id)
             ->assertSee('"rationales":[');
     }
 
@@ -256,7 +261,7 @@ class CurationControllerTest extends TestCase
         $this->curations->first()->curationType()->associate($this->curationType);
         // dd($this->curations->first()->curationType);
         $this->actingAs($this->user, 'api')
-            ->call('GET', '/api/curations/'.$this->curations->first()->id)
+            ->json('GET', '/api/curations/'.$this->curations->first()->id)
             ->assertSee('"curation_type":');
     }
 
@@ -290,7 +295,7 @@ class CurationControllerTest extends TestCase
         ];
 
         $this->actingAs($this->user, 'api')
-            ->call('POST', '/api/curations', $data)
+            ->json('POST', '/api/curations', $data)
             ->assertSee('"mim_number":'.$phenotype->mim_number)
             ->assertSee('"mim_number":12345')
             ->assertSee('"mim_number":67890');
@@ -313,7 +318,7 @@ class CurationControllerTest extends TestCase
         ];
 
         $this->actingAs($this->user, 'api')
-            ->call('POST', '/api/curations', $data)
+            ->json('POST', '/api/curations', $data)
             ->assertStatus(201);
 
         $this->assertDatabaseHas('curation_curation_status', ['curation_status_id'=>$statuses->first()->id]);
@@ -324,11 +329,20 @@ class CurationControllerTest extends TestCase
      */
     public function update_saves_new_curation_status_with_default_status_date()
     {
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            return $stub;
+        });
+
         $statuses = factory(\App\CurationStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
 
         $curation = $this->curations->first();
         $curation->curationStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
+
+
 
         $data = [
             'page' => 'info',
@@ -341,7 +355,7 @@ class CurationControllerTest extends TestCase
 
         $this->disableExceptionHandling();
         $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$curation->id, $data)
+            ->json('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
 
         $this->assertDatabaseHas('curation_curation_status', ['curation_status_id'=>$statuses->get(1)->id, 'created_at'=>now()]);
@@ -352,6 +366,13 @@ class CurationControllerTest extends TestCase
      */
     public function update_saves_new_curation_status_and_status_date_when_set()
     {
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            return $stub;
+        });
+
         $statuses = factory(\App\CurationStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
 
@@ -365,14 +386,14 @@ class CurationControllerTest extends TestCase
             'curation_type_id' => $this->curationType->id,
             'curator_id' => $curator->id,
             'curation_status_id' => 1,
-            'curation_status_timestamp' => now()->subDays(2),
+            'curation_status_timestamp' => now()->subDays(2)->format('Y-m-d H:i:s'),
             'nav' => 'next'
         ];
 
         $this->disableExceptionHandling();
-        $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/curations/'.$curation->id, $data);
+        $response->assertStatus(200);
 
         $this->assertDatabaseHas(
             'curation_curation_status',
@@ -415,7 +436,7 @@ class CurationControllerTest extends TestCase
         ];
 
         $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$this->curations->first()->id, $data)
+            ->json('PUT', '/api/curations/'.$this->curations->first()->id, $data)
             ->assertStatus(200)
             ->assertSee('"mim_number":'.$phenotype->mim_number)
             ->assertSee('"mim_number":12345')
@@ -427,12 +448,19 @@ class CurationControllerTest extends TestCase
      */
     public function store_transforms_comma_separated_pmds_into_array()
     {
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            return $stub;
+        });
+
         $data = array_merge($this->curations->first()->toArray(), [
             'page'=>'info',
             'pmids'=> 'test,beans,monkeys'
         ]);
         $response = $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$this->curations->first()->id, $data)
+            ->json('PUT', '/api/curations/'.$this->curations->first()->id, $data)
             ->assertSee('"pmids":["test","beans","monkeys"]');
 
         $data = array_merge($this->curations->first()->toArray(), [
@@ -440,7 +468,7 @@ class CurationControllerTest extends TestCase
             'pmids'=> ["test","beans","monkeys"]
         ]);
         $response = $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$this->curations->first()->id, $data)
+            ->json('PUT', '/api/curations/'.$this->curations->first()->id, $data)
             ->assertSee('"pmids":["test","beans","monkeys"]');
     }
 
@@ -449,16 +477,27 @@ class CurationControllerTest extends TestCase
      */
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $entryOutput = json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList;
+            $stub->method('getEntry')->willReturn($entryOutput);
+            return $stub;
+        });
+
         $curation = $this->curations->first();
+        $curation->update(['gene_symbole' => 'brca1']);
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = [$this->rationale];
         $data['isolated_phenotype'] = '605724';
         $data['nav'] = 'next';
+
         $response = $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
+            ->json('PUT', '/api/curations/'.$curation->id, $data);
+        $response->assertStatus(200);
 
         $response->assertSee('"mim_number":605724');
     }
@@ -469,6 +508,7 @@ class CurationControllerTest extends TestCase
     public function update_syncs_rationales_when_given()
     {
         $curation = $this->curations->first();
+        $curation->update(['gene_symbol' => 'BRCA1']);
         $otherRationale = factory(\App\Rationale::class)->create();
 
         $data = $curation->toArray();
@@ -476,8 +516,8 @@ class CurationControllerTest extends TestCase
         $data['rationales'] = [$this->rationale, $otherRationale];
 
         $response = $this->actingAs($this->user, 'api')
-            ->call('PUT', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
+            ->json('PUT', '/api/curations/'.$curation->id, $data);
+        $response->assertStatus(200);
 
         $this->assertEquals(collect([$this->rationale->id, $otherRationale->id]), $response->original->rationales->pluck('id'));
     }
@@ -489,6 +529,8 @@ class CurationControllerTest extends TestCase
     public function rationales_not_required_when_page_not_phenotypes()
     {
         $curation = $this->curations->first();
+        $curation->update(['gene_symbol' => 'BRCA1']);
+        
         $data = $curation->toArray();
         $data['page'] = 'info';
         $data['nav'] = 'next';
@@ -507,16 +549,29 @@ class CurationControllerTest extends TestCase
         $curation = $this->curations->first();
         $curation->update([
             'curation_type_id' => 1,
-            'gene_symbol' => 'BRCA1',
+            'gene_symbol' => 'BRCA2',
         ]);
+
+        $curation->phenotypes()->sync([]);
         $data = $curation->toArray();
+        $data['curation_type_id'] = 1;
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
         $data['nav'] = 'next';
 
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $stub->method('getGenePhenotypes')
+                ->willReturn(collect([1]));
+            return $stub;
+        });
+
         $response = $this->actingAs($this->user, 'api')
-            ->json('put', '/api/curations/' . $curation->id, $data)
-            ->assertStatus(200);
+            ->json('put', '/api/curations/' . $curation->id, $data);
+        // dd($response->original);
+        $response->assertStatus(200);
     }
 
     /**
@@ -530,6 +585,16 @@ class CurationControllerTest extends TestCase
             'curation_type_id' => 1,
             'gene_symbol' => 'myl2',
         ]);
+
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $stub->method('getGenePhenotypes')
+                ->willReturn(collect([1]));
+            return $stub;
+        });
+
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
@@ -552,14 +617,24 @@ class CurationControllerTest extends TestCase
             'gene_symbol' => 'myl2',
         ]);
 
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $stub->method('getGenePhenotypes')
+                ->willReturn(collect([1]));
+            return $stub;
+        });
+
+
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
         $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/' . $curation->id, $data)
-            ->assertStatus(422);
+            ->json('PUT', '/api/curations/' . $curation->id, $data);
+        $response->assertStatus(422);
 
         $this->assertArrayHasKey('rationales', $response->original['errors']);
     }
@@ -570,20 +645,30 @@ class CurationControllerTest extends TestCase
      */
     public function rationales_required_when_gene_has_more_than_1_phenotype()
     {
+        app()->bind('App\Contracts\OmimClient', function ($app) {
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $stub->method('getGenePhenotypes')
+                ->willReturn(collect([1,1]));
+            return $stub;
+        });
+
         $curation = $this->curations->first();
         $curation->update([
-            'curation_type_id' => 2,
+            'curation_type_id' => 1,
             'gene_symbol' => 'brca2',
         ]);
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
+        $data['curation_type_id'] = 1;
         $data['rationales'] = null;
         $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/' . $curation->id, $data)
-            ->assertStatus(422);
+            ->json('PUT', '/api/curations/' . $curation->id, $data);
+        $response->assertStatus(422);
 
         $this->assertArrayHasKey('rationales', $response->original['errors']);
     }

@@ -45,8 +45,14 @@ class CurationExporterTest extends TestCase
                 'Gene Symbol',
                 'Expert Panel',
                 'Curator',
-                'Status',
                 'Disease Entity',
+                'Uploaded date',
+                'Precuration date',
+                'Disease entity assigned date',
+                'Curation In Progress date',
+                'Curation Provisional date',
+                'Curation Approved date',
+                'Recuration assigned date',
                 'Created'
             ],
             array_keys($curationData->first())
@@ -74,10 +80,10 @@ class CurationExporterTest extends TestCase
         $c1 = $this->curations->first();
         $c2 = $this->curations->last();
 
-        $c1->created_at = now()->subDays(10);
-        $c1->save();
-        $c2->created_at = now()->addDays(10);
-        $c2->save();
+        $c1->statuses()->updateExistingPivot(1, ['status_date' => now()->subDays(10)]);
+        $c1 = $c1->fresh();
+        $c2->statuses()->updateExistingPivot(1, ['status_date' => now()->addDays(10)]);
+        $c2 = $c2->fresh();
 
         $rangeData1 = $this->exporter->getData(['start_date' => today()->subDays(10), 'end_date' => today()->subDays(9)]);
         $this->assertEquals(1, $rangeData1->count());
@@ -92,8 +98,8 @@ class CurationExporterTest extends TestCase
     public function filters_by_date_range_and_expert_panel_id()
     {
         $c1 = $this->curations->first();
-        $c1->created_at = now()->subDays(10);
-        $c1->save();
+        $c1->statuses()->updateExistingPivot(1, ['status_date' => now()->subDays(10)]);
+        $c1 = $c1->fresh();
 
         $data = $this->exporter->getData(['expert_panel_id' => $this->panels->first()->id, 'start_date' => today()->subDays(2)]);
         $this->assertEquals(2, $data->count());
@@ -109,7 +115,7 @@ class CurationExporterTest extends TestCase
         $this->assertFileExists($path);
         
         $content = explode("\n", file_get_contents($path));
-        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,Status,"Disease Entity",Created', $content[0]);
+        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Curation In Progress date","Curation Provisional date","Curation Approved date","Recuration assigned date",Created', $content[0]);
         $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
 
         unlink($path);

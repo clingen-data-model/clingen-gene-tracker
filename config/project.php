@@ -7,6 +7,15 @@ return [
         'isolated-phenotype' => 'Curate an isolated phenotype that is part of this disease entity (Discouraged)',
         'lumped' => 'Curate a “lumped” disease entity from this list'
     ],
+    'curation-statuses' => [
+        'uploaded' => 1,
+        'precuration' => 2,
+        'disease-entity-assigned' => 3,
+        'curation-in-progress' => 4,
+        'curation-provisional' => 5,
+        'curation-approved' => 6,
+        'recuration-assigned' => 7
+    ],
     'rationales' => [
         1 => 'Assertion',
         2 => 'Molecular mechanism',

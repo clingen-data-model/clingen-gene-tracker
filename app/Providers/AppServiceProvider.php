@@ -51,5 +51,9 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+        $this->app->bind(
+            'App\Contracts\OmimClient',
+            'App\Clients\OmimClient'
+        );
     }
 }

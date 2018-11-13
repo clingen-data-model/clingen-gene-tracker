@@ -45,6 +45,8 @@ class OmimClient implements OmimClientContract
         $response = $this->client->request('GET', 'entry/search', compact('query'));
         $response = json_decode($response->getBody()->getContents());
 
+        // dd($response->omim->searchResponse->entryList);
+
         return collect($response->omim->searchResponse->entryList)
                 ->transform(function ($entry) {
                     return $entry->entry;
