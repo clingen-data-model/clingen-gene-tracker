@@ -26,7 +26,6 @@ export default {
     },
     methods: {
         setTimer() {
-            console.log('start timer...');
             this.timer = setTimeout(() => {
                 this.$emit('cleared')
             }, this.duration)

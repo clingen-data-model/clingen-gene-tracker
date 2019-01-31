@@ -23,25 +23,28 @@ class CurationExporter
                 }
             });
         }
-        
+        $curationStatuses = CurationStatus::all();
+
         return  $query->get()
-                ->transform(function ($curation) {
+                ->transform(function ($curation) use ($curationStatuses) {
                     $statuses = $curation->statuses->pluck('pivot.status_date', 'id');
-                    
-                    return [
-                        'Gene Symbol' =>                    $curation->gene_symbol,
-                        'Expert Panel' =>                   ($curation->expertPanel) ? $curation->expertPanel->name : null,
-                        'Curator' =>                        ($curation->curator) ? $curation->curator->name : null,
-                        'Disease Entity' =>                 $curation->mondo_id,
-                        'Uploaded date' =>                  (isset($statuses[1])) ? $statuses[1]->format('Y-m-d') : null,
-                        'Precuration date' =>               (isset($statuses[2])) ? $statuses[2]->format('Y-m-d') : null,
-                        'Disease entity assigned date' =>   (isset($statuses[3])) ? $statuses[3]->format('Y-m-d') : null,
-                        'Curation In Progress date' =>      (isset($statuses[4])) ? $statuses[4]->format('Y-m-d') : null,
-                        'Curation Provisional date' =>      (isset($statuses[5])) ? $statuses[5]->format('Y-m-d') : null,
-                        'Curation Approved date' =>         (isset($statuses[6])) ? $statuses[6]->format('Y-m-d') : null,
-                        'Recuration assigned date' =>       (isset($statuses[7])) ? $statuses[7]->format('Y-m-d') : null,
-                        'Created' =>                        $curation->created_at->format('Y-m-d')
+
+                    $line = [
+                        'Gene Symbol' => $curation->gene_symbol,
+                        'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
+                        'Curator' => ($curation->curator) ? $curation->curator->name : null,
+                        'Disease Entity' => $curation->mondo_id,
                     ];
+
+                    $curationStatuses->each(function ($status) use (&$line, $statuses) {
+                        $line[$status->name.' date']  = (isset($statuses[$status->id]))
+                                                            ? $statuses[$status->id]->format('Y-m-d')
+                                                            : null;
+                    });
+
+                    $line['created'] = $curation->created_at;
+
+                    return $line;
                 });
     }
 

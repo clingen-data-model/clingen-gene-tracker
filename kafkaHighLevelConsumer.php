@@ -1,5 +1,10 @@
 <?php
 
+$sslCertLocation = '/etc/pki/tls/certs/kafka.web3demo.signed.crt';
+$sslKeyLocation = '/etc/pki/tls/private/kafka.apache.key';
+$sslCaLocation = '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert';
+
+
 $conf = new RdKafka\Conf();
 
 // Set a rebalance callback to log partition assignments (optional)
@@ -27,11 +32,11 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
 $conf->set('group.id', 'unc_demo');
 
 // Initial list of Kafka brokers
-$conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
-$conf->set('ssl.certificate.location', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
 $conf->set('security.protocol', 'ssl');
-$conf->set('ssl.key.location', '/etc/pki/tls/private/kafka.apache.key');
-$conf->set('ssl.ca.location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
+$conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
+$conf->set('ssl.certificate.location', $sslCertLocation);
+$conf->set('ssl.key.location', $sslKeyLocation);
+$conf->set('ssl.ca.location', $sslCaLocation);
 
 $topicConf = new RdKafka\TopicConf();
 
