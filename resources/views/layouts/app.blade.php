@@ -72,6 +72,10 @@
                                         <div class="dropdown-divider"></div>
                                     @endrole
 
+                                    <a class="dropdown-item" href="/files/SOP_V1.pdf" target="sop">SOP</a>
+
+                                    <div class="dropdown-divider"></div>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
