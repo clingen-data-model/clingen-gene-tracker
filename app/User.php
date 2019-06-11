@@ -44,6 +44,7 @@ class User extends Authenticatable
 
     public static function boot()
     {
+        parent::boot();
         static::creating(function ($model) {
             if (is_null($model->password)) {
                 if (env('production')) {

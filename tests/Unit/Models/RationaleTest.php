@@ -14,7 +14,7 @@ class RationaleTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->rationale = factory(\App\Rationale::class)->create();

@@ -36,6 +36,14 @@ return [
     'default_date_format'     => 'j F Y',
     'default_datetime_format' => 'j F Y H:i',
 
+    // Content of the HTML meta robots tag to prevent indexing and link following
+    'meta_robots_content' => 'noindex, nofollow',
+
+    // Overlays - CSS files that change the look and feel of the admin panel
+    'overlays' => [
+        'vendor/backpack/base/backpack.bold.css',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Registration Open
@@ -66,7 +74,7 @@ return [
 
     // Set this to false if you would like to skip adding the dashboard routes
     // (you then need to overwrite the login route on your AuthController)
-    'setup_dashboard_routes' => true,
+    'setup_dashboard_routes' => false,
 
     // Set this to false if you would like to skip adding "my account" routes
     // (you then need to manually define the routes in your web.php)
@@ -74,12 +82,36 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | User Model
+    | Authentication
     |--------------------------------------------------------------------------
     */
 
     // Fully qualified namespace of the User model
-    'user_model_fqn' => '\App\User',
+    'user_model_fqn' => \App\User::class,
+
+    // The classes for the middleware to check if the visitor is an admin
+    // Can be a single class or an array of clases
+    'middleware_class' => [
+        \Backpack\Base\app\Http\Middleware\CheckIfAdmin::class,
+    ],
+
+    // Alias for that middleware
+    'middleware_key' => 'admin',
+    // Note: It's recommended to use the backpack_middleware() helper everywhere, which pulls this key for you.
+
+    // Username column for authentication
+    // The Backpack default is the same as the Laravel default (email)
+    // If you need to switch to username, you also need to create that column in your db
+    'authentication_column'      => 'email',
+    'authentication_column_name' => 'Email',
+
+    // The guard that protects the Backpack admin panel.
+    // If null, the config.auth.defaults.guard value will be used.
+    'guard' => null,
+
+    // The password reset configuration for Backpack.
+    // If null, the config.auth.defaults.passwords value will be used.
+    'passwords' => null,
 
     // What kind of avatar will you like to show to the user?
     // Default: gravatar (automatically use the gravatar for his email)
@@ -90,12 +122,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | File System
+    |--------------------------------------------------------------------------
+    */
+
+    // Backpack\Base sets up its own filesystem disk, just like you would by
+    // adding an entry to your config/filesystems.php. It points to the root
+    // of your project and it's used throughout all Backpack packages.
+    //
+    // You can rename this disk here. Default: root
+    'root_disk_name' => 'root',
+
+    /*
+    |--------------------------------------------------------------------------
     | License Code
     |--------------------------------------------------------------------------
     |
     | If you, your employer or your client make money by using Backpack, you need
-    | to purchase a license code. A license code will be provided after purchase,
-    | which you can put here or in your ENV file.
+    | to purchase a license. A license code will be provided after purchase,
+    | which you can put here or in your ENV file in staging & production.
     |
     | More info and payment form on:
     | https://www.backpackforlaravel.com

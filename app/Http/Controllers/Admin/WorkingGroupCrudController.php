@@ -9,7 +9,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 class WorkingGroupCrudController extends CrudController
 {
-    public function setup()
+    public function setUp(): void
     {
 
         /*

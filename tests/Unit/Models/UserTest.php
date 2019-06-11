@@ -17,7 +17,7 @@ class UserTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(\App\User::class)->create();

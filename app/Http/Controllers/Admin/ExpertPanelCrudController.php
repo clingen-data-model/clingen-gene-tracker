@@ -12,7 +12,7 @@ class ExpertPanelCrudController extends CrudController
 {
     protected $user = null;
 
-    public function setup()
+    public function setUp(): void
     {
         $this->user = Auth::user();
 

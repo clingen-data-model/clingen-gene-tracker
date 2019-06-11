@@ -9,7 +9,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 class CurationStatusCrudController extends CrudController
 {
-    public function setup()
+    public function setUp(): void
     {
         $this->user = \Auth::user();
 

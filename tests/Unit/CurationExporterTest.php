@@ -15,7 +15,7 @@ class CurationExporterTest extends TestCase
 {
     use DatabaseTransactions;
     
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \DB::table('curations')->delete();
