@@ -25,7 +25,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillabel_gene_symbol()
+    public function curation_has_fillable_gene_symbol()
     {
         $curation = new Curation();
         $curation->fill(['gene_symbol'=>'TEST-1']);
@@ -161,7 +161,7 @@ class CurationTest extends TestCase
         $curation = factory(\App\Curation::class)->create();
 
         $statusesAtTime = $curationStatuses->map(function ($item, $idx) {
-            return ['id' => $item->id, 'pivotData' => ['created_at' => today()->addDays($idx)]];
+            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx)]];
         });
 
         $curation->curationStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));

@@ -42,7 +42,7 @@ class CurationExporter
                                                             : null;
                     });
 
-                    $line['created'] = $curation->created_at;
+                    $line['Created'] = $curation->created_at;
 
                     return $line;
                 });

@@ -53,6 +53,8 @@ class CurationExporterTest extends TestCase
                 'Curation Provisional date',
                 'Curation Approved date',
                 'Recuration assigned date',
+                'Retired Assignment date',
+                'Published date',
                 'Created'
             ],
             array_keys($curationData->first())
@@ -115,7 +117,7 @@ class CurationExporterTest extends TestCase
         $this->assertFileExists($path);
         
         $content = explode("\n", file_get_contents($path));
-        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Curation In Progress date","Curation Provisional date","Curation Approved date","Recuration assigned date",Created', $content[0]);
+        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Curation In Progress date","Curation Provisional date","Curation Approved date","Recuration assigned date","Retired Assignment date","Published date",Created', $content[0]);
         $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
 
         unlink($path);

@@ -342,8 +342,6 @@ class CurationControllerTest extends TestCase
         $curation = $this->curations->first();
         $curation->curationStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
 
-
-
         $data = [
             'page' => 'info',
             'gene_symbol' => $curation->gene_symbol,
@@ -369,15 +367,15 @@ class CurationControllerTest extends TestCase
         app()->bind('App\Contracts\OmimClient', function ($app) {
             $stub = $this->createMock(OmimClient::class);
             $stub->method('geneSymbolIsValid')
-                ->willReturn(true);
+            ->willReturn(true);
             return $stub;
         });
-
+        
         $statuses = factory(\App\CurationStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
-
+        
         $curation = $this->curations->first();
-        $curation->curationStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
+        $curation->curationStatuses()->attach([$statuses->first()->id => ['status_date' => today()->subDays(10)]]);
 
         $data = [
             'page' => 'info',
@@ -399,7 +397,7 @@ class CurationControllerTest extends TestCase
             'curation_curation_status',
             [
                 'curation_status_id'=>1,
-                'created_at'=>now()->subDays(2)->format('Y-m-d H:i:s')
+                'status_date'=>now()->subDays(2)->format('Y-m-d H:i:s')
             ]
         );
     }
@@ -487,19 +485,19 @@ class CurationControllerTest extends TestCase
         });
 
         $curation = $this->curations->first();
-        $curation->update(['gene_symbole' => 'brca1']);
+        $curation->update(['gene_symbol' => 'brca1']);
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = [$this->rationale];
-        $data['isolated_phenotype'] = '605724';
+        $data['isolated_phenotype'] = '100100';
         $data['nav'] = 'next';
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data);
         $response->assertStatus(200);
 
-        $response->assertSee('"mim_number":605724');
+        $response->assertSee('"mim_number":100100');
     }
 
     /**
@@ -544,7 +542,7 @@ class CurationControllerTest extends TestCase
      * @test
      * @group curation-validation
      */
-    public function rationales_not_required_when_curation_type_single_and_1_phenotype()
+    public function rationales_not_required_when_curation_type_not_single_and_1_phenotype()
     {
         $curation = $this->curations->first();
         $curation->update([
@@ -559,18 +557,17 @@ class CurationControllerTest extends TestCase
         $data['rationales'] = null;
         $data['nav'] = 'next';
 
-        app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
-            $stub->method('geneSymbolIsValid')
-                ->willReturn(true);
-            $stub->method('getGenePhenotypes')
-                ->willReturn(collect([1]));
-            return $stub;
-        });
+        $mock = $this->createMock(OmimClient::class);
+        $mock->method('getGenePhenotypes')
+            ->willReturn(collect([1]));
+        $mock->method('geneSymbolIsValid')
+            ->willReturn(true);
+
+        app()->instance('App\Contracts\OmimClient', $mock);
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/' . $curation->id, $data);
-        // dd($response->original);
+
         $response->assertStatus(200);
     }
 

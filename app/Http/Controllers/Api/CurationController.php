@@ -108,29 +108,37 @@ class CurationController extends Controller
         $this->authorize('update', $curation);
 
         $data = $request->except('curation_status_id');
+        
         if (isset($data['pmids']) && is_string($data['pmids'])) {
             $data['pmids'] = array_map(function ($i) {
                 return trim($i);
             }, explode(',', $data['pmids']));
         }
+
         $curation->update($data);
 
         if ($request->phenotypes) {
             \Bus::dispatch(new SyncPhenotypes($curation, $request->phenotypes));
         }
+
         if ($request->isolated_phenotype) {
             $pheno = $this->omim->getEntry($request->isolated_phenotype)[0]->entry;
             \Bus::dispatch(new SyncPhenotypes($curation, [
                 ['mim_number'=>$pheno->mimNumber, 'name'=> $pheno->titles->preferredTitle]
             ]));
         }
+        
         if ($request->rationales) {
             $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
         }
 
         if ($request->curation_status_id) {
-            $created_at = ($request->curation_status_timestamp) ? Carbon::parse($request->curation_status_timestamp) : now();
-            $curation->curationStatuses()->attach([$request->curation_status_id => ['created_at' => $created_at]]);
+            $status_date = ($request->curation_status_timestamp) ? Carbon::parse($request->curation_status_timestamp) : now();
+            $curation->curationStatuses()->attach([
+                $request->curation_status_id => [
+                    'status_date' => $status_date
+                ]
+            ]);
         }
 
         $this->loadRelations($curation);

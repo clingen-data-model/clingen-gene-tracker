@@ -55,6 +55,7 @@ class OmimClient implements OmimClientContract
 
     public function geneSymbolIsValid($geneSymbol)
     {
+        // dump('real getSymbolIsValid');
         return $this->search([
             'search'=>'approved_gene_symbol:'.$geneSymbol
         ])->count() > 0;
@@ -62,6 +63,7 @@ class OmimClient implements OmimClientContract
 
     public function getGenePhenotypes($geneSymbol)
     {
+        // dump('real getGenePhenotypes');
         $entryList = $this->search([
                     'search'=>'approved_gene_symbol:'.$geneSymbol,
                     'include'=> 'geneMap'

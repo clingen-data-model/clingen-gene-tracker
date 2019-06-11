@@ -12,7 +12,7 @@ interface OmimClient
 
     public function search($searchData);
 
-    public function geneSymbolIsValid($geneSumbol);
+    public function geneSymbolIsValid($geneSymbol);
 
     public function getGenePhenotypes($geneSymbol);
 }
