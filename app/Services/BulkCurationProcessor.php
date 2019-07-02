@@ -9,13 +9,11 @@ use App\ExpertPanel;
 use App\CurationType;
 use App\Clients\OmimClient;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Jobs\Curations\SyncPhenotypes;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Support\Facades\Validator;
 use App\Exceptions\BulkUploads\InvalidRowException;
 use App\Exceptions\BulkUploads\InvalidFileException;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
 {
@@ -39,18 +37,47 @@ class BulkCurationProcessor
     {
         $newCurations = collect();
         DB::beginTransaction();
-        Excel::selectSheets('Curations')->load($path, function ($reader) use ($expertPanelId, $newCurations) {
-            $rows = $reader->get();
-            foreach ($rows as $idx => $row) {
-                if (empty($row->gene_symbol) && empty($row->curator_email) && empty($row->curation_type)) {
-                    continue;
-                }
-                try {
-                    $newCurations->push($this->processRow($row->toArray(), $expertPanelId, $idx));
-                } catch (InvalidRowException $e) {
+
+        $reader = ReaderEntityFactory::createXLSXReader();
+        $reader->open($path);
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($sheet->getName() === 'Curations') {
+                $header = [];
+                foreach ($sheet->getRowIterator() as $idx => $row) {
+                    if ($idx == 1) {
+                        $header = array_map(function ($item) {
+                            return implode('_', explode(' ', strtolower($item)));
+                        }, $row->toArray());
+                        continue;
+                    }
+                    $values = array_map(function ($item) {
+                        return $item == '' ? null : $item;
+                    }, $row->toArray());
+                    $data = array_combine($header, $values);
+                    if (empty($data['gene_symbol']) && empty($data['curator_email']) && empty($data['curation_type'])) {
+                        continue;
+                    }
+                    try {
+                        $newCurations->push($this->processRow($data, $expertPanelId, $idx));
+                    } catch (InvalidRowException $e) {
+                    }
                 }
             }
-        });
+        }
+
+        // Excel::selectSheets('Curations')->load($path, function ($reader) use ($expertPanelId, $newCurations) {
+        //     $rows = $reader->get();
+        //     foreach ($rows as $idx => $row) {
+        //         if (empty($row->gene_symbol) && empty($row->curator_email) && empty($row->curation_type)) {
+        //             continue;
+        //         }
+        //         try {
+        //             $newCurations->push($this->processRow($row->toArray(), $expertPanelId, $idx));
+        //         } catch (InvalidRowException $e) {
+        //         }
+        //     }
+        // });
+
         if (count($this->validationErrors) > 0) {
             DB::rollBack();
             throw new InvalidFileException($this->validationErrors);
@@ -63,6 +90,7 @@ class BulkCurationProcessor
     public function processRow($rowData, $expertPanelId, $rowNum = 0)
     {
         config(['app.bulk_uploading' => true]);
+
         if (!$this->rowIsValid($rowData, $rowNum)) {
             throw new InvalidRowException($rowData, $this->validationErrors);
         }
@@ -177,7 +205,7 @@ class BulkCurationProcessor
         }
 
         for ($i=0; $i < 10; $i++) {
-            if (isset($rowData['omim_id_'.$i]) && !empty('omim_id_'.$i)) {
+            if (isset($rowData['omim_id_'.$i]) && !empty($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
                     $this->omim->getEntry($mimNumber)[0]->entry;
@@ -195,7 +223,7 @@ class BulkCurationProcessor
             }
 
             if (!$this->rationales->pluck('name')->contains($rowData[$field])) {
-                $errors[$field] = 'Curation type '.$rowData[$field].' was not found in the system';
+                $errors[$field] = 'Rationale '.$rowData[$field].' was not found in the system';
                 $valid = false;
             }
         }
