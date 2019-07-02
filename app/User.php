@@ -81,7 +81,7 @@ class User extends Authenticatable
 
     public function deactivateUser($crud = false)
     {
-        return '<a class="btn btn-xs btn-default" href="'.\Request::root().'/admin/user/'.$crud->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user." onClick="return confirm(\'Are you sure?\');"><i class="fa fa-ban"></i> Deactviate</a>';
+        return '<a class="btn btn-xs btn-default" href="'.\Request::root().'/admin/user/'.$crud->model->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user." onClick="return confirm(\'Are you sure?\');"><i class="fa fa-ban"></i> Deactviate</a>';
     }
 
     public function setPasswordAttribute($value)
