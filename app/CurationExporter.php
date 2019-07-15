@@ -7,7 +7,7 @@ use App\ExpertPanel;
 
 class CurationExporter
 {
-    public function getData($params = [])
+    protected function buildQuery($params)
     {
         $query = Curation::with('expertPanel', 'curationStatuses', 'curator', 'statuses');
         if (isset($params['expert_panel_id'])) {
@@ -23,6 +23,23 @@ class CurationExporter
                 }
             });
         }
+
+        if (\Auth::user()->hasAnyRole(['programmer','admin'])) {
+            return $query;
+        } 
+
+        if (\Auth::user()->isCoordinator()) {
+            return $query;
+        }
+
+        $query->where('curator_id', \Auth::user()->id);
+
+        return $query;
+    }
+
+    public function getData($params = [])
+    {
+        $query = $this->buildQuery($params);
         $curationStatuses = CurationStatus::all();
 
         return  $query->get()

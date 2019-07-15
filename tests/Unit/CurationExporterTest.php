@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\User;
 use App\Curation;
 use Tests\TestCase;
 use App\ExpertPanel;
@@ -19,6 +20,8 @@ class CurationExporterTest extends TestCase
     {
         parent::setUp();
         \DB::table('curations')->delete();
+        $programmer = factory(User::class)->create()->assignRole('programmer');
+        $this->actingAs($programmer);
         $this->groups = factory(WorkingGroup::class, 3)->create();
         $this->panels = collect();
         $this->groups->each(function ($grp) {
@@ -121,5 +124,61 @@ class CurationExporterTest extends TestCase
         $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
 
         unlink($path);
+    }
+
+    /**
+     * @test
+     */
+    public function coordinators_see_all_curations()
+    {
+        $coordinator = factory(User::class)->create();
+        $coordinator->expertPanels()->attach([
+            $this->panels->random()->id => [
+                'is_coordinator' => 1
+            ]
+        ]);
+        $this->actingAs($coordinator);
+
+        $data = $this->exporter->getData();
+
+        $this->assertEquals($this->curations->count(), $data->count());
+    }
+    
+    /**
+     * @test
+     */
+    public function admins_see_all_curations()
+    {
+        $admin = factory(User::class)->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $data = $this->exporter->getData();
+
+        $this->assertEquals($this->curations->count(), $data->count());
+    }
+
+    /**
+     * @test
+     */
+    public function curators_only_see_their_curations()
+    {
+        $curator = factory(User::class)->create();
+        $curator->expertPanels()->attach([
+            $this->panels->random()->id => [
+                'is_coordinator' => 0,
+                'is_curator' => 1
+            ]
+        ]);
+        $this->actingAs($curator);
+
+        $curation = Curation::create([
+            'curator_id' => $curator->id,
+            'gene_symbol' => 'beans'
+        ]);
+
+        $data = $this->exporter->getData();
+
+        $this->assertEquals(1, $data->count());
     }
 }
