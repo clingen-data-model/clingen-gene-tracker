@@ -3,7 +3,12 @@
 $sslCertLocation = '/etc/pki/tls/certs/kafka.web3demo.signed.crt';
 $sslKeyLocation = '/etc/pki/tls/private/kafka.apache.key';
 $sslCaLocation = '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert';
-
+$group = 'unc_demo';
+// $sslCertLocation = '/Users/jward3/certificates/tjward_cert_signed.crt';
+// $sslKeyLocation =  '/Users/jward3/certificates/kafka.key';
+// $sslCaLocation =   '/Users/jward3/certificates/ca-cert';
+// $sslKeyPassword = 'test';
+// $group = 'tjward_unc';
 
 $conf = new RdKafka\Conf();
 
@@ -29,7 +34,7 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
 
 // Configure the group.id. All consumer with the same group.id will consume
 // different partitions.
-$conf->set('group.id', 'unc_demo');
+$conf->set('group.id', $group);
 
 // Initial list of Kafka brokers
 $conf->set('security.protocol', 'ssl');
@@ -37,13 +42,14 @@ $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
 $conf->set('ssl.certificate.location', $sslCertLocation);
 $conf->set('ssl.key.location', $sslKeyLocation);
 $conf->set('ssl.ca.location', $sslCaLocation);
+$conf->set('ssl.key.password', $sslKeyPassword);
 
 $topicConf = new RdKafka\TopicConf();
 
 // Set where to start consuming messages when there is no initial offset in
 // offset store or the desired offset is out of range.
 // 'smallest': start from the beginning
-$topicConf->set('auto.offset.reset', 'smallest');
+$topicConf->set('auto.offset.reset', 'beginning');
 
 // Set the configuration to use for subscribed/assigned topics
 $conf->setDefaultTopicConf($topicConf);
@@ -60,13 +66,13 @@ while (true) {
     $message = $consumer->consume(10000);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-            var_dump($message);
+            echo $message->payload."\n";
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "No more messages; will wait for more\n";
             break;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
-            echo "Timed out\n";
+            // echo "Timed out\n";
             echo "Timed out\n";
             break;
         case RD_KAFKA_RESP_ERR__FAIL:
@@ -76,7 +82,7 @@ while (true) {
                 echo "Bad message format\n";
                 break;
         case RD_KAFKA_RESP_ERR__RESOLVE:
-                echo "Host resolution filure";
+                echo "Host resolution failure";
                 break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
                 echo "unkown topic\n";
@@ -85,7 +91,7 @@ while (true) {
                 echo "invalid group id\n";
                 break;
         case RD_KAFKA_RESP_ERR_GROUP_AUTHORIZATION_FAILED:
-                echo "group auth failed\n";
+                // echo "group auth failed\n";
                 break;
         default:
                 echo "Unknown Error: ".$message->err."\n";
