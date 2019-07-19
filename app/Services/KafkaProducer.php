@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\StreamingServiceException;
 
 class KafkaProducer
 {
     protected $rdKafkaProducer;
     protected $topic;
-
+ 
     public function __construct()
     {
         $this->rdKafkaProducer = new \RdKafka\Producer($this->assembleConfig());
@@ -17,12 +18,17 @@ class KafkaProducer
 
     private function produceOnTopic($message, \RdKafka\ProducerTopic $topic)
     {
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
-        $this->rdKafkaProducer->poll(0);
-
-        while ($this->rdKafkaProducer->getOutQLen() > 0) {
-            $this->rdKafkaProducer->poll(50);
+        try {
+            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
+            $this->rdKafkaProducer->poll(0);
+    
+            while ($this->rdKafkaProducer->getOutQLen() > 0) {
+                $this->rdKafkaProducer->poll(50);
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
+
     }
 
     public function topic($topic)
@@ -40,23 +46,6 @@ class KafkaProducer
             throw new StreamingServiceException('You must set a topic on the Producer before you can use KafkaProducer::produce');
         }
         $this->produceOnTopic($message, $this->topic);
-    }
-
-    /**
-     * Get topic
-     * 
-     */
-    public function pushMessageToTopic($message, $topic)
-    {
-        $rdTopic = $this->rdKafkaProducer->newTopic($topic);
-
-        $rdTopic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
-        $this->rdKafkaProducer->poll(0);
-
-        while ($this->rdKafkaProducer->getOutQLen() > 0) {
-            $this->rdKafkaProducer->poll(50);
-        }
-
     }
 
     private function assembleConfig()
@@ -90,7 +79,7 @@ class KafkaProducer
         });
 
         $conf->setErrorCb(function ($kafka, $err, $reason) {
-            Log::error(printf("Kafka producer error: %s (reason: %s)\n", rd_kafka_err2str($err), $reason));
+            throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
         });
 
         $conf->setStatsCb(function ($kafka, $json, $json_len) {
@@ -99,9 +88,7 @@ class KafkaProducer
 
         $conf->setDrMsgCb(function ($kafka, $message) {
             if ($message->err) {
-                Log::error($message->err);
-            } else {
-                // dump('successfully pushed the message');
+                throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($err));
             }
         });
 
