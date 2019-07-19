@@ -13,6 +13,7 @@ class CurationType extends Model
 
     protected $revisionCreationsEnabled = true;
     protected $fillable = ['name'];
+    protected $touches = ['curations'];
 
     public function curations()
     {

@@ -224,7 +224,7 @@ class CurationControllerTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations')
-            ->assertJsonFragment($status->toArray());
+            ->assertJsonFragment($status->getAttributes());
     }
 
     /**

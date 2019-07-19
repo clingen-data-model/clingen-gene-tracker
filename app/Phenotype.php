@@ -14,6 +14,8 @@ class Phenotype extends Model
         'name'
     ];
 
+    protected $touches = ['curations'];
+
     public function curations()
     {
         return $this->belongsToMany(Curation::class);
