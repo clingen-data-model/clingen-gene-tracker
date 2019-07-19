@@ -5,7 +5,9 @@ namespace App\Providers;
 use Carbon\Carbon;
 use App\Clients\OmimClient;
 use App\Services\KafkaProducer;
+use App\Services\MessageLogger;
 use App\Contracts\MessagePusher;
+use App\Services\DisabledPusher;
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\OmimClient as OmimClientContract;
 
@@ -27,7 +29,15 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->bind(OmimClientContract::class, OmimClient::class);
-        $this->app->bind(MessagePusher::class, KafkaProducer::class);
+        $this->app->bind(MessagePusher::class, function () {
+            if (! config('streaming-service.enable-push')) {
+                return new DisabledPusher();
+            }
+            if (config('streaming-service.driver') == 'log') {
+                return new MessageLogger();
+            }
+            return new KafkaProducer();
+        });
 
         \Request::macro('dateParsed', function (...$dates) {
             return collect($this->all())

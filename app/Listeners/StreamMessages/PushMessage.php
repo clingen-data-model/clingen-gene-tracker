@@ -2,26 +2,23 @@
 
 namespace App\Listeners\StreamMessages;
 
+use Carbon\Carbon;
 use App\Contracts\MessagePusher;
 use App\Events\StreamMessages\Created;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Jobs\StreamingService\PushMessage as PushMessageJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Exceptions\StreamingServiceException;
-use Carbon\Carbon;
 
 class PushMessage
 {
-    protected $pusher;
-
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(MessagePusher $pusher)
+    public function __construct()
     {
-        //
-        $this->pusher = $pusher;
     }
 
     /**
@@ -32,15 +29,6 @@ class PushMessage
      */
     public function handle(Created $event)
     {
-        try {
-            $this->pusher->topic($event->streamMessage->topic);
-            $this->pusher->push($event->streamMessage->message);
-
-            $event->streamMessage->update([
-                'sent_at' => Carbon::now()
-            ]);
-        } catch (StreamingServiceException $e) {
-            report($e);
-        }
+        PushMessageJob::dispatch($event->streamMessage);
     }
 }
