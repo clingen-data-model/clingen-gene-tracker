@@ -38,6 +38,6 @@ class CurationTypeTest extends TestCase
         $this->curationType->curations()->save($curation);
 
         $this->assertInstanceOf(HasMany::class, $this->curationType->curations());
-        $this->assertEquals($curation->id, $this->curationType->curations->first()->id);
+        $this->assertEquals($curation->id, $this->curationType->curations()->first()->id);
     }
 }
