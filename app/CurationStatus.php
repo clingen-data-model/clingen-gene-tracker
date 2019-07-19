@@ -16,4 +16,12 @@ class CurationStatus extends Model
     protected $fillable = [
         'name'
     ];
+
+    protected $touches = ['curations'];
+
+    public function curations()
+    {
+        return $this->belongsToMany(Curation::class);
+    }
+    
 }

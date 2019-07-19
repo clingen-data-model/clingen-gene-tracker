@@ -3,6 +3,9 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
+use App\Events\Curation\Created;
+use App\Events\Curation\Deleted;
+use App\Events\Curation\Updated;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -38,6 +41,12 @@ class Curation extends Model
 
     protected $with = [
         // 'currentStatus'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => Created::class,
+        'updated' => Updated::class,
+        'deleted' => Deleted::class,
     ];
 
     public static function boot()
@@ -98,4 +107,11 @@ class Curation extends Model
     {
         return $query->where('gene_symbol', $geneSymbol);
     }
+
+    public function loadForMessage()
+    {
+        $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
+        return $this;
+    }
+    
 }

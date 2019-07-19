@@ -1,14 +1,16 @@
 <?php
 
-$sslCertLocation = '/etc/pki/tls/certs/kafka.web3demo.signed.crt';
-$sslKeyLocation = '/etc/pki/tls/private/kafka.apache.key';
-$sslCaLocation = '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert';
-$group = 'unc_demo';
-// $sslCertLocation = '/Users/jward3/certificates/tjward_cert_signed.crt';
-// $sslKeyLocation =  '/Users/jward3/certificates/kafka.key';
-// $sslCaLocation =   '/Users/jward3/certificates/ca-cert';
-// $sslKeyPassword = 'test';
-// $group = 'tjward_unc';
+use App\Exceptions\StreamingServiceException;
+require __DIR__ . '/vendor/autoload.php';
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+// exec('source .env');
+
+$sslCertLocation = env('KAFKA_CERT', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
+$sslKeyLocation =  env('KAFKA_KEY_LOCATION', '/etc/pki/tls/private/kafka.apache.key');
+$sslCaLocation =   env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
+$sslKeyPassword = env('KAFKA_KEY_PASSWORD', null);
+$group = env('KAFKA_GROUP', 'unc_demo');
 
 $conf = new RdKafka\Conf();
 
@@ -34,6 +36,19 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
 
 // Configure the group.id. All consumer with the same group.id will consume
 // different partitions.
+$conf->setErrorCb(function ($kafka, $err, $reason) {
+    throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+});
+
+$conf->setStatsCb(function ($kafka, $json, $json_len) {
+    Log::info('Kafka Stats ', json_decode($json));
+});
+
+$conf->setDrMsgCb(function ($kafka, $message) {
+    if ($message->err) {
+        throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($err));
+    }
+});
 $conf->set('group.id', $group);
 
 // Initial list of Kafka brokers
@@ -42,7 +57,9 @@ $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
 $conf->set('ssl.certificate.location', $sslCertLocation);
 $conf->set('ssl.key.location', $sslKeyLocation);
 $conf->set('ssl.ca.location', $sslCaLocation);
-$conf->set('ssl.key.password', $sslKeyPassword);
+if ($sslKeyPassword) {
+    $conf->set('ssl.key.password', $sslKeyPassword);
+}
 
 $topicConf = new RdKafka\TopicConf();
 
@@ -73,7 +90,7 @@ while (true) {
             break;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
             // echo "Timed out\n";
-            echo "Timed out\n";
+            // echo "Timed out\n";
             break;
         case RD_KAFKA_RESP_ERR__FAIL:
             echo "Failed to communicate with broker\n";

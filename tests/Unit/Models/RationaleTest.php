@@ -39,6 +39,6 @@ class RationaleTest extends TestCase
         $this->rationale->curations()->save($curation);
 
         $this->assertInstanceOf(HasMany::class, $this->rationale->curations());
-        $this->assertEquals($curation->id, $this->rationale->curations->first()->id);
+        $this->assertEquals($curation->id, $this->rationale->curations()->first()->id);
     }
 }
