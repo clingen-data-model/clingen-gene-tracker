@@ -7,13 +7,6 @@ use App\Contracts\MessagePusher;
 class MessageLogger implements MessagePusher
 {
 
-    public function __construct()
-    {
-        \Log::info('MessageLogger::__construct');
-    }
-
-
-
     public function topic(string $topic)
     {
         $this->topic = $topic;
