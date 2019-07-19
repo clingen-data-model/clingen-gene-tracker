@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Contracts\MessagePusher;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\StreamingServiceException;
 
-class KafkaProducer
+class KafkaProducer implements MessagePusher
 {
     protected $rdKafkaProducer;
     protected $topic;
@@ -31,7 +32,7 @@ class KafkaProducer
 
     }
 
-    public function topic($topic)
+    public function topic(string $topic)
     {
         if ($this->topic) {
             return $this->topic;
@@ -40,7 +41,7 @@ class KafkaProducer
         return $this;
     }
 
-    public function produce($message)
+    public function push(string $message)
     {
         if (!$this->topic) {
             throw new StreamingServiceException('You must set a topic on the Producer before you can use KafkaProducer::produce');

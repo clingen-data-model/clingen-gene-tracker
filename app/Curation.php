@@ -107,4 +107,11 @@ class Curation extends Model
     {
         return $query->where('gene_symbol', $geneSymbol);
     }
+
+    public function loadForMessage()
+    {
+        $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
+        return $this;
+    }
+    
 }

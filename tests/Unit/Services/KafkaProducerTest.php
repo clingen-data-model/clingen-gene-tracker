@@ -44,6 +44,6 @@ class KafkaProducerTest extends TestCase
 
         $this->expectException(StreamingServiceException::class);
 
-        $producer->produce('test');
+        $producer->push('test');
     }
 }

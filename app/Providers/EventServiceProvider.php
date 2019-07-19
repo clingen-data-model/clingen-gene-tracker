@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use App\Events\Curation\Created;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,18 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\User\Created' => [
             'App\Listeners\SendWelcomeEmail',
+        ],
+        'App\Events\Curation\Created' => [
+            'App\Listeners\Curations\MakeCurationCreatedStreamMessage'
+        ],
+        'App\Events\Curation\Updated' => [
+            'App\Listeners\Curations\MakeCurationUpdatedStreamMessage'
+        ],
+        'App\Events\Curation\Deleted' => [
+            'App\Listeners\Curations\MakeCurationDeletedStreamMessage'
+        ],
+        'App\Events\StreamMessages\Created' => [
+            'App\Listeners\StreamMessages\PushMessage'
         ]
     ];
 
