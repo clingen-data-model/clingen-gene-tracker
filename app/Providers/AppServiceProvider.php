@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->bind(OmimClientContract::class, OmimClient::class);
+
         $this->app->bind(MessagePusher::class, function () {
             if (! config('streaming-service.enable-push')) {
                 return new DisabledPusher();

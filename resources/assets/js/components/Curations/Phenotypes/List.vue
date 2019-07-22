@@ -21,7 +21,9 @@
                 </tbody>
             </table>
         </div>
-        <div v-else>No phenotypes in this curation</div>
+        <div class="col" v-else>
+            No phenotypes in this curation
+        </div>
     </div>
 </template>
 <script>

@@ -32,7 +32,6 @@ class CurationControllerTest extends TestCase
         $this->panel = factory(\App\ExpertPanel::class)->create();
         $this->rationale = factory(\App\Rationale::class)->create();
         $this->curationType = factory(\App\CurationType::class)->create();
-
     }
 
     /**

@@ -8,6 +8,8 @@ use App\Rationale;
 use App\ExpertPanel;
 use App\CurationType;
 use App\Clients\OmimClient;
+use Illuminate\Validation\Rule;
+use App\Rules\ValidHgncGeneSymbol;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\Curations\SyncPhenotypes;
 use GuzzleHttp\Exception\ClientException;
@@ -186,23 +188,28 @@ class BulkCurationProcessor
 
     public function rowIsValid($rowData, $rowNum = 0)
     {
-        $valid = true;
+        $validationRules = [
+            'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
+            'curator_email' => ['nullable', 'exists:users,email'],
+            'curation_type' => ['nullable', Rule::in($this->curationTypes->pluck('name')->toArray())],
+        ];
+        $messages = [
+            'gene_symbol.required' => 'A gene symbol is required to create a curation',
+            'curator_email.exists' => 'The curator email specified was not found in the system',
+        ];
+
+        $validator = \Validator::make(
+                        $rowData, 
+                        $validationRules, 
+                        $messages
+                    );
+
         $errors = [];
-
-        if (empty($rowData['gene_symbol'])) {
-            $errors['gene_symbol'] = 'A gene symbol is required to create a curation';
-            $valid = false;
+        foreach ($validator->errors()->getMessages() as $key => $value) {
+            $errors[$key] = implode(', ', $value);
         }
 
-        if (!is_null($rowData['curator_email']) && !$this->users->pluck('email')->contains($rowData['curator_email'])) {
-            $errors['curator_email'] = 'Curator Email '.$rowData['curator_email'].' was not found in the system';
-            $valid = false;
-        }
-
-        if (!is_null($rowData['curation_type']) && !$this->curationTypes->pluck('name')->contains($rowData['curation_type'])) {
-            $errors['curation_type'] = 'Curation type '.$rowData['curation_type'].' was not found in the system';
-            $valid = false;
-        }
+        $valid = !$validator->fails();
 
         for ($i=0; $i < 10; $i++) {
             if (isset($rowData['omim_id_'.$i]) && !empty($rowData['omim_id_'.$i])) {
