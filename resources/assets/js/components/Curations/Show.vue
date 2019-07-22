@@ -48,7 +48,7 @@
                         {{curation.curation_type ? curation.curation_type.description : '--'}}
                     </div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-4">
                     <strong class="col-md-2">Phenotypes:</strong>
                     <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" class="col-md"></phenotype-list>
                 </div>
