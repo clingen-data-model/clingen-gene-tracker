@@ -7,12 +7,19 @@
 <template>
     <div class="component-container">
         <div v-if="phenotypes.length > 0">
-            <strong>In this curation</strong>
-            <ul>
-                <li v-for="phenotype in phenotypes" :key="phenotype.id">
-                    {{ phenotype.name }}
-                </li>
-            </ul>
+            <!-- <strong>In this curation</strong> -->
+            <table class="table table-sm table-xs mb-0">
+                <thead>
+                    <th>Phenotype</th>
+                    <th>MIM Number</th>
+                </thead>
+                <tbody>
+                    <tr v-for="phenotype in phenotypes" :key="phenotype.id">
+                        <td>{{ phenotype.name }}</td>
+                        <td>{{phenotype.mim_number}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div v-else>No phenotypes in this curation</div>
     </div>
