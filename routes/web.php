@@ -15,6 +15,10 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('/', function () {
         return view('main');
     });
+    Route::get('/home', function () {
+        return redirect('/');
+    });
+
     Route::get('test', function () {
         return view('test');
     });

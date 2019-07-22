@@ -10,7 +10,7 @@ class SyncPhenotypesTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->phs = factory(\App\Phenotype::class, 3)->create()->transform(function ($item) {

@@ -10,7 +10,7 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 class CurationTypeCrudController extends CrudController
 {
-    public function setup()
+    public function setUp(): void
     {
 
         /*

@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CurationExportControllerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \DB::table('curations')->delete();

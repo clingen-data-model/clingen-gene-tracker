@@ -18,7 +18,7 @@ class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
     
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();

@@ -17,7 +17,7 @@ use Tests\TestCase;
  */
 class OmimClientTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
