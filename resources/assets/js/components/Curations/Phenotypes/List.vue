@@ -5,12 +5,12 @@
     }
 </style>
 <template>
-    <div class="component-container">
-        <div v-if="phenotypes.length > 0">
+    <div class="component-container row">
+        <div v-if="phenotypes.length > 0" class=" col-lg-8">
             <!-- <strong>In this curation</strong> -->
             <table class="table table-sm table-xs mb-0">
                 <thead>
-                    <th>Phenotype</th>
+                    <th style="width: 80%">Phenotype</th>
                     <th>MIM Number</th>
                 </thead>
                 <tbody>
