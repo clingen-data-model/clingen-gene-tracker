@@ -12,6 +12,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use App\Http\Resources\CurationResource;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Carbon\Carbon;
 
 /**
  * @group api
@@ -54,7 +55,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_lists_curations_filtered_by_gene_sybmol()
+    public function index_lists_curations_filtered_by_gene_symbol()
     {
         $testGene = 'BRCA1';
         $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
@@ -223,7 +224,7 @@ class CurationControllerTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations')
-            ->assertJsonFragment($status->toArray());
+            ->assertJsonFragment($status->getAttributes());
     }
 
     /**
@@ -378,6 +379,7 @@ class CurationControllerTest extends TestCase
         $curation = $this->curations->first();
         $curation->curationStatuses()->attach([$statuses->first()->id => ['status_date' => today()->subDays(10)]]);
 
+        Carbon::setTestNow('2019-01-01 00:00:00');
         $data = [
             'page' => 'info',
             'gene_symbol' => $curation->gene_symbol,
@@ -545,7 +547,7 @@ class CurationControllerTest extends TestCase
      */
     public function rationales_not_required_when_curation_type_not_single_and_1_phenotype()
     {
-        $this->markTestSkipped();
+        $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
         $curation = $this->curations->first();
         $curation->update([
             'curation_type_id' => 1,

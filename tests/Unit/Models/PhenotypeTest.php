@@ -86,6 +86,6 @@ class PhenotypeTest extends TestCase
         $phenotype->curations()->attach($curations->pluck('id'));
 
         $this->assertInstanceOf(BelongsToMany::class, $phenotype->curations());
-        $this->assertEquals(3, $phenotype->curations->count());
+        $this->assertEquals(3, $phenotype->curations()->count());
     }
 }

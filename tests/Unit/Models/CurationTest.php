@@ -132,7 +132,7 @@ class CurationTest extends TestCase
         $phenotypes = factory(\App\Phenotype::class, 2)->create();
         $curation->phenotypes()->attach($phenotypes->pluck('id'));
         $this->assertInstanceOf(BelongsToMany::class, $curation->phenotypes());
-        $this->assertEquals(2, $curation->phenotypes->count());
+        $this->assertEquals(2, $curation->phenotypes()->count());
     }
 
     /**
@@ -147,9 +147,9 @@ class CurationTest extends TestCase
 
         $curation->curationStatuses()->attach($curationStatuses->last()->id);
 
-        $this->assertEquals($curationStatuses->pluck('id'), $curation->curationStatuses->pluck('id'));
-        $this->assertNotNull($curation->curationStatuses->first()->pivot->created_at);
-        $this->assertNotNull($curation->curationStatuses->last()->pivot->updated_at);
+        $this->assertEquals($curationStatuses->pluck('id'), $curation->curationStatuses()->get()->pluck('id'));
+        $this->assertNotNull($curation->curationStatuses()->first()->pivot->created_at);
+        $this->assertNotNull($curation->curationStatuses()->get()->last()->pivot->updated_at);
     }
 
     /**

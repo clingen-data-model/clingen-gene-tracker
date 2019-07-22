@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use Mockery;
+use App\Services\KafkaProducer;
+use App\Contracts\MessagePusher;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -14,6 +17,8 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+        $mock = Mockery::mock(MessagePusher::class)->shouldIgnoreMissing();        
+        $this->instance(MessagePusher::class, $mock);
     }
     
 
@@ -37,5 +42,14 @@ abstract class TestCase extends BaseTestCase
                 throw $e;
             }
         });
+    }
+
+    public function invokeMethod(&$object, $methodName, array $parameters = array())
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 }

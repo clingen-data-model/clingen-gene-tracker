@@ -16,6 +16,8 @@ class Rationale extends Model
         'name'
     ];
 
+    protected $touches = ['curations'];
+
     public function curations()
     {
         return $this->hasMany(Curation::class);
