@@ -1,8 +1,10 @@
 <?php
 
 use App\Exceptions\StreamingServiceException;
+
 require __DIR__ . '/vendor/autoload.php';
-$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv = Dotenv\Dotenv::create(__DIR__);
+
 $dotenv->load();
 // exec('source .env');
 
@@ -72,6 +74,8 @@ $topicConf->set('auto.offset.reset', 'beginning');
 $conf->setDefaultTopicConf($topicConf);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
+
+dump($consumer->getMetadata(true, null, 60e3));
 
 // Subscribe to topic 'test'
 $consumer->subscribe(['test']);
