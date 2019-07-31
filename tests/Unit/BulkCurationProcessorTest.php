@@ -2,12 +2,15 @@
 
 namespace Tests\Unit;
 
+use Mockery;
 use App\Curation;
 use Tests\TestCase;
 use App\ExpertPanel;
+use App\Clients\OmimClient;
 use App\Services\BulkCurationProcessor;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Contracts\OmimClient as OmimClientContract;
 use App\Exceptions\BulkUploads\InvalidRowException;
 use App\Exceptions\BulkUploads\InvalidFileException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,6 +25,12 @@ class BulkCurationProcessorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $omimClientMock = $this->createMock(OmimClient::class);
+        // $omimClientMock->method('getEntry')->willReturn([]);
+        $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
+        $omimClientMock->method('getEntry')->willReturn(true);
+
+        app()->instance(OmimClient::class, $omimClientMock);
         $this->data = [
             "gene_symbol" => "BRCA1",
             "curator_email" => "sirs@unc.edu",
@@ -103,9 +112,12 @@ class BulkCurationProcessorTest extends TestCase
             $this->fail('InvalidRowException not thrown for bad row data');
         } catch (InvalidRowException $e) {
             $this->assertEquals($e->getRowData(), $this->data);
-            $this->assertEquals($e->getValidationErrors(), collect(
-                [['curator_email' => 'Curator Email '.$this->data['curator_email'].' was not found in the system']]
-            ));
+            $this->assertEquals(
+                collect([
+                    ['curator_email' => 'The curator email specified was not found in the system']
+                ]), 
+                $e->getValidationErrors()
+            );
         }
     }
 
@@ -155,6 +167,8 @@ class BulkCurationProcessorTest extends TestCase
             'curation_status_id' => 4,
             'curation_id' => $curation->id
         ]);
+
+
     }
     
 
@@ -214,6 +228,11 @@ class BulkCurationProcessorTest extends TestCase
     public function checks_omim_ids_are_valid_mim_numbers()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
+
+        $omimClientMock = Mockery::mock(OmimClientContract::class)->shouldIgnoreMissing();
+        $omimClientMock->shouldReceive(['getEntry' => false]);
+
+        app()->instance(OmimClient::class, $omimClientMock);
         
         $this->data['omim_id_1'] = 12983;
         $this->assertFalse($this->svc->rowIsValid($this->data));
@@ -221,4 +240,22 @@ class BulkCurationProcessorTest extends TestCase
         $this->data['omim_id_2'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
     }
+
+    /**
+     * @test
+     */
+    public function checks_gene_symbol_is_valid_hgnc_symbol()
+    {
+        $this->assertTrue($this->svc->rowIsValid($this->data));
+        
+        $omimClientMock = $this->createMock(OmimClient::class);
+        $omimClientMock->method('geneSymbolIsValid')
+            ->willReturn(false);
+
+        app()->instance(OmimClient::class, $omimClientMock);
+        $this->data['gene_symbol'] = 'Bobs yer uncle';
+        $this->assertFalse($this->svc->rowIsValid($this->data));
+        $this->assertTrue($this->svc->validationErrors->contains("gene_symbol", "Bobs yer uncle is not a valid HGNC gene symbol according to OMIM"));
+    }
+    
 }
