@@ -75,7 +75,7 @@ $conf->setDefaultTopicConf($topicConf);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
-dump($consumer->getMetadata(true, null, 60e3));
+dump($consumer->getMetadata(true, null, 60e3)->getTopics());
 
 // Subscribe to topic 'test'
 $consumer->subscribe(['test']);
