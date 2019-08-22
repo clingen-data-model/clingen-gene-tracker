@@ -42,28 +42,28 @@ class UserCrudController extends CrudController
 
         // ------ CRUD FIELDS
 
-        $this->crud->addField([
-            'label' => 'Expert Panels',
-            'type' => 'expert_panel_field',
-            'name' => 'expertPanels',
-            'entity' => 'expertPanels',
-            'attribute' => 'name',
-            'model' => ExpertPanel::class,
-            'pivot' => true
-        ], 'both');
+        // $this->crud->addField([
+        //     'label' => 'Expert Panels',
+        //     'type' => 'expert_panel_field',
+        //     'name' => 'expertPanels',
+        //     'entity' => 'expertPanels',
+        //     'attribute' => 'name',
+        //     'model' => ExpertPanel::class,
+        //     'pivot' => true
+        // ], 'both');
 
-        $this->crud->addField([
-            'label' => 'Roles',
-            'type' => 'select2_multiple',
-            'name' => 'roles',
-            'entity' => 'roles',
-            'attribute' => 'name',
-            'model' => Role::class,
-            'pivot' => true
-        ], 'both');
+        // $this->crud->addField([
+        //     'label' => 'Roles',
+        //     'type' => 'select2_multiple',
+        //     'name' => 'roles',
+        //     'entity' => 'roles',
+        //     'attribute' => 'name',
+        //     'model' => Role::class,
+        //     'pivot' => true
+        // ], 'both');
 
-        $this->crud->removeField('deactivated_at');
-        $this->crud->removeField('password');
+        // $this->crud->removeField('deactivated_at');
+        // $this->crud->removeField('password');
 
         // ------ CRUD FIELDS
         // $this->crud->addField($options, 'update/create/both');
@@ -72,17 +72,17 @@ class UserCrudController extends CrudController
         // $this->crud->removeFields($array_of_names, 'update/create/both');
 
         // ------ CRUD COLUMNS
-        // $this->crud->addColumn(); // add a single column, at the end of the stack
-        // $this->crud->addColumns(); // add multiple columns, at the end of the stack
-        // $this->crud->removeColumn('column_name'); // remove a column from the stack
-        // $this->crud->removeColumns(['column_name_1', 'column_name_2']); // remove an array of columns from the stack
-        // $this->crud->setColumnDetails('column_name', ['attribute' => 'value']); // adjusts the properties of the passed in column (by name)
-        // $this->crud->setColumnsDetails(['column_1', 'column_2'], ['attribute' => 'value']);
-
+        // $this->crud->removeColumn('deactivated_at');
+        // $this->crud->addColumn([
+        //     'name'=>'deactivated_at',
+        //     'label' => 'Deactivated',
+        //     'type' => 'datetime'
+        // ]);
+        
         // ------ CRUD BUTTONS
         // possible positions: 'beginning' and 'end'; defaults to 'beginning' for the 'line' stack, 'end' for the others;
         // $this->crud->addButton($stack, $name, $type, $content, $position); // add a button; possible types are: view, model_function
-        $this->crud->addButton('line', 'deactivate_user', 'model_function', 'deactivateUser', 'end');
+        $this->crud->addButtonFromView('line', 'deactivate', 'deactivate', 'end');
         // $this->crud->addButtonFromModelFunction($stack, $name, $model_function_name, $position); // add a button whose HTML is returned by a method in the CRUD model
         // $this->crud->addButtonFromView($stack, $name, $view, $position); // add a button whose HTML is in a view placed at resources\views\vendor\backpack\crud\buttons
         // $this->crud->removeButton($name);
@@ -143,7 +143,7 @@ class UserCrudController extends CrudController
         // });
         // $this->crud->addClause('withoutGlobalScopes');
         // $this->crud->addClause('withoutGlobalScope', VisibleScope::class);
-        // $this->crud->with(); // eager load relationships
+        // $this->crud->with(['expert']); // eager load relationships
         // $this->crud->orderBy();
         // $this->crud->groupBy();
         // $this->crud->limit();
@@ -178,9 +178,25 @@ class UserCrudController extends CrudController
     {
         if ($this->user->hasPermissionTo('deactivate users')) {
             $user = User::findOrFail($request->id);
-            $user->update(['deactivated_at'=>Carbon::now()]);
+            $user->update([
+                'deactivated_at'=>Carbon::now()
+            ]);
 
             return Redirect::back()->with(['msg','User '.$user->name.' deactivated successfully']);
+        }
+
+        return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);
+    }
+
+    public function reactivate(Request $request)
+    {
+        if ($this->user->hasPermissionTo('deactivate users')) {
+            $user = User::findOrFail($request->id);
+            $user->update([
+                'deactivated_at'=>null
+            ]);
+
+            return Redirect::back()->with(['msg','User '.$user->name.' reactivated successfully']);
         }
 
         return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);

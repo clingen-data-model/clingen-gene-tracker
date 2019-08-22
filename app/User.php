@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Events\User\Created;
-use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNotification;
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,6 +41,10 @@ class User extends Authenticatable
         'created' => Created::class
     ];
 
+    protected $dates = [
+        'deactivated_at'
+    ];
+
     public static function boot()
     {
         parent::boot();
@@ -68,20 +71,11 @@ class User extends Authenticatable
                 ->withTimestamps();
     }
     
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPasswordNotification($token));
-    }
-
     public function deactivateUser($crud = false)
     {
-        return '<a class="btn btn-xs btn-default" href="'.\Request::root().'/admin/user/'.$crud->model->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user." onClick="return confirm(\'Are you sure?\');"><i class="fa fa-ban"></i> Deactviate</a>';
+        if (is_null($this->deactivated_at)) {
+            return '<a class="btn btn-xs btn-default" href="'.\Request::root().'/admin/user/'.$this->id.'/deactivate" data-toggle="tooltip" title="Deactivate this user." onClick="return confirm(\'Are you sure?\');"><i class="fa fa-ban"></i> Deactviate</a>';
+        }
     }
 
     public function setPasswordAttribute($value)
@@ -156,4 +150,26 @@ class User extends Authenticatable
         }
         return $this->expertPanels->where('pivot.is_coordinator', 1);
     }
+
+    public function hasPermissionTo($permString)
+    {
+        return $this->getAllPermissions()->contains('name', $permString);
+    }
+   
+    public function getAllPermissions() 
+    {
+        if (is_null($this->allPermissions)) {
+            $permissions = $this->permissions;
+
+            if ($this->roles) {
+                $permissions = $permissions->merge($this->getPermissionsViaRoles());
+            }
+
+            $this->allPermissions = $permissions->sort()->values();
+        }
+        
+        return $this->allPermissions;
+    }
+
+    
 }

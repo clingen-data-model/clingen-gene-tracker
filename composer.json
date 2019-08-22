@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.1",
         "backpack/crud": "^3.6.0",
         "backpack/pagemanager": "^1.1",
         "box/spout": "^3.0",

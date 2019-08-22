@@ -33,8 +33,8 @@ return [
 
     // Date & Datetime Format Syntax: https://github.com/jenssegers/date#usage
     // (same as Carbon)
-    'default_date_format'     => 'j F Y',
-    'default_datetime_format' => 'j F Y H:i',
+    'default_date_format'     => 'Y-m-d',
+    'default_datetime_format' => 'Y-m-d g:i a',
 
     // Content of the HTML meta robots tag to prevent indexing and link following
     'meta_robots_content' => 'noindex, nofollow',
@@ -78,7 +78,7 @@ return [
 
     // Set this to false if you would like to skip adding "my account" routes
     // (you then need to manually define the routes in your web.php)
-    'setup_my_account_routes' => true,
+    'setup_my_account_routes' => false,
 
     /*
     |--------------------------------------------------------------------------
