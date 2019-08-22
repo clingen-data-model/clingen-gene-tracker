@@ -19,6 +19,9 @@ Route::group([
     Route::get('/user/{id}/deactivate', 'UserCrudController@deactivate')
         ->name('user-deactivate');
 
+    Route::get('/user/{id}/reactivate', 'UserCrudController@reactivate')
+        ->name('user-reactivate');
+
     CRUD::resource('user', 'UserCrudController');
     CRUD::resource('expert-panel', 'ExpertPanelCrudController');
     CRUD::resource('curation-status', 'CurationStatusCrudController');
