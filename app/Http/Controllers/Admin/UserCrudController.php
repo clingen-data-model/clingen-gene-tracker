@@ -42,25 +42,25 @@ class UserCrudController extends CrudController
 
         // ------ CRUD FIELDS
 
-        // $this->crud->addField([
-        //     'label' => 'Expert Panels',
-        //     'type' => 'expert_panel_field',
-        //     'name' => 'expertPanels',
-        //     'entity' => 'expertPanels',
-        //     'attribute' => 'name',
-        //     'model' => ExpertPanel::class,
-        //     'pivot' => true
-        // ], 'both');
+        $this->crud->addField([
+            'label' => 'Expert Panels',
+            'type' => 'expert_panel_field',
+            'name' => 'expertPanels',
+            'entity' => 'expertPanels',
+            'attribute' => 'name',
+            'model' => ExpertPanel::class,
+            'pivot' => true
+        ], 'both');
 
-        // $this->crud->addField([
-        //     'label' => 'Roles',
-        //     'type' => 'select2_multiple',
-        //     'name' => 'roles',
-        //     'entity' => 'roles',
-        //     'attribute' => 'name',
-        //     'model' => Role::class,
-        //     'pivot' => true
-        // ], 'both');
+        $this->crud->addField([
+            'label' => 'Roles',
+            'type' => 'select2_multiple',
+            'name' => 'roles',
+            'entity' => 'roles',
+            'attribute' => 'name',
+            'model' => Role::class,
+            'pivot' => true
+        ], 'both');
 
         $this->crud->removeField('deactivated_at');
         $this->crud->removeField('password');
@@ -85,7 +85,6 @@ class UserCrudController extends CrudController
             $this->crud->allowAccess(['delete']);
         }
         $this->crud->allowAccess('revisions');
-
     }
 
     public function store(StoreRequest $request)

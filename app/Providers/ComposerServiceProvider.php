@@ -16,7 +16,7 @@ class ComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('*', function ($view) {
+        View::composer('layouts.app', function ($view) {
             if (Auth::guest()) {
                 $user = [
                     'roles' => [],
