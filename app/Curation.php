@@ -3,6 +3,7 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
+use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
@@ -24,6 +25,7 @@ class Curation extends Model
         'curator_id',
         'notes',
         'mondo_id',
+        'mondo_name',
         'curation_date',
         'disease_entity_notes',
         'curation_status_id',
@@ -46,6 +48,7 @@ class Curation extends Model
     ];
 
     protected $dispatchesEvents = [
+        'saved' => Saved::class,
         'created' => Created::class,
         'updated' => Updated::class,
         'deleted' => Deleted::class,
@@ -93,6 +96,14 @@ class Curation extends Model
     public function getCurrentStatusAttribute()
     {
         return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
+    }
+
+    public function getNumericMondoIdAttribute()
+    {
+        if (is_null($this->mondo_id)) {
+            return null;
+        }
+        return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
 
     public function curationType()

@@ -5,6 +5,9 @@ namespace Tests;
 use Mockery;
 use App\Services\KafkaProducer;
 use App\Contracts\MessagePusher;
+use App\Events\Curation\Saved;
+use App\Jobs\Curation\AugmentWithHgncInfo;
+use App\Jobs\Curation\AugmentWithMondoInfo;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -19,6 +22,9 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         $mock = Mockery::mock(MessagePusher::class)->shouldIgnoreMissing();        
         $this->instance(MessagePusher::class, $mock);
+        \Event::fake([
+            Saved::class
+        ]);
     }
     
 
