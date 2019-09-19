@@ -53,6 +53,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ClientServiceProvider::class,
 
         Lab404\Impersonate\ImpersonateServiceProvider::class,
     ],
