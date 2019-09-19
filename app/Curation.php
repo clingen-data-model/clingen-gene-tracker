@@ -18,6 +18,8 @@ class Curation extends Model
 
     protected $fillable = [
         'gene_symbol',
+        'hgnc_name',
+        'hgnc_id',
         'expert_panel_id',
         'curator_id',
         'notes',
