@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use App\CurationStatus;
+use App\Events\Curation\Saved;
 
 /**
  * @group curations
@@ -213,6 +214,17 @@ class CurationTest extends TestCase
 
         $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO: 1234']);
         $this->assertEquals(1234, $curation->numericMondoId);
+    }
+    
+    /**
+     * @test
+     */
+    public function curation_saved_dispatches_augment_hgnc_and_mondo()
+    {
+        \Event::fake();
+        $curation = factory(Curation::class)->create(['gene_symbol' => 'BRCA1', 'mondo_id' => 'MONDO:0000473']);
+
+        \Event::assertDispatched(Saved::class);
     }
     
 }

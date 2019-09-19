@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\User\Created' => [
             'App\Listeners\SendWelcomeEmail',
         ],
+        'App\Events\Curation\Saved' => [
+            'App\Listeners\Curations\AugmentWithHgncAndMondoInfo'
+        ],
         'App\Events\Curation\Created' => [
             'App\Listeners\Curations\MakeCurationCreatedStreamMessage'
         ],
