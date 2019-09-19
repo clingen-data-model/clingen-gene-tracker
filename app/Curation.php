@@ -3,6 +3,7 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
+use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
@@ -47,6 +48,7 @@ class Curation extends Model
     ];
 
     protected $dispatchesEvents = [
+        'saved' => Saved::class,
         'created' => Created::class,
         'updated' => Updated::class,
         'deleted' => Deleted::class,
