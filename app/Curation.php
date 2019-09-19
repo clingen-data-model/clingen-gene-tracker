@@ -96,12 +96,12 @@ class Curation extends Model
         return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
     }
 
-    public function getNumericMondoId()
+    public function getNumericMondoIdAttribute()
     {
         if (is_null($this->mondo_id)) {
             return null;
         }
-        return substr($this->mondo_id, 6);
+        return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
 
     public function curationType()
