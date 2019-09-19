@@ -24,6 +24,7 @@ class Curation extends Model
         'curator_id',
         'notes',
         'mondo_id',
+        'mondo_name',
         'curation_date',
         'disease_entity_notes',
         'curation_status_id',
@@ -93,6 +94,14 @@ class Curation extends Model
     public function getCurrentStatusAttribute()
     {
         return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
+    }
+
+    public function getNumericMondoId()
+    {
+        if (is_null($this->mondo_id)) {
+            return null;
+        }
+        return substr($this->mondo_id, 6);
     }
 
     public function curationType()
