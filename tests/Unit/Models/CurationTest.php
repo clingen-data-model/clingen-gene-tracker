@@ -202,4 +202,17 @@ class CurationTest extends TestCase
         $curation = factory(\App\Curation::class)->create();
         $this->assertEquals($curation->currentStatus->id, 1);
     }
+
+    /**
+     * @test
+     */
+    public function gets_numeric_mondo_id_attribute()
+    {
+        $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO:1234']);
+        $this->assertEquals(1234, $curation->numericMondoId);
+
+        $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO: 1234']);
+        $this->assertEquals(1234, $curation->numericMondoId);
+    }
+    
 }
