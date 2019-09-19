@@ -29,13 +29,14 @@
             :sort-desc.sync="sortDesc"
             v-show="!$store.state.loading && curations.length >0"
         >     
-            <template slot="gene_symbol" slot-scope="data">
+            <template slot="gene_symbol" slot-scope="{item}">
                 <router-link
-                    :id="'show-curation-'+data.item.id+'-link'" 
-                    :to="'/curations/'+data.item.id"
+                    :id="'show-curation-'+item.id+'-link'" 
+                    :to="'/curations/'+item.id"
                 >
-                    {{data.item.gene_symbol}}
+                    {{item.gene_symbol}}
                 </router-link>
+                <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>
             </template>
             <template slot="expert_panel" slot-scope="data">
                 {{(data.item.expert_panel) ? data.item.expert_panel.name : null}}
@@ -149,7 +150,7 @@
         methods: {
             getDiseaseEntityColumn (item) {
                 if (item.mondo_id) {
-                    return item.mondo_id
+                    return item.mondo_id + '('+item.mondo_name+')'
                 }
 
                 if (item.disease_entity_notes) {
