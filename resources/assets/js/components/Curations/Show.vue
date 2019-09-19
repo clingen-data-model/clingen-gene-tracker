@@ -35,6 +35,14 @@
                     <div class="col-md">{{ curation.gene_symbol }}</div>
                 </div>
                 <div class="row mt-2">
+                    <strong class="col-md-2">HGNC ID:</strong> 
+                    <div class="col-md">hgnch:{{ curation.hgnc_id }}</div>
+                </div>
+                <div class="row mt-2">
+                    <strong class="col-md-2">HGNC Name:</strong> 
+                    <div class="col-md">{{ curation.hgnc_name }}</div>
+                </div>
+                <div class="row mt-2">
                     <strong class="col-md-2">Expert Panel:</strong> 
                     <div class="col-md">{{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}</div>
                 </div>
@@ -80,7 +88,14 @@
                 </div>
                 <div class="row mt-2">
                     <strong class="col-md-2">MonDO ID:</strong> 
-                    <div class="col-md">{{ (curation.mondo_id) ? curation.mondo_id : '--'}}</div>
+                    <div class="col-md">
+                        {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
+                        {{ (curation.mondo_name ? curation.mondo_name : '')}}
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <strong class="col-md-2">Disease entity notes:</strong> 
+                    <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
                 </div>
                 <div class="row mt-3">
                     <strong class="col-md-2">Current Status:</strong>
@@ -97,10 +112,6 @@
                 <div class="row mt-1">
                     <strong class="col-md-2">Notes:</strong> 
                     <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
-                </div>
-                <div class="row mt-1">
-                    <strong class="col-md-2">Disease entity notes:</strong> 
-                    <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
                 </div>
             </div>
         </b-card>
