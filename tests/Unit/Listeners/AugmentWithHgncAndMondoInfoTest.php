@@ -17,6 +17,9 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
     {
         parent::setUp();
         $this->curation = factory(Curation::class)->create();
+        // make gene_symbol and mondo_id dirty so conditions met
+        $this->curation->gene_symbol = 'MLTN1';
+        $this->curation->mondo_id = '00012345';
         $this->event = new Saved($this->curation);
         $this->listener = new AugmentWithHgncAndMondoInfo();
     }
