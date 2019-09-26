@@ -150,7 +150,7 @@
         methods: {
             getDiseaseEntityColumn (item) {
                 if (item.mondo_id) {
-                    return item.mondo_id + '('+item.mondo_name+')'
+                    return item.mondo_id + ' ('+item.mondo_name+')'
                 }
 
                 if (item.disease_entity_notes) {
