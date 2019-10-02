@@ -20,8 +20,14 @@ const mutations = {
 
 const actions = {
     getAllItems: function ( {commit} ) {
+        const data = JSON.parse(localStorage.getItem('curation_statuses'));
+        if (data) {
+            commit('setItems', data)
+            return;
+        }
         window.axios.get(baseUrl)
             .then(function (response) {
+                localStorage.setItem('curation_statuses', JSON.stringify(response.data))
                 commit('setItems', response.data)
             })
             .catch(function (error) {
