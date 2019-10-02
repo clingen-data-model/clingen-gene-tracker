@@ -35,7 +35,7 @@
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
                     <select v-model="updatedCuration.rationales" multiple class="form-control" style="height: 8.5em">
-                        <option v-for="rationale in rationaleOptions" :key="rationale.id"
+                        <option v-for="rationale in rationales" :key="rationale.id"
                             :value="rationale" 
                             :selected="updatedCuration.rationales.indexOf(rationale) > -1"
                         >
@@ -143,16 +143,6 @@
             ...mapGetters('rationales', {
                 rationales: 'Items',
             }),
-            rationaleOptions: function () {
-                let options = this.rationales
-                                .filter(item => {
-                                    if (this.updatedCuration.curation_type_id != 4 && item.id == 4) {
-                                        return false;
-                                    }
-                                    return true;
-                                });
-                return options
-            },
             showPmids: function () {
                 return 
             },
