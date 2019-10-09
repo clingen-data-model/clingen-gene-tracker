@@ -25,7 +25,7 @@ class MondoClient implements MondoClientContract
             return new MondoRecord($responseObj);
         } catch (ClientException $th) {
             if ($th->getResponse()->getStatusCode() == 404) {
-                throw new HttpNotFoundException($th->getMessage(), $th->getCode(), $th);
+                throw new HttpNotFoundException('MonDO ID '.$mondoId.' was not found using the MonDO API', $th->getCode(), $th);
             }
             throw $th;
         }
