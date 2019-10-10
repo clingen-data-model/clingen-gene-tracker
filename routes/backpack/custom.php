@@ -28,6 +28,10 @@ Route::group([
     CRUD::resource('working-group', 'WorkingGroupCrudController');
     CRUD::resource('curation-type', 'CurationTypeCrudController');
     CRUD::resource('rationale', 'RationaleCrudController');
+
+    Route::get('tests/slack-notification', function () {
+        throw new \Exception('Testing Slack error notifications');
+    });
 }); // this should be the absolute last line of this file
 
 Route::get('admin/login', function () {
