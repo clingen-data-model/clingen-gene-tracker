@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Contracts\HgncClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curation\AugmentWithHgncInfo;
@@ -38,18 +39,53 @@ class AddHgncInfoToCurations extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(HgncClient $hgncClient)
     {
         $curations = Curation::all();
         $bar = $this->output->createProgressBar($curations->count());
-        $curations->each(function ($curation) use ($bar) {
-            try {
-                AugmentWithHgncInfo::dispatch($curation);
-            } catch (HttpNotFoundException $e) {
-                \Log::warning($e->getMessage());
-                dump($e->getMessage());
-            }
-            $bar->advance();
-        }); 
+
+        $curations->groupBy('gene_symbol')
+            ->each(function ($group, $geneSymbol) use ($bar, $hgncClient) {
+                try {
+                    $symbolRecord = $hgncClient->fetchGeneSymbol($geneSymbol);
+                } catch (HttpNotFoundException $th) {
+                    try {
+                        $symbolRecord = $hgncClient->fetchPreviousSymbol($geneSymbol);
+                    } catch (\Throwable $th) {
+                        dump($th->getMessage());
+                        $bar->advance($group->count());
+                        return;
+                    }
+                }
+
+                \DB::table('curations')
+                    ->whereIn('id', $group->pluck('id')->toArray())
+                    ->update([
+                        'gene_symbol' => $symbolRecord->symbol,
+                        'hgnc_name' => $symbolRecord->name,
+                        'hgnc_id' => $symbolRecord->hgnc_id
+                        ]);
+                $bar->advance($group->count());
+
+                // $group->each(function ($curation) use ($bar, $symbolRecord) {
+                //     $curation->update([
+                //         'gene_symbol' => $symbolRecord->symbol,
+                //         'hgnc_name' => $symbolRecord->name,
+                //         'hgnc_id' => $symbolRecord->hgnc_id
+                //     ]);
+                //     $bar->advance();
+                // });
+
+            });
+
+        // $curations->each(function ($curation) use ($bar) {
+        //     try {
+        //         AugmentWithHgncInfo::dispatch($curation);
+        //     } catch (HttpNotFoundException $e) {
+        //         \Log::warning($e->getMessage());
+        //         dump($e->getMessage());
+        //     }
+        //     $bar->advance();
+        // });
     }
 }
