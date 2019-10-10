@@ -61,6 +61,8 @@ task('build-deploy', [
     'deploy'
 ]);
 
+task('artisan:optimize', function () {});
+
 // Migrate database before symlink new release.
 
 before('deploy:symlink', 'artisan:migrate');
