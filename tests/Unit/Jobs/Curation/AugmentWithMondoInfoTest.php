@@ -59,7 +59,7 @@ class AugmentWithMondoInfoTest extends TestCase
         $job = new AugmentWithMondoInfo($this->curation);
 
         $this->expectException(HttpNotFoundException::class);
-        $job->handle($this->mondoClient);        
+        $job->handle($this->mondoClient);
     }
 
     /**
@@ -77,7 +77,7 @@ class AugmentWithMondoInfoTest extends TestCase
 
         \Mail::fake();
         try {
-            $job->handle($this->mondoClient);        
+            $job->handle($this->mondoClient);
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -86,9 +86,9 @@ class AugmentWithMondoInfoTest extends TestCase
     }
     
 
-     /**
-     * @test
-     */
+    /**
+    * @test
+    */
     public function adds_mondo_name_to_curation()
     {
         $job = new AugmentWithMondoInfo($this->curation);
@@ -97,5 +97,4 @@ class AugmentWithMondoInfoTest extends TestCase
 
         $this->assertDatabaseHas('curations', ['gene_symbol' => 'TH', 'mondo_name' => 'arteritis']);
     }
-   
 }

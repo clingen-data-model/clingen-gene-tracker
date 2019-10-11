@@ -126,5 +126,4 @@ class Curation extends Model
         $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
         return $this;
     }
-    
 }

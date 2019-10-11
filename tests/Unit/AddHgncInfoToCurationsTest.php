@@ -16,7 +16,7 @@ use App\Contracts\HgncClient as HgncClientContract;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
- * @group 
+ * @group
  */
 class AddHgncInfoToCurationsTest extends TestCase
 {
@@ -71,7 +71,6 @@ class AddHgncInfoToCurationsTest extends TestCase
         //     'hgnc_name' => null,
         //     'hgnc_id' => null
         // ]);
-        
     }
 
     private function getClient($responses)
@@ -86,7 +85,4 @@ class AddHgncInfoToCurationsTest extends TestCase
         ]);
         return new HgncClient($guzzleClient);
     }
-
-    
-    
 }

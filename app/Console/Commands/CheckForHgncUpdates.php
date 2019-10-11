@@ -78,7 +78,7 @@ class CheckForHgncUpdates extends Command
         $curation->update(['gene_symbol' => $hgncRecord->symbol]);
         $curation->expertPanel->coordinators->each(function ($coordinator) use ($curation, $oldGeneSymbol) {
             \Mail::to($coordinator->email)->send(new GeneSymbolUpdated($curation, $oldGeneSymbol));
-        });        
+        });
     }
 
     private function tryFillingHgncId($curations)
@@ -91,6 +91,6 @@ class CheckForHgncUpdates extends Command
                     \Mail::to($coordinator->email)->send(new HgncIdNotFoundNotification($curation));
                 });
             }
-        });        
+        });
     }
 }

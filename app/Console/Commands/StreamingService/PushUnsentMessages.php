@@ -42,7 +42,7 @@ class PushUnsentMessages extends Command
         StreamMessage::unsent()
             ->get()
             ->each(function ($msg) {
-               PushMessage::dispatch($msg); 
+                PushMessage::dispatch($msg);
             });
     }
 }

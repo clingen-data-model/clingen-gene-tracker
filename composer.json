@@ -22,7 +22,9 @@
     "require-dev": {
         "backpack/generators": "^1.2",
         "barryvdh/laravel-debugbar": "^3.2",
+        "brainmaestro/composer-git-hooks": "^2.8",
         "filp/whoops": "~2.0",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "fzaninotto/faker": "~1.4",
         "laracasts/generators": "dev-master",
         "mockery/mockery": "~1.0",

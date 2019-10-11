@@ -31,5 +31,4 @@ class HgncRecordTest extends TestCase
 
         $this->assertTrue($hgncRecord->hasPreviousSymbol());
     }
-    
 }

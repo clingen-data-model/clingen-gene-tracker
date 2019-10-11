@@ -42,7 +42,4 @@ class GeneSymbolUpdateTest extends TestCase
         $obj = new GeneSymbolUpdate('a', 'b');
         $this->assertTrue($obj->wasUpdated());
     }
-    
-    
-    
 }

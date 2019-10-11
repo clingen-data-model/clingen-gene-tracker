@@ -199,10 +199,10 @@ class BulkCurationProcessor
         ];
 
         $validator = \Validator::make(
-                        $rowData, 
-                        $validationRules, 
-                        $messages
-                    );
+            $rowData,
+            $validationRules,
+            $messages
+        );
 
         $errors = [];
         foreach ($validator->errors()->getMessages() as $key => $value) {

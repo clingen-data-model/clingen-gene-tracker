@@ -29,7 +29,6 @@ class KafkaProducer implements MessagePusher
         } catch (\Throwable $e) {
             report($e);
         }
-
     }
 
     public function topic(string $topic)
@@ -53,7 +52,7 @@ class KafkaProducer implements MessagePusher
     {
         $sslCertLocation = config('streaming-service.cert-location', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
         $sslKeyLocation = config('streaming-service.key-location', '/etc/pki/tls/private/kafka.apache.key');
-        $sslCaLocation = config('streaming-service.ca-location','/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
+        $sslCaLocation = config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
         $sslKeyPassword = config('streaming-service.ssl-key-password', null);
         $group = config('streaming-service.group', 'unc_demo');
 
@@ -106,8 +105,5 @@ class KafkaProducer implements MessagePusher
 
         // dd($conf->dump());
         return $conf;
-        
     }
-
-    
 }

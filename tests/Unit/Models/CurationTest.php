@@ -226,5 +226,4 @@ class CurationTest extends TestCase
 
         \Event::assertDispatched(Saved::class);
     }
-    
 }

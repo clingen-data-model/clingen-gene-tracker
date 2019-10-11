@@ -76,7 +76,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $mock = Mockery::mock(MessagePusher::class);
         $mock->shouldReceive([
-            'topic' => $mock, 
+            'topic' => $mock,
             'push' => null
         ]);
         $this->instance(MessagePusher::class, $mock);
@@ -119,6 +119,4 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'sent_at' => null
         ]);
     }
-    
-    
 }

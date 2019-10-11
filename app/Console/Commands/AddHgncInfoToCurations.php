@@ -75,7 +75,6 @@ class AddHgncInfoToCurations extends Command
                 //     ]);
                 //     $bar->advance();
                 // });
-
             });
 
         // $curations->each(function ($curation) use ($bar) {

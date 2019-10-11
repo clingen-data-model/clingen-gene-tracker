@@ -54,7 +54,7 @@ class AugmentWithHgncInfo implements ShouldQueue
         $this->curation->update([
             'hgnc_name' => $geneSymbolRecord->name,
             'hgnc_id' => $geneSymbolRecord->hgnc_id
-        ]);        
+        ]);
     }
 
     private function updateCurationWithPrevSymbol($hgncClient)

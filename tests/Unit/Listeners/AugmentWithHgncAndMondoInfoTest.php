@@ -46,5 +46,4 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
 
         \Bus::assertDispatched(AugmentWithMondoInfo::class);
     }
-    
 }

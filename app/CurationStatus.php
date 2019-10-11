@@ -23,5 +23,4 @@ class CurationStatus extends Model
     {
         return $this->belongsToMany(Curation::class);
     }
-    
 }

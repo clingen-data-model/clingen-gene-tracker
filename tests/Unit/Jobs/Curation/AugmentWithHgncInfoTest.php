@@ -107,7 +107,4 @@ class AugmentWithHgncInfoTest extends TestCase
             return $mail->hasTo($this->coord->email);
         });
     }
-    
-
-
 }

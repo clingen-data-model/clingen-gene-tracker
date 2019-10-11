@@ -26,7 +26,7 @@ class CurationExporter
 
         if (\Auth::user()->hasAnyRole(['programmer','admin'])) {
             return $query;
-        } 
+        }
 
         if (\Auth::user()->isCoordinator()) {
             return $query;

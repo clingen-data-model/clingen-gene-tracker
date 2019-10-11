@@ -84,8 +84,6 @@ class CheckForHgncUpdatesTest extends TestCase
         Artisan::call('curations:check-hgnc-updates');
 
         $this->assertDatabaseHas('curations', ['id' => $curation->id, 'gene_symbol' => 'MLTN', 'hgnc_id'=>null]);
-        Mail::assertSent(HgncIdNotFoundNotification::class);        
+        Mail::assertSent(HgncIdNotFoundNotification::class);
     }
-    
-    
 }

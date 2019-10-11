@@ -31,5 +31,4 @@ class MondoClient implements MondoClientContract
         }
         return new MondoRecord([]);
     }
-    
 }

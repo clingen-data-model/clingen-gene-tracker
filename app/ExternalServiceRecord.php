@@ -11,11 +11,13 @@ class ExternalServiceRecord
         $this->attributes = $attributes;
     }
 
-    public function getAttributes() {
+    public function getAttributes()
+    {
         return $this->attributes;
     }
 
-    public function __get($key) {
+    public function __get($key)
+    {
         $method = 'get'.camel_case($key);
         if (method_exists($this, $method)) {
             return $this->$method($method, $this);

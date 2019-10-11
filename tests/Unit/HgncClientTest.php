@@ -22,7 +22,6 @@ class HgncClientTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
     }
 
     /**
@@ -40,7 +39,6 @@ class HgncClientTest extends TestCase
      */
     public function throws_new_HttpNotFoundException_when_no_results_for_gene_symbol()
     {
-        
         $json = file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'));
         $hgncClient = $this->getClient([new Response(200, [], $json)]);
 
@@ -103,6 +101,4 @@ class HgncClientTest extends TestCase
         ]);
         return new HgncClient($guzzleClient);
     }
-    
-
 }

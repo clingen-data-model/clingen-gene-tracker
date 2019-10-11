@@ -34,7 +34,6 @@ class MondoClientTest extends TestCase
      */
     public function throws_new_HttpNotFoundException_when_no_results_for_mondo_id()
     {
-        
         $mondoClient = $this->getClient([new Response(404, [])]);
 
         $this->expectException(HttpNotFoundException::class);

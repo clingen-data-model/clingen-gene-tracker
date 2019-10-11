@@ -156,7 +156,7 @@ class User extends Authenticatable
         return $this->getAllPermissions()->contains('name', $permString);
     }
    
-    public function getAllPermissions() 
+    public function getAllPermissions()
     {
         if (is_null($this->allPermissions)) {
             $permissions = $this->permissions;
@@ -170,6 +170,4 @@ class User extends Authenticatable
         
         return $this->allPermissions;
     }
-
-    
 }
