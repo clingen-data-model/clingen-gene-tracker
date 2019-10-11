@@ -91,35 +91,6 @@ class HgncClientTest extends TestCase
         $this->assertEquals($expectedRecord, $record->getAttributes());
     }
     
-
-    /**
-     * @test
-     */
-    public function gets_gene_symbol_update()
-    {
-        $notFoundJson = file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'));
-        $foundJson = file_get_contents(base_path('tests/files/hgnc_api/ht.json'));
-        $hgncClient = $this->getClient([
-            new Response(200, [], $notFoundJson),
-            new Response(200, [], $foundJson),
-        ]);
-
-        $geneSymbolUpdate = $hgncClient->fetchGeneSymbolUpdate('test');
-        $this->assertInstanceOf(GeneSymbolUpdate::class, $geneSymbolUpdate);
-        $this->assertTrue($geneSymbolUpdate->wasUpdated());
-
-
-        $client2 = $this->getClient([
-            new Response(200, [], $foundJson),
-        ]);
-
-        $geneSymbolUpdate = $client2->fetchGeneSymbolUpdate('TH');
-        $this->assertInstanceOf(GeneSymbolUpdate::class, $geneSymbolUpdate);
-        $this->assertFalse($geneSymbolUpdate->wasUpdated());
-    }
-    
-    
-
     private function getClient($responses)
     {
         $mock = new MockHandler($responses);
