@@ -9,6 +9,7 @@ use App\ExpertPanel;
 use OutOfBoundsException;
 use App\Contracts\HgncClient;
 use App\Exceptions\HttpNotFoundException;
+use App\HgncRecord;
 use App\Jobs\Curation\AugmentWithHgncInfo;
 use App\Mail\Curations\GeneSymbolUpdated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -35,10 +36,12 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->hgncClient = $this->getMockBuilder(HgncClient::class)
                                 ->getMock();
         $this->hgncClient->method('fetchGeneSymbol')
-                        ->willReturn((object)[
-                            'hgnc_id' => 11782,
-                            'name' => 'tyrosine hydroxylase'
-                        ]);
+                        ->willReturn(new HgncRecord([
+                            'hgnc_id' => 'HGNC:11782',
+                            'name' => 'tyrosine hydroxylase',
+                            'symbol' => 'TH',
+                            'prev_symbol' => 'THH'
+                        ]));
     }
 
 
@@ -72,7 +75,11 @@ class AugmentWithHgncInfoTest extends TestCase
 
         $job->handle($this->hgncClient);
 
-        $this->assertDatabaseHas('curations', ['gene_symbol' => 'TH', 'hgnc_name' => 'tyrosine hydroxylase', 'hgnc_id' => 11782]);
+        $this->assertDatabaseHas('curations', [
+            'gene_symbol' => 'TH',
+            'hgnc_name' => 'tyrosine hydroxylase',
+            'hgnc_id' => '11782'
+        ]);
     }
     
     /**
@@ -84,12 +91,12 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->hgncClient->method('fetchGeneSymbol')
                         ->will($this->throwException(new HttpNotFoundException()));
         $this->hgncClient->method('fetchPreviousSymbol')
-                        ->willReturn((object)[
-                            'hgnc_id' => 11782,
+                        ->willReturn(new HgncRecord([
+                            'hgnc_id' => 'HGNC:11782',
                             'symbol' => 'MLTN2',
                             'name' => 'Milton Dog',
                             'prev_symbol' => 'MLTN1'
-                        ]);
+                        ]));
 
         app()->instance(HgncClient::class, $this->hgncClient);
 

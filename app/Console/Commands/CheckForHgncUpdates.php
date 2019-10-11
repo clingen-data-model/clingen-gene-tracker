@@ -74,6 +74,7 @@ class CheckForHgncUpdates extends Command
 
     private function updateGeneSymbol(Curation $curation, HgncRecord $hgncRecord)
     {
+        // dump($hgncRecord);
         $oldGeneSymbol = $curation->gene_symbol;
         $curation->update(['gene_symbol' => $hgncRecord->symbol]);
         $curation->expertPanel->coordinators->each(function ($coordinator) use ($curation, $oldGeneSymbol) {

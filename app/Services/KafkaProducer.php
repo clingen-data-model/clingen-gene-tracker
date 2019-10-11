@@ -88,7 +88,7 @@ class KafkaProducer implements MessagePusher
 
         $conf->setDrMsgCb(function ($kafka, $message) {
             if ($message->err) {
-                throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($err));
+                throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($message->err));
             }
         });
 

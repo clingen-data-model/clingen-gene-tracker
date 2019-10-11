@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Console\Commands;
 
+use App\Console\Commands\CheckForHgncUpdates;
 use App\User;
 use App\Curation;
 use Tests\TestCase;
@@ -10,6 +11,7 @@ use App\Contracts\HgncClient;
 use App\ExpertPanel;
 use App\Mail\Curations\GeneSymbolUpdated;
 use App\Mail\HgncIdNotFoundNotification;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -42,7 +44,8 @@ class CheckForHgncUpdatesTest extends TestCase
         ]);
 
         Mail::fake();
-        Artisan::call('curations:check-hgnc-updates');
+        $cmd = new CheckForHgncUpdates();
+        $cmd->handle($this->getClient([new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/ht.json')))]));
         $this->assertDatabaseHas('curations', $curation->getAttributes());
         Mail::assertNothingSent();
     }
@@ -58,10 +61,12 @@ class CheckForHgncUpdatesTest extends TestCase
 
         $curation = factory(Curation::class)->create([
             'gene_symbol' => 'FYB',
-            'hgnc_id' => 4036
+            'hgnc_id' => 4036,
+            'expert_panel_id' => $expertPanel->id
         ]);
         Mail::fake();
-        Artisan::call('curations:check-hgnc-updates');
+        $cmd = new CheckForHgncUpdates();
+        $cmd->handle($this->getClient([new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/prev_symbol.json')))]));
 
         $this->assertDatabaseHas('curations', ['id' => $curation->id, 'gene_symbol' => 'FYB1']);
         Mail::assertSent(GeneSymbolUpdated::class);
@@ -78,10 +83,18 @@ class CheckForHgncUpdatesTest extends TestCase
 
         $curation = factory(Curation::class)->create([
             'gene_symbol' => 'MLTN',
-            'hgnc_id' => null
+            'hgnc_id' => null,
+            'expert_panel_id' => $expertPanel->id
         ]);
         Mail::fake();
-        Artisan::call('curations:check-hgnc-updates');
+        $cmd = new CheckForHgncUpdates();
+        $cmd->handle($this->getClient([
+            new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'))),
+            new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'))),
+            new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'))),
+            new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'))),
+            new Response(200, [], file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'))),
+        ]));
 
         $this->assertDatabaseHas('curations', ['id' => $curation->id, 'gene_symbol' => 'MLTN', 'hgnc_id'=>null]);
         Mail::assertSent(HgncIdNotFoundNotification::class);

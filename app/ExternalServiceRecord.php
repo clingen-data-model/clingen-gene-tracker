@@ -8,7 +8,7 @@ class ExternalServiceRecord
 
     public function __construct($attributes)
     {
-        $this->attributes = $attributes;
+        $this->attributes = (object)$attributes;
     }
 
     public function getAttributes()

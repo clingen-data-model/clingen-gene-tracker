@@ -41,7 +41,6 @@ class PushMessage implements ShouldQueue
         try {
             $pusher->topic($this->message->topic);
             $pusher->push($this->message->message);
-
             $this->message->update([
                 'sent_at' => Carbon::now()
             ]);
