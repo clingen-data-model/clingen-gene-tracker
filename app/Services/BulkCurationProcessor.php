@@ -37,48 +37,15 @@ class BulkCurationProcessor
     
     public function processFile($path, $expertPanelId)
     {
-        $newCurations = collect();
         DB::beginTransaction();
 
         $reader = ReaderEntityFactory::createXLSXReader();
         $reader->open($path);
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($sheet->getName() === 'Curations') {
-                $header = [];
-                foreach ($sheet->getRowIterator() as $idx => $row) {
-                    if ($idx == 1) {
-                        $header = array_map(function ($item) {
-                            return implode('_', explode(' ', strtolower($item)));
-                        }, $row->toArray());
-                        continue;
-                    }
-                    $values = array_map(function ($item) {
-                        return $item == '' ? null : $item;
-                    }, $row->toArray());
-                    $data = array_combine($header, $values);
-                    if (empty($data['gene_symbol']) && empty($data['curator_email']) && empty($data['curation_type'])) {
-                        continue;
-                    }
-                    try {
-                        $newCurations->push($this->processRow($data, $expertPanelId, $idx));
-                    } catch (InvalidRowException $e) {
-                    }
-                }
+                $newCurations = $this->handleSheet($sheet, $expertPanelId);
             }
         }
-
-        // Excel::selectSheets('Curations')->load($path, function ($reader) use ($expertPanelId, $newCurations) {
-        //     $rows = $reader->get();
-        //     foreach ($rows as $idx => $row) {
-        //         if (empty($row->gene_symbol) && empty($row->curator_email) && empty($row->curation_type)) {
-        //             continue;
-        //         }
-        //         try {
-        //             $newCurations->push($this->processRow($row->toArray(), $expertPanelId, $idx));
-        //         } catch (InvalidRowException $e) {
-        //         }
-        //     }
-        // });
 
         if (count($this->validationErrors) > 0) {
             DB::rollBack();
@@ -88,7 +55,34 @@ class BulkCurationProcessor
 
         return $newCurations;
     }
-    
+   
+    private function handleSheet($sheet, $expertPanelId)
+    {
+        $newCurations = collect();
+        $header = [];
+        foreach ($sheet->getRowIterator() as $idx => $row) {
+            if ($idx == 1) {
+                $header = array_map(function ($item) {
+                    return implode('_', explode(' ', strtolower($item)));
+                }, $row->toArray());
+                continue;
+            }
+            $values = array_map(function ($item) {
+                return $item == '' ? null : $item;
+            }, $row->toArray());
+
+            $data = array_combine($header, $values);
+            if (empty($data['gene_symbol']) && empty($data['curator_email']) && empty($data['curation_type'])) {
+                continue;
+            }
+            try {
+                $newCurations->push($this->processRow($data, $expertPanelId, $idx));
+            } catch (InvalidRowException $e) {
+            }
+        }
+        return $newCurations;
+    }
+
     public function processRow($rowData, $expertPanelId, $rowNum = 0)
     {
         config(['app.bulk_uploading' => true]);
@@ -115,32 +109,27 @@ class BulkCurationProcessor
         \Bus::dispatch(new SyncPhenotypes($curation, $this->getPhenotypes($rowData)));
         $curation->rationales()->sync($this->getRationales($rowData));
         
-        if (isset($rowData['uploaded_date'])) {
-            $this->addStatus($curation, 1, $rowData['uploaded_date']);
-        }
-        if (isset($rowData['precuration_date'])) {
-            $this->addStatus($curation, 2, $rowData['precuration_date']);
-        }
-        if (isset($rowData['disease_entity_assigned_date'])) {
-            $this->addStatus($curation, 3, $rowData['disease_entity_assigned_date']);
-        }
-        if (isset($rowData['curation_in_progress_date'])) {
-            $this->addStatus($curation, 4, $rowData['curation_in_progress_date']);
-        }
-        if (isset($rowData['curation_provisional_date'])) {
-            $this->addStatus($curation, 5, $rowData['curation_provisional_date']);
-        }
-        if (isset($rowData['curation_approved_date'])) {
-            $this->addStatus($curation, 6, $rowData['curation_approved_date']);
-        }
+        $this->addStatus($curation, 1, 'uploaded_date', $rowData);
+        $this->addStatus($curation, 2, 'precuration_date', $rowData);
+        $this->addStatus($curation, 3, 'disease_entity_assigned_date', $rowData);
+        $this->addStatus($curation, 4, 'curation_in_progress_date', $rowData);
+        $this->addStatus($curation, 5, 'curation_provisional_date', $rowData);
+        $this->addStatus($curation, 6, 'curation_approved_date', $rowData);
 
         config(['app.bulk_uploading' => false]);
         return $curation;
     }
 
-    private function addStatus($curation, $status_id, $date)
+    private function addStatus($curation, $status_id, $dateName, $row)
     {
-        $curation->curationStatuses()->attach([$status_id => ['created_at' => $date]]);
+        if (isset($row[$dateName])) {
+            $curation->curationStatuses()
+                ->attach([
+                    $status_id => [
+                        'created_at' => $row[$dateName]
+                    ]
+                ]);
+        }
     }
 
     private function getPmids($rowData)
