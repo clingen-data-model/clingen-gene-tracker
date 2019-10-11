@@ -29,7 +29,7 @@
             </tbody>
         </table>    
         <a 
-            href="https://www.clinicalgenome.org/site/assets/files/9703/lumping_and_splitting_guidelines_gene_curation_final.pdf" 
+            href="https://www.clinicalgenome.org/site/assets/files/2099/lumping_and_splitting_guidelines_gene_curation_final-1.pdf" 
             target="criteria"
             style="font-size: .95rem"
         >
