@@ -19,7 +19,7 @@ class HgncClient implements HgncClientContract
         $this->guzzleClient = $guzzleClient;
     }
 
-    public function fetch($key, $value):object
+    public function fetch($key, $value):HgncRecord
     {
         $response = $this->guzzleClient->request('GET', '/fetch/'.$key.'/'.$value);
         $responseObj = json_decode($response->getBody()->getContents());
@@ -34,42 +34,18 @@ class HgncClient implements HgncClientContract
         return new HgncRecord($responseObj->response->docs[0]);
     }
 
-    public function fetchHgncId(string $hgncId):object
+    public function fetchHgncId(string $hgncId):HgncRecord
     {
         return $this->fetch('hgnc_id', $hgncId);
     }
 
-    public function fetchGeneSymbol(string $geneSymbol):object
+    public function fetchGeneSymbol(string $geneSymbol):HgncRecord
     {
         return $this->fetch('symbol', $geneSymbol);
     }
 
-    public function fetchPreviousSymbol(string $geneSymbol):object
+    public function fetchPreviousSymbol(string $geneSymbol):HgncRecord
     {
         return $this->fetch('prev_symbol', $geneSymbol);
     }
-    
-    public function fetchGeneSymbolUpdate(string $geneSymbol):GeneSymbolUpdateContract
-    {
-        try {
-            $symbolRecord = $this->fetchGeneSymbol($geneSymbol);
-        } catch (HttpNotFoundException $th) {
-            try {
-                $symbolRecord = $this->fetchPreviousSymbol($geneSymbol);
-            } catch (HttpNotFoundException $th) {
-                return new GeneSymbolUpdate($geneSymbol, null);
-            }
-        }
-
-        return new GeneSymbolUpdate($geneSymbol, $symbolRecord->symbol);
-    }
-
-    public function fetchSymbolUpdateForHgncId($hgncId)
-    {
-        $record = $this->fetchHgncId($hgncId);
-        if ($record->hasPrevSymbol()) {
-            return new GeneSymbolUpdate($record->symbol, $record->prev_symbol);
-        }
-    }
-    
 }
