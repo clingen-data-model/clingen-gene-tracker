@@ -57,7 +57,13 @@
         }
     },
     "scripts": {
-        "cghooks": "vendor/bin/cghooks",
+        "setup": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "php artisan key:generate",
+            "php artisan passport:keys",
+            "php artisan migrate:fresh --seed",
+            "npm install"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
