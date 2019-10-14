@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
+use App\Jobs\SendCurationMailToCoordinators;
 use App\Mail\Curations\GeneSymbolUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -67,8 +68,6 @@ class AugmentWithHgncInfo implements ShouldQueue
             'hgnc_id' => $prevSymbolRecord->hgnc_id
         ]);
 
-        foreach ($this->curation->expertPanel->coordinators as $coordinator) {
-            \Mail::to($coordinator)->send(new GeneSymbolUpdated($this->curation, $oldGeneSymbol));
-        }
+        SendCurationMailToCoordinators::dispatch($this->curation, GeneSymbolUpdated::class, $oldGeneSymbol);
     }
 }
