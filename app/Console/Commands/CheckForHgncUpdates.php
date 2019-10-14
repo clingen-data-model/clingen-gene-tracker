@@ -11,6 +11,7 @@ use App\Mail\HgncIdNotFoundNotification;
 use App\Exceptions\HttpNotFoundException;
 use App\Mail\Curations\GeneSymbolUpdated;
 use App\Jobs\Curation\AugmentWithHgncInfo;
+use App\Jobs\SendCurationMailToCoordinators;
 
 class CheckForHgncUpdates extends Command
 {
@@ -88,9 +89,7 @@ class CheckForHgncUpdates extends Command
             try {
                 AugmentWithHgncInfo::dispatch($curation);
             } catch (HttpNotFoundException $e) {
-                $curation->expertPanel->coordinators->each(function ($coordinator) use ($curation) {
-                    \Mail::to($coordinator->email)->send(new HgncIdNotFoundNotification($curation));
-                });
+                SendCurationMailToCoordinators::dispatch($curation, HgncIdNotFoundNotification::class);
             }
         });
     }
