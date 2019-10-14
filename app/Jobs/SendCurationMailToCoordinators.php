@@ -16,16 +16,19 @@ class SendCurationMailToCoordinators implements ShouldQueue
 
     protected $mailClass;
 
+    protected $additional;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($curation, $mailClass)
+    public function __construct($curation, $mailClass, ...$additional)
     {
         //
         $this->curation = $curation;
         $this->mailClass = $mailClass;
+        $this->additional = $additional;
     }
 
     /**
@@ -35,8 +38,8 @@ class SendCurationMailToCoordinators implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->curation->expertPanel->coordinators as $coordinator) {
-            \Mail::to($coordinator->email)->send(new $this->mailClass($this->curation));
-        }
+        $curatorEmails = $this->curation->expertPanel->coordinators->pluck('email');
+        \Mail::to($curatorEmails)
+            ->send(new $this->mailClass($this->curation, ...$this->additional));
     }
 }
