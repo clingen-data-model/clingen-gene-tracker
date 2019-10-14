@@ -29,39 +29,41 @@
             :sort-desc.sync="sortDesc"
             v-show="!$store.state.loading && curations.length >0"
         >     
-            <template slot="gene_symbol" slot-scope="data">
+            <template v-slot:cell(gene_symbol)="{item}">
                 <router-link
-                    :id="'show-curation-'+data.item.id+'-link'" 
-                    :to="'/curations/'+data.item.id"
+                    :id="'show-curation-'+item.id+'-link'" 
+                    :to="'/curations/'+item.id"
                 >
-                    {{data.item.gene_symbol}}
+                    {{item.gene_symbol}}
                 </router-link>
             </template>
-            <template slot="expert_panel" slot-scope="data">
-                {{(data.item.expert_panel) ? data.item.expert_panel.name : null}}
+            <template v-slot:cell(expert_panel)="{item}">
+                <div>{{(item.expert_panel) ? item.expert_panel.name : null}}</div>
             </template>
-            <template slot="curator" slot-scope="data">
-                {{(data.item.curator) ? data.item.curator.name : null}}
+            <template v-slot:cell(curator)="{item}">
+                <div>{{(item.curator) ? item.curator.name : null}}</div>
             </template>
-            <template slot="current_status" slot-scope="data">
-                {{(data.item.current_status) ? data.item.current_status.name : null}}
+            <template v-slot:cell(current_status)="{item}">
+                <div>{{(item.current_status) ? item.current_status.name : null}}</div>
             </template>
-            <template slot="mondo_id" slot-scope="data">
-                {{ getDiseaseEntityColumn(data.item) }}
+            <template v-slot:cell(mondo_id)="{item}">
+                <div>{{ getDiseaseEntityColumn(item) }}</div>
             </template>
-            <div slot="actions" slot-scope="data" class="text-right">
-                <router-link
-                    v-if="user.canEditCuration(data.item)"
-                    :id="'edit-curation-'+data.item.id+'-btn'" 
-                    class="btn btn-secondary btn-sm" 
-                    :to="'/curations/'+data.item.id+'/edit'"
-                >
-                    Edit
-                </router-link>
-                <delete-button :curation="data.item" class="btn-sm">
-                    <span class="fa fa-trash">X</span>
-                </delete-button>
-            </div>
+            <template v-slot:cell(actions)="{item}" class="text-right">
+                <div>
+                    <router-link
+                        v-if="user.canEditCuration(item)"
+                        :id="'edit-curation-'+item.id+'-btn'" 
+                        class="btn btn-secondary btn-sm" 
+                        :to="'/curations/'+item.id+'/edit'"
+                    >
+                        Edit
+                    </router-link>
+                    <delete-button :curation="item" class="btn-sm">
+                        <span class="fa fa-trash">X</span>
+                    </delete-button>
+                </div>
+            </template>
         </b-table>
         <div class="float-right mr-3 mb-3">Total Records: {{totalRows}}</div>
     </div>
@@ -99,41 +101,47 @@
                 totalRows: null,
                 sortDesc: false,
                 sortKey: null,
-                fields: {
-                    gene_symbol: {
+                fields: [
+                    {
+                        key: 'gene_symbol',
                         label: 'Gene Symbol',
                         sortable: true
                     },
-                    expert_panel: {
+                    {
+                        key: 'expert_panel',
                         label: 'Expert Panel',
                         sortable: true,
                     },
-                    curator: {
+                    {
+                        key: 'curator',
                         label: 'Curator',
                         sortable: true,
                     },
-                    current_status: {
+                    {
+                        key: 'current_status',
                         label: 'Status',
                         sortable: true,
                         thStyle: {
                             width: "8rem"
                         }
                     },
-                    mondo_id: {
+                    {
+                        key: 'mondo_id',
                         label: 'Disease Entity',
                         sortable: true,
                         thStyle: {
                             width: "9rem"
                         }
                     },
-                    actions: {
+                    {
+                        key: 'actions',
                         label: '',
                         sortable: false,
                         thStyle: {
                             width: "7rem"
                         }
                     }
-                },
+                ],
             }
         },
         computed: {

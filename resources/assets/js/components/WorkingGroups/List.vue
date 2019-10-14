@@ -41,17 +41,19 @@
         data() {
             return {
                 filter: null,
-                pageLength: 8,
+                pageLength: 25,
                 currentPage: 1,
-                fields: {
-                    id: {
+                totalRows: 0,
+                fields: [
+                    {
+                        key: 'id',
                         sortable: true
                     },
-                    name: {
+                    {
+                        key: 'name',
                         sortable: true
                     }
-                },
-                totalRows: 0
+                ],
             }
         },
         computed: {
