@@ -162,7 +162,7 @@ class CurationTest extends TestCase
         $curation = factory(\App\Curation::class)->create();
 
         $statusesAtTime = $curationStatuses->map(function ($item, $idx) {
-            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx)]];
+            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx+1)]];
         });
 
         $curation->curationStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));
