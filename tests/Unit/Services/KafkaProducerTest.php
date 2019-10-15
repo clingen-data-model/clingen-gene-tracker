@@ -11,6 +11,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class KafkaProducerTest extends TestCase
 {
+    public function setUp():void
+    {
+        parent::setUp();
+        if (!class_exists(\RdKafka\Producer::class)) {
+            $this->markTestSkipped('RdKafka is not installed so skip these tests');
+        }
+    }
+
     /**
      * @test
      */

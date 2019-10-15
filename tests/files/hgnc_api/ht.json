@@ -1,0 +1,68 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 0
+    },
+    "response": {
+        "numFound": 1,
+        "start": 0,
+        "docs": [
+            {
+                "hgnc_id": "HGNC:11782",
+                "symbol": "TH",
+                "name": "tyrosine hydroxylase",
+                "status": "Approved",
+                "locus_type": "gene with protein product",
+                "alias_symbol": [
+                    "DYT5b"
+                ],
+                "alias_name": [
+                    "tyrosine 3-monooxygenase"
+                ],
+                "location": "11p15.5",
+                "date_approved_reserved": "1986-01-01T00:00:00Z",
+                "date_modified": "2015-08-26T00:00:00Z",
+                "ena": [
+                    "X05290"
+                ],
+                "enzyme_id": [
+                    "1.14.16.2"
+                ],
+                "entrez_id": "7054",
+                "mgd_id": [
+                    "MGI:98735"
+                ],
+                "iuphar": "objectId:1243",
+                "cosmic": "TH",
+                "orphanet": 120086,
+                "refseq_accession": [
+                    "NM_000360"
+                ],
+                "vega_id": "OTTHUMG00000009559",
+                "lsdb": [
+                    "BIOMBD|http://www.biopku.org/home/biomdb.asp"
+                ],
+                "ensembl_gene_id": "ENSG00000180176",
+                "ccds_id": [
+                    "CCDS7730",
+                    "CCDS7731",
+                    "CCDS31338"
+                ],
+                "locus_group": "protein-coding gene",
+                "omim_id": [
+                    "191290"
+                ],
+                "uniprot_ids": [
+                    "P07101"
+                ],
+                "ucsc_id": "uc001lvr.4",
+                "rgd_id": [
+                    "RGD:3853"
+                ],
+                "location_sortable": "11p15.5",
+                "uuid": "9d0b3e18-441b-45bd-b3ef-a97f8de77381",
+                "_version_": 1645076283384659972
+            }
+        ]
+    }
+}

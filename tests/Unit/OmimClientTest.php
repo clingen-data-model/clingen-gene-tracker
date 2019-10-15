@@ -7,13 +7,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
  * @group omim-client
  * @group omim
+ * @group clients
  */
 class OmimClientTest extends TestCase
 {
@@ -21,6 +20,16 @@ class OmimClientTest extends TestCase
     {
         parent::setUp();
     }
+
+    /**
+     * @test
+     */
+    public function app_resolves_abstract_OmimClient_w_concrete_implementation()
+    {
+        $omimClient = app()->make(\App\Contracts\OmimClient::class);
+        $this->assertInstanceOf(\App\Clients\OmimClient::class, $omimClient);
+    }
+
 
     /**
      * @test

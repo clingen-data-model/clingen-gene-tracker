@@ -31,6 +31,4 @@ class StreamMessage extends Model
     {
         return $query->whereNotNull('sent_at');
     }
-    
-    
 }

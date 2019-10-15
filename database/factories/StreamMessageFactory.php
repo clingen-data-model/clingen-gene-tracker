@@ -3,7 +3,7 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\StreamMessage::class, function (Faker $faker) {
-    $success = (bool)rand(0,1);
+    $success = (bool)rand(0, 1);
     return [
         'topic' => 'test',
         'message' => $faker->sentence(),

@@ -32,7 +32,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily','errorlog', 'slack'] : ['daily', 'errorlog'],
+            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack'] : ['daily'],
         ],
 
         'single' => [

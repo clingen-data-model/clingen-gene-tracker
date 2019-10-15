@@ -1,5 +1,6 @@
 # ClinGen Curation Tracker
 
+
 This project attempts to track curations being conducted by curators working for a Gene Clinicians Expert Panel (GCEP).
 
 ## Installation

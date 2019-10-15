@@ -34,6 +34,12 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
     Route::impersonate();
+
+    Route::group(['middleware' => ['role:programmer']], function () {
+        Route::get('info', function () {
+            phpinfo();
+        });
+    });
 });
 
 Auth::routes();

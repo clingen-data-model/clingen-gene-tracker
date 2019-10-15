@@ -115,7 +115,7 @@ class BulkCurationProcessorTest extends TestCase
             $this->assertEquals(
                 collect([
                     ['curator_email' => 'The curator email specified was not found in the system']
-                ]), 
+                ]),
                 $e->getValidationErrors()
             );
         }
@@ -167,8 +167,6 @@ class BulkCurationProcessorTest extends TestCase
             'curation_status_id' => 4,
             'curation_id' => $curation->id
         ]);
-
-
     }
     
 
@@ -257,5 +255,4 @@ class BulkCurationProcessorTest extends TestCase
         $this->assertFalse($this->svc->rowIsValid($this->data));
         $this->assertTrue($this->svc->validationErrors->contains("gene_symbol", "Bobs yer uncle is not a valid HGNC gene symbol according to OMIM"));
     }
-    
 }

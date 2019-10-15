@@ -36,6 +36,7 @@
                 >
                     {{item.gene_symbol}}
                 </router-link>
+                <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>
             </template>
             <template v-slot:cell(expert_panel)="{item}">
                 <div>{{(item.expert_panel) ? item.expert_panel.name : null}}</div>
@@ -157,7 +158,7 @@
         methods: {
             getDiseaseEntityColumn (item) {
                 if (item.mondo_id) {
-                    return item.mondo_id
+                    return item.mondo_id + ' ('+item.mondo_name+')'
                 }
 
                 if (item.disease_entity_notes) {

@@ -6,7 +6,6 @@ use App\Contracts\MessagePusher;
 
 class MessageLogger implements MessagePusher
 {
-
     public function topic(string $topic)
     {
         $this->topic = $topic;
@@ -17,6 +16,4 @@ class MessageLogger implements MessagePusher
     {
         \Log::info('Message Pushed', ['topic' => $this->topic, 'message' => $message]);
     }
-    
-    
 }

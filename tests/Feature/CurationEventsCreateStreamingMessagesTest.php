@@ -76,7 +76,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $mock = Mockery::mock(MessagePusher::class);
         $mock->shouldReceive([
-            'topic' => $mock, 
+            'topic' => $mock,
             'push' => null
         ]);
         $this->instance(MessagePusher::class, $mock);
@@ -112,13 +112,11 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $this->instance(MessagePusher::class, $mock);
 
-        $message = factory(StreamMessage::class)->create();
+        $message = factory(StreamMessage::class)->create(['sent_at' => null]);
 
         $this->assertDatabaseHas('stream_messages', [
             'id' => $message->id,
             'sent_at' => null
         ]);
     }
-    
-    
 }
