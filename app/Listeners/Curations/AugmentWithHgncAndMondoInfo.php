@@ -33,7 +33,7 @@ class AugmentWithHgncAndMondoInfo
             try {
                 AugmentWithHgncInfo::dispatch($event->curation);
             } catch (HttpNotFoundException $e) {
-                \Log::warning($e->message);
+                \Log::warning($e->getMessage());
             }
         }
 
@@ -41,7 +41,7 @@ class AugmentWithHgncAndMondoInfo
             try {
                 AugmentWithMondoInfo::dispatch($event->curation);
             } catch (HttpNotFoundException $e) {
-                \Log::warning($e->message);
+                \Log::warning($e->getMessage());
             }
         }
     }
