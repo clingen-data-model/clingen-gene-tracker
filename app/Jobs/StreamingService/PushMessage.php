@@ -46,7 +46,9 @@ class PushMessage implements ShouldQueue
             ]);
             // dump('updated message setn_at');
         } catch (StreamingServiceDisabledException $e) {
-            \Log::warning($e->getMessage());
+            if (config('streaming-service.warn-disabled', true)) {
+                \Log::warning($e->getMessage());
+            }
         } catch (StreamingServiceException $e) {
             report($e);
             return;
