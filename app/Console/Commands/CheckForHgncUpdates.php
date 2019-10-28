@@ -46,6 +46,7 @@ class CheckForHgncUpdates extends Command
      */
     public function handle(HgncClient $hgncClient)
     {
+        \Log::info('Checking MonDO for updates.');
         Curation::query()
             ->with('expertPanel')
             ->get()
