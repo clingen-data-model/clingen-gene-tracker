@@ -44,6 +44,13 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (config('mail.driver') != 'log' || app()->environment('testing')) {
+            if (!isset($this->listen['Illuminate\Mail\Events\MessageSent'])) {
+                $this->listen['Illuminate\Mail\Events\MessageSent'] = [];
+            }
+            $this->listen['Illuminate\Mail\Events\MessageSent'] = ['App\Listeners\LogSentMessage'];
+        }
+
         parent::boot();
     }
 }
