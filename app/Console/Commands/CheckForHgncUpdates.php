@@ -46,6 +46,7 @@ class CheckForHgncUpdates extends Command
      */
     public function handle(HgncClient $hgncClient)
     {
+        \Log::info('Checking HGNC for updates.');
         Curation::query()
             ->with('expertPanel')
             ->get()

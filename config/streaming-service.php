@@ -8,5 +8,6 @@ return [
     'ca-location' =>  env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'),
     'ssl-key-password' => env('KAFKA_KEY_PASSWORD', null),
     'group' => env('KAFKA_GROUP', 'unc_demo'),
-    'topic' => 'test'
+    'topic' => 'test',
+    'warn-disabled' => env('STREAMING_SERVICE_WARN_DISABLED', true)
 ];

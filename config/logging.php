@@ -65,6 +65,11 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'test' => [
+            'driver' => 'custom',
+            'via' => \App\Logging\CreateTestLogger::class,
+        ]
     ],
 
 ];

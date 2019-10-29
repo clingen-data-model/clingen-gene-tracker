@@ -43,6 +43,7 @@ class CheckMondoForUpdates extends Command
      */
     public function handle(MondoClient $mondoClient)
     {
+        \Log::info('Checking MonDO for updates.');
         $curations = Curation::query()
                         ->with('expertPanel')
                         ->get()
