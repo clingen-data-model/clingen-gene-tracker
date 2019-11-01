@@ -11,10 +11,15 @@ class Phenotype extends Model
 
     protected $fillable = [
         'mim_number',
-        'name'
+        'name',
+        'omim_entry'
     ];
 
     protected $touches = ['curations'];
+
+    protected $casts = [
+        'omim_entry' => 'array'
+    ];
 
     public function curations()
     {
