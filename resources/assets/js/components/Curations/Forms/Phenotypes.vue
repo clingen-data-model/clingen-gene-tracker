@@ -18,7 +18,10 @@
                         hover 
                         small
                     >
-                        <template slot="checkbox" slot-scope="data">
+                        <template v-slot:head(checkbox)="data">
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </template>
+                        <template v-slot:cell(checkbox)="data">
                             <input 
                                 class="form-check-input form-check-input-lg"
                                 type="checkbox" 
@@ -99,21 +102,25 @@
                 page: 'phenotypes',
                 phenotypes: [],
                 updatedCuration: {},
-                fields: {
-                    'phenotype': {
+                fields: [
+                    {
+                        key: 'phenotype',
                         sortable: true
                     },
-                    'phenotypeMimNumber': {
+                    {
+                        key: 'phenotypeMimNumber',
                         sortable: true
                     },
-                    'phenotypeInheritance': {
+                    {
+                        key: 'phenotypeInheritance',
                         sortable: true,
                         label: 'Inheritance'
                     },
-                    'checkbox': {
-                        tdClass: 'text-right',
+                    {
+                        key: 'checkbox',
+                        tdClass: 'text-right w-10',
                         sortable: false,
-                        label: '&nbsp;&nbsp;&nbsp;',
+                        label: ' ',
                         formatter: (value, key, item) => {
                             return {
                                 'mim_number': item.phenotypeMimNumber,
@@ -121,7 +128,7 @@
                             }
                         }
                     }
-                },
+                ],
                 message: null,
             }
         },

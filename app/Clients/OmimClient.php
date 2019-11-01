@@ -27,6 +27,12 @@ class OmimClient implements OmimClientContract
         $this->baseQuery = ['format'=>'json'];
     }
 
+    /**
+     * Fetches one or more entries from the OMIM API
+     * 
+     * @param mixed $mimNumber integer or array or integers
+     * @return array Array or records returned by API
+     */
     public function getEntry($mimNumber)
     {
         if (is_array($mimNumber)) {
