@@ -51,8 +51,6 @@ class OmimClient implements OmimClientContract
         $response = $this->client->request('GET', 'entry/search', compact('query'));
         $response = json_decode($response->getBody()->getContents());
 
-        // dd($response->omim->searchResponse->entryList);
-
         return collect($response->omim->searchResponse->entryList)
                 ->transform(function ($entry) {
                     return $entry->entry;
@@ -61,7 +59,6 @@ class OmimClient implements OmimClientContract
 
     public function geneSymbolIsValid($geneSymbol)
     {
-        // dump('real getSymbolIsValid');
         return $this->search([
             'search'=>'approved_gene_symbol:'.$geneSymbol
         ])->count() > 0;
@@ -69,7 +66,6 @@ class OmimClient implements OmimClientContract
 
     public function getGenePhenotypes($geneSymbol)
     {
-        // dump('real getGenePhenotypes');
         $entryList = $this->search([
                     'search'=>'approved_gene_symbol:'.$geneSymbol,
                     'include'=> 'geneMap'
