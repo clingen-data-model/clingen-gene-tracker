@@ -31,8 +31,7 @@ class HgncClientTest extends TestCase
     {
         $hgncClient = app()->make(\App\Contracts\HgncClient::class);
         $this->assertInstanceOf(\App\Clients\HgncClient::class, $hgncClient);
-    }
-    
+    }   
 
     /**
      * @test
@@ -45,7 +44,6 @@ class HgncClientTest extends TestCase
         $this->expectException(HttpNotFoundException::class);
         $record = $hgncClient->fetchGeneSymbol('HT');
     }
-    
 
     /**
      * @test
