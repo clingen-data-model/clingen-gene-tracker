@@ -10,13 +10,13 @@
             <!-- <strong>In this curation</strong> -->
             <table class="table table-sm table-xs mb-0">
                 <thead>
-                    <th style="width: 80%">Phenotype</th>
                     <th>MIM Number</th>
+                    <th style="width: 80%">Phenotype</th>
                 </thead>
                 <tbody>
                     <tr v-for="phenotype in phenotypes" :key="phenotype.id">
+                        <td>{{ phenotype.mim_number }}</td>
                         <td>{{ phenotype.name }}</td>
-                        <td>{{phenotype.mim_number}}</td>
                     </tr>
                 </tbody>
             </table>
