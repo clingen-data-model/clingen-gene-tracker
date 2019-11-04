@@ -11,6 +11,7 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'omim_key' => env('OMIM_API_KEY'),
+    'omim_cache_life' => 20*60,
     'providers' => [
 
         /*
