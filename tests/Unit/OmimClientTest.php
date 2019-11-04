@@ -2,12 +2,13 @@
 
 namespace Tests\Unit;
 
-use App\Clients\OmimClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
+use GuzzleHttp\Client;
+use App\Clients\OmimClient;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use Tests\Traits\GetsOmimClient;
+use GuzzleHttp\Handler\MockHandler;
 
 /**
  * @group omim-client
@@ -16,6 +17,8 @@ use Tests\TestCase;
  */
 class OmimClientTest extends TestCase
 {
+    use GetsOmimClient;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -113,18 +116,18 @@ class OmimClientTest extends TestCase
         $this->assertTrue($omim->geneSymbolIsValid('BRCA1'));
     }
     
-    
-
-    private function getOmimClient($responses)
+    /**
+     * @test
+     */
+    public function caches_successful_responses_for_20_minutes()
     {
-        $mock = new MockHandler($responses);
-        $stack = HandlerStack::create($mock);
-        $guzzleClient = new Client([
-            'handler' => $stack,
-            'headers'=>[
-                'ApiKey' => config('app.omim_key')
-            ]
+        $foundJson = (object)['test' => 'beans'];
+        $omim = $this->getOmimClient([
+            new Response(200, [], json_encode($foundJson)),
         ]);
-        return new OmimClient($guzzleClient);
+
+        $response = $omim->fetch('test/found', []);
+        $this->assertTrue(\Cache::has(sha1('test/found?')));
+        $this->assertEquals($foundJson, $response);
     }
 }
