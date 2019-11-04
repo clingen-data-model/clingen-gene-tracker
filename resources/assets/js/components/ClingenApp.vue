@@ -9,9 +9,6 @@
 
     export default {
         methods: {
-            ...mapActions('curations', {
-                getAllCurations: 'getAllItems'
-            }),
             ...mapActions('curationStatuses', {
                 getAllCurationStatuses: 'getAllItems'
             }),

@@ -88,4 +88,25 @@ class PhenotypeTest extends TestCase
         $this->assertInstanceOf(BelongsToMany::class, $phenotype->curations());
         $this->assertEquals(3, $phenotype->curations()->count());
     }
+
+    /**
+     * @test
+     */
+    public function omim_entry_cast_to_array()
+    {
+        $entry = [
+            "prefix" => "#",
+            "mimNumber" => 1234567,
+            "status" => "live",
+            "titles" => [
+                "preferredTitle" => 'beans',
+                "includedTitles" => 'monkeys',
+            ],
+        ];
+        $phenotype = factory(Phenotype::class)->create(['omim_entry' => $entry]);
+        $this->assertNotNull($phenotype->omim_entry);
+        $this->assertIsArray($phenotype->omim_entry);
+        $this->assertEquals($entry, $phenotype->omim_entry);
+    }
+    
 }

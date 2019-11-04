@@ -53,18 +53,21 @@
             return {
                 page: 'curation-types',
                 curationTypes: [],
-                fields: {
-                    'phenotype': {
+                fields: [
+                    {
+                        key: 'phenotype',
                         sortable: true
                     },
-                    'phenotypeMimNumber': {
+                    {
+                        key: 'phenotypeMimNumber',
                         sortable: true
                     },
-                    'phenotypeInheritance': {
+                    {
+                        key: 'phenotypeInheritance',
                         sortable: true,
                         label: 'Inheritance'
                     },
-                }
+                ]
             }
         },
         watch: {

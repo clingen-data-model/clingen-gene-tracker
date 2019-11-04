@@ -2,8 +2,9 @@
 
 namespace App\Clients;
 
-use App\Contracts\OmimClient as OmimClientContract;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
+use App\Contracts\OmimClient as OmimClientContract;
 
 /**
 * Client for interacting with OMIM APi
@@ -11,7 +12,6 @@ use GuzzleHttp\Client;
 class OmimClient implements OmimClientContract
 {
     protected $client;
-    protected $query;
 
     public function __construct($client = null)
     {
@@ -27,6 +27,17 @@ class OmimClient implements OmimClientContract
         $this->baseQuery = ['format'=>'json'];
     }
 
+    public function fetch($path, $query)
+    {
+        $cacheKey = sha1($path.'?'.http_build_query($query));
+        return Cache::remember($cacheKey, 20*60, function () use ($path, $query) {
+            \Log::debug('getting new response for '.$path.'?'.http_build_query($query));
+            $response = $this->client->request('GET', $path, $query);
+            return json_decode($response->getBody()->getContents());
+
+        });
+    }
+
     /**
      * Fetches one or more entries from the OMIM API
      * 
@@ -39,8 +50,7 @@ class OmimClient implements OmimClientContract
             $mimNumber = implode(',', $mimNumber);
         }
         $query = $this->buildQuery(compact('mimNumber'));
-        $response = $this->client->request('GET', 'entry', compact('query'));
-        $response = json_decode($response->getBody()->getContents());
+        $response = $this->fetch('entry', compact('query'));
 
         return $response->omim->entryList;
     }
@@ -48,10 +58,7 @@ class OmimClient implements OmimClientContract
     public function search($searchData)
     {
         $query = $this->buildQuery($searchData);
-        $response = $this->client->request('GET', 'entry/search', compact('query'));
-        $response = json_decode($response->getBody()->getContents());
-
-        // dd($response->omim->searchResponse->entryList);
+        $response = $this->fetch('entry/search', compact('query'));
 
         return collect($response->omim->searchResponse->entryList)
                 ->transform(function ($entry) {
@@ -61,7 +68,6 @@ class OmimClient implements OmimClientContract
 
     public function geneSymbolIsValid($geneSymbol)
     {
-        // dump('real getSymbolIsValid');
         return $this->search([
             'search'=>'approved_gene_symbol:'.$geneSymbol
         ])->count() > 0;
@@ -69,11 +75,11 @@ class OmimClient implements OmimClientContract
 
     public function getGenePhenotypes($geneSymbol)
     {
-        // dump('real getGenePhenotypes');
         $entryList = $this->search([
-                    'search'=>'approved_gene_symbol:'.$geneSymbol,
-                    'include'=> 'geneMap'
-                ]);
+            'search'=>'approved_gene_symbol:'.$geneSymbol,
+            'include'=> 'geneMap'
+        ]);
+
         if ($this->responseHasPhenotypeMapList($entryList)) {
             return collect($entryList[0]->geneMap->phenotypeMapList)
                     ->transform(function ($item) {
