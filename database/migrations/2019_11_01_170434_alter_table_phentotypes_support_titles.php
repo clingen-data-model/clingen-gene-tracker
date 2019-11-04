@@ -14,7 +14,7 @@ class AlterTablePhentotypesSupportTitles extends Migration
     public function up()
     {
         Schema::table('phenotypes', function (Blueprint $table) {
-            $table->json('omim_entry')->nullable();
+            $table->json('omim_entry')->nullable()->after('name');
         });
     }
 
