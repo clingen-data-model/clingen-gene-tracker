@@ -108,5 +108,17 @@ class PhenotypeTest extends TestCase
         $this->assertIsArray($phenotype->omim_entry);
         $this->assertEquals($entry, $phenotype->omim_entry);
     }
+
+    /**
+     * @test
+     */
+    public function can_find_by_mim_number()
+    {
+        $phenotype = factory(Phenotype::class)->create([]);
+        $this->assertEquals($phenotype->id, Phenotype::findByMimNumber($phenotype->mim_number)->id);
+
+        $this->assertNull(Phenotype::findByMimNumber(666));
+    }
+    
     
 }
