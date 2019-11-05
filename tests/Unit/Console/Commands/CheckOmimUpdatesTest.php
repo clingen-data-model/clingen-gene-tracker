@@ -2,10 +2,9 @@
 
 namespace Tests\Unit\Console\Commands;
 
-use App\Curation;
 use App\Phenotype;
 use Tests\TestCase;
-use App\Jobs\UpdateOmimData;
+use App\Jobs\Curation\UpdateOmimData;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**

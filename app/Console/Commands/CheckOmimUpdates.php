@@ -48,6 +48,5 @@ class CheckOmimUpdates extends Command
             UpdateOmimData::dispatch($phenotype);
             $bar->advance();
         });
-        echo "\n";
     }
 }
