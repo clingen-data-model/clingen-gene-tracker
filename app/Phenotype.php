@@ -25,4 +25,15 @@ class Phenotype extends Model
     {
         return $this->belongsToMany(Curation::class);
     }
+
+    public function scopeMimNumber($query, $mimNumber)
+    {
+        return $query->where('mim_number', $mimNumber);
+    }   
+
+    public static function findByMimNumber($mimNumber)
+    {
+        return static::mimNumber($mimNumber)->first();
+    }
+    
 }

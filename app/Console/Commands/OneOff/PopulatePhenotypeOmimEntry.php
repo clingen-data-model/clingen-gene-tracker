@@ -1,27 +1,26 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\OneOff;
 
 use App\Phenotype;
 use App\Contracts\OmimClient;
 use Illuminate\Console\Command;
-use App\Jobs\Curation\UpdateOmimData;
 
-class CheckOmimUpdates extends Command
+class PopulatePhenotypeOmimEntry extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'curations:check-omim-updates';
+    protected $signature = 'one-off:populate-omim-entry';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Checks OMIM for nomenclature changes on phenotypes';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -40,12 +39,12 @@ class CheckOmimUpdates extends Command
      */
     public function handle(OmimClient $omim)
     {
-        $phenotypes = Phenotype::with('curations')
-            ->get();
-
+        $phenotypes = Phenotype::select('id', 'mim_number')
+                        ->whereNull('omim_entry');
         $bar = $this->output->createProgressBar($phenotypes->count());
-        $phenotypes->each(function ($phenotype) use ($bar){
-            UpdateOmimData::dispatch($phenotype);
+        $phenotypes->each(function ($phenotype) use ($omim, $bar) {
+            $response = $omim->getEntry($phenotype->mim_number);
+            $phenotype->update(['omim_entry' => $response]);
             $bar->advance();
         });
     }

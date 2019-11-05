@@ -7,12 +7,17 @@ use App\Curation;
 use App\Phenotype;
 use Tests\TestCase;
 use App\ExpertPanel;
-use App\Jobs\Curation\UpdateOmimData;
-use App\Mail\Curation\PhenotypeNomenclatureUpdated;
 use GuzzleHttp\Psr7\Response;
 use Tests\Traits\GetsOmimClient;
+use App\Jobs\Curation\UpdateOmimData;
+use App\Jobs\SendCurationMailToCoordinators;
+use App\Mail\Curations\PhenotypeOmimEntryMoved;
+use App\Mail\Curations\PhenotypeNomenclatureUpdated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+/**
+ * @group omim
+ */
 class UpdateOmimDataTest extends TestCase
 {
     use DatabaseTransactions;
@@ -36,6 +41,17 @@ class UpdateOmimDataTest extends TestCase
                 ]
             ]
         ]);
+
+        $this->ep = factory(ExpertPanel::class)->create();
+        $this->coordinator = factory(User::class)->create();
+        $this->coordinator->expertPanels()->sync([
+            $this->ep->id => ['is_coordinator' => true]
+        ]);
+
+        $this->curation = factory(Curation::class)->create(['expert_panel_id' => $this->ep->id]);
+        $this->curation->phenotypes()->sync($this->phenotype->id);
+
+        $this->phenotype = $this->phenotype->fresh();
     }
 
     /**
@@ -64,17 +80,6 @@ class UpdateOmimDataTest extends TestCase
     {
         \Mail::fake();
 
-        $ep = factory(ExpertPanel::class)->create();
-        $coordinator = factory(User::class)->create();
-        $coordinator->expertPanels()->sync([
-            $ep->id => ['is_coordinator' => true]
-        ]);
-
-        $curation = factory(Curation::class)->create(['expert_panel_id' => $ep->id]);
-        $curation->phenotypes()->sync($this->phenotype->id);
-
-        $this->phenotype = $this->phenotype->fresh();
-
         $jsonString = file_get_contents(base_path('tests/files/omim_api/607084.json'));
         $omim = $this->getOmimClient([
             new Response(200, [], $jsonString)
@@ -83,8 +88,81 @@ class UpdateOmimDataTest extends TestCase
         $job = new UpdateOmimData($this->phenotype);
         $job->handle($omim);
 
-        \Mail::assertSent(PhenotypeNomenclatureUpdated::class, 1);
+        \Mail::assertSent(PhenotypeNomenclatureUpdated::class);
+    }
+
+    /**
+     * @test
+     */
+    public function updates_mim_number_and_name_if_entry_moved()
+    {
+        $movedJson = file_get_contents(base_path('tests/files/omim_api/entry_moved.json'));
+        $newJson = file_get_contents(base_path('tests/files/omim_api/139139.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $movedJson),
+            new Response(200, [], $newJson)
+        ]);
+
+        $job = new UpdateOmimData($this->phenotype);
+        $job->handle($omim);
+
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 139139,
+            'name' => 'NUCLEAR RECEPTOR SUBFAMILY 4, GROUP A, MEMBER 1; NR4A1'
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updates_curation_phenotype_relations_if_phenotype_moved_to_existing_phenotype()
+    {
+        $ph2 = factory(Phenotype::class)->create([
+            'mim_number' => 139139,
+            'name' => 'NUCLEAR RECEPTOR SUBFAMILY 4, GROUP A, MEMBER 1; NR4A1'
+        ]);
+
+        $movedJson = file_get_contents(base_path('tests/files/omim_api/entry_moved.json'));
+        $newJson = file_get_contents(base_path('tests/files/omim_api/139139.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $movedJson),
+            new Response(200, [], $newJson)
+        ]);
+
+        $job = new UpdateOmimData($this->phenotype);
+        $job->handle($omim);
+
+        $this->assertDatabaseHas('curation_phenotype', [
+            'curation_id' => $this->curation->id,
+            'phenotype_id' => $ph2->id
+        ]);
+
+        $this->assertDatabaseMissing('curation_phenotype', [
+            'curation_id' => $this->curation->id,
+            'phenotype_id' => $this->phenotype->id
+        ]);
     }
     
+
+    /**
+     * @test
+     */
+    public function dispatches_email_to_coordinators_when_phentotype_entry_moved()
+    {
+        \Mail::fake();
+
+        $movedJson = file_get_contents(base_path('tests/files/omim_api/entry_moved.json'));
+        $newJson = file_get_contents(base_path('tests/files/omim_api/139139.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $movedJson),
+            new Response(200, [], $newJson)
+        ]);
+
+        $job = new UpdateOmimData($this->phenotype);
+        $job->handle($omim);
+
+        \Mail::assertSent(PhenotypeOmimEntryMoved::class);
+    }
     
 }

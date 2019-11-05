@@ -1,0 +1,18 @@
+{
+    "omim": {
+      "version": "1.0",
+      "entryList": [
+        {
+          "entry": {
+            "prefix": "*",
+            "mimNumber": 139139,
+            "status": "live",
+            "titles": {
+              "preferredTitle": "NUCLEAR RECEPTOR SUBFAMILY 4, GROUP A, MEMBER 1; NR4A1",
+              "alternativeTitles": "HORMONE RECEPTOR; HMR;;\nGROWTH FACTOR INDUCIBLE NUCLEAR PROTEIN N10; NP10;;\nGROWTH FACTOR RESPONSE PROTEIN 1; GFRP1;;\nNAK1;;\nNUCLEAR HORMONE RECEPTOR TR3; TR3;;\nNUR77, MOUSE, HOMOLOG OF; NUR77;;\nNGFIB"
+            }
+          }
+        }
+      ]
+    }
+  }

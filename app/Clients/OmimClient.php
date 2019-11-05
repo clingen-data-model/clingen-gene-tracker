@@ -31,7 +31,6 @@ class OmimClient implements OmimClientContract
     {
         $cacheKey = sha1($path.'?'.http_build_query($query));
         return Cache::remember($cacheKey, 20*60, function () use ($path, $query) {
-            \Log::debug('getting new response for '.$path.'?'.http_build_query($query));
             $response = $this->client->request('GET', $path, $query);
             return json_decode($response->getBody()->getContents());
 
