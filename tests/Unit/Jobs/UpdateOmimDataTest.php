@@ -8,7 +8,8 @@ use App\Phenotype;
 use Tests\TestCase;
 use App\ExpertPanel;
 use App\Jobs\Curation\UpdateOmimData;
-use App\Mail\Curation\PhenotypeNomenclatureUpdated;
+use App\Jobs\SendCurationMailToCoordinators;
+use App\Mail\Curations\PhenotypeNomenclatureUpdated;
 use GuzzleHttp\Psr7\Response;
 use Tests\Traits\GetsOmimClient;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -83,8 +84,7 @@ class UpdateOmimDataTest extends TestCase
         $job = new UpdateOmimData($this->phenotype);
         $job->handle($omim);
 
-        \Mail::assertSent(PhenotypeNomenclatureUpdated::class, 1);
+        \Mail::assertSent(PhenotypeNomenclatureUpdated::class);
     }
-    
     
 }
