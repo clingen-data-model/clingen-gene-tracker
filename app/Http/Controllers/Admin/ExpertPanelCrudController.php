@@ -54,6 +54,11 @@ class ExpertPanelCrudController extends CrudController
         ]);
 
         // ------ COLUMNS
+
+        $this->crud->addColumn([
+            'name' => 'id',
+            'label' => 'ID'
+        ])->makeFirstColumn();
         $this->crud->setColumnDetails('working_group_id', [
            'label' => "Working Group", // Table column heading
            'type' => "select",
