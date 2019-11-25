@@ -182,9 +182,6 @@
             }
         },
         methods: {
-            ...mapActions('curations', {
-                getAllCurations: 'getAllItems'
-            }),
             ...mapMutations('messages', [
                 'addInfo',
                 'addAlert'
@@ -254,9 +251,7 @@
             }
         },
         mounted: function () {
-            if (this.curations.length == 0) {
-                this.getAllCurations();
-            }
+            this.fetchCuration(this.id);
             this.updatedCuration = {};
             if (this.curation) {
                 this.setUpdatedCuration(this.curation, {})
