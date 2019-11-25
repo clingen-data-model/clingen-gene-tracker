@@ -180,7 +180,6 @@
         methods: {
             ...mapActions('curations', {
                 fetchCuration: 'fetchItem',
-                fetchAllCurations: 'getAllItems'
             }),
             loadCuration() {
                 this.loading = true;
