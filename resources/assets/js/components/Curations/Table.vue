@@ -1,34 +1,40 @@
 <style></style>
 <template>
     <div class="curations-table">
-        <div v-show="!loading && curations.length == 0"
-            class="alert alert-secondary pl-2 pr-2 pt-2 pb-2"
-        >
-            <slot name="no-curations">No curations found.</slot>
-        </div>
         <div class="row mb-2" v-show="!loading">
             <div class="col-md-6 form-inline">
                 <label for="#curations-filter-input">Search:</label>&nbsp;
                 <input v-model="filter" placeholder="search curations" class="form-control" id="curations-filter-input" />
             </div>
             <div class="col-md-6">
-                <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="curations-table-pagination my-0 float-right" />    
+                <b-pagination 
+                    size="sm" 
+                    hide-goto-end-buttons 
+                    :total-rows="totalRows" 
+                    :per-page="pageLength" 
+                    v-model="currentPage" 
+                    class="curations-table-pagination my-0 float-right" />    
             </div>
         </div>
         <div v-show="loading" class="text-center">
             <p class="lead">loading...</p>
         </div>
         <b-table striped hover 
-            :items="tableItems" 
+            :items="curationProvider" 
             :fields="fields" 
             :filter="filter"
             :per-page="pageLength"
             :current-page="currentPage"
-            @filtered="onFiltered"
+            @filtered="handleFiltered"
+            @sort-changed="handleSortChanged"
             :sort-by.sync="sortKey"
             :sort-desc.sync="sortDesc"
-            v-show="!$store.state.loading && curations.length >0"
+            :no-local-sorting="true"
+            :show-empty="true"
         >     
+            <template v-slot:table-busy>
+                <center>Loading...</center>
+            </template>
             <template v-slot:cell(gene_symbol)="{item}">
                 <router-link
                     :id="'show-curation-'+item.id+'-link'" 
@@ -71,20 +77,13 @@
 </template>
 <script>
     import DeleteButton from './DeleteButton'
+    import getPageOfCurations from '../../resources/curations/get_page_of_curations'
 
     export default {
         components: {
             DeleteButton
         },
         props: {
-            curations: {
-                required: true,
-                type: Array
-            },
-            pageLength: {
-                type: Number,
-                default: 100,
-            },
             sortBy: {
                 type: String,
                 default: 'gene_symbol'
@@ -92,6 +91,16 @@
             sortDir: {
                 type: Boolean,
                 default: false
+            },
+            searchParams: {
+                type: Object,
+                default: function () {
+                    return {}
+                }
+            },
+            pageLength: {
+                type: Number,
+                default: 10
             }
         },
         data() {
@@ -99,9 +108,9 @@
                 user: user,
                 filter: null,
                 currentPage: 1,
-                totalRows: null,
                 sortDesc: false,
                 sortKey: null,
+                totalRows: 0,
                 fields: [
                     {
                         key: 'gene_symbol',
@@ -121,7 +130,8 @@
                     {
                         key: 'current_status',
                         label: 'Status',
-                        sortable: true,
+                        // sortable: true,
+                        sortable: false,
                         thStyle: {
                             width: "8rem"
                         }
@@ -146,16 +156,23 @@
             }
         },
         computed: {
-            tableItems: function () {
-                let items = Object.values(this.curations);
-                this.totalRows = items.length;
-                return items;
-            },
             loading: function () {
-                return this.$store.getters.loading && this.curations.length == 0;
+                return false;
             },
         },
         methods: {
+            curationProvider(ctx, callback) {
+                const context = {...ctx, ...this.searchParams};
+                console.log(context);
+                getPageOfCurations(context)
+                    .then(response => {
+                        this.totalRows = response.data.meta.total
+                        callback(response.data.data)
+                    })
+            },
+            resetCurrentPage () {
+                this.currentPage = 1;
+            },
             getDiseaseEntityColumn (item) {
                 if (item.mondo_id) {
                     return item.mondo_id + ' ('+item.mondo_name+')'
@@ -171,10 +188,13 @@
 
                 return null
             },
-            onFiltered (filteredItems) {
+            handleFiltered () {
               // Trigger pagination to update the number of buttons/pages due to filtering
-              this.currentPage = 1
-              this.totalRows = filteredItems.length
+              this.resetCurrentPage();
+            },
+            handleSortChanged() {
+                console.log('hanleSortChanged');
+                this.resetCurrentPage();
             }
         },
         mounted() {

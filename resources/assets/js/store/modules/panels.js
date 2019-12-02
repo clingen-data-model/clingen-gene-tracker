@@ -25,7 +25,7 @@ const actions = {
                 commit('setItems', response.data)
             })
             .catch(function (error) {
-                alert(error);
+                console.error(error);
             })
     }
 }

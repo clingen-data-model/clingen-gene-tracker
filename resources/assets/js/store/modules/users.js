@@ -37,7 +37,7 @@ const actions = {
                 commit('setItems', response.data.data)
             })
             .catch(function (error) {
-                alert(error);
+                console.error(error);
             })
     },
     storeNewItem: function ( {commit}, data ) {

@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\CurationCreateRequest;
-use App\Http\Requests\CurationUpdateRequest;
-use App\Http\Resources\CurationResource;
-use App\Jobs\Curations\SyncPhenotypes;
-use App\Services\RequestDataCleaner;
+use App\User;
 use App\Curation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Contracts\OmimClient;
+use App\Http\Controllers\Controller;
+use App\Services\RequestDataCleaner;
+use App\Jobs\Curations\SyncPhenotypes;
+use App\Http\Resources\CurationResource;
+use App\Http\Requests\CurationCreateRequest;
+use App\Http\Requests\CurationUpdateRequest;
+use App\Http\Resources\CurationCollectionResource;
 
 class CurationController extends Controller
 {
@@ -40,7 +42,13 @@ class CurationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel');
+        $pageSize = ($request->has('perPage') && !is_null($request->perPage)) ? $request->perPage : 25;
+
+        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel')
+                    ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
+                    ->join('users', 'curations.curator_id', '=', 'users.id')
+                    // ->join('curation_statuses', 'curations.curation_status_id', '=', 'curation_statuses.id')
+                    ;
         foreach ($request->all() as $key => $value) {
             if ($key == 'with') {
                 $query->with($value);
@@ -48,10 +56,50 @@ class CurationController extends Controller
             if (in_array($key, $this->validFilters)) {
                 $query->where($key, $value);
             }
-        }
-        $output = CurationResource::collection($query->get()->keyBy('id'));
 
-        return $output;
+            if ($key == 'user_id') {
+                $user = User::find($value);
+                if (!$user->hasRole('programmer|admin')) {
+                    $query->where(function ($q) use ($user) {
+                        $editorPanels = $user->coordinatorOrEditorPanels;
+                        $q->where('curator_id', $user->id)
+                            ->orWhereIn('expert_panel_id', $editorPanels->pluck('id'));
+                    });
+                }
+            }
+
+        }
+        $sortField = 'gene_symbol';
+        $sortDir = 'asc';
+
+        if (!is_null($request->filter)) {
+            $query->where('gene_symbol', 'like', '%'.$request->filter.'%')
+                ->orWhere('expert_panels.name', 'like', '%'.$request->filter.'%')
+                ->orWhere('users.name', 'like', '%'.$request->filter.'%')
+                ;
+        }
+
+        if ($request->sortBy) {
+            $sortField = $request->sortBy;
+            if ($sortField == 'expert_panel') {
+                $sortField = 'expert_panels.name';
+            }
+            // if ($sortField == 'status') {
+            //     $sortField = 'curation_statuses.name';
+            // }
+            if ($sortField == 'curator') {
+                $sortField = 'users.name';
+            }
+            if ($request->sortDesc === 'true') {
+                $sortDir = 'desc';
+            }
+        }
+        \Log::debug([$sortField, $sortDir]);
+        $query->orderBy($sortField, $sortDir);
+
+        $curations = ($request->has('page')) ? $query->paginate($pageSize) : $query->get();
+
+        return CurationResource::collection($curations);
     }
 
     /**

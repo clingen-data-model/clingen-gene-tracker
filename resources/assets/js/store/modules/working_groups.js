@@ -42,7 +42,7 @@ const actions = {
                 commit('setItems', response.data)
             })
             .catch(function (error) {
-                alert(error);
+                console.log(error);
             })
     },
     fetchItem ( {commit}, id ) {
@@ -53,7 +53,7 @@ const actions = {
                 return response;
             })
             .catch(function (error) {
-                alert(error);
+                console.log(error);
             })
     }
 }

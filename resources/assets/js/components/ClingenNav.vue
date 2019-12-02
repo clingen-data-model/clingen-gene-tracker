@@ -33,7 +33,7 @@
                         window.location.reload();
                     })
                     .catch(function (error) {
-                        alert('error');
+                        console.error('error');
                     });
             }
         }
