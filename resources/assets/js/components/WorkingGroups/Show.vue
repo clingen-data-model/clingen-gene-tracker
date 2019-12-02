@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 <h4>Expert Panels</h4>
-                <b-tabs pills card vertical v-show="hasPanels">
+                <b-tabs pills card vertical v-show="hasPanels" nav-wrapper-class="w-25">
                     <b-tab v-for="(panel, idx) in group.expert_panels" :key="panel.id" :title="panel.name">
                         <b-tabs>
                            <b-tab title="People">
@@ -45,8 +45,8 @@
                                     <li class="border-bottom">
                                         <curations-table 
                                             v-if="panel.curations && panel.curations.length > 0" 
-                                            :curations="panel.curations"
                                             :page-length="5"
+                                            :search-params="{expert_panel_id: panel.id}"
                                         ></curations-table>
                                         <div v-else class="alert alert-secondary">
                                             {{panel.name}} doesn't have any curations yet.

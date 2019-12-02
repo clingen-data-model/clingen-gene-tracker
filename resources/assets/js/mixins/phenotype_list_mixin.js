@@ -21,7 +21,7 @@ export default {
                         this.phenotypesLoaded = true
                     })
                     .catch( error => {
-                        alert(error) 
+                        console.error(error) 
                     })
             }
             return new Promise((resolve, reject) => { resolve() })

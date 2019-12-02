@@ -15,7 +15,7 @@
                             <th>Phenotypes</th>
                         </tr>
                     </thead>
-                    <tbody v-for="match in matchedGenes">
+                    <tbody v-for="(match, idx) in matchedGenes" :key="idx">
                         <tr>
                             <td>
                                 <a :href="'/#/curations/'+match.id" :target="'show-'+match.id">

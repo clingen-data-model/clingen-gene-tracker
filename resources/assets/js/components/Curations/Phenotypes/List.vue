@@ -63,15 +63,6 @@
                 return this.phenotypes;
             },
         },
-        // methods: {
-        //     fetchPhenotypes: function () {
-        //         if (this.geneSymbol) {
-        //             OmimRepo.gene(this.geneSymbol)
-        //                 .then(response  => this.phenotypes = response.data.phenotypes)
-        //                 .catch(error => alert(error))
-        //         }
-        //     }
-        // },
         mounted: function () {
             this.phenotypes = this.curation.phenotypes || [];
         }

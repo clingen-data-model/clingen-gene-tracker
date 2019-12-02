@@ -18,7 +18,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody v-for="match in matchedCurations">
+                    <tbody v-for="(match, idx) in matchedCurations" :key="idx">
                         <tr>
                             <td>
                                 <a :href="'/#/curations/'+match.id" :target="'show-'+match.id">
@@ -68,7 +68,6 @@
         },
         methods: {
             checkCurations: _.debounce(function() {
-                console.log(this.curation.mondo_id)
                 if (this.curation && this.curation.gene_symbol && this.curation.mondo_id) {
                     window.axios.get('/api/curations?gene_symbol='+this.curation.gene_symbol+'&mondo_id='+this.curation.mondo_id)
                         .then((response) => {

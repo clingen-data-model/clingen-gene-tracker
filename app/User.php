@@ -70,7 +70,25 @@ class User extends Authenticatable
                 ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->withTimestamps();
     }
+
+    public function coordinatorPanels()
+    {
+        return $this->expertPanels()->where('expert_panel_user.is_coordinator', 1);
+    }
     
+    public function editorPanels()
+    {
+        return $this->expertPanels()->where('expert_panel_user.can_edit_curations', 1);
+    }
+
+    public function coordinatorOrEditorPanels()
+    {
+        return $this->expertPanels()->where(function ($query) {
+            $query->orWhere('expert_panel_user.is_coordinator', 1)
+                ->orWhere('expert_panel_user.can_edit_curations', 1);
+        });
+    }
+
     public function deactivateUser($crud = false)
     {
         if (is_null($this->deactivated_at)) {
