@@ -13,7 +13,6 @@ use App\Jobs\Curations\SyncPhenotypes;
 use App\Http\Resources\CurationResource;
 use App\Http\Requests\CurationCreateRequest;
 use App\Http\Requests\CurationUpdateRequest;
-use App\Http\Resources\CurationCollectionResource;
 
 class CurationController extends Controller
 {
@@ -45,8 +44,9 @@ class CurationController extends Controller
         $pageSize = ($request->has('perPage') && !is_null($request->perPage)) ? $request->perPage : 25;
 
         $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel')
+                    ->select('curations.*')
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
-                    ->join('users', 'curations.curator_id', '=', 'users.id')
+                    ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
                     // ->join('curation_statuses', 'curations.curation_status_id', '=', 'curation_statuses.id')
                     ;
         foreach ($request->all() as $key => $value) {
@@ -67,7 +67,6 @@ class CurationController extends Controller
                     });
                 }
             }
-
         }
         $sortField = 'gene_symbol';
         $sortDir = 'asc';
