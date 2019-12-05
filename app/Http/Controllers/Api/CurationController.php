@@ -93,7 +93,6 @@ class CurationController extends Controller
                 $sortDir = 'desc';
             }
         }
-        \Log::debug([$sortField, $sortDir]);
         $query->orderBy($sortField, $sortDir);
 
         $curations = ($request->has('page')) ? $query->paginate($pageSize) : $query->get();
