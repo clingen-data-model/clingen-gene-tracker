@@ -92,7 +92,11 @@ class BulkCurationProcessor
 
     private function collateRow($header, $row)
     {
-        $values = array_pad(array_map([$this, 'emptyStringToNull'], $row->toArray()), count($header), null);
+        $values = array_pad(
+                    array_map([$this, 'emptyStringToNull'], $row->toArray()), 
+                    count($header), 
+                    null
+                );
 
         return array_combine($header, $values);
     }
