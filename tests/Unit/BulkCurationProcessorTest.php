@@ -89,7 +89,7 @@ class BulkCurationProcessorTest extends TestCase
             $this->assertEquals(0, \DB::table('curations')->count());
         }
     }
-    
+
     /**
      * @test
      */
@@ -253,6 +253,6 @@ class BulkCurationProcessorTest extends TestCase
         app()->instance(OmimClient::class, $omimClientMock);
         $this->data['gene_symbol'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
-        $this->assertTrue($this->svc->validationErrors->contains("gene_symbol", "Bobs yer uncle is not a valid HGNC gene symbol according to OMIM"));
+        $this->assertTrue($this->svc->getValidationErrors()->contains("gene_symbol", "Bobs yer uncle is not a valid HGNC gene symbol according to OMIM"));
     }
 }

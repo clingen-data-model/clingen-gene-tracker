@@ -23,6 +23,7 @@ class BulkCurationProcessor
     public $curationTypes;
     public $rationales;
     public $panels;
+    protected $validationErrors;
     protected $omim;
     
     public function __construct()
@@ -35,6 +36,12 @@ class BulkCurationProcessor
         $this->omim = new OmimClient();
     }
     
+    public function getValidationErrors()
+    {
+        return $this->validationErrors;
+    }
+    
+
     public function processFile($path, $expertPanelId)
     {
         DB::beginTransaction();
@@ -67,20 +74,41 @@ class BulkCurationProcessor
                 }, $row->toArray());
                 continue;
             }
-            $values = array_map(function ($item) {
-                return $item == '' ? null : $item;
-            }, $row->toArray());
+            
+            $data = $this->collateRow($header, $row);
 
-            $data = array_combine($header, $values);
-            if (empty($data['gene_symbol']) && empty($data['curator_email']) && empty($data['curation_type'])) {
+            if ($this->rowIsEmpty($data)) {
                 continue;
             }
+            
             try {
                 $newCurations->push($this->processRow($data, $expertPanelId, $idx));
             } catch (InvalidRowException $e) {
+                
             }
         }
         return $newCurations;
+    }
+
+    private function collateRow($header, $row)
+    {
+        $values = array_pad(
+                    array_map([$this, 'emptyStringToNull'], $row->toArray()), 
+                    count($header), 
+                    null
+                );
+
+        return array_combine($header, $values);
+    }
+
+    private function emptyStringToNull($item)
+    {
+        return $item == '' ? null : $item;        
+    }
+
+    private function rowIsEmpty($data)
+    {
+        return empty($data['gene_symbol']) && empty($data['curator_email']) && empty($data['curation_type']);
     }
 
     public function processRow($rowData, $expertPanelId, $rowNum = 0)
