@@ -24,5 +24,14 @@ return [
         5 => 'To dispute asserted entity',
         6 => 'Insufficient evidence for single disease entity',
         100 => 'Other'
+    ],
+    'classifications' => [
+        'definitive' => 1,
+        'strong' => 2,
+        'moderate' => 3,
+        'limited' => 4,
+        'no-known-disease-relationship' => 5,
+        'disputed' => 6,
+        'refuted' => 7
     ]
 ];

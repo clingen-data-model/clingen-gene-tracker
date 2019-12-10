@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use App\Mail\HgncIdNotFoundNotification;
 use App\Exceptions\HttpNotFoundException;
 use App\Mail\Curations\GeneSymbolUpdated;
-use App\Jobs\Curations\AugmentWithHgncInfo;
+use App\Jobs\Curation\AugmentWithHgncInfo;
 use App\Jobs\SendCurationMailToCoordinators;
 
 class CheckForHgncUpdates extends Command
