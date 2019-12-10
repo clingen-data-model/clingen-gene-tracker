@@ -5,7 +5,7 @@ namespace App\Console\Commands\OneOff;
 use App\Contracts\MondoClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curation\AugmentWithMondoInfo;
+use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Console\Command;
 
 class AddMondoInfoToCurations extends Command

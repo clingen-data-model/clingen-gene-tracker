@@ -9,7 +9,7 @@ use Tests\TestCase;
 use App\ExpertPanel;
 use GuzzleHttp\Psr7\Response;
 use Tests\Traits\GetsOmimClient;
-use App\Jobs\Curation\UpdateOmimData;
+use App\Jobs\Curations\UpdateOmimData;
 use App\Jobs\SendCurationMailToCoordinators;
 use App\Mail\Curations\PhenotypeOmimEntryMoved;
 use App\Mail\Curations\PhenotypeNomenclatureUpdated;

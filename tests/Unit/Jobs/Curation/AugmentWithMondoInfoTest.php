@@ -10,7 +10,7 @@ use App\MondoRecord;
 use App\Contracts\MondoClient;
 use App\Mail\Curations\MondoIdNotFound;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curation\AugmentWithMondoInfo;
+use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

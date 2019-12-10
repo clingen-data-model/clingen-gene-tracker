@@ -24,7 +24,6 @@ class HgncClient implements HgncClientContract
     {
         $url = '/fetch/'.$key.'/'.$value;
         return \Cache::remember('hgnc:'.$url, 120, function () use ($url, $key, $value) {
-            dump('fetch new '.$url);
             $response = $this->guzzleClient->request('GET', $url);
             $responseObj = json_decode($response->getBody()->getContents());
             if ($responseObj->response->numFound == 0) {

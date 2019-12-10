@@ -4,7 +4,7 @@ namespace Tests\Unit\Console\Commands;
 
 use App\Phenotype;
 use Tests\TestCase;
-use App\Jobs\Curation\UpdateOmimData;
+use App\Jobs\Curations\UpdateOmimData;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Curation;
 use App\Contracts\MondoClient;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curation\AugmentWithMondoInfo;
+use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Console\Command;
 use App\Mail\Curations\MondoIdNotFound;
 use App\Jobs\SendCurationMailToCoordinators;

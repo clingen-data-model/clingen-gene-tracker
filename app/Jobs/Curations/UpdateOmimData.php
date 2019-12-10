@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Curation;
+namespace App\Jobs\Curations;
 
 use App\Phenotype;
 use App\Contracts\OmimClient;
@@ -78,7 +78,7 @@ class UpdateOmimData implements ShouldQueue
     {
         $existingPhenotype = Phenotype::findByMimNumber($newEntry->mimNumber);
         if ($existingPhenotype) {
-            $this->phenotype->curations->each(function($curation) use ($existingPhenotype) {
+            $this->phenotype->curations->each(function ($curation) use ($existingPhenotype) {
                 $curation->phenotypes()->syncWithoutDetaching($existingPhenotype->id);
                 $curation->phenotypes()->detach($this->phenotype->id);
             });
@@ -102,7 +102,7 @@ class UpdateOmimData implements ShouldQueue
     {
         $this->phenotype
             ->curations
-            ->each(function ($curation) use ($oldName){
+            ->each(function ($curation) use ($oldName) {
                 SendCurationMailToCoordinators::dispatch($curation, PhenotypeNomenclatureUpdated::class, $this->phenotype, $oldName);
             });
     }

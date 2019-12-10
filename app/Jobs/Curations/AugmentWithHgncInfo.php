@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Curation;
+namespace App\Jobs\Curations;
 
 use App\Curation;
 use OutOfBoundsException;
