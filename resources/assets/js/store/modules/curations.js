@@ -129,6 +129,44 @@ const actions = {
             .catch(errors => {
                 return Promise.reject(errors.response)
             });
+    },
+    linkNewClassification ({commit}, {curation, data}) {
+        return window.axios.post(baseUrl+'/'+curation.id+'/classifications', data)
+            .then((response) => {
+                curation
+                    .classifications
+                    .push(response.data);
+                addOrUpdateItem(commit, curation);
+                return response
+            })
+    },
+    updateClassification ({commit}, {curation, pivotId, data}) {
+        return window.axios.put(baseUrl + '/' + curation.id + '/classifications/'+pivotId, data)
+            .then((response) => {
+                const updatedClassificationEntry = response.data;
+                const curationClassificationEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == updatedClassificationEntry.pivot.id);
+                curation.classifications[curationClassificationEntryIdx] = updatedClassificationEntry;
+                addOrUpdateItem(commit, curation);
+                return response
+            })
+            .catch(function (error) {
+                return Promise.reject(error.response);
+            });
+    },
+    unlinkClassification ({commit}, {curation, pivotId}) {
+        return window.axios.delete(baseUrl+'/'+curation.id+'/classifications/'+pivotId)
+            .then(response => {
+                console.log(response);
+                const deletedEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == pivotId);
+                console.log('deletedEntryIdx: '+deletedEntryIdx);
+                console.log(curation.classifications);
+                curation.classifications.splice(deletedEntryIdx, 1);
+                console.log(curation.classifications);
+                addOrUpdateItem(commit, curation);
+            })
+            .catch(errors => {
+                return Promise.reject(errors.response)
+            });
     }
 }
 

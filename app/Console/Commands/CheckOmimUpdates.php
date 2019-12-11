@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Phenotype;
 use App\Contracts\OmimClient;
 use Illuminate\Console\Command;
-use App\Jobs\Curation\UpdateOmimData;
+use App\Jobs\Curations\UpdateOmimData;
 
 class CheckOmimUpdates extends Command
 {

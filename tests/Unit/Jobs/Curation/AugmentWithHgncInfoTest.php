@@ -10,7 +10,7 @@ use OutOfBoundsException;
 use App\Contracts\HgncClient;
 use App\Exceptions\HttpNotFoundException;
 use App\HgncRecord;
-use App\Jobs\Curation\AugmentWithHgncInfo;
+use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Mail\Curations\GeneSymbolUpdated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 

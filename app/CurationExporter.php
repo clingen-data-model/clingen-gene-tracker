@@ -9,7 +9,7 @@ class CurationExporter
 {
     protected function buildQuery($params)
     {
-        $query = Curation::with('expertPanel', 'curationStatuses', 'curator', 'statuses');
+        $query = Curation::with('expertPanel', 'curationStatuses', 'curator', 'statuses', 'classifications');
         if (isset($params['expert_panel_id'])) {
             $query->where('expert_panel_id', $params['expert_panel_id']);
         }
@@ -59,6 +59,7 @@ class CurationExporter
                                                             : null;
                     });
 
+                    $line['Classification'] = $curation->currentClassification->name;
                     $line['Created'] = $curation->created_at;
 
                     return $line;

@@ -12,7 +12,7 @@
             </tr>
             <tr 
                 v-for="(status, idx) in orderedStatuses" 
-                :key="status.id" 
+                :key="status.pivot.id" 
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{status.name}}</td>

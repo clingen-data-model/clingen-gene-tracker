@@ -116,6 +116,20 @@ class Curation extends Model
         return $this->belongsToMany(Rationale::class);
     }
 
+    public function classifications()
+    {
+        return $this->belongsToMany(Classification::class)
+                ->withPivot('id', 'classification_date')
+                ->withTimestamps()
+                ->using(CurationClassification::class);
+    }
+
+    public function getCurrentClassificationAttribute()
+    {
+        return $this->classifications->sortByDesc('pivot.classification_date')->first() 
+                ?? new Classification();
+    }
+
     public function scopeGene($query, $geneSymbol)
     {
         return $query->where('gene_symbol', $geneSymbol);

@@ -88,7 +88,11 @@ class CurationCurationStatusController extends Controller
     public function destroy($curationId, $pivotId)
     {
         $curation = Curation::findOrFail($curationId);
-        $curation->statuses->firstWhere('pivot.id', $pivotId)->pivot->delete();
+        
+        $curation->statuses
+            ->firstWhere('pivot.id', $pivotId)
+            ->pivot
+            ->delete();
 
         return response()->json([], 204);
     }

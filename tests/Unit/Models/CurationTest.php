@@ -3,11 +3,12 @@
 namespace Tests\Unit\models;
 
 use App\Curation;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Classification;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @group curations
@@ -226,4 +227,22 @@ class CurationTest extends TestCase
 
         \Event::assertDispatched(Saved::class);
     }
+
+    /**
+     * @test
+     */
+    public function curation_belongs_to_many_classifications()
+    {
+        $classifications = factory(Classification::class, 2)->create();
+
+        $curation = factory(Curation::class)->create([]);
+
+        $curation->classifications()->attach($classifications->pluck('id'));
+
+        $this->assertEquals(2, $curation->classifications()->count());
+        $this->assertNotNull($curation->classifications()->first()->pivot->classification_date);
+        $this->assertNotNull($curation->classifications()->first()->pivot->created_at);
+        $this->assertNotNull($curation->classifications()->first()->pivot->updated_at);
+    }
+    
 }

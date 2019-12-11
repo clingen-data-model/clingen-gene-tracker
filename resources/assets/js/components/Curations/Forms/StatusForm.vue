@@ -83,7 +83,7 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import CurationStatusHistory from '../StatusHistory'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'

@@ -5,7 +5,7 @@ namespace App\Console\Commands\OneOff;
 use App\Contracts\HgncClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curation\AugmentWithHgncInfo;
+use App\Jobs\Curations\AugmentWithHgncInfo;
 use Illuminate\Console\Command;
 
 class AddHgncInfoToCurations extends Command
