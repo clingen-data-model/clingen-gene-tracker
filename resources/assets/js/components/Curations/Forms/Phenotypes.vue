@@ -40,7 +40,7 @@
                     <select v-model="updatedCuration.rationales" multiple class="form-control" style="height: 8.5em">
                         <option v-for="rationale in rationales" :key="rationale.id"
                             :value="rationale" 
-                            :selected="updatedCuration.rationales.indexOf(rationale) > -1"
+                            :selected="updatedCuration.rationales.map(item => item.id).indexOf(rationale.id) > -1"
                         >
                             {{ rationale.name }}
                         </option>

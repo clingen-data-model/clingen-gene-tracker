@@ -7,6 +7,8 @@ import users from './modules/users'
 import curationStatuses from './modules/curation_statuses'
 import rationales from './modules/rationales'
 import workingGroups from './modules/working_groups'
+import classifications from './modules/classifications'
+
 
 Vue.use(Vuex)
 
@@ -81,6 +83,7 @@ export default new Vuex.Store({
     users: users,
     rationales: rationales,
     workingGroups: workingGroups,
+    classifications: classifications,
   },
   actions: actions,
   strict: debug,

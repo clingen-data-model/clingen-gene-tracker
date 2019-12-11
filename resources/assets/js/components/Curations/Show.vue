@@ -109,6 +109,18 @@
                         </transition>
                     </div>
                 </div>
+                <div class="row mt-3">
+                    <strong class="col-md-2">Current Classification:</strong>
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            {{ (curation.current_classification) ? curation.current_classification.name : 'No status set' }} 
+                            <button class="btn btn-sm"><small><small @click="showClassificationHistory = !showClassificationHistory">{{classificationButtonText}}</small></small></button>
+                        </div>
+                        <transition name="fade">
+                            <classification-history :curation="curation" v-show="showClassificationHistory"></classification-history>
+                        </transition>
+                    </div>
+                </div>
                 <div class="row mt-1">
                     <strong class="col-md-2">Notes:</strong> 
                     <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
@@ -125,6 +137,7 @@
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
     import CurationStatusHistory from './StatusHistory'
+    import ClassificationHistory from './ClassificationHistory'
     import DeleteButton from './DeleteButton'
 
     export default {
@@ -132,12 +145,14 @@
         components: {
             PhenotypeList,
             CurationStatusHistory,
-            DeleteButton
+            DeleteButton,
+            ClassificationHistory
         },
         data() {
             return {
                 user: user,
                 showStatusHistory: false,
+                showClassificationHistory: false,
                 loading: true
             }
         },
@@ -154,6 +169,9 @@
             }),            
             statusHistoryButtonText: function() {
                 return (this.showStatusHistory) ? 'Hide history' : 'Show history';
+            },
+            classificationButtonText: function() {
+                return (this.showClassificationHistory) ? 'Hide history' : 'Show history';
             },
             title: function () {
                 let title = 'Curation: ';

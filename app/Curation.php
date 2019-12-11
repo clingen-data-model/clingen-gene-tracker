@@ -119,8 +119,9 @@ class Curation extends Model
     public function classifications()
     {
         return $this->belongsToMany(Classification::class)
-                ->withPivot('classification_date')
-                ->withTimestamps();
+                ->withPivot('id', 'classification_date')
+                ->withTimestamps()
+                ->using(CurationClassification::class);
     }
 
     public function getCurrentClassificationAttribute()

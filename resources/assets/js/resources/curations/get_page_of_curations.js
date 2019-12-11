@@ -1,7 +1,6 @@
 import Axios from "axios"
 
 const queryStringFromParams = function (params) {
-    console.debug(params);
     let queryStringParts = [
         'page=' + (params.currentPage ? params.currentPage : 1)
     ];

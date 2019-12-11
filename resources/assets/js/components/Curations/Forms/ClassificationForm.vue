@@ -7,43 +7,44 @@
             size="sm" 
             class="form-control mb-2"
             @click="modalVisible = true"
-        >Add or update status</b-button>
+        >Add or update classification</b-button>
 
-        <curation-status-history :curation="value"></curation-status-history>
+        <classification-history :curation="value"></classification-history>
 
         <b-modal 
             v-model="modalVisible"
             @hide="submitAll"
+            size="lg"
         >
             <div slot="modal-header">
-                <h3>Update Curation Status</h3>
+                <h3>Update Classification</h3>
             </div>    
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Status</th>
+                        <th>Classification</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <b-form-select id="expert-panel-select" v-model="newStatusId">
+                            <b-form-select v-model="newClassificationId">
                                 <option :value="null">Select...</option>
-                                <option v-for="status in statusOptions"
-                                    :key="status.id"
-                                    :value="status.id"
+                                <option v-for="classification in classificationOptions"
+                                    :key="classification.id"
+                                    :value="classification.id"
                                 >
-                                    {{status.name}}
+                                    {{classification.name}}
                                 </option>
                             </b-form-select>
-                            <div class="text-danger" v-if="errors.curation_status_id">
-                                <div v-for="message in errors.curation_status_id" :key="message"><small>{{message}}</small></div>
+                            <div class="text-danger" v-if="errors.classification_id">
+                                <div v-for="message in errors.classification_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
                         <td class="form-inline">
                             <datepicker 
-                                v-model="newStatusDate"
+                                v-model="newClassificationDate"
                                 input-class="form-control mr-2"
                                 format='yyyy-MM-dd'
                                 calendar-class="small-calendar"
@@ -52,28 +53,28 @@
                             ></datepicker>
                             <b-button 
                                 variant="primary"
-                                @click="addStatus"
+                                @click="addClassification"
                             >
                                 <strong>+</strong>
                             </b-button>
                         </td>
                     </tr>
-                    <tr v-for="status in curationCopy.curation_statuses" :key="status.pivot.id">
+                    <tr v-for="classification in curationCopy.classifications" :key="classification.pivot.id">
                         <td>
-                            <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
+                            <label :for="'classification-date-'+classification.id"><strong>{{classification.name}}</strong></label>
                         </td>
                         <td class="form-inline">
                             <datepicker
-                                :id="'status-date-'+status.id"
-                                v-model="status.pivot.status_date"
+                                :id="'classification-date-'+classification.id"
+                                v-model="classification.pivot.classification_date"
                                 input-class="form-control mr-2"
                                 format='yyyy-MM-dd'
                                 calendar-class="small-calendar"
                                 placeholder="Select a date"
                                 :highlighted="highlighted"
-                                @selected="updateStatusDate(status.pivot,$event)"
+                                @selected="updateclassificationDate(classification.pivot,$event)"
                             ></datepicker>
-                            <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
+                            <b-button @click="removeclassificationEntry(classification)"><strong>x</strong></b-button>
                         </td>
                     </tr>
                 </tbody>
@@ -84,13 +85,13 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import CurationStatusHistory from '../StatusHistory'
+    import ClassificationHistory from '../ClassificationHistory'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
 
     export default {
         components: {
-            CurationStatusHistory,
+            ClassificationHistory,
             Datepicker
         },
         props: {
@@ -103,14 +104,14 @@
             return {
                 curationCopy: {},
                 modalVisible: false,
-                newStatusDate: new Date(),
-                newStatusId: null,
+                newClassificationDate: new Date(),
+                newClassificationId: null,
                 highlighted: {
                     from: new moment().hour(0),
                     to: new moment().hour(24)
                 },
-                statusDatesUpdated: false,
-                errors: []
+                classificationDatesUpdated: false,
+                errors: {}
             }
         },
         watch: {
@@ -121,59 +122,61 @@
             }
         },
         computed: {
-            ...mapGetters('curationStatuses', {
-                curationStatuses: 'Items',
+            ...mapGetters('classifications', {
+                classifications: 'Items',
             }),
-            statusOptions() {
-                return this.curationStatuses.filter(status => user.canSelectCurationStatus(status, this.curationCopy))
+            classificationOptions() {
+                return this.classifications
             },
         },
         methods: {
             ...mapActions('curations', {
-                linkNewStatus: 'linkNewStatus',
-                storeStatusDate: 'updateStatusDate',
-                unlinkStatus: 'unlinkStatus'
+                linkNewClassification: 'linkNewClassification',
+                updateClassification: 'updateClassification',
+                unlinkClassification: 'unlinkClassification'
             }),
-            addStatus() {
-                this.linkNewStatus(
+            addClassification() {
+                this.linkNewClassification(
                     {
                         curation: this.curationCopy, 
                         data: {
-                            curation_status_id: this.newStatusId,
-                            status_date: this.$options.filters.formatDate(this.newStatusDate, 'YYYY-MM-DD')
+                            classification_id: this.newClassificationId,
+                            classification_date: this.$options.filters.formatDate(this.newClassificationDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {
-                    this.newStatusId = null,
-                    this.newStatusDate = new Date()
+                    this.newClassificationId = null,
+                    this.newClassificationDate = new Date()
                 })
-                .catch(response => {
-                    this.errors = response.data.errors;
+                .catch(error => {
+                    this.errors = error.response.data.errors;
                 })
             },
-            updateStatusDate(pivot, newDate) {
-                if (!pivot || moment(pivot.status_date).diff(newDate) == 0) {
+            updateclassificationDate(pivot, newDate) {
+                if (!pivot || moment(pivot.classification_date).diff(newDate) == 0) {
                     return;
                 }
-                this.storeStatusDate({
+                this.updateClassification({
                     curation: this.curationCopy,
                     pivotId: pivot.id,
-                    statusDate: moment(newDate).format('YYYY-MM-DD')
+                    data: {
+                        classification_id: pivot.classification_id,
+                        classification_date: moment(newDate).format('YYYY-MM-DD')}
                 })
                 .then(response => {
-                    console.log('status date updated')
+                    console.log('classification date updated')
                 })
                 .catch(response => {
                     this.errors = response.data.errors;
                 })
             },
-            removeStatusEntry(status)
+            removeclassificationEntry(classification)
             {
-                this.unlinkStatus({curation: this.curationCopy, pivotId: status.pivot.id})
+                this.unlinkClassification({curation: this.curationCopy, pivotId: classification.pivot.id})
             },
             submitAll() {
-                if (this.newStatusId != null) {
-                    this.addStatus();
+                if (this.newClassificationId != null) {
+                    this.addClassification();
                 }
             },
             syncCuration() {

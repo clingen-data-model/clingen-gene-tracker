@@ -19,7 +19,10 @@ class CurationResource extends JsonResource
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
         $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
+        $data['classifications'] = $this->whenLoaded('classifications');
         $data['current_status'] = $this->currentStatus;
+        $data['current_classification'] = $this->currentClassification;
+        $data['curation_type'] = $this->whenLoaded('curationType');
         $data['curation_type'] = $this->whenLoaded('curationType');
         $data['created_at'] = $this->created_at;
         $data['updated_at'] = $this->updated_at;
