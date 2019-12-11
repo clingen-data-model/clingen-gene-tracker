@@ -126,7 +126,8 @@ class Curation extends Model
 
     public function getCurrentClassificationAttribute()
     {
-        return $this->classifications->sortByDesc('pivot.classification_date')->first();
+        return $this->classifications->sortByDesc('pivot.classification_date')->first() 
+                ?? new Classification();
     }
 
     public function scopeGene($query, $geneSymbol)
