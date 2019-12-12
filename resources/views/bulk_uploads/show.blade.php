@@ -12,7 +12,7 @@
     
             <div class="d-flex justify-content-between">
 
-                <form action="{{route('bulk-uploads.upload')}}" method="POST" enctype="multipart/form-data" style="width: 70%">
+                <form action="{{route('bulk-uploads.upload')}}" method="POST" enctype="multipart/form-data" style="width: 65%" class="pr-2">
                     {{csrf_field()}}
                     <div class="form-group form-inline">
                         <label for="expert_panel_id">Expert Panel:</label>
@@ -29,12 +29,19 @@
                         <input type="file" name="bulk_curations" id="upload-field" class="form-control" />
                     </div>
                     <div class="alert alert-warning pt-1 pb-1 pl-2 pr-2">
-                        <small>Please note that all genes in a bulk upload must be for a single Expert Panel. The minimum requirement for upload is the gene name (HGNC).</small>
+                        <small>
+                            Please note: 
+                                <ul>
+                                    <li>Please limit bulk uploads to 50 curations to avoid timeouts. (improvements coming)</li>
+                                    <li>All genes in a bulk upload must be for a single Expert Panel.</li> 
+                                    <li>The minimum requirement for upload is the gene name (HGNC).</li>
+                                </ul>
+                        </small>
                     </div>
                     <button class="btn btn-primary" type="submit">Upload</button>
                 </form>
 
-                <div class="w-25">
+                <div style="width: 30%">
                     <div class="alert alert-info">
                         <p>Please download and fill out the excel template for best results.</p>
                         <a href="/files/bulk_curation_template.xlsx" class="btn btn-info form-control">

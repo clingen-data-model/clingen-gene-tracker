@@ -48,9 +48,14 @@ class BulkCurationProcessor
 
         $reader = ReaderEntityFactory::createXLSXReader();
         $reader->open($path);
+        $newCurations = collect();
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($sheet->getName() === 'Curations') {
-                $newCurations = $this->handleSheet($sheet, $expertPanelId);
+                if ($this->sheetIsValid($sheet)) {
+                    $newCurations = $this->handleSheet($sheet, $expertPanelId);
+                } else {
+                    \Log::info('sheet not valid');
+                }
             }
         }
 
@@ -58,44 +63,43 @@ class BulkCurationProcessor
             DB::rollBack();
             throw new InvalidFileException($this->validationErrors);
         }
+
         DB::commit();
 
         return $newCurations;
     }
-   
+
+    private function sheetIsValid($sheet)
+    {
+        \Log::debug('validating sheet');
+        $this->applyToSheet($sheet, function ($idx, $data) {
+            $this->rowIsValid($data, $idx);
+        });
+
+        return ($this->validationErrors->count() == 0);
+    }
+    
     private function handleSheet($sheet, $expertPanelId)
     {
         $newCurations = collect();
         $header = [];
-        foreach ($sheet->getRowIterator() as $idx => $row) {
-            if ($idx == 1) {
-                $header = array_map(function ($item) {
-                    return implode('_', explode(' ', strtolower($item)));
-                }, $row->toArray());
-                continue;
-            }
-            
-            $data = $this->collateRow($header, $row);
 
-            if ($this->rowIsEmpty($data)) {
-                continue;
-            }
-            
+        $this->applyToSheet($sheet, function ($idx, $data) use ($newCurations, $expertPanelId) {
             try {
                 $newCurations->push($this->processRow($data, $expertPanelId, $idx));
             } catch (InvalidRowException $e) {
-                
             }
-        }
+        });
+
         return $newCurations;
     }
 
     private function collateRow($header, $row)
     {
         $values = array_pad(
-                    array_map([$this, 'emptyStringToNull'], $row->toArray()), 
-                    count($header), 
-                    null
+            array_map([$this, 'emptyStringToNull'], $row->toArray()),
+            count($header),
+            null
                 );
 
         return array_combine($header, $values);
@@ -103,7 +107,7 @@ class BulkCurationProcessor
 
     private function emptyStringToNull($item)
     {
-        return $item == '' ? null : $item;        
+        return $item == '' ? null : $item;
     }
 
     private function rowIsEmpty($data)
@@ -114,10 +118,6 @@ class BulkCurationProcessor
     public function processRow($rowData, $expertPanelId, $rowNum = 0)
     {
         config(['app.bulk_uploading' => true]);
-
-        if (!$this->rowIsValid($rowData, $rowNum)) {
-            throw new InvalidRowException($rowData, $this->validationErrors);
-        }
 
         $curator = $this->users->firstWhere('email', $rowData['curator_email']);
         $curationTypes = $this->curationTypes->firstWhere('name', $rowData['curation_type']);
@@ -134,7 +134,7 @@ class BulkCurationProcessor
         ];
         $curation = Curation::create($attributes);
 
-        \Bus::dispatch(new SyncPhenotypes($curation, $this->getPhenotypes($rowData)));
+        SyncPhenotypes::dispatchNow($curation, $this->getPhenotypes($rowData));
         $curation->rationales()->sync($this->getRationales($rowData));
         
         $this->addStatus($curation, 1, 'uploaded_date', $rowData);
@@ -205,6 +205,7 @@ class BulkCurationProcessor
 
     public function rowIsValid($rowData, $rowNum = 0)
     {
+        \Log::debug('validate row '.$rowNum);
         $validationRules = [
             'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
             'curator_email' => ['nullable', 'exists:users,email'],
@@ -257,4 +258,27 @@ class BulkCurationProcessor
         }
         return $valid;
     }
+
+    private function applyToSheet($sheet, callable $callable)
+    {
+        foreach ($sheet->getRowIterator() as $idx => $row) {
+            if ($idx == 1) {
+                $header = array_map(function ($item) {
+                    return implode('_', explode(' ', strtolower($item)));
+                }, $row->toArray());
+                continue;
+            }
+                    
+            $data = $this->collateRow($header, $row);
+
+            if ($this->rowIsEmpty($data)) {
+                continue;
+            }
+                    
+            $callable($idx, $data);
+        }
+
+        return $sheet;
+    }
+  
 }

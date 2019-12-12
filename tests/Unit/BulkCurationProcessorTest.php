@@ -104,26 +104,6 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function throws_exception_when_processing_invalid_row()
-    {
-        $this->data['curator_email'] = 'beans@beans.com';
-        try {
-            $this->svc->processRow($this->data, 1);
-            $this->fail('InvalidRowException not thrown for bad row data');
-        } catch (InvalidRowException $e) {
-            $this->assertEquals($e->getRowData(), $this->data);
-            $this->assertEquals(
-                collect([
-                    ['curator_email' => 'The curator email specified was not found in the system']
-                ]),
-                $e->getValidationErrors()
-            );
-        }
-    }
-
-    /**
-     * @test
-     */
     public function creates_curation_from_valid_row_data()
     {
         \DB::table('curations')->delete();
