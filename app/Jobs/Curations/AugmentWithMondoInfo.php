@@ -37,6 +37,9 @@ class AugmentWithMondoInfo implements ShouldQueue
     public function handle(MondoClient $mondoClient)
     {
         try {
+            if (empty($this->curation->numericMondoId)) {
+                return;
+            }
             $mondoRecord = $mondoClient->fetchRecord($this->curation->numericMondoId);
             $this->curation->update(['mondo_name' => $mondoRecord->label]);
         } catch (\Throwable $th) {
