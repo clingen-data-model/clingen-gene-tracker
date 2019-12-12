@@ -38,14 +38,17 @@ class SyncPhenotypes implements ShouldQueue
             return;
         }
         $phenotypes = Phenotype::whereIn('mim_number', $this->phenotypes->pluck('mim_number'))->get();
+
         $newMims = $this->phenotypes->pluck('mim_number')->diff($phenotypes->pluck('mim_number'));
         $newMims->each(function ($mimNumber) use ($phenotypes) {
             $data = [
                 'mim_number' => $mimNumber,
                 'name' => $this->phenotypes->firstWhere('mim_number', $mimNumber)['name']
             ];
+
             $phenotypes->push(Phenotype::create($data));
         });
+        
         $this->curation->phenotypes()->sync($phenotypes->pluck('id'));
     }
 }
