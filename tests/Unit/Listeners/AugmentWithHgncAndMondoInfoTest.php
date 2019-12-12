@@ -10,9 +10,12 @@ use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Listeners\Curations\AugmentWithHgncAndMondoInfo;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AugmentWithHgncAndMondoInfoTest extends TestCase
 {
+    use DatabaseTransactions;  
+
     public function setUp():void
     {
         parent::setUp();
