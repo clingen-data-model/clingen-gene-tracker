@@ -44,6 +44,8 @@ class BulkCurationProcessor
 
     public function processFile($path, $expertPanelId)
     {
+        ini_set('max_execution_time','360');
+        
         DB::beginTransaction();
 
         $reader = ReaderEntityFactory::createXLSXReader();
@@ -76,8 +78,8 @@ class BulkCurationProcessor
             $rowCount++;
         });
 
-        if ($rowCount > 51) {
-            $this->validationErrors->put('file', ['Your upload contains more than 50 curations. At this time the bulk upload is limited to 50 curations.']);
+        if ($rowCount > 50) {
+            $this->validationErrors->put('file', ['Your upload contains '.($rowCount).' curations. At this time the bulk upload is limited to 50 curations.']);
         }
 
         return ($this->validationErrors->count() == 0);
