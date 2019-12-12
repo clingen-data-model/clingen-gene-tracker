@@ -32,7 +32,7 @@
                         <small>
                             Please note: 
                                 <ul>
-                                    <li>Please limit bulk uploads to 50 curations to avoid timeouts. (improvements coming)</li>
+                                    <li>Please limit bulk uploads to 50 curations. (improvements coming)</li>
                                     <li>All genes in a bulk upload must be for a single Expert Panel.</li> 
                                     <li>The minimum requirement for upload is the gene name (HGNC).</li>
                                 </ul>

@@ -53,8 +53,6 @@ class BulkCurationProcessor
             if ($sheet->getName() === 'Curations') {
                 if ($this->sheetIsValid($sheet)) {
                     $newCurations = $this->handleSheet($sheet, $expertPanelId);
-                } else {
-                    \Log::info('sheet not valid');
                 }
             }
         }
@@ -71,10 +69,16 @@ class BulkCurationProcessor
 
     private function sheetIsValid($sheet)
     {
-        \Log::debug('validating sheet');
-        $this->applyToSheet($sheet, function ($idx, $data) {
+        
+        $rowCount = 0;
+        $this->applyToSheet($sheet, function ($idx, $data) use (&$rowCount) {
             $this->rowIsValid($data, $idx);
+            $rowCount++;
         });
+
+        if ($rowCount > 51) {
+            $this->validationErrors->put('file', ['Your upload contains more than 50 curations. At this time the bulk upload is limited to 50 curations.']);
+        }
 
         return ($this->validationErrors->count() == 0);
     }
@@ -205,7 +209,6 @@ class BulkCurationProcessor
 
     public function rowIsValid($rowData, $rowNum = 0)
     {
-        \Log::debug('validate row '.$rowNum);
         $validationRules = [
             'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
             'curator_email' => ['nullable', 'exists:users,email'],
