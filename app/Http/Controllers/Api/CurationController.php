@@ -112,7 +112,7 @@ class CurationController extends Controller
         $data = $request->except('phenotypes', 'curation_status_id');
         $curation = Curation::create($data);
         if ($request->phenotypes) {
-            \Bus::dispatch(new SyncPhenotypes($curation, $request->phenotypes));
+            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
         }
         if ($request->curation_status_id) {
             $curation->curationStatuses()->attach($request->curation_status_id);
@@ -164,14 +164,14 @@ class CurationController extends Controller
         $curation->update($data);
 
         if ($request->phenotypes) {
-            \Bus::dispatch(new SyncPhenotypes($curation, $request->phenotypes));
+            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
         }
 
         if ($request->isolated_phenotype) {
             $pheno = $this->omim->getEntry($request->isolated_phenotype)[0]->entry;
-            \Bus::dispatch(new SyncPhenotypes($curation, [
+            SyncPhenotypes::dispatchNow($curation,[
                 ['mim_number'=>$pheno->mimNumber, 'name'=> $pheno->titles->preferredTitle]
-            ]));
+            ]);
         }
         
         if ($request->rationales) {
