@@ -3,10 +3,13 @@
 use App\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
+
+$topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
+$offset = isset($argv[2]) ? explode(',', $argv[2]) : 'beginning';
+
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 
 $dotenv->load();
-// exec('source .env');
 
 $sslCertLocation = env('KAFKA_CERT', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
 $sslKeyLocation =  env('KAFKA_KEY_LOCATION', '/etc/pki/tls/private/kafka.apache.key');
@@ -21,13 +24,13 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
             echo "Assign: ";
-            var_dump($partitions);
+            dump($partitions);
             $kafka->assign($partitions);
             break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
              echo "Revoke: ";
-             var_dump($partitions);
+             dump($partitions);
              $kafka->assign(null);
              break;
 
@@ -59,6 +62,7 @@ $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
 $conf->set('ssl.certificate.location', $sslCertLocation);
 $conf->set('ssl.key.location', $sslKeyLocation);
 $conf->set('ssl.ca.location', $sslCaLocation);
+
 if ($sslKeyPassword) {
     $conf->set('ssl.key.password', $sslKeyPassword);
 }
@@ -68,20 +72,24 @@ $topicConf = new RdKafka\TopicConf();
 // Set where to start consuming messages when there is no initial offset in
 // offset store or the desired offset is out of range.
 // 'smallest': start from the beginning
-$topicConf->set('auto.offset.reset', 'beginning');
+$topicConf->set('auto.offset.reset', $offset);
 
 // Set the configuration to use for subscribed/assigned topics
 $conf->setDefaultTopicConf($topicConf);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
-dump($consumer->getMetadata(true, null, 60e3)->getTopics());
+$availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
+echo "Available Topics: \n";
+foreach ($availableTopics as $avlTopic) {
+    echo "  ".$avlTopic->getTopic()."\n";
+}
 
 // Subscribe to topic 'test'
-$consumer->subscribe(['test']);
+echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."\n";
+$consumer->subscribe($topics);
 
-echo "Waiting for partition assignment... (make take some time when\n";
-echo "quickly re-joining the group after leaving it.)\n";
+echo "\nWaiting for partition assignment...\n";
 
 while (true) {
     $message = $consumer->consume(10000);
@@ -90,7 +98,7 @@ while (true) {
             echo $message->payload."\n";
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-            echo "No more messages; will wait for more\n";
+            echo "\n\nNo more messages; will wait for more...\n\n";
             break;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
             // echo "Timed out\n";
@@ -106,7 +114,7 @@ while (true) {
                 echo "Host resolution failure";
                 break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
-                echo "unkown topic\n";
+                echo "unknown topic\n";
                 break;
         case RD_KAFKA_RESP_ERR_INVALID_GROUP_ID:
                 echo "invalid group id\n";
