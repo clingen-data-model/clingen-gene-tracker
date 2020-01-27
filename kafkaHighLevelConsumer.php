@@ -5,7 +5,7 @@ use App\Exceptions\StreamingServiceException;
 require __DIR__ . '/vendor/autoload.php';
 
 $topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
-$offset = isset($argv[2]) ? explode(',', $argv[2]) : 'beginning';
+$offset = isset($argv[2]) ? explode(',', $argv[2]) : '-1';
 
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 
@@ -24,13 +24,24 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
             echo "Assign: ";
-            dump($partitions);
+            // dump(array_map(function ($partition) { 
+            //     // $partition->setOffset(0);
+            //     return  [
+            //         'topic' => $partition->getTopic(),
+            //         'offset' => $partition->getOffset()
+            //     ];
+            // }, $partitions));
             $kafka->assign($partitions);
             break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-             echo "Revoke: ";
-             dump($partitions);
+            //  echo "Revoke: ";
+            //     dump(array_map(function ($partition) {
+            //         return  [
+            //             'topic' => $partition->getTopic(),
+            //             'offset' => $partition->getOffset()
+            //         ];
+            //     }, $partitions));
              $kafka->assign(null);
              break;
 
@@ -72,7 +83,7 @@ $topicConf = new RdKafka\TopicConf();
 // Set where to start consuming messages when there is no initial offset in
 // offset store or the desired offset is out of range.
 // 'smallest': start from the beginning
-$topicConf->set('auto.offset.reset', $offset);
+$topicConf->set('auto.offset.reset', 'beginning');
 
 // Set the configuration to use for subscribed/assigned topics
 $conf->setDefaultTopicConf($topicConf);
@@ -87,12 +98,15 @@ foreach ($availableTopics as $avlTopic) {
 
 // Subscribe to topic 'test'
 echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."\n";
-$consumer->subscribe($topics);
+foreach($topics as $topic) {
+    $consumer->subscribe([$topic]);
+}
 
 echo "\nWaiting for partition assignment...\n";
 
 while (true) {
     $message = $consumer->consume(10000);
+    dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
             echo $message->payload."\n";
@@ -100,30 +114,32 @@ while (true) {
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "\n\nNo more messages; will wait for more...\n\n";
             break;
+            // echo "\n\nFound all messages. Closing for now.\n\n";
+            // break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
-            // echo "Timed out\n";
+            echo "Timed out\n";
             // echo "Timed out\n";
             break;
         case RD_KAFKA_RESP_ERR__FAIL:
             echo "Failed to communicate with broker\n";
             break;
         case RD_KAFKA_RESP_ERR__BAD_MSG:
-                echo "Bad message format\n";
-                break;
+            echo "Bad message format\n";
+            break;
         case RD_KAFKA_RESP_ERR__RESOLVE:
-                echo "Host resolution failure";
-                break;
+            echo "Host resolution failure";
+            break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
-                echo "unknown topic\n";
-                break;
+            echo "unknown topic\n";
+            break;
         case RD_KAFKA_RESP_ERR_INVALID_GROUP_ID:
-                echo "invalid group id\n";
-                break;
+            echo "invalid group id\n";
+            break;
         case RD_KAFKA_RESP_ERR_GROUP_AUTHORIZATION_FAILED:
-                // echo "group auth failed\n";
-                break;
+            echo "group auth failed\n";
+            break;
         default:
-                echo "Unknown Error: ".$message->err."\n";
+            echo "Unknown Error: ".$message->err."\n";
             break;
 
     }

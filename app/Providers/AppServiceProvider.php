@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use App\Services\KafkaConfig;
 use App\Services\KafkaProducer;
 use App\Services\MessageLogger;
 use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +36,20 @@ class AppServiceProvider extends ServiceProvider
                 return new MessageLogger();
             }
             return new KafkaProducer();
+        });
+
+        $this->app->bind(\RdKafka\Producer::class, function () {
+            return new \RdKafka\Producer((new KafkaConfig())());
+        });
+
+        $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
+            $conf = (new KafkaConfig())();
+
+            $topicConf = new \RdKafka\TopicConf();
+            $topicConf->set('auto.offset.reset', 'beginning');
+            $conf->setDefaultTopicConf($topicConf);
+
+            return new \RdKafka\KafkaConsumer($conf);
         });
 
         \Request::macro('dateParsed', function (...$dates) {

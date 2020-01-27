@@ -8,7 +8,11 @@ use App\Services\KafkaProducer;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Exceptions\StreamingServiceException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
+use App\Services\KafkaConfig;
+/**
+ * @group streaming-service
+ * @group kafka
+ */
 class KafkaProducerTest extends TestCase
 {
     public function setUp():void
@@ -24,7 +28,8 @@ class KafkaProducerTest extends TestCase
      */
     public function it_can_be_instantiated()
     {
-        $producer = new KafkaProducer();
+        $producer = app()->make(KafkaProducer::class);
+        // $producer = new KafkaProducer(app()->make(\RdKafka\Producer::class));
         $this->assertInstanceOf(KafkaProducer::class, $producer);
     }
 
@@ -35,7 +40,7 @@ class KafkaProducerTest extends TestCase
     {
         $message = 'test message';
 
-        $producer = new KafkaProducer();
+        $producer = app()->make(KafkaProducer::class);
         $topic = Mockery::mock(\RdKafka\ProducerTopic::class);
         $topic->shouldReceive('produce')->with(RD_KAFKA_PARTITION_UA, 0, $message)->once();
 
@@ -48,7 +53,7 @@ class KafkaProducerTest extends TestCase
      */
     public function produce_throws_exception_when_topic_not_set()
     {
-        $producer = new KafkaProducer();
+        $producer = app()->make(KafkaProducer::class);
 
         $this->expectException(StreamingServiceException::class);
 
