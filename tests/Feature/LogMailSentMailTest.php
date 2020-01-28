@@ -18,20 +18,14 @@ class LogMailSentMailTest extends TestCase
         });
 
         $records = app('log')
+                    ->channel('mail')
                     ->getHandlers()[0]
                     ->getRecords();
 
-        $this->assertCount(2, $records);
-        $this->assertEquals('INFO', $records[1]['level_name']);
-        $this->assertEquals(
-            [
-                'to' => ['test@example.org' => null],
-                'from' => [config('mail.from.address') => config('mail.from.name')],
-                'subject' => 'message subject',
-                'body' => 'beans'
-            ],
-            $records[1]['context']
-        );
+        $this->assertCount(1, $records);
+        $this->assertEquals('INFO', $records[0]['level_name']);
+        $this->assertContains('To: test@example.org', $records[0]['message']);
+        $this->assertContains('Subject: message subject', $records[0]['message']);
+        $this->assertContains('beans', $records[0]['message']);
     }
-    
 }

@@ -44,13 +44,26 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->registerMailLogging();
+        parent::boot();
+    }
+
+    private function registerMailLogging()
+    {
         if (config('mail.driver') != 'log' || app()->environment('testing')) {
+            if (app()->environment('testing')) {
+                config(
+                    [
+                    'logging.channels.mail' => [
+                        'driver' => 'custom',
+                        'via' => \App\Logging\CreateTestLogger::class,
+                    ]]
+                );
+            }
             if (!isset($this->listen['Illuminate\Mail\Events\MessageSent'])) {
                 $this->listen['Illuminate\Mail\Events\MessageSent'] = [];
             }
             $this->listen['Illuminate\Mail\Events\MessageSent'] = ['App\Listeners\LogSentMessage'];
         }
-
-        parent::boot();
     }
 }
