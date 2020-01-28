@@ -69,6 +69,11 @@ return [
         'test' => [
             'driver' => 'custom',
             'via' => \App\Logging\CreateTestLogger::class,
+        ],
+        'mail' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/mail.log'),
+            'level' => 'debug'
         ]
     ],
 
