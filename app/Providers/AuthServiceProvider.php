@@ -27,9 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         
-        Auth::provider('activatedusers', function ($app, array $config) {
-            $provider = new ActivatedEloquentUserProvider(app()->make(app()->make(\Illuminate\Contracts\Hashing\Hasher::class)), \App\User::class);
-            dd($provider);
+        Auth::provider('activated-eloquent', function ($app, array $config) {
+            $provider = new ActivatedEloquentUserProvider($app->make(\Illuminate\Contracts\Hashing\Hasher::class), $config['model']);
             return $provider;
         });
         
