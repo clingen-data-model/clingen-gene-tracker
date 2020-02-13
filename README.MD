@@ -5,7 +5,7 @@ This project attempts to track curations being conducted by curators working for
 ## Installation
 
 ```
-git clone [git@bitbucket.org](mailto:git@bitbucket.org):shepsweb/clingen.git
+git clone [git@bitbucket.org](mailto:git@bitbucket.org):shepsweb/clingen.git # need to change this to github
 cd clingen
 composer install
 yarn install
