@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Auth;
+use App\Auth\ActivatedEloquentUserProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,13 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        
+        Auth::provider('activatedusers', function ($app, array $config) {
+            $provider = new ActivatedEloquentUserProvider(app()->make(app()->make(\Illuminate\Contracts\Hashing\Hasher::class)), \App\User::class);
+            dd($provider);
+            return $provider;
+        });
+        
         Passport::routes();
     }
 }
