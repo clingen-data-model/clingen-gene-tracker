@@ -34,6 +34,7 @@ class Curation extends Model
         'rationale_other',
         'rationale_notes',
         'pmids',
+        'moi_id'
     ];
 
     protected $dates = [

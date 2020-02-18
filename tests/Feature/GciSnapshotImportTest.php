@@ -129,5 +129,9 @@ class GciSnapshotImportTest extends TestCase
     public function updates_MOI()
     {
         $this->artisan('gci:snapshot '.$this->testFilePath);
+
+        $curation = $this->curation1->fresh();
+
+        $this->assertEquals(1, $curation->moi_id);
     }
 }
