@@ -1,0 +1,166 @@
+[{
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Autosomal dominant inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0000006"
+    },
+    [{
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Autosomal dominant somatic cell mutation",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001444"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Autosomal dominant contiguous gene syndrome",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001452"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Sex-limited autosomal dominant",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001470"
+        },
+        [{
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0001470",
+            "name": "Male-limited autosomal dominant",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001475"
+        }],
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Autosomal dominant inheritance with paternal imprinting",
+            "uri": "http://purl.obolibrary.org/obo/HP_0012274"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Autosomal dominant inheritance with maternal imprinting",
+            "uri": "http://purl.obolibrary.org/obo/HP_0012275"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
+            "name": "Autosomal dominant germline de novo mutation",
+            "uri": "http://purl.obolibrary.org/obo/HP_0025352"
+        }
+    ],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Autosomal recessive inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0000007"
+    },
+    [{
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000007",
+        "name": "Sex-limited autosomal recessive inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0031362"
+    }],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Heterogeneous",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001425"
+    },
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Multifactorial inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001426"
+    },
+    [{
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
+            "name": "Polygenic inheritance",
+            "uri": "http://purl.obolibrary.org/obo/HP_0010982"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
+            "name": "Oligogenic inheritance",
+            "uri": "http://purl.obolibrary.org/obo/HP_0010983"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
+            "name": "Digenic inheritance",
+            "uri": "http://purl.obolibrary.org/obo/HP_0010984"
+        }
+    ],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Mitochondrial inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001427"
+    },
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Somatic mutation",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001428"
+    },
+    [{
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0001428",
+        "name": "Somatic mosaicism",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001442"
+    }],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Contiguous gene syndrome",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001466"
+    },
+    [{
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0001466",
+        "name": "Autosomal dominant contiguous gene syndrome",
+        "uri": "http://purl.obolibrary.org/obo/HP_0001452"
+    }],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Genetic anticipation",
+        "uri": "http://purl.obolibrary.org/obo/HP_0003743"
+    },
+    [{
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0003743",
+        "name": "Genetic anticipation with paternal anticipation bias",
+        "uri": "http://purl.obolibrary.org/obo/HP_0003744"
+    }],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Sporadic",
+        "uri": "http://purl.obolibrary.org/obo/HP_0003745"
+    },
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Gonosomal inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0010985"
+    },
+    [{
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0010985",
+            "name": "X-linked inheritance",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001417"
+        },
+        [{
+                "parentUri": "http://purl.obolibrary.org/obo/HP_0001417",
+                "name": "X-linked recessive inheritance",
+                "uri": "http://purl.obolibrary.org/obo/HP_0001419"
+            },
+            {
+                "parentUri": "http://purl.obolibrary.org/obo/HP_0001417",
+                "name": "X-linked dominant inheritance",
+                "uri": "http://purl.obolibrary.org/obo/HP_0001423"
+            }
+        ],
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0010985",
+            "name": "Y-linked inheritance",
+            "uri": "http://purl.obolibrary.org/obo/HP_0001450"
+        }
+    ],
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Semidominant mode of inheritance",
+        "uri": "http://purl.obolibrary.org/obo/HP_0032113"
+    },
+    {
+        "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
+        "name": "Uniparental disomy",
+        "uri": "http://purl.obolibrary.org/obo/HP_0032382"
+    },
+    [{
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0032382",
+            "name": "Uniparental heterodisomy",
+            "uri": "http://purl.obolibrary.org/obo/HP_0032383"
+        },
+        {
+            "parentUri": "http://purl.obolibrary.org/obo/HP_0032382",
+            "name": "Uniparental isodisomy",
+            "uri": "http://purl.obolibrary.org/obo/HP_0032384"
+        }
+    ]
+]

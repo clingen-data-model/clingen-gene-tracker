@@ -18,6 +18,7 @@ class Curation extends Model
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
+        'gdm_uuid',
         'gene_symbol',
         'hgnc_name',
         'hgnc_id',
@@ -95,7 +96,11 @@ class Curation extends Model
 
     public function getCurrentStatusAttribute()
     {
-        return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
+        return $this->curationStatuses
+                ->sortByDesc(function ($item) {
+                    return $item->pivot->status_date->timestamp.'.'.$item->id;
+                })
+                ->first();
     }
 
     public function getNumericMondoIdAttribute()
@@ -126,7 +131,11 @@ class Curation extends Model
 
     public function getCurrentClassificationAttribute()
     {
-        return $this->classifications->sortByDesc('pivot.classification_date')->first() 
+        return $this->classifications
+                    ->sortByDesc(function ($item) {
+                        return $item->pivot->classification_date->timestamp.'.'.$item->id;
+                    })
+                    ->first()
                 ?? new Classification();
     }
 
