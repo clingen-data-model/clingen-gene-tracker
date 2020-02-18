@@ -25,7 +25,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','deactivated_at',
+        'name',
+        'email',
+        'password',
+        'deactivated_at',
+        'gci_uuid',
     ];
 
     /**
@@ -38,11 +42,11 @@ class User extends Authenticatable
     ];
 
     protected $dispatchesEvents = [
-        'created' => Created::class
+        'created' => Created::class,
     ];
 
     protected $dates = [
-        'deactivated_at'
+        'deactivated_at',
     ];
 
     public static function boot()
@@ -75,7 +79,7 @@ class User extends Authenticatable
     {
         return $this->expertPanels()->where('expert_panel_user.is_coordinator', 1);
     }
-    
+
     public function editorPanels()
     {
         return $this->expertPanels()->where('expert_panel_user.can_edit_curations', 1);
@@ -113,7 +117,7 @@ class User extends Authenticatable
             });
         }
         if (is_object($panel) && get_class($panel) == ExpertPanel::class) {
-            return $this->expertPanels->contains(function ($ep) use ($paen) {
+            return $this->expertPanels->contains(function ($ep) use ($panel) {
                 return $ep->id = $panel->id;
             });
         }
@@ -122,21 +126,21 @@ class User extends Authenticatable
     public function canEditPanelCurations($panel)
     {
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
-            return $value->id == $panel->id && ((boolean)$value->pivot->can_edit_curations || (boolean)$value->pivot->is_coordinator);
+            return $value->id == $panel->id && ((bool) $value->pivot->can_edit_curations || (bool) $value->pivot->is_coordinator);
         });
     }
 
     public function isPanelCoordinator($panel)
     {
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
-            return $value->id == $panel->id && (boolean)$value->pivot->is_coordinator;
+            return $value->id == $panel->id && (bool) $value->pivot->is_coordinator;
         });
     }
 
     public function isPanelCurator($panel)
     {
         return $this->expertPanels->contains(function ($value, $key) use ($panel) {
-            return $value->id == $panel->id && (boolean)$value->pivot->is_curator;
+            return $value->id == $panel->id && (bool) $value->pivot->is_curator;
         });
     }
 
@@ -155,10 +159,10 @@ class User extends Authenticatable
     public function canBeImpersonated()
     {
         if (\Auth::user()->hasRole('admin')) {
-            return !$this->hasRole("programmer|admin");
+            return !$this->hasRole('programmer|admin');
         }
 
-        return !$this->hasRole("programmer");
+        return !$this->hasRole('programmer');
     }
 
     public function getPanelsCoordinating()
@@ -166,6 +170,7 @@ class User extends Authenticatable
         if ($this->hasAnyRole('admin|programmer')) {
             return ExpertPanel::all();
         }
+
         return $this->expertPanels->where('pivot.is_coordinator', 1);
     }
 
@@ -173,7 +178,7 @@ class User extends Authenticatable
     {
         return $this->getAllPermissions()->contains('name', $permString);
     }
-   
+
     public function getAllPermissions()
     {
         if (is_null($this->allPermissions)) {
@@ -185,7 +190,7 @@ class User extends Authenticatable
 
             $this->allPermissions = $permissions->sort()->values();
         }
-        
+
         return $this->allPermissions;
     }
 }
