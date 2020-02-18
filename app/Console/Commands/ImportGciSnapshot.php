@@ -7,6 +7,7 @@ use Exception;
 use App\Curation;
 use App\Classification;
 use App\CurationStatus;
+use App\ModeOfInheritance;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -57,6 +58,7 @@ class ImportGciSnapshot extends Command
         $this->curationStatuses->put('None', $this->curationStatuses['Uploaded']);
         $this->classifications = Classification::all()->keyBy('name');
         $this->classifications->put('No Reported Evidence', $this->classifications['No Known Disease Relationship']);
+        $this->mois = ModeOfInheritance::all()->keyBy('hp_id');
 
         $fh = fopen($this->argument('file'), 'r');
 
@@ -77,6 +79,7 @@ class ImportGciSnapshot extends Command
                 $this->updateClassification($curation, $row);
                 $this->updateGdmUUID($curation, $row);
                 $this->updateCurator($curation, $row);
+                $this->updateMoi($curation, $row);
             } catch (Exception $e) {
                 if ($e->getCode() !== 0) {
                     throw $e;
@@ -158,4 +161,11 @@ class ImportGciSnapshot extends Command
     // private function updateAffiliation($curation, $row)
     // {
     // }
+
+    private function updateMoi($curation, $row)
+    {
+        $moiId = substr(substr($row['moi'], -11), 0, 10);
+        $moi = $this->mois->get($moiId);
+        $curation->update(['moi_id' => $moi->id]);
+    }
 }
