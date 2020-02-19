@@ -3,7 +3,7 @@
 use App\ModeOfInheritance;
 use Illuminate\Database\Seeder;
 
-class ModeOfInheritencesTableSeeder extends Seeder
+class MOIsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
