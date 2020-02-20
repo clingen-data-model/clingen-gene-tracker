@@ -3,13 +3,15 @@
 namespace App\Console\Commands;
 
 use App\User;
-use Exception;
 use App\Curation;
+use Carbon\Carbon;
+use App\Affiliation;
 use App\Classification;
 use App\CurationStatus;
 use App\ModeOfInheritance;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Exceptions\GciSyncException;
+use Exception;
 
 class ImportGciSnapshot extends Command
 {
@@ -54,15 +56,24 @@ class ImportGciSnapshot extends Command
         }
 
         $this->curations = Curation::all();
-        $this->curationStatuses = CurationStatus::all()->keyBy('name');
-        $this->curationStatuses->put('None', $this->curationStatuses['Uploaded']);
+        $this->curationStatuses = CurationStatus::all()->keyBy(function ($item) {
+            return strtolower($item->name);
+        });
+        $this->curationStatuses->put('none', $this->curationStatuses['uploaded']);
+        $this->curationStatuses->put('in progress', $this->curationStatuses['curation in progress']);
+        $this->curationStatuses->put('approved', $this->curationStatuses['curation approved']);
+        $this->curationStatuses->put('provisional', $this->curationStatuses['curation provisional']);
+
         $this->classifications = Classification::all()->keyBy('name');
         $this->classifications->put('No Reported Evidence', $this->classifications['No Known Disease Relationship']);
+        
         $this->mois = ModeOfInheritance::all()->keyBy('hp_id');
+        $this->affiliations = Affiliation::all()->keyBy('clingen_id');
 
         $fh = fopen($this->argument('file'), 'r');
 
         $headerKeys = null;
+        $rows = [];
         while ($line = fgetcsv($fh)) {
             if (is_null($headerKeys)) {
                 $headerKeys = array_map(function ($item) {
@@ -72,32 +83,60 @@ class ImportGciSnapshot extends Command
             }
 
             $row = array_combine($headerKeys, $line);
+            $rows[] = $row;
+        }
 
+        $bar = $this->output->createProgressBar(count($rows));
+        $errors = [
+            0 => [],
+            404 =>  []
+        ];
+        foreach ($rows as $row) {
             try {
                 $curation = $this->getMatchingCuration($row);
+                $this->updateGdmUUID($curation, $row);
                 $this->updateStatus($curation, $row);
                 $this->updateClassification($curation, $row);
-                $this->updateGdmUUID($curation, $row);
                 $this->updateCurator($curation, $row);
                 $this->updateMoi($curation, $row);
-            } catch (Exception $e) {
-                if ($e->getCode() !== 0) {
-                    throw $e;
+                $this->setAffiliation($curation, $row);
+                $curation->save();
+            } catch (GciSyncException $e) {
+                // $this->error($e->getMessage());
+                if (!isset($errors[$e->getCode()])) {
+                    $errors[$e->getCode()] = [];
                 }
-                $this->error($e->getMessage());
+                if ($e->hasData()) {
+                    $errors[$e->getCode()][] = $e->getData();
+                } else {
+                    $errors[$e->getCode()][] = $e->getMessage();
+                }
+            } catch (Exception $e) {
+                // dump($row);
+                throw $e;
             }
+            $bar->advance();
         }
+        echo "\n";
+        foreach ($errors as $key => $category) {
+            $this->info(count($category).' '.$key.' errors');
+        }
+        // $errors[404] = array_flatten($errors[404], 1);
+        // file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors));
     }
 
     private function getMatchingCuration($row)
     {
         $curation = $this->curations->filter(function ($curation) use ($row) {
             return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
-                    && $curation->mondo_id = 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
+                    && $curation->mondo_id == 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
         })->first();
 
         if (is_null($curation)) {
-            throw new Exception('Curation with HGNC_ID '.$row['hgnc id'].' and MonDO ID '.$row['mondo id'].' could not be found');
+            $keys = ['hgnc_id' => $row['hgnc id'], 'mondo_id' => $row['mondo id'], 'affiliation' => $row['affiliation name'], 'createor' => $row['creator email']];
+            $th = new GciSyncException('Curation not found: '.json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]), 404);
+            $th->addData($keys);
+            throw $th;
         }
 
         return $curation;
@@ -105,11 +144,15 @@ class ImportGciSnapshot extends Command
 
     private function updateStatus($curation, $row)
     {
-        if (!isset($this->curationStatuses[$row['status']])) {
-            throw new Exception('Unknown status: '.$row['status']);
+        $matchStatus = strtolower($row['status']);
+        $newStatus = $this->curationStatuses->get($matchStatus);
+        if (!$newStatus) {
+            $newStatus = $this->curationStatuses->get('Curation '.$matchStatus);
+            if (!$newStatus) {
+                throw new GciSyncException('Unknown status: '.$matchStatus);
+            }
         }
-        $newStatus = $this->curationStatuses[$row['status']];
-        if ($curation->currentStatus->id != $newStatus->id) {
+        if (!$curation->currentStatus || $curation->currentStatus->id != $newStatus->id) {
             $curation->statuses()
                 ->syncWithoutDetaching($newStatus->id);
         }
@@ -117,8 +160,11 @@ class ImportGciSnapshot extends Command
 
     private function updateClassification($curation, $row)
     {
+        if (empty($row['classification']) || $row['classification'] == 'No Classification') {
+            return;
+        }
         if (!isset($this->classifications[$row['classification']])) {
-            throw new Exception('Unknown classification: '.$row['classification']);
+            throw new GciSyncException('Unknown classification: '.$row['classification']);
         }
         $newClassification = $this->classifications[$row['classification']];
         if ($curation->currentClassification != $newClassification) {
@@ -129,13 +175,13 @@ class ImportGciSnapshot extends Command
 
     private function updateGdmUUID($curation, $row)
     {
-        $curation->update(['gdm_uuid' => $row['gdm uuid']]);
+        $curation->gdm_uuid = $row['gdm uuid'];
     }
 
     private function updateCurator($curation, $row)
     {
         if (empty($row['creator email'])) {
-            throw new Exception('no email data for row');
+            throw new GciSyncException('no email data for row');
         }
 
         $user = User::where('email', $row['creator email'])->first();
@@ -152,20 +198,33 @@ class ImportGciSnapshot extends Command
         $user->update(['gci_uuid' => $row['creator uuid']]);
 
         if (is_null($curation->curator_id)) {
-            $curation->update([
-                'curator_id' => $user->id,
-            ]);
+            $curation->curator_id = $user->id;
         }
     }
 
-    // private function updateAffiliation($curation, $row)
-    // {
-    // }
+    private function setAffiliation($curation, $row)
+    {
+        if (empty($row['affiliation id'])) {
+            return;
+        }
+        if (!isset($this->affiliations[$row['affiliation id']])) {
+            throw new GciSyncException('Affiliation id '.$row['affiliation id'].' not found');
+        }
+        if (is_null($curation->affiliation_id)) {
+            $curation->affiliation_id = $this->affiliations[$row['affiliation id']]->id;
+        }
+    }
 
     private function updateMoi($curation, $row)
     {
         $moiId = substr(substr($row['moi'], -11), 0, 10);
+        if ($moiId == 'HP:0000005') {
+            throw new GciSyncException('MOI HP:0000005 is not a valid instance of the MOI class accoding to the HP ontology', 401);
+        }
         $moi = $this->mois->get($moiId);
-        $curation->update(['moi_id' => $moi->id]);
+        if (!$moi) {
+            throw new GciSyncException('MOI "'.$row['moi'].'" not found');
+        }
+        $curation->moi_id = $moi->id;
     }
 }

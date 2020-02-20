@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Affiliation;
 use App\User;
 use App\Curation;
 use Carbon\Carbon;
@@ -133,5 +134,18 @@ class GciSnapshotImportTest extends TestCase
         $curation = $this->curation1->fresh();
 
         $this->assertEquals(1, $curation->moi_id);
+    }
+
+    /**
+     * @test
+     */
+    public function sets_affiliation_id_if_not_set()
+    {
+        $this->artisan('gci:snapshot '.$this->testFilePath);
+
+        $curation = $this->curation1->fresh();
+
+        $affiliation = Affiliation::findByClingenId(10021);
+        $this->assertEquals($affiliation->id, $curation->affiliation_id);
     }
 }
