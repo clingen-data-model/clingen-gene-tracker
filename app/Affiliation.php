@@ -35,6 +35,12 @@ class Affiliation extends Model
         return $this->belongsTo(AffiliationType::class, 'affiliation_type_id');
     }
 
+    public static function findByClingenId($clingenId)
+    {
+        return static::where('clingen_id', $clingenId)->first();
+    }
+    
+
     public function getDescriptiveNameAttribute()
     {
         return $this->name.' ('.$this->type->name.')';

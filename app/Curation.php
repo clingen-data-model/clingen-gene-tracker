@@ -35,6 +35,7 @@ class Curation extends Model
         'rationale_notes',
         'pmids',
         'moi_id',
+        'affiliation_id',
     ];
 
     protected $dates = [
@@ -149,6 +150,21 @@ class Curation extends Model
     public function scopeGene($query, $geneSymbol)
     {
         return $query->where('gene_symbol', $geneSymbol);
+    }
+
+    public function scopeHgncId($query, $hgncId)
+    {
+        $formattedId = preg_replace('/HGNC:/i', '', trim($hgncId));
+        return $query->where('hgnc_id', $formattedId);
+    }
+
+    public function scopeMondoId($query, $mondoId)
+    {
+        $mondoId = trim($mondoId);
+        if (is_numeric($mondoId)) {
+            $formattedId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
+        }
+        return $query->where('mondo_id', $formattedId);
     }
 
     public function loadForMessage()
