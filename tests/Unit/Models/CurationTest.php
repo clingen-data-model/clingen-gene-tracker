@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\models;
 
+use App\Affiliation;
 use App\Curation;
 use Tests\TestCase;
 use App\Classification;
@@ -244,5 +245,17 @@ class CurationTest extends TestCase
         $this->assertNotNull($curation->classifications()->first()->pivot->created_at);
         $this->assertNotNull($curation->classifications()->first()->pivot->updated_at);
     }
-    
+
+    /**
+     * @test
+     */
+    public function curation_belongs_to_affiliation()
+    {
+        $curation = factory(Curation::class)->create();
+
+        $affiliation = Affiliation::query()->first();
+        $curation->affiliation_id = $affiliation->id;
+
+        $this->assertEquals($affiliation, $curation->affiliation);
+    }
 }

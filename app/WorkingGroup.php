@@ -18,6 +18,7 @@ class WorkingGroup extends Model
 
     protected $fillable = [
         'name',
+        'affiliation_id'
     ];
 
     public function expertPanels()

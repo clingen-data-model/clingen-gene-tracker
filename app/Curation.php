@@ -34,15 +34,15 @@ class Curation extends Model
         'rationale_other',
         'rationale_notes',
         'pmids',
-        'moi_id'
+        'moi_id',
     ];
 
     protected $dates = [
-        'curation_date'
+        'curation_date',
     ];
 
     protected $casts = [
-        'pmids' => 'array'
+        'pmids' => 'array',
     ];
 
     protected $with = [
@@ -70,6 +70,11 @@ class Curation extends Model
     public function expertPanel()
     {
         return $this->belongsTo(ExpertPanel::class);
+    }
+
+    public function affiliation()
+    {
+        return $this->belongsTo(Affiliation::class);
     }
 
     public function curator()
@@ -109,6 +114,7 @@ class Curation extends Model
         if (is_null($this->mondo_id)) {
             return null;
         }
+
         return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
 
@@ -148,6 +154,7 @@ class Curation extends Model
     public function loadForMessage()
     {
         $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
+
         return $this;
     }
 }
