@@ -9,10 +9,13 @@ class RationalesTableSeeder extends Seeder
     {
         Rationale::unguard();
         foreach (config('project.rationales') as $id => $rationale) {
-            Rationale::create([
-                'id' => $id,
-                'name' => $rationale
-            ]);
+            Rationale::updateOrCreate(
+                compact('id'),
+                [
+                    'id' => $id,
+                    'name' => $rationale,
+                ]
+            );
         }
     }
 }
