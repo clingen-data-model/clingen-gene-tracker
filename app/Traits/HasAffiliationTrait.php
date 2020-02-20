@@ -6,9 +6,9 @@ use App\Affiliation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Trait that implements IsAffiliation contract
+ * Trait that implements HasAffiliation contract
  */
-trait IsAffiliationTrait
+trait HasAffiliationTrait
 {
     public function affiliation():BelongsTo
     {

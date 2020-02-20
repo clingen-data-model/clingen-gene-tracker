@@ -3,14 +3,14 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
-use App\Contracts\IsAffiliation;
-use App\Traits\IsAffiliationTrait;
+use App\Contracts\HasAffiliation;
+use App\Traits\HasAffiliationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ExpertPanel extends Model implements IsAffiliation
+class ExpertPanel extends Model implements HasAffiliation
 {
-    use RevisionableTrait, CrudTrait, IsAffiliationTrait;
+    use RevisionableTrait, CrudTrait, HasAffiliationTrait;
 
     protected $revisionCreationsEnabled = true;
     protected $fillable = [

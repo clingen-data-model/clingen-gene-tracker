@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-interface IsAffiliation
+interface HasAffiliation
 {
     public function affiliation():BelongsTo;
 }
