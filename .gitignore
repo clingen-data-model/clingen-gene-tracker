@@ -14,3 +14,4 @@ yarn-error.log
 database/backups
 .DS_Store
 google-sheets-api-credentials.json
+python/token.pickle
