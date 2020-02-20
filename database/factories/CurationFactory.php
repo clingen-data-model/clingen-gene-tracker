@@ -10,8 +10,8 @@ $factory->define(App\Curation::class, function (Faker $faker) use ($expertPanels
         'gene_symbol' => strtoupper($faker->randomLetter.$faker->randomLetter.$faker->randomLetter.$faker->randomLetter.'-'.$faker->randomDigit),
         'expert_panel_id' => ($expertPanels->count() > 0)
                                 ? $expertPanels->random()->id
-                                : factory(\App\ExpertPanel::class)->create()->id,
+                                : factory(ExpertPanel::class)->create()->id,
         'curator_id' => null,
-        'notes' => null
+        'notes' => null,
     ];
 });

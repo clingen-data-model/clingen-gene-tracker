@@ -52,15 +52,17 @@ class User extends Authenticatable
     public static function boot()
     {
         parent::boot();
-        static::creating(function ($model) {
-            if (is_null($model->password)) {
-                if (env('production')) {
-                    $model->password = uniqid();
-                } else {
-                    $model->password = 'tester';
+        static::creating(
+            function ($model) {
+                if (is_null($model->password)) {
+                    if (env('production')) {
+                        $model->password = uniqid();
+                    } else {
+                        $model->password = 'tester';
+                    }
                 }
             }
-        });
+        );
     }
 
     public function curations()
@@ -87,10 +89,12 @@ class User extends Authenticatable
 
     public function coordinatorOrEditorPanels()
     {
-        return $this->expertPanels()->where(function ($query) {
-            $query->orWhere('expert_panel_user.is_coordinator', 1)
-                ->orWhere('expert_panel_user.can_edit_curations', 1);
-        });
+        return $this->expertPanels()->where(
+            function ($query) {
+                $query->orWhere('expert_panel_user.is_coordinator', 1)
+                    ->orWhere('expert_panel_user.can_edit_curations', 1);
+            }
+        );
     }
 
     public function deactivateUser($crud = false)
