@@ -15,6 +15,11 @@ use Exception;
 
 class ImportGciSnapshot extends Command
 {
+    private $errorCodes = [
+        0 => 'mapping',
+        404 => 'missing'
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -87,10 +92,7 @@ class ImportGciSnapshot extends Command
         }
 
         $bar = $this->output->createProgressBar(count($rows));
-        $errors = [
-            0 => [],
-            404 =>  []
-        ];
+        $errors = [];
         foreach ($rows as $row) {
             try {
                 $curation = $this->getMatchingCuration($row);
@@ -102,14 +104,14 @@ class ImportGciSnapshot extends Command
                 $this->setAffiliation($curation, $row);
                 $curation->save();
             } catch (GciSyncException $e) {
-                // $this->error($e->getMessage());
-                if (!isset($errors[$e->getCode()])) {
-                    $errors[$e->getCode()] = [];
+                $type = $this->errorCodes[$e->getCode()];
+                if (!isset($errors[$type])) {
+                    $errors[$type] = [];
                 }
                 if ($e->hasData()) {
-                    $errors[$e->getCode()][] = $e->getData();
+                    $errors[$type][] = $e->getData();
                 } else {
-                    $errors[$e->getCode()][] = $e->getMessage();
+                    $errors[$type][] = $e->getMessage();
                 }
             } catch (Exception $e) {
                 // dump($row);
@@ -118,11 +120,12 @@ class ImportGciSnapshot extends Command
             $bar->advance();
         }
         echo "\n";
+        $errors['missing'] = array_flatten($errors['missing'], 1);
+        file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors));
         foreach ($errors as $key => $category) {
             $this->info(count($category).' '.$key.' errors');
         }
-        // $errors[404] = array_flatten($errors[404], 1);
-        // file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors));
+        $this->info('Errors written to '.base_path('files/gci_snapshot_import_errors.json'));
     }
 
     private function getMatchingCuration($row)
@@ -133,8 +136,14 @@ class ImportGciSnapshot extends Command
         })->first();
 
         if (is_null($curation)) {
-            $keys = ['hgnc_id' => $row['hgnc id'], 'mondo_id' => $row['mondo id'], 'affiliation' => $row['affiliation name'], 'createor' => $row['creator email']];
-            $th = new GciSyncException('Curation not found: '.json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]), 404);
+            $keys = [
+                'hgnc_id' => $row['hgnc id'],
+                'mondo_id' => $row['mondo id'],
+                'affiliation' => $row['affiliation name'],
+                'createor' => $row['creator email']
+            ];
+            $hgncMondoData = json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]);
+            $th = new GciSyncException('Curation not found: '.$hgncMondoData, 404);
             $th->addData($keys);
             throw $th;
         }
@@ -218,12 +227,12 @@ class ImportGciSnapshot extends Command
     private function updateMoi($curation, $row)
     {
         $moiId = substr(substr($row['moi'], -11), 0, 10);
-        if ($moiId == 'HP:0000005') {
-            throw new GciSyncException('MOI HP:0000005 is not a valid instance of the MOI class accoding to the HP ontology', 401);
-        }
         $moi = $this->mois->get($moiId);
         if (!$moi) {
-            throw new GciSyncException('MOI "'.$row['moi'].'" not found');
+            $moi = $this->mois->firstWhere('name', $row['moi']);
+            if (!$moi) {
+                throw new GciSyncException('MOI "'.$row['moi'].'" not found');
+            }
         }
         $curation->moi_id = $moi->id;
     }
