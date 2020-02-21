@@ -154,12 +154,35 @@ class Curation extends Model
 
     public function scopeHgncId($query, $hgncId)
     {
+        if (is_array($hgncId)) {
+            return $query->whereIn(
+                'hgnc_id',
+                array_map(
+                    function ($item) {
+                        return preg_replace('/HGNC:/i', '', trim($item));
+                    },
+                    $hgncId
+                )
+            );
+        }
         $formattedId = preg_replace('/HGNC:/i', '', trim($hgncId));
         return $query->where('hgnc_id', $formattedId);
     }
 
     public function scopeMondoId($query, $mondoId)
     {
+        if (is_array($mondoId)) {
+            return $query->whereIn(
+                'mondo_id',
+                array_map(
+                    function ($item) {
+                        return 'MONDO:'.str_pad(trim($item), 7, '0', STR_PAD_LEFT);
+                    },
+                    $mondoId
+                )
+            );
+        }
+
         $mondoId = trim($mondoId);
         if (is_numeric($mondoId)) {
             $formattedId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
