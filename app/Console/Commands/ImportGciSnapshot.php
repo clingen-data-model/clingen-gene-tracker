@@ -17,7 +17,9 @@ class ImportGciSnapshot extends Command
 {
     private $errorCodes = [
         0 => 'mapping',
-        404 => 'missing'
+        401 => 'no curator',
+        404 => 'missing',
+        409 => 'ambiguous'
     ];
 
     /**
@@ -60,7 +62,7 @@ class ImportGciSnapshot extends Command
             $this->error('File '.$this->argument('file').' does not exist');
         }
 
-        $this->curations = Curation::all();
+        $this->curations = Curation::with('curator')->get();
         $this->curationStatuses = CurationStatus::all()->keyBy(function ($item) {
             return strtolower($item->name);
         });
@@ -102,6 +104,9 @@ class ImportGciSnapshot extends Command
                 $this->updateCurator($curation, $row);
                 $this->updateMoi($curation, $row);
                 $this->setAffiliation($curation, $row);
+                if (is_null($curation->mondo_id)) {
+                    $curation->mondo_id = $row['mondo id'];
+                }
                 $curation->save();
             } catch (GciSyncException $e) {
                 $type = $this->errorCodes[$e->getCode()];
@@ -120,7 +125,9 @@ class ImportGciSnapshot extends Command
             $bar->advance();
         }
         echo "\n";
-        $errors['missing'] = array_flatten($errors['missing'], 1);
+        foreach ($errors as $type => $contents) {
+            $errors[$type] = array_flatten($contents, 1);
+        }
         file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors));
         foreach ($errors as $key => $category) {
             $this->info(count($category).' '.$key.' errors');
@@ -130,10 +137,10 @@ class ImportGciSnapshot extends Command
 
     private function getMatchingCuration($row)
     {
-        $curation = $this->curations->filter(function ($curation) use ($row) {
-            return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
-                    && $curation->mondo_id == 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
-        })->first();
+        $curation = $this->matchHgncAndMondo($row);
+        if (is_null($curation)) {
+            $curation = $this->matchHgncAndEmail($row);
+        }
 
         if (is_null($curation)) {
             $keys = [
@@ -150,6 +157,50 @@ class ImportGciSnapshot extends Command
 
         return $curation;
     }
+
+    private function matchHgncAndMondo($row)
+    {
+        return $this->curations->filter(function ($curation) use ($row) {
+            return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
+                    && $curation->mondo_id == 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
+        })->first();
+    }
+
+    private function matchHgncAndEmail($row)
+    {
+        $matching = $this->curations->filter(function ($curation) use ($row) {
+            if (is_null($curation->curator)) {
+                return false;
+            }
+            if (!is_null($curation->mondo_id)) {
+                return false;
+            }
+            return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
+                && $curation->curator->email == $row['creator email'];
+        });
+
+        if ($matching->count() > 1) {
+            throw $this->buildRowError($row, 409);
+        }
+
+        return $matching->first();
+    }
+    
+    private function buildRowError($data, $code)
+    {
+        $keys = [
+            'hgnc_id' => $data['hgnc id'],
+            'mondo_id' => $data['mondo id'],
+            'affiliation' => $data['affiliation name'],
+            'createor' => $data['creator email']
+        ];
+        $hgncMondoData = json_encode(['HGNC_ID' => $data['hgnc id'], 'MonDO ID' => $data['mondo id']]);
+        $th = new GciSyncException('Curation not found: '.$hgncMondoData, $code);
+        $th->addData($keys);
+
+        return $th;
+    }
+    
 
     private function updateStatus($curation, $row)
     {
