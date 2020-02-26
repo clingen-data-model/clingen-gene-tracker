@@ -144,6 +144,7 @@ class ImportGciSnapshot extends Command
 
         if (is_null($curation)) {
             $keys = [
+                'gene_symbol' => $row['hgnc gene symbol'],
                 'hgnc_id' => $row['hgnc id'],
                 'mondo_id' => $row['mondo id'],
                 'affiliation' => $row['affiliation name'],
@@ -189,6 +190,7 @@ class ImportGciSnapshot extends Command
     private function buildRowError($data, $code)
     {
         $keys = [
+            'gene_symbol' => $data['hgnc gene symbol'],
             'hgnc_id' => $data['hgnc id'],
             'mondo_id' => $data['mondo id'],
             'affiliation' => $data['affiliation name'],
