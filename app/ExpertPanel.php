@@ -3,17 +3,20 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
+use App\Contracts\HasAffiliation;
+use App\Traits\HasAffiliationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ExpertPanel extends Model
+class ExpertPanel extends Model implements HasAffiliation
 {
-    use RevisionableTrait, CrudTrait;
+    use RevisionableTrait, CrudTrait, HasAffiliationTrait;
 
     protected $revisionCreationsEnabled = true;
     protected $fillable = [
         'name',
-        'working_group_id'
+        'working_group_id',
+        'affiliation_id',
     ];
 
     public function workingGroup()

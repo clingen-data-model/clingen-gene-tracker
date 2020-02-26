@@ -3,6 +3,7 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 
