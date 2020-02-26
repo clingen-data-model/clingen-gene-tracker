@@ -35,7 +35,7 @@ class WorkingGroupControllerTest extends TestCase
         $this->disableExceptionHandling();
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/');
-        $this->assertEquals($response->original->toArray(), $this->groups->toArray());
+        $this->assertEquals($this->groups->toArray(), $response->original->toArray());
     }
 
     /**

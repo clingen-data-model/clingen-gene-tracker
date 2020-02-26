@@ -64,6 +64,7 @@
             "php artisan key:generate",
             "php artisan passport:keys",
             "php artisan migrate:fresh --seed",
+            "php artisan migrate:fresh --seed --database=testing",
             "npm install"
         ],
         "post-root-package-install": [

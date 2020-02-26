@@ -18,6 +18,7 @@ class Curation extends Model
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
+        'gdm_uuid',
         'gene_symbol',
         'hgnc_name',
         'hgnc_id',
@@ -33,14 +34,16 @@ class Curation extends Model
         'rationale_other',
         'rationale_notes',
         'pmids',
+        'moi_id',
+        'affiliation_id',
     ];
 
     protected $dates = [
-        'curation_date'
+        'curation_date',
     ];
 
     protected $casts = [
-        'pmids' => 'array'
+        'pmids' => 'array',
     ];
 
     protected $with = [
@@ -70,6 +73,11 @@ class Curation extends Model
         return $this->belongsTo(ExpertPanel::class);
     }
 
+    public function affiliation()
+    {
+        return $this->belongsTo(Affiliation::class);
+    }
+
     public function curator()
     {
         return $this->belongsTo(User::class, 'curator_id');
@@ -95,7 +103,11 @@ class Curation extends Model
 
     public function getCurrentStatusAttribute()
     {
-        return $this->curationStatuses->sortByDesc('pivot.status_date')->first();
+        return $this->curationStatuses
+                ->sortByDesc(function ($item) {
+                    return $item->pivot->status_date->timestamp.'.'.$item->id;
+                })
+                ->first();
     }
 
     public function getNumericMondoIdAttribute()
@@ -103,6 +115,7 @@ class Curation extends Model
         if (is_null($this->mondo_id)) {
             return null;
         }
+
         return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
 
@@ -126,7 +139,11 @@ class Curation extends Model
 
     public function getCurrentClassificationAttribute()
     {
-        return $this->classifications->sortByDesc('pivot.classification_date')->first() 
+        return $this->classifications
+                    ->sortByDesc(function ($item) {
+                        return $item->pivot->classification_date->timestamp.'.'.$item->id;
+                    })
+                    ->first()
                 ?? new Classification();
     }
 
@@ -135,9 +152,48 @@ class Curation extends Model
         return $query->where('gene_symbol', $geneSymbol);
     }
 
+    public function scopeHgncId($query, $hgncId)
+    {
+        if (is_array($hgncId)) {
+            return $query->whereIn(
+                'hgnc_id',
+                array_map(
+                    function ($item) {
+                        return preg_replace('/HGNC:/i', '', trim($item));
+                    },
+                    $hgncId
+                )
+            );
+        }
+        $formattedId = preg_replace('/HGNC:/i', '', trim($hgncId));
+        return $query->where('hgnc_id', $formattedId);
+    }
+
+    public function scopeMondoId($query, $mondoId)
+    {
+        if (is_array($mondoId)) {
+            return $query->whereIn(
+                'mondo_id',
+                array_map(
+                    function ($item) {
+                        return 'MONDO:'.str_pad(trim($item), 7, '0', STR_PAD_LEFT);
+                    },
+                    $mondoId
+                )
+            );
+        }
+
+        $mondoId = trim($mondoId);
+        if (is_numeric($mondoId)) {
+            $formattedId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
+        }
+        return $query->where('mondo_id', $formattedId);
+    }
+
     public function loadForMessage()
     {
         $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
+
         return $this;
     }
 }

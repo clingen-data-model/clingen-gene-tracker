@@ -2,27 +2,23 @@
 
 namespace App;
 
-use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class WorkingGroup extends Model
+class AffiliationType extends Model
 {
     use SoftDeletes;
     use RevisionableTrait;
-    use CrudTrait;
-
+    
     protected $revisionCreationsEnabled = true;
-    protected $hidden = ['deleted_at'];
-
     protected $fillable = [
-        'name',
-        'affiliation_id'
+        'name'
     ];
 
-    public function expertPanels()
+    public function affiliations()
     {
-        return $this->hasMany(ExpertPanel::class);
+        return $this->hasMany(Affiliation::class);
     }
+
 }

@@ -1,0 +1,3 @@
+﻿HGNC gene symbol,HGNC ID,MONDO ID,MOI,GDM UUID,GDM created date,Classification UUID,Classification,Status,Creator UUID,Creator email,Creator name,Affiliation ID,Affiliation name,SOP version
+A2ML1,HGNC:23336,7893,Autosomal dominant inheritance (HP:0000006),c3fd159d-9678-47a2-9cff-d1c9d0411d43,6/7/18,59b87033-dd91-4f1e-aec1-c9b1f5124b16,No Reported Evidence,Published,4acafdd5-80f3-47f0-8522-f4bd04da175f,agrant@broadinstitute.org,Andrew Grant,10021,RASopathy,
+BRCA1,HGNC:12345,12345,Autosomal dominant inheritance (HP:0000006),c3fd159d-9678-47a2-9cff-d1c9d0411d43,6/7/18,59b87033-dd91-4f1e-aec1-c9b1f5124b16,No Reported Evidence,Published,4acafdd5-80f3-47f0-8522-f4bd04da175f,agrant@broadinstitute.org,Andrew Grant,10021,RASopathy,
