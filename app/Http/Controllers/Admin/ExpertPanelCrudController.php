@@ -79,6 +79,9 @@ class ExpertPanelCrudController extends CrudController
         if ($this->user->hasPermissionTo('update expert-panels')) {
             $this->crud->allowAccess(['update']);
         }
+        if ($this->user->hasPermissionTo('update delete')) {
+            $this->crud->allowAccess(['delete']);
+        }
 
         // ------ REVISIONS
         $this->crud->allowAccess('revisions');
