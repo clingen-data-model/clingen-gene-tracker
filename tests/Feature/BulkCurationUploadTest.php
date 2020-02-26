@@ -5,10 +5,6 @@ namespace Tests\Feature;
 use App\User;
 use Tests\TestCase;
 use App\ExpertPanel;
-use App\Jobs\BulkCurationProcessor;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
@@ -17,13 +13,13 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
     public function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
         $this->expertPanel = factory(ExpertPanel::class)->create();
-        $this->expertPanel->users()->attach([$this->user->id=>['is_coordinator'=>1]]);
+        $this->expertPanel->users()->attach([$this->user->id => ['is_coordinator' => 1]]);
     }
 
     /**
@@ -49,7 +45,7 @@ class BulkCurationUploadTest extends TestCase
         $this->actingAs($this->user)
             ->call('POST', '/bulk-uploads', [
                 'expert_panel_id' => 1,
-                'bulk_curations' => file_get_contents(base_path('tests/files/bulk_curation_upload_good.xlsx'))
+                'bulk_curations' => file_get_contents(base_path('tests/files/bulk_curation_upload_good.xlsx')),
             ]);
         $this->markTestIncomplete('Test fails but verifiably working in browser. Test by hand.');
 

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\WorkingGroupRequest as StoreRequest;
-use App\Http\Requests\WorkingGroupRequest as UpdateRequest;
+use App\Affiliation;
 use App\WorkingGroup;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use App\Http\Requests\WorkingGroupRequest as StoreRequest;
+use App\Http\Requests\WorkingGroupRequest as UpdateRequest;
 
 class WorkingGroupCrudController extends CrudController
 {
@@ -28,31 +29,7 @@ class WorkingGroupCrudController extends CrudController
         */
 
         $this->crud->setFromDb();
-
-        // ------ CRUD FIELDS
-        // $this->crud->addField($options, 'update/create/both');
-        // $this->crud->addFields($array_of_arrays, 'update/create/both');
-        // $this->crud->removeField('name', 'update/create/both');
-        // $this->crud->removeFields($array_of_names, 'update/create/both');
-
-        // ------ CRUD COLUMNS
-        // $this->crud->addColumn(); // add a single column, at the end of the stack
-        // $this->crud->addColumns(); // add multiple columns, at the end of the stack
-        // $this->crud->removeColumn('column_name'); // remove a column from the stack
-        // $this->crud->removeColumns(['column_name_1', 'column_name_2']); // remove an array of columns from the stack
-        // $this->crud->setColumnDetails('column_name', ['attribute' => 'value']); // adjusts the properties of the passed in column (by name)
-        // $this->crud->setColumnsDetails(['column_1', 'column_2'], ['attribute' => 'value']);
-
-        // ------ CRUD BUTTONS
-        // possible positions: 'beginning' and 'end'; defaults to 'beginning' for the 'line' stack, 'end' for the others;
-        // $this->crud->addButton($stack, $name, $type, $content, $position); // add a button; possible types are: view, model_function
-        // $this->crud->addButtonFromModelFunction($stack, $name, $model_function_name, $position); // add a button whose HTML is returned by a method in the CRUD model
-        // $this->crud->addButtonFromView($stack, $name, $view, $position); // add a button whose HTML is in a view placed at resources\views\vendor\backpack\crud\buttons
-        // $this->crud->removeButton($name);
-        // $this->crud->removeButtonFromStack($name, $stack);
-        // $this->crud->removeAllButtons();
-        // $this->crud->removeAllButtonsFromStack('line');
-
+        
         // ------ CRUD ACCESS
         $this->crud->denyAccess(['list', 'create', 'update', 'reorder', 'delete']);
         if (\Auth::user()->hasPermissionTo('list working-groups')) {
@@ -60,18 +37,14 @@ class WorkingGroupCrudController extends CrudController
         }
         if (\Auth::user()->hasPermissionTo('create working-groups')) {
             $this->crud->allowAccess('create');
-        } else {
-            $this->crud->removeButton('add');
         }
+
         if (\Auth::user()->hasPermissionTo('update working-groups')) {
             $this->crud->allowAccess('update');
-        } else {
-            $this->crud->removeButton('edit');
         }
+
         if (\Auth::user()->hasPermissionTo('delete working-groups')) {
             $this->crud->allowAccess('delete');
-        } else {
-            $this->crud->removeButton('delete');
         }
 
         // ------ CRUD REORDER

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Affiliation;
 use App\ExpertPanel;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
@@ -61,6 +62,17 @@ class UserCrudController extends CrudController
             'model' => Role::class,
             'pivot' => true
         ], 'both');
+
+        // COmmented out b/c punt for now and focus on getting snapshot imported.
+        // $this->crud->addField([
+        //     'label' => 'Affiliations',
+        //     'type' => 'expert_panel_field',
+        //     'name' => 'affiliations',
+        //     'entity' => 'affiliations',
+        //     'attribute' => 'descriptiveShortName',
+        //     'model' => Affiliation::class,
+        //     'pivot' => true
+        // ], 'both');
 
         $this->crud->removeField('deactivated_at');
         $this->crud->removeField('password');
