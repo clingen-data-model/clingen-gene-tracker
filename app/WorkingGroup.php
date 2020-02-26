@@ -3,15 +3,19 @@
 namespace App;
 
 use Backpack\CRUD\CrudTrait;
+use App\Contracts\HasAffiliation;
+use App\Traits\HasAffiliationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class WorkingGroup extends Model
+class WorkingGroup extends Model implements HasAffiliation
 {
     use SoftDeletes;
     use RevisionableTrait;
     use CrudTrait;
+    use HasAffiliationTrait;
+
 
     protected $revisionCreationsEnabled = true;
     protected $hidden = ['deleted_at'];

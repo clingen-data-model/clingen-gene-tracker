@@ -17,7 +17,7 @@ class AlterExpertPanelsAddAffiliationId extends Migration
                 ->after('name');
 
             $table->foreign('affiliation_id')
-                ->references('clingen_id')
+                ->references('id')
                 ->on('affiliations');
         });
     }
