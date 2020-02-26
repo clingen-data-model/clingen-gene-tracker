@@ -11,7 +11,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $epIds = ExpertPanel::all()->pluck('id', 'id')->toArray();
+        $epIds = ExpertPanel::all();
         $user = User::updateOrCreate(
             ['email' => 'sirs@unc.edu'],
             [
@@ -47,7 +47,7 @@ class UsersTableSeeder extends Seeder
             ]
         );
         $user->assignRole('admin');
-        $user->expertPanels()->sync([$epIds[1]]);
+        $user->expertPanels()->sync([$epIds->first()->id]);
 
         $user = User::updateOrCreate(
             ['email' => 'courtney_thaxton@med.unc.edu'],
@@ -57,7 +57,7 @@ class UsersTableSeeder extends Seeder
             ]
         );
         $user->assignRole('admin');
-        $user->expertPanels()->sync([$epIds[1], $epIds[3]]);
+        $user->expertPanels()->sync([$epIds->first()->id, $epIds->get(2)->id]);
 
         if (!env('production')) {
             $user = User::updateOrCreate(
@@ -69,8 +69,8 @@ class UsersTableSeeder extends Seeder
             );
             $user->expertPanels()->sync(
                 [
-                    $epIds[2] => ['is_curator' => 1],
-                    $epIds[4] => ['is_curator' => 1],
+                    $epIds->get(1)->id => ['is_curator' => 1],
+                    $epIds->get(3)->id => ['is_curator' => 1],
                 ]
             );
 
@@ -84,8 +84,8 @@ class UsersTableSeeder extends Seeder
             $user->expertPanels()
                 ->sync(
                     [
-                        $epIds[1] => ['is_curator' => 1],
-                        $epIds[4] => ['is_curator' => 1, 'can_edit_curations' => 1],
+                        $epIds->get(0)->id => ['is_curator' => 1],
+                        $epIds->get(3)->id => ['is_curator' => 1, 'can_edit_curations' => 1],
                     ]
                 );
 
@@ -98,7 +98,7 @@ class UsersTableSeeder extends Seeder
             );
             $user->expertPanels()->sync(
                 [
-                    $epIds[1] => ['is_coordinator' => 1, 'can_edit_curations' => 1],
+                    $epIds->first()->id => ['is_coordinator' => 1, 'can_edit_curations' => 1],
                 ]
             );
         }
