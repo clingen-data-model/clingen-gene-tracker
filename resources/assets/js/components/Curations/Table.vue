@@ -25,7 +25,6 @@
             :filter="filter"
             :per-page="pageLength"
             :current-page="currentPage"
-            @filtered="handleFiltered"
             @sort-changed="handleSortChanged"
             :sort-by.sync="sortKey"
             :sort-desc.sync="sortDesc"
@@ -159,6 +158,14 @@
             loading: function () {
                 return false;
             },
+        },
+        watch: {
+            filter: function (to, from) {
+                console.log([to, from]);
+                if (to != from) {
+                    this.resetCurrentPage();
+                }
+            }
         },
         methods: {
             curationProvider(ctx, callback) {
