@@ -74,7 +74,6 @@
                             this.matchedCurations = Object.values(response.data.data).filter((t) => (t.id != this.curation.id));
                         })
                         .catch((error) => {
-                            console.log(error);
                             alert('there was a problem retreiving curations that matched gene_symbol and mondo_id')
                         })
                 }

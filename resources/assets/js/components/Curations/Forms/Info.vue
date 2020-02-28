@@ -10,7 +10,10 @@
     }
 </style>
 <template>
-    <div id="curation-info-fields">
+    <div id="curation-info-fields" style="position: relative">
+        <div v-if="loading" style="position:absolute; top:0; left: 0; bottom: 0; right: 0; background-color: rgba(256, 256, 256, .4); z-index: 10">
+            <div class="alert alert-light border text-center" style="margin: auto; width: 10rem; margin-top: 25%">Loading...</div>
+        </div>
         <b-form-group horizontal id="new-gene-symbol-group"
             label="HGNC Gene Symbol"
             label-for="gene-symbol-input"
@@ -107,6 +110,9 @@
             ...mapGetters('curationStatuses', {
                 curationStatuses: 'Items',
             }),
+            ...mapGetters({
+                loading: 'loading',
+            }),
             panelOptions: function () {
                 return this.panels.filter(panel => user.canSelectExpertPanel(panel))
             },
@@ -141,7 +147,6 @@
         },
         methods: {
             handleDateSelected(evt) {
-                console.log(evt);
             },
             ...mapActions('panels', {
                 getAllPanels: 'getAllItems'

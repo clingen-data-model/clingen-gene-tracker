@@ -47,13 +47,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <delete-button :curation="curation"></delete-button>
-                            <button type="button" class="btn btn-secondary" id="curation-proceed" @click="$router.push('/curations')">Cancel</button>
+                            <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
                         </div>
                         <div class="col-md-8 text-right">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
-                            <button v-if="nextStep" type="button" class="btn btn-secondary" id="curation-proceed" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" id="new-curation-form-save" @click="updateCuration(navNext, 'next')">
+                            <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
+                            <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
+                            <b-button variant="primary" @click="updateCuration(navNext, 'next')">
                                 {{ (!nextStep) ? 'Save and exit' : 'Next'}}
                             </b-button>
                         </div>
@@ -114,6 +114,11 @@
                 updatedCuration: {
                     rationals: []
                 },
+                standInCuration: {
+                    id: 0,
+                    expert_panel: {},
+                    rationales: []
+                },
                 errors: {},
             }
         },
@@ -131,7 +136,7 @@
             ...mapGetters('curations', {
                 curations: 'Items',
                 getCuration: 'getItemById',
-            }),            
+            }),
             title: function () {
                 let title = 'Edit Curation: ';
                 if (this.curation.gene_symbol) {
@@ -144,13 +149,14 @@
             },
             curation: function(){
                 if (this.curations.length == 0) {
-                    return {
-                        expert_panel: {},
-                        rationales: []
-                    }
+                    return this.standInCuration
                 }
 
-                const curation = this.getCuration(this.id);
+                let curation = this.getCuration(this.id);
+                if (!curation) {
+                    return this.standInCuration
+                    
+                }
                 return curation;
             },
             curator: () =>  (this.curation.curator) ? this.curation.curator.name : '--',
@@ -211,7 +217,6 @@
                     })
                     .catch( (error) => {
                         // this.errors = error.response.data.errors;
-                        console.log(error)
                         return error;
                     });
             },
@@ -234,10 +239,18 @@
                 if (typeof to == 'undefined' ) {
                     return;
                 }
-                if (to.id != from.id) {
+                if (typeof from == 'undefined' ) {
                     this.fetchCuration(this.curation.id);
+                    this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
+                    return;
+                }
+                if (to.id != from.id && to.id && to.id != 0) {
+                    this.fetchCuration(this.curation.id);
+                    this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
+                    return;
                 }
                 this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
+                return;
             },
             cancel: function ()
             {

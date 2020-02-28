@@ -161,7 +161,6 @@
         },
         watch: {
             filter: function (to, from) {
-                console.log([to, from]);
                 if (to != from) {
                     this.resetCurrentPage();
                 }
@@ -170,7 +169,6 @@
         methods: {
             curationProvider(ctx, callback) {
                 const context = {...ctx, ...this.searchParams};
-                console.log(context);
                 getPageOfCurations(context)
                     .then(response => {
                         this.totalRows = response.data.meta.total
@@ -200,7 +198,6 @@
               this.resetCurrentPage();
             },
             handleSortChanged() {
-                console.log('hanleSortChanged');
                 this.resetCurrentPage();
             }
         },
