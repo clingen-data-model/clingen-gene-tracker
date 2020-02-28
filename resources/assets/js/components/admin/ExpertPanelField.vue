@@ -91,7 +91,6 @@
             syncSelectedPanels() {
                 this.selectedPanels = JSON.parse(JSON.stringify(this.connectedPanels))
                 this.selectedPanels.map((panel) => {
-                    console.log('map');
                     panel.pivot.is_curator = (panel.pivot.is_curator == 1)
                     panel.pivot.is_coordinator = (panel.pivot.is_coordinator == 1)
                     panel.pivot.can_edit_curations = (panel.pivot.can_edit_curations == 1)
@@ -108,7 +107,6 @@
             }
         },
         mounted() {
-            console.log('mounted')
             this.syncSelectedPanels()
         }
     }
