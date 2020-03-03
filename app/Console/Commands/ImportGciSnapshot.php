@@ -81,6 +81,7 @@ class ImportGciSnapshot extends Command
 
         $headerKeys = null;
         $rows = [];
+        $skipped = 0;
         while ($line = fgetcsv($fh)) {
             if (is_null($headerKeys)) {
                 $headerKeys = array_map(function ($item) {
@@ -89,7 +90,14 @@ class ImportGciSnapshot extends Command
                 continue;
             }
 
+            
             $row = array_combine($headerKeys, $line);
+            if ($this->skipRow($row)) {
+                $skipped++;
+                // dump($row);
+                continue;
+            }
+
             $rows[] = $row;
         }
 
@@ -132,8 +140,57 @@ class ImportGciSnapshot extends Command
         foreach ($errors as $key => $category) {
             $this->info(count($category).' '.$key.' errors');
         }
+        $this->info('Skipped curations: '.$skipped);
         $this->info('Errors written to '.base_path('files/gci_snapshot_import_errors.json'));
+
+        if (isset($errors['missing'])) {
+            $fh = fopen(base_path('files/gci_snapshot_missing.csv'), 'w');
+            fputcsv($fh, array_keys($errors['missing'][0]));
+            foreach ($errors['missing'] as $row) {
+                fputcsv($fh, $row);
+            }
+            fclose($fh);
+        }
     }
+
+    private function skipRow($row)
+    {
+        $skipData = [
+            '6eecf268-ed41-472b-980b-354ccf103259',
+            'b38fd6d6-459c-425c-bc00-705a71c2b7f0',
+            '9f2593d9-aa90-4051-b9cf-30c3a22a68ea',
+            '48f788db-a9ae-4fc0-b1b4-4c1aebdceb3e',
+            '0defa473-b0d5-453a-8a45-8b1937a2899f',
+            '0defa473-b0d5-453a-8a45-8b1937a2899f',
+            '5b1b4732-7b7b-48ae-9ec9-e062a199b9a1',
+            '61901d97-88fd-4812-9ab2-18eeaeab53db',
+            '8f55a7d5-5fb1-479b-90c9-7a7fbc297322',
+            'adaf0fc1-272e-4731-821f-9676d76ba548',
+            'd621f224-0f33-4d79-9285-88b5b8f5cbe1',
+            'c6622002-6d82-4bc4-94d5-e81822d006f2',
+            'c9f413ba-bfbd-4f75-8dd3-eafe869c5cc1',
+            '6189bdf4-8751-4ac1-a7d8-b159d3dfb92f',
+            '1fcd4927-5557-4d07-84ba-4a1cba6d13f6',
+            // ['hgnc_id' => 'HGNC:10592', 'mondo_id' =>	'8646'],
+            // ['hgnc_id' => 'HGNC:10680', 'mondo_id' =>	'17366'],
+            // ['hgnc_id' => 'HGNC:10805', 'mondo_id' =>	'15152'],
+            // ['hgnc_id' => 'HGNC:11389', 'mondo_id' =>	'8280'],
+            // ['hgnc_id' => 'HGNC:11875', 'mondo_id' =>	'15470'],
+            // ['hgnc_id' => 'HGNC:11875', 'mondo_id' =>	'15470'],
+            // ['hgnc_id' => 'HGNC:11998', 'mondo_id' =>	'FREETEXT'],
+            // ['hgnc_id' => 'HGNC:12829', 'mondo_id' =>	'16419'],
+            // ['hgnc_id' => 'HGNC:25455', 'mondo_id' =>	'15253'],
+            // ['hgnc_id' => 'HGNC:25522', 'mondo_id' =>	'15780'],
+            // ['hgnc_id' => 'HGNC:28472', 'mondo_id' =>	'16587'],
+            // ['hgnc_id' => 'HGNC:29122', 'mondo_id' =>	'15168'],
+            // ['hgnc_id' => 'HGNC:4801', 'mondo_id' =>	'12172'],
+            // ['hgnc_id' => 'HGNC:6770', 'mondo_id' =>	'8276'],
+            // ['hgnc_id' => 'HGNC:9588', 'mondo_id' =>	'17623'],
+        ];
+
+        return in_array($row['gdm uuid'], $skipData);
+    }
+    
 
     private function getMatchingCuration($row)
     {
