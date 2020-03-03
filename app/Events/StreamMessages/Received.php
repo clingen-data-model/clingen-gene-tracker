@@ -15,7 +15,7 @@ class Received
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $messageString;
+    public $message;
 
     /**
      * Create a new event instance.
