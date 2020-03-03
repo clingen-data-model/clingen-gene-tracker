@@ -44,7 +44,7 @@ class BulkCurationProcessor
 
     public function processFile($path, $expertPanelId)
     {
-        ini_set('max_execution_time','360');
+        ini_set('max_execution_time', '360');
         
         DB::beginTransaction();
 
@@ -71,7 +71,6 @@ class BulkCurationProcessor
 
     private function sheetIsValid($sheet)
     {
-        
         $rowCount = 0;
         $this->applyToSheet($sheet, function ($idx, $data) use (&$rowCount) {
             $this->rowIsValid($data, $idx);
@@ -285,5 +284,4 @@ class BulkCurationProcessor
 
         return $sheet;
     }
-  
 }
