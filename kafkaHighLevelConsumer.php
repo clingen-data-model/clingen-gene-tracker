@@ -24,24 +24,10 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $parti
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
             echo "Assign: ";
-            // dump(array_map(function ($partition) { 
-            //     // $partition->setOffset(0);
-            //     return  [
-            //         'topic' => $partition->getTopic(),
-            //         'offset' => $partition->getOffset()
-            //     ];
-            // }, $partitions));
             $kafka->assign($partitions);
             break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-            //  echo "Revoke: ";
-            //     dump(array_map(function ($partition) {
-            //         return  [
-            //             'topic' => $partition->getTopic(),
-            //             'offset' => $partition->getOffset()
-            //         ];
-            //     }, $partitions));
              $kafka->assign(null);
              break;
 
@@ -98,7 +84,7 @@ foreach ($availableTopics as $avlTopic) {
 
 // Subscribe to topic 'test'
 echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."\n";
-foreach($topics as $topic) {
+foreach ($topics as $topic) {
     $consumer->subscribe([$topic]);
 }
 
