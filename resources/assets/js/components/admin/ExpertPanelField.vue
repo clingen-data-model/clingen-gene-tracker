@@ -3,7 +3,7 @@
 <template>
     <div>
         <!-- <pre>{{selectedPanels.length}}</pre> -->
-        <input type="hidden" :value="serializedSelections" name="expert_panels_json"></input>
+        <input type="hidden" :value="serializedSelections" name="expert_panels_json">
         <table 
             class="table table-striped" 
         >
