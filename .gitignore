@@ -15,3 +15,4 @@ database/backups
 .DS_Store
 google-sheets-api-credentials.json
 python/token.pickle
+kafka-auth/*
