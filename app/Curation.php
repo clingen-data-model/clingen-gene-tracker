@@ -196,4 +196,9 @@ class Curation extends Model
 
         return $this;
     }
+
+    public function findByUuid($uuid)
+    {
+        return self::where('gdm_uuid', $uuid)->first();
+    }
 }
