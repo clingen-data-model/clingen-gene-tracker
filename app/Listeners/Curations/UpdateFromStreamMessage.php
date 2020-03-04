@@ -3,9 +3,11 @@
 namespace App\Listeners\Curations;
 
 use App\Curation;
+use App\StreamError;
 use App\Events\StreamMessages\Received;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Exceptions\UnmatchableCurationException;
 
 class UpdateFromStreamMessage
 {
@@ -27,10 +29,17 @@ class UpdateFromStreamMessage
      */
     public function handle(Received $event)
     {
-        $message = $event->message;
+        $payload = json_decode($event->message->payload);
 
-        dd($message);
-
+        try {
+            $curation = $this->matchCuration($payload);
+        } catch (UnmatchableCurationException $e) {
+            StreamError::create([
+                'type' => 'unmatchable curation',
+                'message_payload' => $e->getPayload(),
+                'direction' => 'incoming',
+            ]);
+        }
         // if ($message->status == 'created') {
         //     $curation = Curation::where([
         //         'hgnc_id' => $message->
@@ -41,5 +50,19 @@ class UpdateFromStreamMessage
         // if (!$curation) {
         //     throw new UnkownCurationRecordException();
         // }
+    }
+
+    private function matchCuration($payload)
+    {
+        $curation = Curation::findByUuid($payload->report_id);
+        if (!$curation) {
+            $curation = Curation::findByHgncAndMondo(
+                $payload->gene_validity_evidence_level->genetic_condition->gene,
+                $payload->gene_validity_evidence_level->genetic_condition->condition
+                        );
+            if (!$curation) {
+                throw new UnmatchableCurationException($payload);
+            }
+        }
     }
 }

@@ -1,0 +1,33 @@
+{
+    "status": "created",
+    "date": "2019-12-11T19:28:49.728987+00:00",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        }
+    ],
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    }
+}
