@@ -197,8 +197,18 @@ class Curation extends Model
         return $this;
     }
 
-    public function findByUuid($uuid)
+    public static function findByUuid($uuid)
     {
-        return self::where('gdm_uuid', $uuid)->first();
+        return static::where('gdm_uuid', $uuid)->first();
+    }
+
+    public static function findByHgncAndMondo($hgncId, $mondoId)
+    {
+        $hgncId = preg_replace('/HGNC:/', '', $hgncId);
+
+        return static::where([
+            'hgnc_id' => $hgncId,
+            'mondo_id' => $mondoId
+        ])->first();
     }
 }
