@@ -32,6 +32,12 @@ class KafkaConsumer implements MessageConsumer
         }
     }
 
+    /**
+     * Add a topic to consume
+     *
+     * @param string $topicName Name of topic to add
+     * @return MessageConsumer
+     */
     public function addTopic(String $topicName):MessageConsumer
     {
         array_push($this->topics, $topicName);
@@ -39,6 +45,12 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
+    /**
+     * Remove topic from topic list
+     *
+     * @param string $topicName Name of topic to remove from topic list
+     * @return MessageConsumer
+     */
     public function removeTopic(String $topicName):MessageConsumer
     {
         if (in_array($topicName, $this->topics)) {
@@ -47,23 +59,34 @@ class KafkaConsumer implements MessageConsumer
         }
 
         return $this;
-    }    
+    }
 
-    public function listTopics(): Array
+    /**
+     * Get a list of topics currently being consumed
+     *
+     * @retrun array List of topic names
+     */
+    public function listTopics(): array
     {
         $availableTopics = $this->kafkaConsumer->getMetadata(true, null, 60e3)->getTopics();
 
-        return array_map(function ($topic) {
+        return array_map(
+            function ($topic) {
                 return [
                     'name' => $topic->getName(),
                     'offset' => $topic->getOffset()
                 ];
-            }, 
+            },
             $availableTopics
         );
     }
     
 
+    /**
+     * Begin listening for messages on topics in topic list
+     *
+     * @return MessageConsumer
+     */
     public function listen(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
@@ -82,6 +105,9 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
     
+    /**
+     * Make sure topic list is unique.
+     */
     private function cleanTopics()
     {
         $this->topics = array_unique($this->topics);
@@ -90,5 +116,4 @@ class KafkaConsumer implements MessageConsumer
             $this->listen();
         }
     }
-    
 }

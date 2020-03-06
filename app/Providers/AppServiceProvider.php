@@ -9,6 +9,8 @@ use App\Services\MessageLogger;
 use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;
 use Illuminate\Events\Dispatcher;
+use App\Contracts\MessageConsumer;
+use App\Services\KafkaConsumer;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -65,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
             if (config('streaming-service.driver') == 'log') {
                 return new MessageLogger();
             }
-            return new KafkaProducer();
+            return $this->app->make(KafkaProducer::class);
         });
 
         $this->app->bind(\RdKafka\Producer::class, function () {
@@ -80,6 +82,10 @@ class AppServiceProvider extends ServiceProvider
             $conf->set('auto.offset.reset', 'smallest');
 
             return new \RdKafka\KafkaConsumer($conf);
+        });
+
+        $this->app->bind(MessageConsumer::class, function () {
+            return $this->app->make(KafkaConsumer::class)->addTopic(config('streaming-service.gci-topic'));
         });
     }
 }
