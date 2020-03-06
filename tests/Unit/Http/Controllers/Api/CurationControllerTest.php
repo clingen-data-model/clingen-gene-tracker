@@ -358,7 +358,7 @@ class CurationControllerTest extends TestCase
             ->json('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('curation_curation_status', ['curation_status_id'=>$statuses->get(1)->id, 'created_at'=>now()]);
+        $this->assertDatabaseHas('curation_curation_status', ['curation_status_id'=>$statuses->get(1)->id, 'created_at'=>now()->format('Y-m-d H:i:s')]);
     }
 
     /**

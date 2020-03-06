@@ -204,6 +204,28 @@ class Curation extends Model
         return $this;
     }
 
+    public function scopeHgncAndMondo($query, $hgncId, $mondoId)
+    {
+        $hgncId = preg_replace('/HGNC:/', '', $hgncId);
+
+        return $query->where([
+            'hgnc_id' => $hgncId,
+            'mondo_id' => $mondoId
+        ]);
+    }
+    
+    public function scopeNoUuid($query)
+    {
+        return $query->whereNull('gdm_uuid');
+    }
+
+    public function scopeHasUuid($query)
+    {
+        return $query->whereNotNull('gdm_uuid');
+    }
+        
+    
+
     public static function findByUuid($uuid)
     {
         return static::where('gdm_uuid', $uuid)->first();

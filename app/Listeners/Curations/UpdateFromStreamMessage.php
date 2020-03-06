@@ -59,8 +59,7 @@ class UpdateFromStreamMessage
         $curation->update([
             'gdm_uuid' => $gciMessage->uuid,
             'affiliation_id' => $affiliation->id,
-            'moi_id' => $moi->id,
-            'sop' => $gciMessage->sop
+            'moi_id' => $moi->id
         ]);
 
         if ($gciMessage->status == 'created') {
@@ -84,10 +83,10 @@ class UpdateFromStreamMessage
     {
         $curation = Curation::findByUuid($message->uuid);
         if (!$curation) {
-            $curation = Curation::findByHgncAndMondo(
-                $message->hgncId,
-                $message->mondoId
-            );
+            $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
+                            // ->noUuid()
+                            ->first();
+
             if (!$curation) {
                 throw new UnmatchableCurationException($message->payload);
             }

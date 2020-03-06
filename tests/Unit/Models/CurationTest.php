@@ -258,4 +258,46 @@ class CurationTest extends TestCase
 
         $this->assertEquals($affiliation, $curation->affiliation);
     }
+
+    /**
+     * @test
+     */
+    public function can_scope_by_hgnc_and_mondo_ids()
+    {
+        $curation = factory(Curation::class)->create([
+            'hgnc_id' => 17098,
+            'mondo_id' => 'MONDO:0011111'
+        ]);
+
+        $this->assertEquals($curation->id, Curation::hgncAndMondo(17098, 'MONDO:0011111')->first()->id);
+        $this->assertNull(Curation::hgncAndMondo(17098, 'MONDO:0011112')->first());
+    }
+
+    /**
+     * @test
+     */
+    public function can_scope_where_curation_does_not_have_uuid()
+    {
+        $curationWithUuid = factory(Curation::class)->create([
+            'hgnc_id' => 17098,
+            'mondo_id' => 'MONDO:0011112',
+            'gdm_uuid' => '1234'
+        ]);
+
+        $this->assertEquals($this->curation->id, Curation::noUuid()->first()->id);
+    }
+
+    /**
+     * @test
+     */
+    public function can_scope_where_curation_does_have_uuid()
+    {
+        $curationWithUuid = factory(Curation::class)->create([
+            'hgnc_id' => 17098,
+            'mondo_id' => 'MONDO:0011112',
+            'gdm_uuid' => '1234'
+        ]);
+
+        $this->assertEquals($curationWithUuid->id, Curation::hasUuid()->first()->id);
+    }
 }
