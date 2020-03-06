@@ -203,7 +203,7 @@ class CurationTest extends TestCase
     public function curation_given_uploaded_status_when_created()
     {
         $curation = factory(\App\Curation::class)->create();
-        $this->assertEquals($curation->currentStatus->id, 1);
+        $this->assertEquals($curation->fresh()->currentStatus->id, 1);
     }
 
     /**

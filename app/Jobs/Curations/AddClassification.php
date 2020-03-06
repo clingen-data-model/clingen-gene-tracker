@@ -3,6 +3,7 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
+use Carbon\Carbon;
 use App\Classification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,11 +12,11 @@ class AddClassification
 {
     use Dispatchable, Queueable;
 
-    protected $curation;
+    public $curation;
 
-    protected $classification;
+    public $classification;
 
-    protected $date;
+    public $date;
 
     /**
      * Create a new job instance.
@@ -36,10 +37,12 @@ class AddClassification
      */
     public function handle()
     {
-        $this->curation->classifications()->attach([
-            $this->classification->id => [
-                'classification_date' => $this->date
-            ]
-        ]);
+        if ($this->curation->currentClassification->id != $this->classification->id) {
+            $this->curation->classifications()->attach([
+                $this->classification->id => [
+                    'classification_date' => $this->date ?? Carbon::now()
+                ]
+            ]);
+        }
     }
 }
