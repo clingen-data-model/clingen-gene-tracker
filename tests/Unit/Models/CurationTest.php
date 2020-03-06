@@ -284,7 +284,7 @@ class CurationTest extends TestCase
             'gdm_uuid' => '1234'
         ]);
 
-        $this->assertEquals($this->curation->id, Curation::noUuid()->first()->id);
+        $this->assertContains($this->curation->id, Curation::noUuid()->get()->pluck('id')->toArray());
     }
 
     /**
