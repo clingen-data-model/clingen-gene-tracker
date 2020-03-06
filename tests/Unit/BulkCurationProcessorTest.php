@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Mockery;
+use App\User;
 use App\Curation;
 use Tests\TestCase;
 use App\ExpertPanel;
@@ -25,6 +26,8 @@ class BulkCurationProcessorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
+        $this->ep = factory(ExpertPanel::class)->create([]);
         $omimClientMock = $this->createMock(OmimClient::class);
         // $omimClientMock->method('getEntry')->willReturn([]);
         $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
@@ -96,7 +99,7 @@ class BulkCurationProcessorTest extends TestCase
     public function adds_new_curations_for_valid_file()
     {
         \DB::table('curations')->delete();
-        $curations = $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), 1);
+        $curations = $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), $this->ep->id);
 
         $this->assertEquals(3, \DB::table('curations')->count());
     }
@@ -107,15 +110,15 @@ class BulkCurationProcessorTest extends TestCase
     public function creates_curation_from_valid_row_data()
     {
         \DB::table('curations')->delete();
-        $curation = $this->svc->processRow($this->data, 1);
+        $curation = $this->svc->processRow($this->data, $this->ep->id);
         $this->assertInstanceOf(Curation::class, $curation);
         $this->assertDatabaseHas(
             'curations',
             [
                 'gene_symbol' => $this->data['gene_symbol'],
                 'curation_type_id' => 1,
-                'expert_panel_id' => 1,
-                'curator_id' => 1,
+                'expert_panel_id' => $this->ep->id,
+                'curator_id' => $this->user->id,
                 'mondo_id' => $this->data['mondo_id'],
                 'rationale_notes' => $this->data['rationale_notes'],
                 'disease_entity_notes' => $this->data['disease_entity_if_there_is_no_mondo_id'],
