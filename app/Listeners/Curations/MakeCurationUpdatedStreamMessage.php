@@ -28,7 +28,7 @@ class MakeCurationUpdatedStreamMessage
     public function handle(Updated $event)
     {
         StreamMessage::create([
-            'topic' => config('streaming-service.topic'),
+            'topic' => config('streaming-service.gci-topic'),
             'message' => json_encode([
                 'event' => 'updated',
                 'curation' => $event->curation->loadForMessage()->toArray()

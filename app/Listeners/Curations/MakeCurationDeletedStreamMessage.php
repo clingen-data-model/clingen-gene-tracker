@@ -28,7 +28,7 @@ class MakeCurationDeletedStreamMessage
     public function handle(Deleted $event)
     {
         StreamMessage::create([
-            'topic' => config('streaming-service.topic'),
+            'topic' => config('streaming-service.gci-topic'),
             'message' => json_encode([
                 'event' => 'deleted',
                 'curation' => ['id' => $event->curation->id]
