@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group classifications
+ * @group curations
  */
 class AddClassificationTest extends TestCase
 {
@@ -34,5 +35,33 @@ class AddClassificationTest extends TestCase
             'classification_date' => '2019-12-25'
         ]);
     }
-    
+
+    /**
+     * @test
+     */
+    public function does_not_add_current_classification_again()
+    {
+        \Event::fake();
+        $classification = factory(Classification::class)->create([]);
+        $curation = factory(Curation::class)->create();
+        $job = new AddClassification($curation, $classification, '2019-12-25');
+        $job->handle();
+
+        $curation = $curation->fresh();
+        
+        $job2 = new AddClassification($curation, $classification, '2020-12-25');
+        $job2->handle();
+
+        $this->assertDatabaseHas('classification_curation', [
+            'curation_id' => $curation->id,
+            'classification_id' => $classification->id,
+            'classification_date' => '2019-12-25'
+        ]);
+
+        $this->assertDatabaseMissing('classification_curation', [
+            'curation_id' => $curation->id,
+            'classification_id' => $classification->id,
+            'classification_date' => '2020-12-25'
+        ]);
+    }
 }

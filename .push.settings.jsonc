@@ -16,7 +16,7 @@
 			// "password": "",
 			// "privateKey": "",
 			// "keyPassphrase": "",
-			"root": "/mnt/web/project/clingen-test",
+			"root": "/mnt/web/project/clingen-test/current",
 			// "keepaliveInterval": 3000,
 			// "debug": false,
 			// "fileMode": "",

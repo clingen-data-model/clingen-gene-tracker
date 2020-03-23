@@ -77,21 +77,7 @@ class ImportGciSnapshot extends Command
         $this->mois = ModeOfInheritance::all()->keyBy('hp_id');
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');
 
-        $fh = fopen($this->argument('file'), 'r');
-
-        $headerKeys = null;
-        $rows = [];
-        while ($line = fgetcsv($fh)) {
-            if (is_null($headerKeys)) {
-                $headerKeys = array_map(function ($item) {
-                    return trim(strtolower($item));
-                }, $line);
-                continue;
-            }
-
-            $row = array_combine($headerKeys, $line);
-            $rows[] = $row;
-        }
+        $rows = $this->getRows();
 
         $bar = $this->output->createProgressBar(count($rows));
         $errors = [];
@@ -101,7 +87,7 @@ class ImportGciSnapshot extends Command
                 $this->updateGdmUUID($curation, $row);
                 $this->updateStatus($curation, $row);
                 $this->updateClassification($curation, $row);
-                $this->updateCurator($curation, $row);
+                // $this->updateCurator($curation, $row);
                 $this->updateMoi($curation, $row);
                 $this->setAffiliation($curation, $row);
                 if (is_null($curation->mondo_id)) {
@@ -124,6 +110,41 @@ class ImportGciSnapshot extends Command
             }
             $bar->advance();
         }
+
+        $this->reportErrors($errors);
+    }
+
+    private function getRows()
+    {
+        $fh = fopen($this->argument('file'), 'r');
+
+        $headerKeys = null;
+        $rows = [];
+        $skipped = 0;
+        while ($line = fgetcsv($fh)) {
+            if (is_null($headerKeys)) {
+                $headerKeys = array_map(function ($item) {
+                    return trim(strtolower($item));
+                }, $line);
+                continue;
+            }
+
+            
+            $row = array_combine($headerKeys, $line);
+            if ($this->skipRow($row)) {
+                $skipped++;
+                continue;
+            }
+
+            $rows[] = $row;
+        }
+        $this->info('Skipped curations: '.$skipped);
+
+        return $rows;
+    }
+
+    private function reportErrors($errors)
+    {
         echo "\n";
         foreach ($errors as $type => $contents) {
             $errors[$type] = array_flatten($contents, 1);
@@ -133,7 +154,42 @@ class ImportGciSnapshot extends Command
             $this->info(count($category).' '.$key.' errors');
         }
         $this->info('Errors written to '.base_path('files/gci_snapshot_import_errors.json'));
+
+        if (isset($errors['missing'])) {
+            $fh = fopen(base_path('files/gci_snapshot_missing.csv'), 'w');
+            fputcsv($fh, array_keys($errors['missing'][0]));
+            foreach ($errors['missing'] as $row) {
+                fputcsv($fh, $row);
+            }
+            fclose($fh);
+        }
     }
+    
+    
+
+    private function skipRow($row)
+    {
+        $skipData = [
+            '6eecf268-ed41-472b-980b-354ccf103259',
+            'b38fd6d6-459c-425c-bc00-705a71c2b7f0',
+            '9f2593d9-aa90-4051-b9cf-30c3a22a68ea',
+            '48f788db-a9ae-4fc0-b1b4-4c1aebdceb3e',
+            '0defa473-b0d5-453a-8a45-8b1937a2899f',
+            '0defa473-b0d5-453a-8a45-8b1937a2899f',
+            '5b1b4732-7b7b-48ae-9ec9-e062a199b9a1',
+            '61901d97-88fd-4812-9ab2-18eeaeab53db',
+            '8f55a7d5-5fb1-479b-90c9-7a7fbc297322',
+            'adaf0fc1-272e-4731-821f-9676d76ba548',
+            'd621f224-0f33-4d79-9285-88b5b8f5cbe1',
+            'c6622002-6d82-4bc4-94d5-e81822d006f2',
+            'c9f413ba-bfbd-4f75-8dd3-eafe869c5cc1',
+            '6189bdf4-8751-4ac1-a7d8-b159d3dfb92f',
+            '1fcd4927-5557-4d07-84ba-4a1cba6d13f6',
+        ];
+
+        return in_array($row['gdm uuid'], $skipData);
+    }
+    
 
     private function getMatchingCuration($row)
     {

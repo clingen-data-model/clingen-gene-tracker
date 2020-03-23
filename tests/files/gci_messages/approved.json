@@ -1,0 +1,79 @@
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098"
+        }
+    },
+    "status": "approved",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "10001",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Epilepsy GCEP"
+        },
+        {
+            "id": "10002",
+            "name": "Cardiomyopathy",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10004",
+            "name": "Familial Hypercholesterolemia",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "date": "2020-01-08T18:16:30.497Z"
+}

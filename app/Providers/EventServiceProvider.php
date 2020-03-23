@@ -34,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\StreamMessages\Created' => [
             'App\Listeners\StreamMessages\PushMessage'
+        ],
+        'App\Events\StreamMessages\Received' => [
+            'App\Listeners\Curations\UpdateFromStreamMessage'
         ]
     ];
 
