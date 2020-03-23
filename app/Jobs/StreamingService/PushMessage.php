@@ -26,9 +26,7 @@ class PushMessage implements ShouldQueue
      */
     public function __construct(StreamMessage $message)
     {
-        //
         $this->message = $message;
-        // dd($this->message);
     }
 
     /**
@@ -44,7 +42,6 @@ class PushMessage implements ShouldQueue
             $this->message->update([
                 'sent_at' => Carbon::now()
             ]);
-            // dump('updated message setn_at');
         } catch (StreamingServiceDisabledException $e) {
             if (config('streaming-service.warn-disabled', true)) {
                 \Log::warning($e->getMessage());

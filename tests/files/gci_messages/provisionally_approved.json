@@ -1,0 +1,47 @@
+{
+    "date": "2019-12-11T19:32:24.151Z",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "10001",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "provisionally approved",
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0011111"
+        }
+    }
+}

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Curation;
 use Carbon\Carbon;
+use App\CurationStatus;
 use Illuminate\Http\Request;
 use App\Contracts\OmimClient;
+use App\Jobs\Curations\AddStatus;
 use App\Http\Controllers\Controller;
 use App\Services\RequestDataCleaner;
 use App\Jobs\Curations\SyncPhenotypes;
@@ -115,7 +117,7 @@ class CurationController extends Controller
             SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
         }
         if ($request->curation_status_id) {
-            $curation->curationStatuses()->attach($request->curation_status_id);
+            AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
         }
         $this->loadRelations($curation);
 
@@ -169,7 +171,7 @@ class CurationController extends Controller
 
         if ($request->isolated_phenotype) {
             $pheno = $this->omim->getEntry($request->isolated_phenotype)[0]->entry;
-            SyncPhenotypes::dispatchNow($curation,[
+            SyncPhenotypes::dispatchNow($curation, [
                 ['mim_number'=>$pheno->mimNumber, 'name'=> $pheno->titles->preferredTitle]
             ]);
         }

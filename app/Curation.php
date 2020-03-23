@@ -7,9 +7,16 @@ use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
+use App\Jobs\Curations\AddStatus;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
+/**
+ * @property-read Classification $currentClassificiation
+ * @property-read CurationStatus $currentStatus
+ * @property-read string numericMondoId
+ *
+ **/
 class Curation extends Model
 {
     use CrudTrait;
@@ -63,7 +70,7 @@ class Curation extends Model
 
         static::created(function ($curation) {
             if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
-                $curation->curationStatuses()->attach(CurationStatus::find(1));
+                AddStatus::dispatch($curation, CurationStatus::find(1));
             }
         });
     }
@@ -195,5 +202,42 @@ class Curation extends Model
         $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
 
         return $this;
+    }
+
+    public function scopeHgncAndMondo($query, $hgncId, $mondoId)
+    {
+        $hgncId = preg_replace('/HGNC:/', '', $hgncId);
+
+        return $query->where([
+            'hgnc_id' => $hgncId,
+            'mondo_id' => $mondoId
+        ]);
+    }
+    
+    public function scopeNoUuid($query)
+    {
+        return $query->whereNull('gdm_uuid');
+    }
+
+    public function scopeHasUuid($query)
+    {
+        return $query->whereNotNull('gdm_uuid');
+    }
+        
+    
+
+    public static function findByUuid($uuid)
+    {
+        return static::where('gdm_uuid', $uuid)->first();
+    }
+
+    public static function findByHgncAndMondo($hgncId, $mondoId)
+    {
+        $hgncId = preg_replace('/HGNC:/', '', $hgncId);
+
+        return static::where([
+            'hgnc_id' => $hgncId,
+            'mondo_id' => $mondoId
+        ])->first();
     }
 }

@@ -28,7 +28,7 @@ class MakeCurationCreatedStreamMessage
     public function handle(Created $event)
     {
         StreamMessage::create([
-            'topic' => config('streaming-service.topic'),
+            'topic' => config('streaming-service.gci-topic'),
             'message' => json_encode([
                 'event' => 'created',
                 'curation' => $event->curation->loadForMessage()->toArray()

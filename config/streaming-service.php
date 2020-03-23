@@ -8,8 +8,6 @@ return [
     'ca-location' =>  env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'),
     'ssl-key-password' => env('KAFKA_KEY_PASSWORD', null),
     'group' => env('KAFKA_GROUP', 'unc_demo'),
-    'topic' => 'test',
-    'gci-topic-dev' => 'gene_validity_events_dev',
-    'gci-topic-dev' => 'gene_validity_events',
+    'gci-topic' => env('GCI_TOPIC', 'gene_validity_events'),
     'warn-disabled' => env('STREAMING_SERVICE_WARN_DISABLED', true)
 ];
