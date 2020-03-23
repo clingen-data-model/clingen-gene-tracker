@@ -1,245 +1,78 @@
 gene_symbol,hgnc_id,mondo_id,affiliation,createor
-ABCD3,HGNC:67,18841,"Peroxisomal Disorders",shruthi_mohan@med.unc.edu
-ACOX1,HGNC:119,9919,"Peroxisomal Disorders",megan_mayers@med.unc.edu
 ACTG1,HGNC:144,FREETEXT,"Hearing Loss",rsiegert@mgh.harvard.edu
 ACTN2,HGNC:164,5045,,jennifer.goldstein@unc.edu
-ADAMTS13,HGNC:1366,10122,"Hemostasis Thrombosis",shruthi_mohan@med.unc.edu
-ADNP,HGNC:15766,14379,"Intellectual Disability and Autism",xmzhuo@gmail.com
 ADRA2B,HGNC:282,5027,,vmurillo18@students.kgi.edu
-AGXT,HGNC:341,9823,"Peroxisomal Disorders",megan_mayers@med.unc.edu
 AKAP9,HGNC:379,8646,,eriggs@geisinger.edu
-ALK,HGNC:427,13083,"Hereditary Cancer",ye.cao@bcm.edu
-AMACR,HGNC:451,18841,"Peroxisomal Disorders",shruthi_mohan@med.unc.edu
 ARL2BP,HGNC:17146,14186,,jennifer.goldstein@unc.edu
 ARL2BP,HGNC:17146,14186,,jennifer.goldstein@unc.edu
-ARX,HGNC:18060,16021,Epilepsy,mhughes22@mgh.harvard.edu
 ATF6,HGNC:791,18852,,eriggs@geisinger.edu
-BAAT,HGNC:932,11905,"Peroxisomal Disorders",shruthi_mohan@med.unc.edu
 BAG3,HGNC:939,18943,,strande@email.unc.edu
 BDNF,HGNC:1033,8852,"Harvard/Geisinger Biocuration Core",mdistefano1@partners.org
-BLK,HGNC:1057,15967,"Monogenic Diabetes",megan_mayers@med.unc.edu
 BNC2,HGNC:30988,FREETEXT,,agrant@broadinstitute.org
-BRCA1,HGNC:1100,54748,"Hereditary Cancer",fen.guo@slh.wisc.edu
-BRCA2,HGNC:1101,11584,"Hereditary Cancer",xi.luo@bcm.edu
-BRIP1,HGNC:20473,12187,"Hereditary Cancer",xi.luo@bcm.edu
-BRWD3,HGNC:17342,20119,"Intellectual Disability and Autism",mari.tokita@gmail.com
-BUB1,HGNC:1148,18630,"Hereditary Cancer",dritter@bcm.edu
-BUB1B,HGNC:1149,9759,"Hereditary Cancer",sainan.wei@uky.edu
-BUB3,HGNC:1151,18630,"Hereditary Cancer",dritter@bcm.edu
 C1QB,HGNC:1242,15699,,rajarshi.ghosh@bcm.edu
 CACNB4,HGNC:1404,5027,Epilepsy,liz@genedx.com
-CAT,HGNC:1516,13571,"Peroxisomal Disorders",shruthi_mohan@med.unc.edu
 CAV3,HGNC:1529,5045,,jennifer.goldstein@unc.edu
-CBL,HGNC:1541,FREETEXT,RASopathy,agrant@broadinstitute.org
-CCDC78,HGNC:14153,18947,"Congenital Myopathies",mayher@broadinstitute.org
 CD3E,HGNC:1674,15703,,strande@email.unc.edu
-CDK10,HGNC:1770,44324,"UNC Biocuration Core",kathleen_wallace@med.unc.edu
-CDK4,HGNC:1773,12183,"Hereditary Cancer",fen.guo@slh.wisc.edu
-CDKN1B,HGNC:1785,12552,"Hereditary Cancer",xi.luo@bcm.edu
-CDKN2A,HGNC:1787,11713,"Hereditary Cancer",xi.luo@bcm.edu
-CEBPA,HGNC:1833,18874,"Hereditary Cancer",justyne@email.unc.edu
-CEP57,HGNC:30794,13582,"Hereditary Cancer",sainan.wei@uky.edu
-CHRNA4,HGNC:1958,30,Epilepsy,mhughes22@mgh.harvard.edu
-CNTNAP2,HGNC:13830,5260,"Intellectual Disability and Autism",courtney_thaxton@med.unc.edu
-CNTNAP2,HGNC:13830,100038,Epilepsy,liz@genedx.com
 COL11A2,HGNC:2187,8975,"Hearing Loss",rsiegert@mgh.harvard.edu
 COL11A2,HGNC:2187,8975,"Hearing Loss",rsiegert@mgh.harvard.edu
 COL3A1,HGNC:2201,17311,,catherinefletcher@nhs.net
 COL9A1,HGNC:2217,19354,,tsneddon@broadinstitute.org
 COL9A1,HGNC:2217,19354,,tsneddon@broadinstitute.org
-CPS1,HGNC:2323,9376,Aminoacidopathy,jennifer.goldstein@unc.edu
 CUL4B,HGNC:2555,FREETEXT,,wahab.khan@mssm.edu
-CYLD,HGNC:2584,11512,"Hereditary Cancer",xi.luo@bcm.edu
-DAO,HGNC:2671,5090,"UNC Biocuration Core",jennifer.goldstein@unc.edu
-DHTKD1,HGNC:23537,8774,Aminoacidopathy,may_flowers@med.unc.edu
-DIS3L2,HGNC:28648,9965,"Hereditary Cancer",xi.luo@bcm.edu
-DLD,HGNC:2898,9529,Aminoacidopathy,jennifer.mcglaughon@gmail.com
 DNMT3A,HGNC:2978,17366,,rajarshi.ghosh@bcm.edu
 DSC2,HGNC:3036,12506,,jennifer.mcglaughon@gmail.com
 EBF3,HGNC:19087,15021,,christopher.lau@nih.gov
-ECHS1,HGNC:3151,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-ELANE,HGNC:3309,1475,"Hereditary Cancer",sainan.wei@uky.edu
 EPM2A,HGNC:3413,9697,Epilepsy,mkaneko@chla.usc.edu
 ESPN,HGNC:13281,19587,,shemphill@partners.org
 ESRRB,HGNC:3473,19588,,mhughes22@mgh.harvard.edu
-ETHE1,HGNC:23287,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
 EXO1,HGNC:3511,5835,,dritter@bcm.edu
 EXOSC9,HGNC:9137,54844,"Broad Institute Rare Disease Group",rson@broadinstitute.org
-EXT2,HGNC:3513,7586,"Hereditary Cancer",xi.luo@bcm.edu
-F13A1,HGNC:3531,13187,"Hemostasis Thrombosis",shruthi_mohan@med.unc.edu
 FAM161A,HGNC:25808,19200,,jennifer.goldstein@unc.edu
-FANCA,HGNC:3582,9215,"Hereditary Cancer",xi.luo@bcm.edu
-FANCC,HGNC:3584,9213,"Hereditary Cancer",xi.luo@bcm.edu
-FANCG,HGNC:3588,13565,"Hereditary Cancer",xi.luo@bcm.edu
-FARS2,HGNC:21062,9723,"Mitochondrial Diseases",aclause@illumina.com
-FH,HGNC:3700,7888,"Hereditary Cancer",ye.cao@bcm.edu
 FHL1,HGNC:3702,15896,,courtney_thaxton@med.unc.edu
-FLNC,HGNC:3756,16587,"Arrythmogenic Right Ventricular Cardiomyopathy",p.a.van.der.zwaag@umcg.nl
-FOXRED1,HGNC:26927,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
 GABRA1,HGNC:4075,5579,Epilepsy,helbigk@email.chop.edu
 GABRA1,HGNC:4075,100062,Epilepsy,bekang@emory.edu
 GABRB1,HGNC:4081,5287,,ithiffault@cmh.edu
-GABRB3,HGNC:4083,100062,Epilepsy,rsiegert@mgh.harvard.edu
 GATA2,HGNC:4171,13540,"Hereditary Cancer",ye.cao@bcm.edu
-GATA2,HGNC:4171,42982,"Hereditary Cancer",justyne@email.unc.edu
-GCDH,HGNC:4189,9281,Aminoacidopathy,jennifer.goldstein@unc.edu
 GCH1,HGNC:4193,16812,Aminoacidopathy,jennifer.goldstein@unc.edu
-GFM1,HGNC:13780,9723,"Mitochondrial Diseases",aclause@illumina.com
-GFM2,HGNC:29682,9723,"Mitochondrial Diseases",kbluske@illumina.com
 GNAO1,HGNC:4389,5395,Epilepsy,jwagnon@umich.edu
 GNAO1,HGNC:4389,16021,Epilepsy,ktoner1@geisinger.edu
-GNPAT,HGNC:4416,15776,"Peroxisomal Disorders",jennifer.goldstein@unc.edu
-GRIA3,HGNC:4573,100038,"Intellectual Disability and Autism",yinjiani900129@gmail.com
 GRIN1,HGNC:4584,100038,Epilepsy,agrant@broadinstitute.org
 GRIN1,HGNC:4584,100038,Epilepsy,agrant@broadinstitute.org
-GRIN2A,HGNC:4585,100038,Epilepsy,kristen.park@childrenscolorado.org
-GTPBP3,HGNC:14880,9723,"Mitochondrial Diseases",acoffey@illumina.com
-HACD1,HGNC:9639,19952,"Congenital Myopathies",may_flowers@med.unc.edu
-HCN1,HGNC:4845,100038,Epilepsy,courtney_thaxton@med.unc.edu
-HGF,HGNC:4893,12003,"Hearing Loss",shemphill@partners.org
-HNF1A,HGNC:11621,15967,"Monogenic Diabetes",courtney_thaxton@med.unc.edu
-HNF1B,HGNC:11630,7669,"Monogenic Diabetes",megan_mayers@med.unc.edu
 HNRNPK,HGNC:5044,18681,,eriggs@geisinger.edu
-HPS3,HGNC:15597,13555,"Hemostasis Thrombosis",shruthi_mohan@med.unc.edu
-HRG,HGNC:5181,2305,"Harvard/Geisinger Biocuration Core",agrant@broadinstitute.org
-HUWE1,HGNC:30892,19181,"Intellectual Disability and Autism",andrea.behlmann@emory.edu
-IARS2,HGNC:29685,9723,"Mitochondrial Diseases",rrajkumar@illumina.com
-IQSEC2,HGNC:29059,100038,"Intellectual Disability and Autism",chunanc@bcm.edu
-ITK,HGNC:6171,13081,"Hereditary Cancer",ye.cao@bcm.edu
-KCNB1,HGNC:6231,100038,Epilepsy,tts27@cumc.columbia.edu
-KCNH2,HGNC:6251,2442,"Long QT Syndrome",hf4@queensu.ca
-KCNJ2,HGNC:6263,8222,"Long QT Syndrome",arnonadler@gmail.com
 KIF1B,HGNC:16636,17366,,rajarshi.ghosh@bcm.edu
-KIT,HGNC:6342,11719,"Hereditary Cancer",mansour.zamanpoor@ccdhb.org.nz
-KLF11,HGNC:11811,15967,"Monogenic Diabetes",megan_mayers@med.unc.edu
-KLHL7,HGNC:15646,13052,"UNC Biocuration Core",jennifer.goldstein@unc.edu
 KMT2E,HGNC:18541,FREETEXT,"Broad Institute Rare Disease Group",asveden@broadinstitute.org
-L1CAM,HGNC:6470,17140,"Intellectual Disability and Autism",xmzhuo@gmail.com
 LHFPL5,HGNC:21253,12333,,mhughes22@mgh.harvard.edu
 LIG1,HGNC:6598,FREETEXT,"Harvard/Geisinger Biocuration Core",mdistefano1@partners.org
-LIPT1,HGNC:29569,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
 LONP1,HGNC:9479,10879,,mhughes22@mgh.harvard.edu
-LRPPRC,HGNC:15714,9723,"Mitochondrial Diseases",aclause@illumina.com
-MAOA,HGNC:6833,10379,"Intellectual Disability and Autism",hshimelis@geisinger.edu
 MAP2K2,HGNC:6842,1937,,bcushman@partners.org
-MBD5,HGNC:20444,100038,"Intellectual Disability and Autism",yinjiani900129@gmail.com
 MLH1,HGNC:7127,5835,,jennifer.mcglaughon@gmail.com
 MRPS34,HGNC:16618,9723,,mccormicke@email.chop.edu
-MT-ATP6,HGNC:7414,9723,"Mitochondrial Diseases",mccormicke@email.chop.edu
-MTFMT,HGNC:29666,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
 MT-ND3,HGNC:7458,9723,,mccormicke@email.chop.edu
 MUTYH,HGNC:7527,12041,,baseifer@email.unc.edu
 MYH10,HGNC:7568,1071,,ithiffault@cmh.edu
-MYL1,HGNC:7582,19952,"Hearing Loss",mayher@broadinstitute.org
 MYOC,HGNC:7610,20367,"UNC Biocuration Core",may_flowers@med.unc.edu
-NARS2,HGNC:26274,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFA1,HGNC:7683,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-NDUFA10,HGNC:7684,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFA12,HGNC:23987,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
 NDUFA2,HGNC:7685,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-NDUFA9,HGNC:7693,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFAF4,HGNC:21034,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-NDUFAF5,HGNC:15899,9723,"Mitochondrial Diseases",hhannoush@acmg.net
-NDUFAF6,HGNC:28625,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-NDUFS1,HGNC:7707,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-NDUFS2,HGNC:7708,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFS3,HGNC:7710,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-NDUFS4,HGNC:7711,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-NDUFS7,HGNC:7714,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFS8,HGNC:7715,9723,"Mitochondrial Diseases",jtaylor1@illumina.com
-NDUFV1,HGNC:7716,9723,"Mitochondrial Diseases",acoffey@illumina.com
-NDUFV2,HGNC:7717,9723,"Mitochondrial Diseases",acoffey@illumina.com
-NF1,HGNC:7765,11035,RASopathy,agrant@broadinstitute.org
 NFKBIZ,HGNC:29805,18630,,dritter@bcm.edu
 NGLY1,HGNC:17646,15286,,tsneddon@broadinstitute.org
 NHLRC1,HGNC:21576,9697,Epilepsy,kristen.park@childrenscolorado.org
-NLRP12,HGNC:22938,12724,"Harvard/Geisinger Biocuration Core",rsiegert@mgh.harvard.edu
 NPPA,HGNC:7939,5021,"Dilated Cardiomyopathy",r.h.lekanne@amc.uva.nl
-NSDHL,HGNC:13398,10441,"Intellectual Disability and Autism",mg3560@cumc.columbia.edu
-NSUN2,HGNC:25994,1071,"Intellectual Disability and Autism",agrant@broadinstitute.org
-NUBPL,HGNC:20278,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-NUP62,HGNC:8066,9723,"Mitochondrial Diseases",ithiffault@cmh.edu
-PAK3,HGNC:8592,20119,"Intellectual Disability and Autism",tsneddon@broadinstitute.org
-PALB2,HGNC:26144,12565,"Hereditary Cancer",xi.luo@bcm.edu
 PALB2,HGNC:26144,16419,,strande@email.unc.edu
-PCCB,HGNC:8654,11628,Aminoacidopathy,jennifer.goldstein@unc.edu
 PCSK9,HGNC:20001,11509,"Broad Institute Rare Disease Group",msingerb@broadinstitute.org
-PDGFRA,HGNC:8803,11719,"Hereditary Cancer",fengli.zhang@slh.wisc.edu
-PDHA1,HGNC:8806,9723,"Mitochondrial Diseases",mccormicke@email.chop.edu
-PET100,HGNC:40038,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-PET117,HGNC:40045,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-PEX13,HGNC:8855,19234,"Peroxisomal Disorders",shruthi_mohan@med.unc.edu
-PHOX2B,HGNC:9143,8852,"Hereditary Cancer",mansour.zamanpoor@ccdhb.org.nz
-PHYH,HGNC:8940,9958,"Peroxisomal Disorders",megan_mayers@med.unc.edu
-PIGA,HGNC:8957,18614,Epilepsy,tts27@cumc.columbia.edu
-PIK3CA,HGNC:8975,19716,"Brain Malformations",abbe.lai@childrens.harvard.edu
-PIK3R1,HGNC:8979,10026,,jennifer.mcglaughon@gmail.com
 PIK3R1,HGNC:8979,10026,,jennifer.mcglaughon@gmail.com
 PKD1,HGNC:9008,4691,,tsneddon@broadinstitute.org
 PKD1,HGNC:9008,4691,,tsneddon@broadinstitute.org
 PMS1,HGNC:9121,18630,,dritter@bcm.edu
 PMS2,HGNC:9122,15278,,ahbuchanan@geisinger.edu
 POLE,HGNC:9177,18630,,dritter@bcm.edu
-POLG,HGNC:9179,9723,"Mitochondrial Diseases",clarkec@email.chop.edu
-PRKAR1A,HGNC:9388,8057,"Hereditary Cancer",xi.luo@bcm.edu
-PROC,HGNC:9451,19145,"Hemostasis Thrombosis",justyne@email.unc.edu
-PRODH,HGNC:9453,9400,Aminoacidopathy,jennifer.goldstein@unc.edu
-PRODH2,HGNC:17325,9374,Aminoacidopathy,jennifer.goldstein@unc.edu
-PRRT2,HGNC:30500,11178,Epilepsy,aing@luriechildrens.org
-PRSS1,HGNC:9475,8185,"Hereditary Cancer",mansour.zamanpoor@ccdhb.org.nz
-PTCD3,HGNC:24717,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
 PTPN11,HGNC:9644,1937,,bcushman@partners.org
-PTPRJ,HGNC:9673,18630,"Hereditary Cancer",jennifer.mcglaughon@gmail.com
-PTS,HGNC:9689,9863,Aminoacidopathy,jennifer.goldstein@unc.edu
-PTS,HGNC:9689,9863,Aminoacidopathy,jennifer.goldstein@unc.edu
-QARS,HGNC:9751,14335,"Brain Malformations",abbe.lai@childrens.harvard.edu
 QRICH1,HGNC:24713,FREETEXT,"BCM Education",gaseene.sebetso@bcm.edu
-RAB3GAP1,HGNC:17063,10822,"Brain Malformations",abbe.lai@childrens.harvard.edu
 RAD51C,HGNC:9820,19391,,tsneddon@broadinstitute.org
 RAD51D,HGNC:9823,16419,,rajarshi.ghosh@bcm.edu
 RAF1,HGNC:9829,1937,,bcushman@partners.org
 RECQL4,HGNC:9949,12552,,splon@bcm.edu
-RHBDF2,HGNC:20788,7856,"Hereditary Cancer",kalpanarpanneerselvam@gmail.com
 RHOBTB2,HGNC:18756,FREETEXT,,timothy.yu@childrens.harvard.edu
 RHOBTB2,HGNC:18756,FREETEXT,,timothy.yu@childrens.harvard.edu
-ROBO2,HGNC:10250,12573,"Hereditary Cancer",xi.luo@bcm.edu
-ROBO2,HGNC:10250,12573,,dritter@bcm.edu
 RPS10,HGNC:10383,15253,,strande@email.unc.edu
 RPS24,HGNC:10411,15253,,strande@email.unc.edu
-RPS6KA3,HGNC:10432,10561,"Intellectual Disability and Autism",bostwick@bcm.edu
-RRAS2,HGNC:17271,7893,RASopathy,mhughes22@mgh.harvard.edu
-RRAS2,HGNC:17271,9026,RASopathy,mhughes22@mgh.harvard.edu
-RRAS2,HGNC:17271,11899,RASopathy,mhughes22@mgh.harvard.edu
-RRAS2,HGNC:17271,15280,RASopathy,mhughes22@mgh.harvard.edu
-RRAS2,HGNC:17271,18997,RASopathy,mhughes22@mgh.harvard.edu
 RYR1,HGNC:10483,18493,,kirt.martin@unc.edu
-SBDS,HGNC:19440,9833,"Hereditary Cancer",vo2160@cumc.columbia.edu
-SCN1A,HGNC:10585,11794,Epilepsy,mhughes22@mgh.harvard.edu
-SCN1A,HGNC:10585,12320,Epilepsy,mkaneko@chla.usc.edu
-SCN1A,HGNC:10585,16021,Epilepsy,aing@luriechildrens.org
-SCN1A,HGNC:10585,18214,Epilepsy,barryc1@email.chop.edu
-SCN2A,HGNC:10588,100038,Epilepsy,agrant@broadinstitute.org
-SCO2,HGNC:10604,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-SDHA,HGNC:10680,9723,"Mitochondrial Diseases",mccormicke@email.chop.edu
-SDHAF1,HGNC:33867,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-SHANK2,HGNC:14295,100038,"Intellectual Disability and Autism",ktoner1@geisinger.edu
-SHROOM4,HGNC:29215,100038,"Intellectual Disability and Autism",yinjiani900129@gmail.com
-SLC19A3,HGNC:16266,9723,"Mitochondrial Diseases",mccormicke@email.chop.edu
-SLC25A15,HGNC:10985,9393,Aminoacidopathy,jennifer.goldstein@unc.edu
-SMC1A,HGNC:11111,100038,"Intellectual Disability and Autism",xmzhuo@gmail.com
-SUCLA2,HGNC:11448,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-SUCLG1,HGNC:11449,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-SURF1,HGNC:11474,9723,"Mitochondrial Diseases",lishen@chla.usc.edu
-SYNGAP1,HGNC:11497,100038,Epilepsy,erica.degrange.smith@gmail.com
-TACO1,HGNC:24316,9723,"Mitochondrial Diseases",kbluske@illumina.com
-TCOF1,HGNC:11654,2457,"Hearing Loss",mayher@broadinstitute.org
-TERT,HGNC:11730,13521,"Hereditary Cancer",xi.luo@bcm.edu
-TGFBR1,HGNC:11772,7566,"Hereditary Cancer",xi.luo@bcm.edu
 TH,HGNC:11782,11551,Aminoacidopathy,jennifer.goldstein@unc.edu
-TSFM,HGNC:12367,9723,"Mitochondrial Diseases",rrajkumar@illumina.com
-TTC19,HGNC:26006,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-UQCRQ,HGNC:29594,9723,"Mitochondrial Diseases",kellerk@email.chop.edu
-USMG5,HGNC:30889,9723,"Mitochondrial Diseases",lishen@chla.usc.edu
-WDR45,HGNC:28912,100038,Epilepsy,kristen.park@childrenscolorado.org
-WHRN,HGNC:16361,19497,"Hearing Loss",rsiegert@mgh.harvard.edu
-ZNF711,HGNC:13128,19181,"Intellectual Disability and Autism",olivia.rennie@sickkids.ca
