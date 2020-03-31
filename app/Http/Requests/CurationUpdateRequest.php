@@ -18,6 +18,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         $rules['rationales'] = 'sometimes';
         $rules['rationale_other'] = 'sometimes';
         $rules['isolated_phenotype'] = 'sometimes';
+        $rules['mondo_id'] = 'sometimes';
 
         return $rules;
     }
@@ -27,6 +28,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         $messages = [
             'curation_type_id.required' => 'A curation type is required to continue',
             'rationale_ids.required' => 'You must select a rationale to continue',
+            'mondo_id.regex' => 'MonDO ID must have the format "MONDO:1234567"'
         ];
 
         return array_merge(parent::messages(), $messages);
@@ -78,6 +80,15 @@ class CurationUpdateRequest extends CurationCreateRequest
             }
             return $input->page == 'phenotypes'
                     && $input->curation_type_id == 3;
+        });
+
+        //Mondo ID
+        $validator->sometimes('mondo_id', ['nullable', 'regex:/MONDO:\d\d\d\d\d\d\d/i'], function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
+
+            return $input->page == 'mondo';
         });
 
         return $validator;
