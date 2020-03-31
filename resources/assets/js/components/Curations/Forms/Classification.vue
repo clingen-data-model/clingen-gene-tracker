@@ -26,7 +26,10 @@
             curationFormMixin,
         ],
         data() {
-            return {}
+            return {
+                page: 'mondo',
+                updatedCuration: {}
+            }
         },
         computed: {
             ...mapGetters('classifications', {
