@@ -300,4 +300,16 @@ class CurationTest extends TestCase
 
         $this->assertEquals($curationWithUuid->id, Curation::hasUuid()->first()->id);
     }
+
+    /**
+     * @test
+     */
+    public function mondo_id_formatting_forced_when_set()
+    {
+        $curation = new Curation();
+
+        $curation->mondo_id = 'mondo:0000000';
+
+        $this->assertEquals('MONDO:0000000', $curation->mondo_id);
+    }
 }

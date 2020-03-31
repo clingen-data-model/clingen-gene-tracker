@@ -117,15 +117,6 @@ class Curation extends Model
                 ->first();
     }
 
-    public function getNumericMondoIdAttribute()
-    {
-        if (is_null($this->mondo_id)) {
-            return null;
-        }
-
-        return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
-    }
-
     public function curationType()
     {
         return $this->belongsTo(CurationType::class);
@@ -153,6 +144,10 @@ class Curation extends Model
                     ->first()
                 ?? new Classification();
     }
+
+    /**
+     * SCOPES
+     */
 
     public function scopeGene($query, $geneSymbol)
     {
@@ -224,7 +219,32 @@ class Curation extends Model
         return $query->whereNotNull('gdm_uuid');
     }
         
-    
+    public function getNumericMondoIdAttribute()
+    {
+        if (is_null($this->mondo_id)) {
+            return null;
+        }
+
+        return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
+    }
+
+    /**
+     * MUTATORS
+     */
+    public function setMondoIdAttribute($value)
+    {
+        $formattedValue = $value;
+        if (is_numeric($value)) {
+            $formattedValue = 'MONDO:'.$value;
+        }
+
+        if (preg_match('/mondo:/i', $value)) {
+            $formattedValue = strtoupper($value);
+        }
+
+        $this->attributes['mondo_id'] = $formattedValue;
+    }
+
 
     public static function findByUuid($uuid)
     {
