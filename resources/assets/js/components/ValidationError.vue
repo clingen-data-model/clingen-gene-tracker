@@ -2,7 +2,9 @@
 <template>
     <transition name="fade">
         <div class="text-danger mt-1" v-show="hasErrors">
-            <div v-for="msg in messages"><small>{{msg}}</small></div>
+            <div v-for="(msg, idx) in messages" :key="idx">
+                <small>{{msg}}</small>
+            </div>
         </div>
     </transition>
 </template>
