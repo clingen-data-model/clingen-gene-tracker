@@ -148,21 +148,32 @@ class ImportGciSnapshot extends Command
         echo "\n";
         foreach ($errors as $type => $contents) {
             $errors[$type] = array_flatten($contents, 1);
+            $errors['missing'] = array_filter($errors['missing'], function ($item) {
+                return !empty($item['affiliation']);
+            });
         }
-        file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors));
+        file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors, JSON_PRETTY_PRINT));
         foreach ($errors as $key => $category) {
             $this->info(count($category).' '.$key.' errors');
         }
         $this->info('Errors written to '.base_path('files/gci_snapshot_import_errors.json'));
 
         if (isset($errors['missing'])) {
-            $fh = fopen(base_path('files/gci_snapshot_missing.csv'), 'w');
-            fputcsv($fh, array_keys($errors['missing'][0]));
-            foreach ($errors['missing'] as $row) {
-                fputcsv($fh, $row);
-            }
-            fclose($fh);
+            $this->errorsToCsv($errors['missing'], base_path('files/gci_snapshot_missing.csv'));
         }
+        if (isset($errors['ambiguous'])) {
+            $this->errorsToCsv($errors['ambiguous'], base_path('files/gci_snapshot_ambiguous.csv'));
+        }
+    }
+    
+    private function errorsToCsv($errors, $outputFile)
+    {
+        $fh = fopen($outputFile, 'w');
+        fputcsv($fh, array_keys($errors[0]));
+        foreach ($errors as $row) {
+            fputcsv($fh, $row);
+        }
+        fclose($fh);
     }
     
     
@@ -185,6 +196,11 @@ class ImportGciSnapshot extends Command
             'c9f413ba-bfbd-4f75-8dd3-eafe869c5cc1',
             '6189bdf4-8751-4ac1-a7d8-b159d3dfb92f',
             '1fcd4927-5557-4d07-84ba-4a1cba6d13f6',
+            '54d978f1-1ad9-4301-bae0-633923d36110',
+            "7cd56c3b-b370-4f9b-9e19-75b290148638",
+            'c4031490-5407-4bfc-8c59-4e4fbc47f598',
+            'eeb94ab6-1e2e-4f89-89ed-037e6b3a97a6',
+            'a9c50f8f-33a0-4c13-87d3-5997849f6993',
         ];
 
         return in_array($row['gdm uuid'], $skipData);
@@ -204,7 +220,8 @@ class ImportGciSnapshot extends Command
                 'hgnc_id' => $row['hgnc id'],
                 'mondo_id' => $row['mondo id'],
                 'affiliation' => $row['affiliation name'],
-                'createor' => $row['creator email']
+                'creator' => $row['creator email'],
+                'uuid' => $row['gdm uuid']
             ];
             $hgncMondoData = json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]);
             $th = new GciSyncException('Curation not found: '.$hgncMondoData, 404);
@@ -217,10 +234,16 @@ class ImportGciSnapshot extends Command
 
     private function matchHgncAndMondo($row)
     {
-        return $this->curations->filter(function ($curation) use ($row) {
+        $curations = $this->curations->filter(function ($curation) use ($row) {
             return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
                     && $curation->mondo_id == 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
-        })->first();
+        });
+        
+        if ($curations->count() > 1) {
+            throw $this->buildRowError($row, 409);
+        }
+
+        return $curations->first();
     }
 
     private function matchHgncAndEmail($row)
@@ -250,7 +273,8 @@ class ImportGciSnapshot extends Command
             'hgnc_id' => $data['hgnc id'],
             'mondo_id' => $data['mondo id'],
             'affiliation' => $data['affiliation name'],
-            'createor' => $data['creator email']
+            'createor' => $data['creator email'],
+            'uuid' => $data['gdm uuid'],
         ];
         $hgncMondoData = json_encode(['HGNC_ID' => $data['hgnc id'], 'MonDO ID' => $data['mondo id']]);
         $th = new GciSyncException('Curation not found: '.$hgncMondoData, $code);

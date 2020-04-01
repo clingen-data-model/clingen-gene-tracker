@@ -1,0 +1,33 @@
+gene_symbol,hgnc_id,mondo_id,affiliation,createor,uuid
+CHD7,HGNC:20626,8965,"Hearing Loss",rsiegert@mgh.harvard.edu,4fd43e6c-1015-4460-a279-4629ac82259a
+COL11A2,HGNC:2187,8975,"Hearing Loss",rsiegert@mgh.harvard.edu,ba9039b2-d139-472d-90b9-fef79f9f532e
+COL11A2,HGNC:2187,8975,"Hearing Loss",rsiegert@mgh.harvard.edu,b70a32eb-5863-4859-bb1b-0696dd4d7a3f
+COL11A2,HGNC:2187,19497,"Hearing Loss",rsiegert@mgh.harvard.edu,fe512442-fa12-457b-b40d-33a4b863ed04
+COL11A2,HGNC:2187,19497,"Hearing Loss",rsiegert@mgh.harvard.edu,f8ccd4e5-8a92-41bf-ae08-2eda3ee42c84
+CTNNA3,HGNC:2511,16587,"Arrythmogenic Right Ventricular Cardiomyopathy",r.h.lekanne@amc.uva.nl,f8a3ab80-4c02-4f66-bfe8-c1d07ecd801d
+DSC2,HGNC:3036,16342,"Arrythmogenic Right Ventricular Cardiomyopathy",jennifer.mcglaughon@gmail.com,499b3d31-14aa-4ff2-bfb6-6e806986255b
+EDN3,HGNC:3178,13201,"Hearing Loss",rsiegert@mgh.harvard.edu,f41b3abf-f562-45e4-89dc-f79a104c4a03
+EDN3,HGNC:3178,13201,"Hearing Loss",rsiegert@mgh.harvard.edu,548a311c-212b-49d0-bf60-44e7e14aa965
+EDNRB,HGNC:3180,10192,"Hearing Loss",rsiegert@mgh.harvard.edu,1adc4355-939a-4756-b1b5-d9e6742e49ad
+EDNRB,HGNC:3180,10192,"Hearing Loss",rsiegert@mgh.harvard.edu,2328aa25-6230-4b81-9465-18602b4558e5
+ESPN,HGNC:13281,19497,"Hearing Loss",rsiegert@mgh.harvard.edu,2b01bea1-5b69-4878-bbb5-ccb3db7eef5d
+ESPN,HGNC:13281,19497,"Hearing Loss",shemphill@partners.org,93f4d17d-1e74-43b3-9886-d079542f2ce6
+GJB1,HGNC:4283,10549,,courtney_thaxton@med.unc.edu,9fca0130-ec4f-4f0a-9270-3825bb1ee063
+HCN1,HGNC:4845,100038,Epilepsy,courtney_thaxton@med.unc.edu,8ad2a522-5c68-480b-b37e-7d3d228671ba
+HSD17B4,HGNC:5213,17312,"Hearing Loss",rsiegert@mgh.harvard.edu,b28b005e-2933-438e-ba1b-26866b4891bd
+LZTR1,HGNC:6742,7893,RASopathy,agrant@broadinstitute.org,2aa25fd9-4a0f-438f-baf5-33a0ea72345f
+LZTR1,HGNC:6742,7893,RASopathy,agrant@broadinstitute.org,bbdfdb48-b677-4076-a3c0-9ee2159c93fc
+LZTR1,HGNC:6742,9026,RASopathy,agrant@broadinstitute.org,36fcfaf7-788e-4f89-aaf1-ddedb5a7a271
+LZTR1,HGNC:6742,9026,RASopathy,agrant@broadinstitute.org,dae1797c-30f1-4c11-9c11-d91cb5c86504
+LZTR1,HGNC:6742,11899,RASopathy,agrant@broadinstitute.org,f271f109-e6a1-4bb0-8cb2-db9e7d9924be
+LZTR1,HGNC:6742,11899,RASopathy,agrant@broadinstitute.org,fc9cf504-7428-4383-8ea2-1aa26f50eba2
+LZTR1,HGNC:6742,15280,RASopathy,agrant@broadinstitute.org,420bcb82-ee9a-4d15-a5bb-fb7190422941
+LZTR1,HGNC:6742,15280,RASopathy,agrant@broadinstitute.org,f1f5438f-acd0-4ed8-a92c-5bb58e544eff
+LZTR1,HGNC:6742,18997,RASopathy,agrant@broadinstitute.org,d4ab608c-95a9-4bf8-9c1c-e1a87b504e08
+LZTR1,HGNC:6742,18997,RASopathy,agrant@broadinstitute.org,b2d6488b-5314-44ae-87e3-48cd156fa8d6
+OTC,HGNC:8512,10703,,jennifer.mcglaughon@gmail.com,18f2d3ae-020d-4b16-a07e-3be1b5a95f2b
+OTC,HGNC:8512,10703,,jennifer.mcglaughon@gmail.com,18f2d3ae-020d-4b16-a07e-3be1b5a95f2b
+PKP2,HGNC:9024,16587,"Arrythmogenic Right Ventricular Cardiomyopathy",jennifer.mcglaughon@gmail.com,316ac2fc-555e-4c2e-a0ba-29a7e1663f72
+TECTA,HGNC:11720,19497,"Hearing Loss",rsiegert@mgh.harvard.edu,4ccfba39-0769-4346-ab63-56c9cbd20185
+TECTA,HGNC:11720,19497,"Hearing Loss",rsiegert@mgh.harvard.edu,2ae22ff7-9c17-489a-a723-86a9d7b3eeb0
+TMEM43,HGNC:28472,11459,"Arrythmogenic Right Ventricular Cardiomyopathy",jennifer.mcglaughon@gmail.com,61ad3529-b9e2-4b94-a388-3c11b1cb5144
