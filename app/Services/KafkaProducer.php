@@ -16,7 +16,7 @@ class KafkaProducer implements MessagePusher
     public function __construct(\RdKafka\Producer $phpRdProducer)
     {
         $this->rdKafkaProducer = $phpRdProducer;
-        $this->rdKafkaProducer->setLogLevel(LOG_DEBUG);
+        // $this->rdKafkaProducer->setLogLevel(LOG_DEBUG);
     }
 
     private function produceOnTopic($message, \RdKafka\ProducerTopic $topic)

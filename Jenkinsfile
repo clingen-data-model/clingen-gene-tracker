@@ -15,8 +15,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
-                sh 'php vendor/bin/dep deploy production'
+                echo 'Deploying.....'
+                sh 'php vendor/bin/dep deploy demo'
             }
         }
     }
