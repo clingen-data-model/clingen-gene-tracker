@@ -17,15 +17,18 @@ class KafkaConfig
         
         // Initial list of Kafka brokers
         $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
+        $conf->set('log_level', (string) LOG_DEBUG);
 
         // security config
-        $conf->set('security.protocol', 'ssl');
-        $conf->set('ssl.certificate.location', config('streaming-service.cert-location', '/etc/pki/tls/certs/kafka.web3demo.signed.crt'));
-        $conf->set('ssl.key.location', config('streaming-service.key-location', '/etc/pki/tls/private/kafka.apache.key'));
-        $conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
-
-        if (config('streaming-service.ssl-key-password', null)) {
-            $conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
+        if (!app()->environment('testing')) {
+            $conf->set('security.protocol', 'ssl');
+            $conf->set('ssl.certificate.location', config('streaming-service.cert-location', '/etc/pki/tls/certs/kafka.web3demo.signed.crt'));
+            $conf->set('ssl.key.location', config('streaming-service.key-location', '/etc/pki/tls/private/kafka.apache.key'));
+            $conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
+    
+            if (config('streaming-service.ssl-key-password', null)) {
+                $conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
+            }
         }
 
         // Set a rebalance callback to log partition assignments (optional)
