@@ -251,22 +251,6 @@
             "uuid": "b2d6488b-5314-44ae-87e3-48cd156fa8d6"
         },
         {
-            "gene_symbol": "OTC",
-            "hgnc_id": "HGNC:8512",
-            "mondo_id": "10703",
-            "affiliation": "",
-            "createor": "jennifer.mcglaughon@gmail.com",
-            "uuid": "18f2d3ae-020d-4b16-a07e-3be1b5a95f2b"
-        },
-        {
-            "gene_symbol": "OTC",
-            "hgnc_id": "HGNC:8512",
-            "mondo_id": "10703",
-            "affiliation": "",
-            "createor": "jennifer.mcglaughon@gmail.com",
-            "uuid": "18f2d3ae-020d-4b16-a07e-3be1b5a95f2b"
-        },
-        {
             "gene_symbol": "PKP2",
             "hgnc_id": "HGNC:9024",
             "mondo_id": "16587",
