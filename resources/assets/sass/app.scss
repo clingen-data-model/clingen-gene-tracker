@@ -63,6 +63,18 @@
     font-size: .8rem;
 }
 
+input.error, select.error, textarea.error {
+    @extend .border-danger;
+}
+
+.error{
+    label {
+        @extend .text-danger
+    }
+    input, select, textarea {
+        @extend .border-danger
+    }
+}
 
 
 // ENV color coding

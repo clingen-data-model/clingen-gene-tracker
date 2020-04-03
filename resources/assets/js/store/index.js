@@ -8,6 +8,7 @@ import curationStatuses from './modules/curation_statuses'
 import rationales from './modules/rationales'
 import workingGroups from './modules/working_groups'
 import classifications from './modules/classifications'
+import mois from './modules/mois'
 
 
 Vue.use(Vuex)
@@ -84,6 +85,7 @@ export default new Vuex.Store({
     rationales: rationales,
     workingGroups: workingGroups,
     classifications: classifications,
+    mois: mois,
   },
   actions: actions,
   strict: debug,

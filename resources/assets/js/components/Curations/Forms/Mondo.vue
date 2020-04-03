@@ -1,12 +1,13 @@
 <style></style>
 <template>
     <div>
-        <b-form-group horizontal label="MonDO ID" label-for="mondo-id">
+        <b-form-group horizontal label="MonDO ID" label-for="mondo-id"
+            :class="{'error': errors.mondo_id}"
+        >
             <input 
                 type="text" 
                 v-model="updatedCuration.mondo_id" 
                 class="form-control"
-                :class="{'border-danger': errors.mondo_id}"
                 placeholder="MONDO:0001158"
             >
             <validation-error :messages="errors.mondo_id"></validation-error>
@@ -14,7 +15,9 @@
             <mondo-alert :curation="updatedCuration"></mondo-alert>
         </b-form-group>
         or
-        <b-form-group horizontal label="Disease Entity">
+        <b-form-group horizontal label="Disease Entity"
+            :class="{'error': errors.disease_entity_notes}"
+        >
             <textarea v-model="updatedCuration.disease_entity_notes" class="form-control"></textarea>
             <small>Use when no appropriate MonDO ID is available</small>
         </b-form-group>
