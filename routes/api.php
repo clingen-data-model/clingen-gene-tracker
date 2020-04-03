@@ -29,6 +29,7 @@ Route::group([
     Route::resource('/curation-types', 'CurationTypeController')->only(['index']);
     Route::resource('/rationales', 'RationaleController')->only(['index']);
     Route::resource('/classifications', 'ClassificationController')->only(['index']);
+    Route::resource('/mois', 'MoiController')->only(['index']);
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');

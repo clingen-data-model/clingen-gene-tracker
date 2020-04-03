@@ -42,9 +42,9 @@ class CurationTest extends TestCase
     public function curation_has_fillable_modo_id()
     {
         $curation = factory(\App\Curation::class)->create();
-        $curation->update(['mondo_id' => 1234567890]);
+        $curation->update(['mondo_id' => 1234567]);
 
-        $this->assertEquals(1234567890, $curation->mondo_id);
+        $this->assertEquals('MONDO:1234567', $curation->mondo_id);
     }
 
     /**

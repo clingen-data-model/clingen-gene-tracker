@@ -213,6 +213,7 @@
                         if (callback) {
                             callback(response);
                         }
+                        this.errors = {};
                         return response;
                     })
                     .catch( (error) => {

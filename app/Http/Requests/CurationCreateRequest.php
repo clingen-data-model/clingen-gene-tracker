@@ -27,6 +27,8 @@ class CurationCreateRequest extends FormRequest
         return [
             'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
             'expert_panel_id' => 'required',
+            'moi_id' => 'nullable|exists:mode_of_inheritances,id',
+            'gdm_uuid' => 'nullable|regex:/^\w{8}(-(\w){4}){3}-\w{12}$/'
         ];
     }
 

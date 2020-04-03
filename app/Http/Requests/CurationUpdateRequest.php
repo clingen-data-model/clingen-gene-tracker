@@ -28,7 +28,8 @@ class CurationUpdateRequest extends CurationCreateRequest
         $messages = [
             'curation_type_id.required' => 'A curation type is required to continue',
             'rationale_ids.required' => 'You must select a rationale to continue',
-            'mondo_id.regex' => 'MonDO ID must have the format "MONDO:1234567"'
+            'mondo_id.regex' => 'MonDO ID must have the format "MONDO:1234567"',
+            'moi_id' => 'nullable|exists:mode_of_inheritances,id'
         ];
 
         return array_merge(parent::messages(), $messages);

@@ -17,20 +17,43 @@
         <b-form-group horizontal id="new-gene-symbol-group"
             label="HGNC Gene Symbol"
             label-for="gene-symbol-input"
+            :class="{'error': fieldError('gene_symbol')}"
         >
             <b-form-input id="gene-symbol-input"
                 type="text"
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
-                :state="geneSymbolError"> 
+            >
             </b-form-input>
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
         </b-form-group>
         <curation-notifications :curation="updatedCuration"></curation-notifications>
-        <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select">
-            <b-form-select id="expert-panel-select" v-model="updatedCuration.expert_panel_id" :state="expertPanelIdError">
+
+        <b-form-group horizontal label="Mode of Inheritance" label-for="moi_input"
+            :class="{'error': fieldError('moi_id')}"
+        >
+            <b-form-select v-model="updatedCuration.moi_id"
+                id="moi_input"
+            >
+                <option :value="null">Select...</option>
+                <option v-for="moi in mois" :key="moi.id"
+                    :value="moi.id"
+                >
+                    {{`${moi.name} (${moi.hp_id})`}}
+                </option>
+            </b-form-select>
+            <validation-error :messages="errors.moi_id"></validation-error>
+        </b-form-group>
+        
+        <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select"
+            :class="{'error': fieldError('expert_panel_id')}"
+        >
+            <b-form-select 
+                id="expert-panel-select" 
+                v-model="updatedCuration.expert_panel_id" 
+            >
                 <option :value="null">Select...</option>
                 <option v-for="panel in panelOptions" 
                     :value="panel.id"
@@ -42,7 +65,12 @@
             <validation-error :messages="errors.expert_panel_id"></validation-error>
         </b-form-group>
     
-        <b-form-group horizontal id="curator-select-group" label="Curator" label-for="curator-select">
+        <b-form-group horizontal 
+            id="curator-select-group" 
+            label="Curator" 
+            label-for="curator-select"
+            :class="{'error': fieldError('curator_id')}"
+        >
             <b-form-select id="curator-select" v-model="updatedCuration.curator_id">
                 <option :value="null">Select...</option>
                 <option v-for="curator in panelCurators" 
@@ -52,15 +80,44 @@
                     {{curator.name}}
                 </option>
             </b-form-select>
+            <validation-error :messages="errors.curator_id"></validation-error>
         </b-form-group>
     
-        <b-form-group horizontal label="Notes" label-for="notes-field">
+        <b-form-group horizontal label="Notes" label-for="notes-field"
+            :class="{'error': fieldError('notes')}"
+        >
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedCuration.notes"></textarea>
+            <validation-error :messages="errors.notes"></validation-error>
         </b-form-group>
 
         <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">
             <status-form v-model="updatedCuration" class="mt-1"></status-form>
         </b-form-group>
+        <br>
+        <div class="alert alert-info mt-3">
+            <h5>
+                Advanced Info
+                <small class="text-muted float-right"><small>
+                    You are seeing this b/c you are a trusted user.
+                    <br>
+                    Only use these fields if you know what you're doing.
+                </small></small>
+            </h5>
+            <hr>
+            <b-form-group v-if="user.hasRole('admin') || user.hasRole('programmer')" 
+                horizontal 
+                label="GCI UUID" 
+                label-for="gdm_uuid"
+                :class="{'error': fieldError('gdm_uuid')}"
+            >
+                <b-form-input 
+                    id="gdm_uuid" 
+                    v-model="updatedCuration.gdm_uuid"
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                ></b-form-input>
+                <validation-error :messages="errors.gdm_uuid"></validation-error>
+            </b-form-group>
+        </div>
     </div>
 </template>
 <script>
@@ -89,7 +146,8 @@
             return {
                 page: 'info',
                 newStatusDate: null,
-                newStatusId: null
+                newStatusId: null,
+                user: user
             }
         },
         watch: {
@@ -101,6 +159,9 @@
             today: function () {
                 return moment();
             },
+            ...mapGetters('mois', {
+                mois: 'Items',
+            }),
             ...mapGetters('panels', {
                 panels: 'Items',
             }),
@@ -151,13 +212,20 @@
             ...mapActions('panels', {
                 getAllPanels: 'getAllItems'
             }),
+            ...mapActions('mois', {
+                getAllMois: 'getAllItems'
+            }),
             ...mapActions('users', {
                 getAllUsers: 'getAllItems'
-            })
+            }),
+            fieldError (field) {
+                return (this.errors && this.errors[field] && this.errors[field].length > 0);
+            }
         },
         mounted: function () {
             this.getAllPanels();
             this.getAllUsers();
+            this.getAllMois();
         }
     }
 </script>
