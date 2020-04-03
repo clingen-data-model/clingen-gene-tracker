@@ -42,6 +42,8 @@ class ImportGciSnapshot extends Command
 
     private $classifications;
 
+    private $uuidMatches;
+
     /**
      * Create a new command instance.
      */
@@ -57,10 +59,14 @@ class ImportGciSnapshot extends Command
      */
     public function handle()
     {
+        $this->uuidMatches = collect();
+
         config(['mail.driver' => 'array']);
         if (!file_exists($this->argument('file'))) {
             $this->error('File '.$this->argument('file').' does not exist');
         }
+
+        $this->disambiguateRecords();
 
         $this->curations = Curation::with('curator')->get();
         $this->curationStatuses = CurationStatus::all()->keyBy(function ($item) {
@@ -79,8 +85,23 @@ class ImportGciSnapshot extends Command
 
         $rows = $this->getRows();
 
+        // $dupUuid = collect($rows)
+        //     ->sortBy('gdm uuid')
+        //     ->groupBy('gdm uuid')
+        //     ->filter(function ($grp) {
+        //         return $grp->count() > 1;
+        //     })
+        //     ->map(function ($grp) {
+        //         return $grp->map(function ($row) {
+        //             return ['status' => $row['status'], 'classification' => $row['classification']];
+        //         });
+        //     });
+
+        // dd($dupUuid);
+
         $bar = $this->output->createProgressBar(count($rows));
         $errors = [];
+        
         foreach ($rows as $row) {
             try {
                 $curation = $this->getMatchingCuration($row);
@@ -111,6 +132,7 @@ class ImportGciSnapshot extends Command
             $bar->advance();
         }
 
+        $this->info('Found '.$this->uuidMatches->count().' records by uuid');
         $this->reportErrors($errors);
     }
 
@@ -209,28 +231,39 @@ class ImportGciSnapshot extends Command
 
     private function getMatchingCuration($row)
     {
-        $curation = $this->matchHgncAndMondo($row);
-        if (is_null($curation)) {
-            $curation = $this->matchHgncAndEmail($row);
+        $curation = $this->matchGdmUuid($row);
+        if (!is_null($curation)) {
+            $this->uuidMatches->push([$curation->id, $curation->gdm_uuid]);
+            return $curation;
         }
 
-        if (is_null($curation)) {
-            $keys = [
-                'gene_symbol' => $row['hgnc gene symbol'],
-                'hgnc_id' => $row['hgnc id'],
-                'mondo_id' => $row['mondo id'],
-                'affiliation' => $row['affiliation name'],
-                'creator' => $row['creator email'],
-                'uuid' => $row['gdm uuid']
-            ];
-            $hgncMondoData = json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]);
-            $th = new GciSyncException('Curation not found: '.$hgncMondoData, 404);
-            $th->addData($keys);
-            throw $th;
+        $curation  = $this->matchHgncAndMondo($row);
+        if (!is_null($curation)) {
+            return $curation;
         }
 
-        return $curation;
+        // Assemble and throw the not found exception.
+        $keys = [
+            'gene_symbol' => $row['hgnc gene symbol'],
+            'hgnc_id' => $row['hgnc id'],
+            'mondo_id' => $row['mondo id'],
+            'affiliation' => $row['affiliation name'],
+            'creator' => $row['creator email'],
+            'uuid' => $row['gdm uuid']
+        ];
+        $hgncMondoData = json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]);
+        $th = new GciSyncException('Curation not found: '.$hgncMondoData, 404);
+        $th->addData($keys);
+        throw $th;
     }
+
+    private function matchGdmUuid($row)
+    {
+        $uuidMap = $this->curations->keyBy('gdm_uuid');
+
+        return $uuidMap->get($row['gdm uuid']);
+    }
+    
 
     private function matchHgncAndMondo($row)
     {
@@ -368,5 +401,51 @@ class ImportGciSnapshot extends Command
             }
         }
         $curation->moi_id = $moi->id;
+    }
+
+    private function disambiguateRecords()
+    {
+        $map = [
+            1424 => "4fd43e6c-1015-4460-a279-4629ac82259a",
+            1532 => "ba9039b2-d139-472d-90b9-fef79f9f532e",
+            1533 => "b70a32eb-5863-4859-bb1b-0696dd4d7a3f",
+            1535 => "fe512442-fa12-457b-b40d-33a4b863ed04",
+            3945 => "f8ccd4e5-8a92-41bf-ae08-2eda3ee42c84",
+            100 => "f8a3ab80-4c02-4f66-bfe8-c1d07ecd801d",
+            377 => "ea69f940-a536-40b5-9f13-689db9f71126",
+            2251 => "499b3d31-14aa-4ff2-bfb6-6e806986255b",
+            1517 => "f41b3abf-f562-45e4-89dc-f79a104c4a03",
+            1518 => "548a311c-212b-49d0-bf60-44e7e14aa965",
+            1524 => "1adc4355-939a-4756-b1b5-d9e6742e49ad",
+            1525 => "2328aa25-6230-4b81-9465-18602b4558e5",
+            1514 => "2b01bea1-5b69-4878-bbb5-ccb3db7eef5d",
+            1515 => "93f4d17d-1e74-43b3-9886-d079542f2ce6",
+            1241 => "9fca0130-ec4f-4f0a-9270-3825bb1ee063",
+            227 => "8ad2a522-5c68-480b-b37e-7d3d228671ba",
+            1543 => "b28b005e-2933-438e-ba1b-26866b4891bd",
+            1306 => "b2d6488b-5314-44ae-87e3-48cd156fa8d6",
+            1307 => "dae1797c-30f1-4c11-9c11-d91cb5c86504",
+            1308 => "f1f5438f-acd0-4ed8-a92c-5bb58e544eff",
+            1309 => "bbdfdb48-b677-4076-a3c0-9ee2159c93fc",
+            1310 => "fc9cf504-7428-4383-8ea2-1aa26f50eba2",
+            1311 => "d4ab608c-95a9-4bf8-9c1c-e1a87b504e08",
+            1312 => "36fcfaf7-788e-4f89-aaf1-ddedb5a7a271",
+            1313 => "420bcb82-ee9a-4d15-a5bb-fb7190422941",
+            1314 => "2aa25fd9-4a0f-438f-baf5-33a0ea72345f",
+            1315 => "f271f109-e6a1-4bb0-8cb2-db9e7d9924be",
+            2256 => "316ac2fc-555e-4c2e-a0ba-29a7e1663f72",
+            1492 => "4ccfba39-0769-4346-ab63-56c9cbd20185",
+            1493 => "2ae22ff7-9c17-489a-a723-86a9d7b3eeb0",
+            2254 => "61ad3529-b9e2-4b94-a388-3c11b1cb5144"
+        ];
+
+        $this->info('Setting uuid on records to disambiguate...');
+        $bar = $this->output->createProgressBar(count($map));
+        foreach ($map as $curationId => $uuid) {
+            Curation::find($curationId)->update(['gdm_uuid' => $uuid]);
+            $bar->advance();
+        }
+        $bar->finish();
+        echo "\n";
     }
 }
