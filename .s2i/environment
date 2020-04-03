@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 DOCUMENTROOT=public
+=======
+DOCUMENTROOT=/public
+>>>>>>> fix documentroot in .s2i/envrionment
