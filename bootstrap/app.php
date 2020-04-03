@@ -53,8 +53,10 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
+if (file_exists(__DIR__.'/../.env')) {
+    Dotenv::create(__DIR__.'/..')->load();
+}
 
-Dotenv::create(__DIR__.'/..')->load();
 if (env('APP_STORAGE_PATH')) {
     // get the current working directory b/c it could be frigging anywhere
     $cwd = getcwd();
