@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\StreamingServiceException;
 
 class KafkaConfig
