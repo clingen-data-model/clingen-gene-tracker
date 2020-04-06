@@ -32,7 +32,7 @@ class KafkaConfig
         }
 
         // Set a rebalance callback to log partition assignments (optional)
-        $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $partitions = null) {
+        $conf->setRebalanceCb(function (\RdKafka\KafkaConsumer $kafka, $err, array $partitions = null) {
             switch ($err) {
                 case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
                     $kafka->assign($partitions);
