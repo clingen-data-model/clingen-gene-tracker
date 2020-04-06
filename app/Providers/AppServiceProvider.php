@@ -4,14 +4,16 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use App\Services\KafkaConfig;
+use App\Services\KafkaConsumer;
 use App\Services\KafkaProducer;
 use App\Services\MessageLogger;
 use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;
 use Illuminate\Events\Dispatcher;
 use App\Contracts\MessageConsumer;
-use App\Services\KafkaConsumer;
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\GeneValidityCurationUpdateJob;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -88,5 +90,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MessageConsumer::class, function () {
             return $this->app->make(KafkaConsumer::class)->addTopic(config('streaming-service.gci-topic'));
         });
+
+        $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
     }
 }

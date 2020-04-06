@@ -120,7 +120,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_add_status_on_update_message()
+    public function adds_status_on_update_message()
     {
         $curation = $this->createDICER1();
 
@@ -128,14 +128,13 @@ class UpdateFromStreamMessageTest extends TestCase
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
 
-        Bus::fake();
         event($event);
 
-        Bus::assertDispatched(AddStatus::class, function ($job) use ($curation, $payload) {
-            return $job->curation->id == $curation->id
-                && $job->curationStatus->id = config('project.curation-statuses.curation-provisional')
-                && $job->date = Carbon::parse($payload->date);
-        });
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.curation-provisional'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+        ]);
     }
 
     /**
@@ -149,14 +148,18 @@ class UpdateFromStreamMessageTest extends TestCase
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
 
-        Bus::fake();
         event($event);
 
-        Bus::assertDispatched(AddClassification::class, function ($job) use ($curation, $payload) {
-            return $job->curation->id == $curation->id
-                && $job->classification == Classification::find(config('project.classifications.limited'))
-                && $job->date = Carbon::parse($payload->date);
-        });
+        $this->assertDatabaseHas('classification_curation', [
+            'curation_id' => $curation->id,
+            'classification_id' => config('project.classifications.limited'),
+            'classification_date' => Carbon::parse($payload->date)
+        ]);
+        // Bus::assertDispatched(AddClassification::class, function ($job) use ($curation, $payload) {
+        //     return $job->curation->id == $curation->id
+        //         && $job->classification == Classification::find(config('project.classifications.limited'))
+        //         && $job->date = Carbon::parse($payload->date);
+        // });
     }
     
 
