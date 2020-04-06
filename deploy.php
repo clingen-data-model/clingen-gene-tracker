@@ -10,7 +10,7 @@ require 'recipe/laravel.php';
 set('application', 'clingen');
 
 // Project repository
-set('repository', 'git@bitbucket.org:shepsweb/clingen.git');
+set('repository', 'https://github.com/clingen-data-model/clingen-gene-tracker.git');
 
 // [Optional] Allocate tty for git clone. Default value is false.
 // set('git_tty', true);
