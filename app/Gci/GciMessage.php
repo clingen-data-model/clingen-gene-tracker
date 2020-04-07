@@ -76,7 +76,7 @@ class GciMessage
         return $this->payload->gene_validity_evidence_level->evidence_level;
     }
 
-    public function messageDate():Carbon
+    public function getMessageDate():Carbon
     {
         return Carbon::parse($this->payload->date);
     }
