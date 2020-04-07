@@ -38,8 +38,8 @@ class CurationCurationStatusController extends Controller
                 'status_date' => $request->status_date
             ]
         ]);
-
-        return $curation->curationStatuses->sortByDesc('created_at')->last();
+        
+        return $curation->curationStatuses->sortByDesc('pivot.created_at')->first();
     }
 
     /**
