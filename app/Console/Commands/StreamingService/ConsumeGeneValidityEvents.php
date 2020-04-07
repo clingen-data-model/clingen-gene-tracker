@@ -41,6 +41,7 @@ class ConsumeGeneValidityEvents extends Command
     public function handle(MessageConsumer $consumer)
     {
         if ($this->option('dry-run')) {
+            $this->info('Performing dry-run.  No curations will  be updated.')
             app()->bind(GeneValidityCurationUpdateJob::class, DryRunUpdateFromGeneValidityMessage::class);
         }
         $consumer->listen();

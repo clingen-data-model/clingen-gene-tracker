@@ -14,9 +14,9 @@
 			// "port": 22,
 			"username": "jward3",
 			// "password": "",
-			// "privateKey": "",
+			// "privateKey": "/Users/jward3/.ssh/id_rsa",
 			// "keyPassphrase": "",
-			"root": "/mnt/web/project/clingen-test/current",
+			"root": "/mnt/web/project/clingen-test/current"
 			// "keepaliveInterval": 3000,
 			// "debug": false,
 			// "fileMode": "",

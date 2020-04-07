@@ -28,6 +28,7 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
      */
     public function __construct(GciStatusMap $statusMap, GciClassificationMap $classificationMap, Curation $curation, GciMessage $gciMessage)
     {
+        \Log::debug(__METHOD__);
         $this->curation = $curation;
         $this->gciMessage = $gciMessage;
         $this->statusMap = $statusMap;
@@ -41,6 +42,7 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
      */
     public function handle()
     {
+        \Log::debug(__METHOD__);
         $affiliation = Affiliation::findByClingenId($this->gciMessage->affiliation->id);
         $moi = ModeOfInheritance::findByHpId($this->gciMessage->moi);
 
@@ -51,7 +53,7 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
         ];
 
         if ($this->gciMessage->status == 'created') {
-            dump($updateSummary);
+            \Log::debug('consume GCI events dry run', $updateSummary);
             return;
         }
         $updateSummary['addStatus'] = [
@@ -64,6 +66,6 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
             'classification_date' => $this->gciMessage->messageDate
         ];
 
-        dump($updateSummary);
+        \Log::debug('consume GCI events dry run', $updateSummary);
     }
 }

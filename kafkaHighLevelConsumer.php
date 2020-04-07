@@ -4,7 +4,8 @@ use App\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
+$topics = isset($argv[1]) ? explode(',', $argv[1]) : [];
+
 $offset = isset($argv[2]) ? explode(',', $argv[2]) : '-1';
 
 $dotenv = Dotenv\Dotenv::create(__DIR__);
@@ -69,17 +70,26 @@ $topicConf = new RdKafka\TopicConf();
 // Set where to start consuming messages when there is no initial offset in
 // offset store or the desired offset is out of range.
 // 'smallest': start from the beginning
+
 $topicConf->set('auto.offset.reset', 'beginning');
 
 // Set the configuration to use for subscribed/assigned topics
-$conf->setDefaultTopicConf($topicConf);
+// $conf->setDefaultTopicConf($topicConf);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
-$availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
-echo "Available Topics: \n";
-foreach ($availableTopics as $avlTopic) {
-    echo "  ".$avlTopic->getTopic()."\n";
+if (count($topics) == 0) {
+    $availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
+    echo "Available Topics: \n";
+    foreach ($availableTopics as $idx => $avlTopic) {
+        echo $avlTopic->getTopic()."\n";
+    }
+
+    echo "Which topic(s) do you want to join? (comma-delimit for > 1)";
+    $stdin = fopen('php://stdin', 'r');
+    $line = fgets($stdin);
+    $topics = explode(',', trim($line));
+    fclose($stdin);
 }
 
 // Subscribe to topic 'test'
