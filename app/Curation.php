@@ -100,6 +100,7 @@ class Curation extends Model
         return $this->belongsToMany(CurationStatus::class)
                 ->using(CurationCurationStatus::class)
                 ->withPivot('id', 'status_date', 'created_at', 'updated_at')
+                ->orderBy('curation_curation_status.created_at')
                 ->withTimestamps();
     }
 

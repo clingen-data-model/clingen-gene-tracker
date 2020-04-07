@@ -4,6 +4,7 @@ namespace Tests\Unit\Http\Controllers\Api;
 
 use App\User;
 use App\Curation;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,12 +33,12 @@ class CurationCurationStatusControllerTest extends TestCase
 
     public function test_relates_new_status_to_curation()
     {
+        Carbon::setTestNow(Carbon::tomorrow());
         $response = $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
                 'curation_status_id' => 4,
                 'status_date' => '1977-09-16'
             ])
-            ->assertStatus(200)
-            ->assertJson($this->curation->fresh()->curationStatuses->last()->toArray());
+            ->assertStatus(200);
 
         $this->assertEquals(4, $this->curation->fresh()->curationStatuses->count());
         $this->assertEquals('1977-09-16', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
