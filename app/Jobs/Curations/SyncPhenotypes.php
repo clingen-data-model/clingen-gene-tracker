@@ -39,7 +39,11 @@ class SyncPhenotypes implements ShouldQueue
         }
         $phenotypes = Phenotype::whereIn('mim_number', $this->phenotypes->pluck('mim_number'))->get();
 
-        $newMims = $this->phenotypes->pluck('mim_number')->diff($phenotypes->pluck('mim_number'));
+        $newMims = $this->phenotypes
+                        ->pluck('mim_number')
+                        ->diff($phenotypes->pluck('mim_number'))
+                        ->unique(); // get unique for the case when two records share the same mim number
+
         $newMims->each(function ($mimNumber) use ($phenotypes) {
             $data = [
                 'mim_number' => $mimNumber,
