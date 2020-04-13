@@ -106,11 +106,18 @@ class KafkaConsumerTest extends TestCase
         $message->err = RD_KAFKA_RESP_ERR_NO_ERROR;
         $message->payload = 'monkeys';
 
+        $message2 = new \RdKafka\Message();
+        $message2->err = RD_KAFKA_RESP_ERR_NO_ERROR;
+        $message2->payload = 'Beans';
+
+        $eofMessage = new \RdKafka\Message();
+        $eofMessage->err = RD_KAFKA_RESP_ERR__PARTITION_EOF;
+
         // Mock Consumer that makes final call
         $mkRdConsumer = \Mockery::mock(\RdKafka\KafkaConsumer::class);
         $mkRdConsumer->shouldReceive('subscribe');
         $mkRdConsumer->shouldReceive('consume')
-            ->andReturn($message);
+            ->andReturn($message, $message2, $eofMessage);
 
         \Event::fake([Received::class]);
 
@@ -119,10 +126,12 @@ class KafkaConsumerTest extends TestCase
 
         $appConsumer->listen();
         // $appConsumer->stopListening();
-        \Event::assertDispatched(Received::class);
+        \Event::assertDispatched(Received::class, function ($event) use ($message) {
+            return $event->message == $message;
+        });
+
+        \Event::assertDispatched(Received::class, function ($event) use ($message2) {
+            return $event->message == $message2;
+        });
     }
-    
-    
-    
-    
 }

@@ -9,7 +9,7 @@
 			// "testCollisionTimeDiffs": true,
 			// "collisionUploadAction": null,
 			// "collisionDownloadAction": null,
-			// "followSymlinks": false,
+			"followSymlinks": true,
 			"host": "web3demo.schsr.unc.edu",
 			// "port": 22,
 			"username": "jward3",
