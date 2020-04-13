@@ -79,10 +79,15 @@ $conf->set('auto.offset.reset', 'beginning');
 $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
+<<<<<<< HEAD
             if ($offset < 0) {
                 echo "**Assigned topicPartions ...";
                 $consumer->assign($topicPartitions);
             }
+=======
+            echo "Assign partions...";
+            $consumer->assign($topicPartitions);
+>>>>>>> Fix KafkaConsumer to read all messages in queue
             
             foreach ($topicPartitions as $tp) {
                 commitOffset($consumer, $tp, $offset);
@@ -91,11 +96,20 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $to
         break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+<<<<<<< HEAD
             // echo "\nCommittedOffsets\n";
             // $assignments = $consumer->getAssignment();
             // var_dump($assignments);
 
             // echo "\n...Assigning to null...\n";
+=======
+            echo "\nCommittedOffsets\n";
+            $assignments = $consumer->getAssignment();
+            var_dump($assignments);
+            var_dump($consumer->getCommittedOffsets($assignments, 10000000));
+
+            echo "\n...Assigning to null...\n";
+>>>>>>> Fix KafkaConsumer to read all messages in queue
              $consumer->assign(null);
              break;
 
@@ -117,7 +131,11 @@ $consumer = new RdKafka\KafkaConsumer($conf);
 // }
 
 // Subscribe to topic 'test'
+<<<<<<< HEAD
 echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
+=======
+echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
+>>>>>>> Fix KafkaConsumer to read all messages in queue
 $consumer->subscribe($topics);
 var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
@@ -128,7 +146,11 @@ while (true) {
     // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
+<<<<<<< HEAD
             echo $message->offset.': '.$message->payload."\n";
+=======
+            echo $message->payload."\n";
+>>>>>>> Fix KafkaConsumer to read all messages in queue
             $count++;
             if ($count > 2) {
                 break 2;
