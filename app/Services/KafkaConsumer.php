@@ -103,7 +103,6 @@ class KafkaConsumer implements MessageConsumer
             $message = $this->kafkaConsumer->consume(10000);
             try {
                 $successHandler->handle($message);
-                dump($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {

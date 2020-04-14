@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Services\KafkaConfig;
 use Illuminate\Console\Command;
 use \RdKafka\KafkaConsumer as RdKafkaConsumer;
+use App\Jobs\StreamingService\UpdateTopicPartitionOffset;
 
 class StreamingServiceSetTopicOffset extends Command
 {
@@ -73,8 +74,10 @@ class StreamingServiceSetTopicOffset extends Command
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
                     echo $message->offset.': '.$message->payload."\n";
                     $tp = new \RdKafka\TopicPartition($this->argument('topic'), 0);
-                    $tp->setOffset(max($message->offset - 1, 1));
+                    $setOffset = max($message->offset - 1, 1);
+                    $tp->setOffset($setOffset);
                     $consumer->commit($tp);
+                    UpdateTopicPartitionOffset::dispatch($message->topicName, $message->partition, $setOffset);
                     // Set the offset again since we have to consume in order to get anything to work
                     break 2;
                     break;
