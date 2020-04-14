@@ -27,21 +27,21 @@ host('test')
     ->hostname('web3demo.schsr.unc.edu')
     ->stage('test')
     ->set('branch', 'test')
-    ->set('deploy_path', '/mnt/web/project/{{application}}-test')
+    ->set('deploy_path', '/mnt/web/berglab/{{application}}-test')
     ->roles(['test', 'internal', 'stage']);
 
 host('demo')
     ->hostname('web3demo.schsr.unc.edu')
     ->stage('demo')
     ->set('branch', 'demo')
-    ->set('deploy_path', '/mnt/web/project/{{application}}')
+    ->set('deploy_path', '/mnt/web/berglab/{{application}}')
     ->roles(['demo', 'client', 'stage']);
 
 host('prod')
     ->hostname('web3.schsr.unc.edu')
     ->stage('production')
     ->set('branch', 'master')
-    ->set('deploy_path', '/mnt/web/project/{{application}}')
+    ->set('deploy_path', '/mnt/web/berglab/{{application}}')
     ->roles(['production', 'client', 'stage']);
 
 option('with-build', null, InputOption::VALUE_OPTIONAL, 'Build before deploy (optional)');
