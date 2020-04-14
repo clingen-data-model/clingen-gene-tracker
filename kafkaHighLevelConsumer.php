@@ -49,7 +49,7 @@ $conf->setStatsCb(function ($kafka, $json, $json_len) {
 
 $conf->setDrMsgCb(function ($kafka, $message) {
     if ($message->err) {
-        throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($err));
+        throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($message->err));
     }
 });
 $conf->set('group.id', $group);
@@ -79,8 +79,10 @@ $conf->set('auto.offset.reset', 'beginning');
 $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-            echo "Assign partions...";
-            $consumer->assign($topicPartitions);
+            if ($offset < 0) {
+                echo "**Assigned topicPartions ...";
+                $consumer->assign($topicPartitions);
+            }
             
             foreach ($topicPartitions as $tp) {
                 commitOffset($consumer, $tp, $offset);
@@ -89,12 +91,11 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $to
         break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-            echo "\nCommittedOffsets\n";
-            $assignments = $consumer->getAssignment();
-            var_dump($assignments);
-            var_dump($consumer->getCommittedOffsets($assignments, 10000000));
+            // echo "\nCommittedOffsets\n";
+            // $assignments = $consumer->getAssignment();
+            // var_dump($assignments);
 
-            echo "\n...Assigning to null...\n";
+            // echo "\n...Assigning to null...\n";
              $consumer->assign(null);
              break;
 
@@ -116,7 +117,7 @@ $consumer = new RdKafka\KafkaConsumer($conf);
 // }
 
 // Subscribe to topic 'test'
-echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
+echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
 $consumer->subscribe($topics);
 var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
@@ -127,41 +128,41 @@ while (true) {
     // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-            echo $message->payload."\n";
+            echo $message->offset.': '.$message->payload."\n";
             $count++;
             if ($count > 2) {
                 break 2;
             }
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-            echo "\n\nNo more messages; will wait for more...\n\n";
-            break;
+            echo "\n\n**No more messages; will wait for more...\n\n";
+            // break;
             // echo "\n\nFound all messages. Closing for now.\n\n";
-            // break 2;
+            break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
-            echo "Timed out\n";
+            echo "**Timed out\n";
             // echo "Timed out\n";
             break;
         case RD_KAFKA_RESP_ERR__FAIL:
-            echo "Failed to communicate with broker\n";
+            echo "**Failed to communicate with broker\n";
             break;
         case RD_KAFKA_RESP_ERR__BAD_MSG:
-            echo "Bad message format\n";
+            echo "**Bad message format\n";
             break;
         case RD_KAFKA_RESP_ERR__RESOLVE:
-            echo "Host resolution failure";
+            echo "**Host resolution failure";
             break;
         case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
-            echo "unknown topic\n";
+            echo "**unknown topic\n";
             break;
         case RD_KAFKA_RESP_ERR_INVALID_GROUP_ID:
-            echo "invalid group id\n";
+            echo "**invalid group id\n";
             break;
         case RD_KAFKA_RESP_ERR_GROUP_AUTHORIZATION_FAILED:
-            echo "group auth failed\n";
+            echo "**group auth failed\n";
             break;
         default:
-            echo "Unknown Error: ".$message->err."\n";
+            echo "**Unknown Error: ".$message->err."\n";
             break;
 
     }

@@ -71,11 +71,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(\RdKafka\Producer::class, function () {
-            return new \RdKafka\Producer((new KafkaConfig())());
+            $config = (new KafkaConfig())->getConfig();
+            return new \RdKafka\Producer($config);
         });
 
         $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
-            $conf = (new KafkaConfig())();
+            $conf = (new KafkaConfig())->getConfig();
 
             // $topicConf = new \RdKafka\TopicConf();
             // $conf->setDefaultTopicConf($topicConf);
