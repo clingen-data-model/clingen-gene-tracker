@@ -12,7 +12,6 @@ class KafkaConfig
     public function __construct($group = null)
     {
         $this->conf = new \RdKafka\Conf();
-        $group = $group ?? config('streaming-service.group', 'unc_demo');
         $this->setGroup($group);
 
         // Initial list of Kafka brokers
@@ -22,8 +21,8 @@ class KafkaConfig
         // security config
         if (!app()->environment('testing')) {
             $this->conf->set('security.protocol', 'ssl');
-            $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location', '/etc/pki/tls/certs/kafka.web3demo.signed.crt'));
-            $this->conf->set('ssl.key.location', config('streaming-service.key-location', '/etc/pki/tls/private/kafka.apache.key'));
+            $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
+            $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
             $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
     
             if (config('streaming-service.ssl-key-password', null)) {
@@ -51,7 +50,7 @@ class KafkaConfig
         $this->conf->set('group.id', $group);
     }
 
-    public function setRebalanceCallback(\callable $callback)
+    public function setRebalanceCallback($callback)
     {
         $this->conf->setRebalanceCb($callback);
         return $this;

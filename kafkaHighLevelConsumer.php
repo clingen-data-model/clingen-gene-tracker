@@ -34,6 +34,7 @@ $sslKeyLocation =  env('KAFKA_KEY_LOCATION', '/etc/pki/tls/private/kafka.apache.
 $sslCaLocation =   env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
 $sslKeyPassword = env('KAFKA_KEY_PASSWORD', null);
 $group = env('KAFKA_GROUP', 'unc_demo');
+echo "Group is $group\n\n";
 
 $conf = new RdKafka\Conf();
 

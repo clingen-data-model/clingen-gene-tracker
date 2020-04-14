@@ -14,7 +14,7 @@ class ConsumeGeneValidityEvents extends Command
      *
      * @var string
      */
-    protected $signature = 'gci:consume {--dry-run : dry run only}';
+    protected $signature = 'gci:consume {--dry-run : dry run only} {--topic=gene_validity_events}';
 
     /**
      * The console command description.
@@ -43,6 +43,9 @@ class ConsumeGeneValidityEvents extends Command
         if ($this->option('dry-run')) {
             app()->bind(GeneValidityCurationUpdateJob::class, DryRunUpdateFromGeneValidityMessage::class);
         }
+
+        $consumer->addTopic($this->option('topic'));
+        $this->info('listening to '.implode(', ', $consumer->topics));
         $consumer->listen();
     }
 }

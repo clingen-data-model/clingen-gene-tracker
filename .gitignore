@@ -16,3 +16,4 @@ database/backups
 google-sheets-api-credentials.json
 python/token.pickle
 kafka-auth/*
+.push.settings.jsonc

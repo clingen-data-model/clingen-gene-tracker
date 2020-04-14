@@ -88,7 +88,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(MessageConsumer::class, function () {
-            return $this->app->make(KafkaConsumer::class)->addTopic(config('streaming-service.gci-topic'));
+            return $this->app->make(KafkaConsumer::class);
         });
 
         $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
