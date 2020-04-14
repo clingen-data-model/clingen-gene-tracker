@@ -28,6 +28,6 @@ class SetTopicOffset
      */
     public function handle(Received $event)
     {
-        UpdateTopicPartitionOffset::dispatch($event->message->topicName, $event->message->partition, $event->message->offset);
+        UpdateTopicPartitionOffset::dispatch($event->message->topic_name, $event->message->partition, $event->message->offset);
     }
 }

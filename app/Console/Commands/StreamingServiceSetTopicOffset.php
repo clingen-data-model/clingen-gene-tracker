@@ -76,8 +76,8 @@ class StreamingServiceSetTopicOffset extends Command
                     $tp = new \RdKafka\TopicPartition($this->argument('topic'), 0);
                     $setOffset = max($message->offset - 1, 1);
                     $tp->setOffset($setOffset);
-                    $consumer->commit($tp);
-                    UpdateTopicPartitionOffset::dispatch($message->topicName, $message->partition, $setOffset);
+                    $consumer->commit([$tp]);
+                    UpdateTopicPartitionOffset::dispatch($message->topic_name, $message->partition, $setOffset);
                     // Set the offset again since we have to consume in order to get anything to work
                     break 2;
                     break;

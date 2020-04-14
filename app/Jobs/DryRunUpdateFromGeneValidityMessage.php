@@ -4,13 +4,14 @@ namespace App\Jobs;
 
 use App\Curation;
 use App\Affiliation;
-use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
 use App\Services\GciStatusMap;
 use App\Gci\GciClassificationMap;
+use App\Exceptions\GciSyncException;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Contracts\GeneValidityCurationUpdateJob;
 
 class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJob
 {
@@ -50,20 +51,26 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
             'moi_id' => $moi->id,
         ];
 
-        if ($this->gciMessage->status == 'created') {
-            dump($updateSummary);
-            return;
+        try {
+            if ($this->gciMessage->status == 'created') {
+                \Log::debug($updateSummary);
+                return;
+            }
+    
+            $updateSummary['addStatus'] = [
+                'status' => $this->statusMap->get($this->gciMessage->status) ? $this->statusMap->get($this->gciMessage->status)->name : 'No Status??',
+                'status_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s')
+            ];
+    
+            $updateSummary['addClassification'] = [
+                'classification' => $this->classificationMap->get($this->gciMessage->classification) ? $this->classificationMap->get($this->gciMessage->classification)->name : 'No Classification??',
+                'classification_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s')
+            ];
+        } catch (GciSyncException $gciSyncException) {
+            \Log::error($gciSyncException);
+            // dump($gciSyncException->getMessage());
         }
-        $updateSummary['addStatus'] = [
-            'status' => $this->statusMap->get($this->gciMessage->status->name),
-            'status_date' => $this->gciMessage->messageDate
-        ];
 
-        $updateSummary['addClassification'] = [
-            'classification' => $this->classificationMap->get($this->gciMessage->classification),
-            'classification_date' => $this->gciMessage->messageDate
-        ];
-
-        dump($updateSummary);
+        \Log::debug($updateSummary);
     }
 }

@@ -79,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
             $conf = (new KafkaConfig())->getConfig();
-
+ 
             // $topicConf = new \RdKafka\TopicConf();
             // $conf->setDefaultTopicConf($topicConf);
             $conf->set('auto.offset.reset', 'smallest');

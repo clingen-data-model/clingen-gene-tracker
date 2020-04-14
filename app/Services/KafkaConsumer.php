@@ -117,6 +117,37 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
+    public function consumeSomeMessages($numberOfMessages): MessageConsumer
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+
+        $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
+        $successHandler->setNext(app()->make(NoActionMessageHandler::class))
+            ->setNext(app()->make(ErrorMessageHandler::class))
+            ->setNext(app()->make(NoNewMessageHandler::class));
+
+        $count = 0;
+        dump('NumbeOfMessages == '.$numberOfMessages);
+        while (true) {
+            if ($count >= $numberOfMessages) {
+                break;
+            }
+            $message = $this->kafkaConsumer->consume(10000);
+            try {
+                $successHandler->handle($message);
+                $count++;
+                dump($count);
+            } catch (StreamingServiceEndOfFIleException $e) {
+                break;
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
+        }
+
+
+        return $this;
+    }
+
     /**
      * Make sure topic list is unique.
      */
