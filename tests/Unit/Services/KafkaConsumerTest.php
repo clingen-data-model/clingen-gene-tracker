@@ -7,6 +7,7 @@ use App\Services\KafkaConsumer;
 use App\Contracts\MessageConsumer;
 use App\Events\StreamMessages\Received;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,6 +17,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class KafkaConsumerTest extends TestCase
 {
+    use DatabaseTransactions;
+
     public function setUp():void
     {
         parent::setUp();
@@ -102,16 +105,9 @@ class KafkaConsumerTest extends TestCase
      */
     public function dispatches_StreamMessages_Received_event_when_message_received_without_error()
     {
-        $message = new \RdKafka\Message();
-        $message->err = RD_KAFKA_RESP_ERR_NO_ERROR;
-        $message->payload = 'monkeys';
-
-        $message2 = new \RdKafka\Message();
-        $message2->err = RD_KAFKA_RESP_ERR_NO_ERROR;
-        $message2->payload = 'Beans';
-
-        $eofMessage = new \RdKafka\Message();
-        $eofMessage->err = RD_KAFKA_RESP_ERR__PARTITION_EOF;
+        $message = $this->makeMessage('unit_test', 1, '"monkeys"');
+        $message2 = $this->makeMessage('unit_test', 2, null, RD_KAFKA_RESP_ERR_NO_ERROR);
+        $eofMessage = $this->makeMessage('unit_test', 3, null, RD_KAFKA_RESP_ERR__PARTITION_EOF);
 
         // Mock Consumer that makes final call
         $mkRdConsumer = \Mockery::mock(\RdKafka\KafkaConsumer::class);
@@ -133,5 +129,64 @@ class KafkaConsumerTest extends TestCase
         \Event::assertDispatched(Received::class, function ($event) use ($message2) {
             return $event->message == $message2;
         });
+    }
+
+    /**
+     * @test
+     */
+    public function messages_stored_to_gci_messages_table()
+    {
+        $messageContents = file_get_contents(base_path('tests/files/gci_messages/approved.json'));
+        $message = $this->makeMessage('unit_test', 1, $messageContents);
+        $message2 = $this->makeMessage('unit_test', 2, null, RD_KAFKA_RESP_ERR_NO_ERROR);
+        $eofMessage = $this->makeMessage('unit_test', 3, null, RD_KAFKA_RESP_ERR__PARTITION_EOF);
+
+        // Mock Consumer that makes final call
+        $mkRdConsumer = \Mockery::mock(\RdKafka\KafkaConsumer::class);
+        $mkRdConsumer->shouldReceive('subscribe');
+        $mkRdConsumer->shouldReceive('consume')
+            ->andReturn($message, $message2, $eofMessage);
+
+        \Event::fake([Received::class]);
+
+        $appConsumer = new KafkaConsumer($mkRdConsumer, app()->make(Dispatcher::class));
+        $appConsumer->addTopic('test');
+
+        $appConsumer->listen();
+
+        $this->assertDatabaseHas('incoming_stream_messages', [
+            'topic' => $message->topic_name,
+            'partition' => $message->partition,
+            'offset' => $message->offset,
+            'error_code' => $message->err,
+            'gdm_uuid' => json_decode($message->payload)->report_id
+        ]);
+
+        $this->assertDatabaseHas('incoming_stream_messages', [
+            'topic' => $message2->topic_name,
+            'partition' => $message2->partition,
+            'offset' => $message2->offset,
+            'error_code' => $message2->err,
+            'gdm_uuid' => null
+        ]);
+        $this->assertDatabaseHas('incoming_stream_messages', [
+            'topic' => $eofMessage->topic_name,
+            'partition' => $eofMessage->partition,
+            'offset' => $eofMessage->offset,
+            'error_code' => $eofMessage->err,
+            'gdm_uuid' => null
+        ]);
+    }
+
+    private function makeMessage($topic = 'unit_test', $offset = 0, $payload = '"test"', $err = RD_KAFKA_RESP_ERR_NO_ERROR)
+    {
+        $msg = new \RdKafka\Message();
+        $msg->topic_name = $topic;
+        $msg->partition = 0;
+        $msg->offset = $offset;
+        $msg->payload = $payload;
+        $msg->err = $err;
+
+        return $msg;
     }
 }

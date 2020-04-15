@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\MessageConsumer;
-use App\Exceptions\StreamingServiceEndOfFIleException;
-use App\Exceptions\StreamingServiceException;
-use Illuminate\Contracts\Events\Dispatcher;
 use App\Services\Kafka\ErrorMessageHandler;
-use App\Services\Kafka\NoActionMessageHandler;
 use App\Services\Kafka\NoNewMessageHandler;
+use App\Services\Kafka\StoreMessageHandler;
+use Illuminate\Contracts\Events\Dispatcher;
+use App\Exceptions\StreamingServiceException;
+use App\Services\Kafka\NoActionMessageHandler;
 use App\Services\Kafka\SuccessfulMessageHandler;
+use App\Exceptions\StreamingServiceEndOfFIleException;
 
 /**
  * @property array $topics
@@ -99,14 +100,14 @@ class KafkaConsumer implements MessageConsumer
             ->setNext(app()->make(ErrorMessageHandler::class))
             ->setNext(app()->make(NoNewMessageHandler::class));
 
+        $storeMessageHandler = new StoreMessageHandler();
+        $storeMessageHandler->setNext($successHandler);
+    
+
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $successHandler->handle($message);
-<<<<<<< HEAD
-=======
-                dump($message);
->>>>>>> Fix KafkaConsumer to read all messages in queue
+                $storeMessageHandler->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {
