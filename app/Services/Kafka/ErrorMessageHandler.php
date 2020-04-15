@@ -16,8 +16,6 @@ class ErrorMessageHandler extends AbstractMessageHandler
     public function handle(\RdKafka\Message $message)
     {
         if (!in_array($message->err, $this->knownErrors)) {
-            dump('Uknown Error!');
-            dump($message);
             $errMsg = ($message->payload) ? $message->payload : 'An unknown error occurred while consuming Kafka messages';
             throw new StreamingServiceException($errMsg, $message->err);
         }
