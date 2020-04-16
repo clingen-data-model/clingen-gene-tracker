@@ -108,6 +108,7 @@
         </main>
 
         @include('partials.impersonate');
+        @include('partials.version_info');
     <!-- Scripts -->
     <script>
         let user = {!! json_encode($user) !!}.user

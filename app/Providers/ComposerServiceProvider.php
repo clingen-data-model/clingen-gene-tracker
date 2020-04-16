@@ -42,6 +42,13 @@ class ComposerServiceProvider extends ServiceProvider
             }
             $view->with('impersonatable', $impersonatable);
             $view->with('user', compact('user'));
+
+            $gitVersionString = substr(exec('git describe --all --long'), 6);
+            list($branch, $num, $commit) = explode('-', $gitVersionString);
+            $view->with('gitInfo', compact('branch', 'commit'));
+
+            $basePathParts = explode('/', base_path());
+            $view->with('releaseNumber', $basePathParts[array_key_last($basePathParts)]);
         });
     }
 
