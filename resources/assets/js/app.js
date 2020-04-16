@@ -60,9 +60,9 @@ if (document.getElementById('app')) {
         el: '#app',
         store: store,
         components: {
-            'clingen-app': require('./components/ClingenApp.vue'),
-            'clingen-nav': require('./components/ClingenNav.vue'),
-            'alerts': require('./components/Alerts.vue'),
+            'clingen-app': require('./components/ClingenApp.vue').default,
+            'clingen-nav': require('./components/ClingenNav.vue').default,
+            'alerts': require('./components/Alerts.vue').default,
             CriteriaTable
         },
         computed: {
