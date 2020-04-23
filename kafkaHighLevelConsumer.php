@@ -4,6 +4,9 @@ use App\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
 
+$topics = isset($argv[1]) ? explode(',', $argv[1]) : [];
+
+$offset = isset($argv[2]) ? explode(',', $argv[2]) : '-1';
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
@@ -73,6 +76,7 @@ $topicConf = new RdKafka\TopicConf();
 // Set where to start consuming messages when there is no initial offset in
 // offset store or the desired offset is out of range.
 // 'smallest': start from the beginning
+
 $topicConf->set('auto.offset.reset', 'beginning');
 $conf->set('auto.offset.reset', 'beginning');
 
@@ -80,15 +84,8 @@ $conf->set('auto.offset.reset', 'beginning');
 $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-<<<<<<< HEAD
-            if ($offset < 0) {
-                echo "**Assigned topicPartions ...";
-                $consumer->assign($topicPartitions);
-            }
-=======
             echo "Assign partions...";
             $consumer->assign($topicPartitions);
->>>>>>> Fix KafkaConsumer to read all messages in queue
             
             foreach ($topicPartitions as $tp) {
                 commitOffset($consumer, $tp, $offset);
@@ -97,20 +94,12 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $to
         break;
 
          case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-<<<<<<< HEAD
-            // echo "\nCommittedOffsets\n";
-            // $assignments = $consumer->getAssignment();
-            // var_dump($assignments);
-
-            // echo "\n...Assigning to null...\n";
-=======
             echo "\nCommittedOffsets\n";
             $assignments = $consumer->getAssignment();
             var_dump($assignments);
             var_dump($consumer->getCommittedOffsets($assignments, 10000000));
 
             echo "\n...Assigning to null...\n";
->>>>>>> Fix KafkaConsumer to read all messages in queue
              $consumer->assign(null);
              break;
 
@@ -124,19 +113,22 @@ $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $to
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
-// echo "getting Available Topics...\n";
-// $availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
-// echo "Available Topics: \n";
-// foreach ($availableTopics as $avlTopic) {
-//     echo "  ".$avlTopic->getTopic()."\n";
-// }
+if (count($topics) == 0) {
+    $availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
+    echo "Available Topics: \n";
+    foreach ($availableTopics as $idx => $avlTopic) {
+        echo $avlTopic->getTopic()."\n";
+    }
+
+    echo "Which topic(s) do you want to join? (comma-delimit for > 1)";
+    $stdin = fopen('php://stdin', 'r');
+    $line = fgets($stdin);
+    $topics = explode(',', trim($line));
+    fclose($stdin);
+}
 
 // Subscribe to topic 'test'
-<<<<<<< HEAD
 echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
-=======
-echo "Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
->>>>>>> Fix KafkaConsumer to read all messages in queue
 $consumer->subscribe($topics);
 var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
@@ -147,11 +139,7 @@ while (true) {
     // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-<<<<<<< HEAD
             echo $message->offset.': '.$message->payload."\n";
-=======
-            echo $message->payload."\n";
->>>>>>> Fix KafkaConsumer to read all messages in queue
             $count++;
             if ($count > 2) {
                 break 2;
