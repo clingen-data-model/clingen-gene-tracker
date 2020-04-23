@@ -4,6 +4,7 @@ namespace App\Listeners\Curations;
 
 use App\Curation;
 use App\Affiliation;
+use App\Contracts\GeneValidityCurationUpdateJob;
 use App\StreamError;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
@@ -15,21 +16,22 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\AddClassification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Exceptions\UnmatchableCurationException;
+use Illuminate\Contracts\Bus\Dispatcher;
 
 class UpdateFromStreamMessage
 {
     private $statusMap;
     private $classificationMap;
+    private $dispatcher;
 
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(GciStatusMap $statusMap, GciClassificationMap $classificationMap)
+    public function __construct(Dispatcher $dispatcher)
     {
-        $this->statusMap = $statusMap;
-        $this->classificationMap = $classificationMap;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -53,30 +55,8 @@ class UpdateFromStreamMessage
             return;
         }
 
-        $affiliation = Affiliation::findByClingenId($gciMessage->affiliation->id);
-        $moi = ModeOfInheritance::findByHpId($gciMessage->moi);
-
-        $curation->update([
-            'gdm_uuid' => $gciMessage->uuid,
-            'affiliation_id' => $affiliation->id,
-            'moi_id' => $moi->id
-        ]);
-
-        if ($gciMessage->status == 'created') {
-            return;
-        }
-
-        AddStatus::dispatch(
-            $curation,
-            $this->statusMap->get($gciMessage->status),
-            $gciMessage->date
-        );
-
-        AddClassification::dispatch(
-            $curation,
-            $this->classificationMap->get($gciMessage->classification),
-            $gciMessage->date
-        );
+        $job = app()->makeWith(GeneValidityCurationUpdateJob::class, ['curation' => $curation, 'gciMessage' => $gciMessage]);
+        $this->dispatcher->dispatch($job);
     }
 
     private function matchCuration(GciMessage $message)

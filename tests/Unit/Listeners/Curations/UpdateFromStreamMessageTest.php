@@ -31,6 +31,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->createMsgPath = base_path('tests/files/gci_messages/created_message.json');
         $this->provisionalMsgPath = base_path('tests/files/gci_messages/provisionally_approved.json');
         $this->approvedMsgPath = base_path('tests/files/gci_messages/approved.json');
+        $this->approvedWithStatusDateMsgPath = base_path('tests/files/gci_messages/approved_with_status_date.json');
     }
 
     /**
@@ -120,7 +121,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_add_status_on_update_message()
+    public function adds_status_on_update_message()
     {
         $curation = $this->createDICER1();
 
@@ -128,20 +129,40 @@ class UpdateFromStreamMessageTest extends TestCase
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
 
-        Bus::fake();
         event($event);
 
-        Bus::assertDispatched(AddStatus::class, function ($job) use ($curation, $payload) {
-            return $job->curation->id == $curation->id
-                && $job->curationStatus->id = config('project.curation-statuses.curation-provisional')
-                && $job->date = Carbon::parse($payload->date);
-        });
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.curation-provisional'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+        ]);
     }
 
     /**
      * @test
      */
-    public function dispatches_AddClassification_job_if_update()
+    public function unpublished_gci_status_maps_to_published_gt_status()
+    {
+        $curation = $this->createDICER1();
+
+        $payload = json_decode(file_get_contents($this->provisionalMsgPath));
+        $payload->status = 'unpublished';
+        $kafkaMessage = $this->makeMessage(json_encode($payload));
+        $event = new Received($kafkaMessage);
+
+        event($event);
+
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.published'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updates_classification_if_updated()
     {
         $curation = $this->createDICER1();
 
@@ -149,14 +170,40 @@ class UpdateFromStreamMessageTest extends TestCase
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
 
-        Bus::fake();
         event($event);
 
-        Bus::assertDispatched(AddClassification::class, function ($job) use ($curation, $payload) {
-            return $job->curation->id == $curation->id
-                && $job->classification == Classification::find(config('project.classifications.limited'))
-                && $job->date = Carbon::parse($payload->date);
-        });
+        $this->assertDatabaseHas('classification_curation', [
+            'curation_id' => $curation->id,
+            'classification_id' => config('project.classifications.limited'),
+            'classification_date' => Carbon::parse($payload->date)
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function uses_status_name_and_date_if_oject()
+    {
+        $curation = $this->createDICER1();
+
+        $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
+        $kafkaMessage = $this->makeMessage(json_encode($payload));
+        $event = new Received($kafkaMessage);
+
+        event($event);
+
+        $this->assertDatabaseHas('classification_curation', [
+            'curation_id' => $curation->id,
+            'classification_id' => config('project.classifications.limited'),
+            'classification_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s')
+        ]);
+
+
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.curation-approved'),
+            'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s')
+        ]);
     }
     
 

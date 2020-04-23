@@ -14,7 +14,10 @@ return [
         'curation-in-progress' => 4,
         'curation-provisional' => 5,
         'curation-approved' => 6,
-        'recuration-assigned' => 7
+        'recuration-assigned' => 7,
+        'retired-assignment' => 8,
+        'published' => 9,
+        'unpublished-on-gci' => 10
     ],
     'rationales' => [
         1 => 'Assertion',

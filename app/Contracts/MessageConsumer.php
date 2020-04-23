@@ -7,9 +7,9 @@ interface MessageConsumer
 {
     /**
      * sets a topic
-     * 
+     *
      * @param String $topic topic name
-     * 
+     *
      * @return MessageConsumer
      */
     public function addTopic(String $topic): MessageConsumer;
@@ -21,14 +21,20 @@ interface MessageConsumer
         
     /**
      * Starts listening for incoming messages
-     * 
+     *
      * @return void
      */
     public function listen(): messageConsumer;
 
     /**
+     * Starts listening for incoming messages
+     *
+     * @return void
+     */
+    public function consumeSomeMessages($number): messageConsumer;
+
+    /**
      * @return Array List of topics
      */
-    public function listTopics(): Array;
-    
+    public function listTopics(): array;
 }

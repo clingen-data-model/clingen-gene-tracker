@@ -4,10 +4,14 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\MessageConsumer;
-use Illuminate\Contracts\Events\Dispatcher;
 use App\Services\Kafka\ErrorMessageHandler;
+use App\Services\Kafka\NoNewMessageHandler;
+use App\Services\Kafka\StoreMessageHandler;
+use Illuminate\Contracts\Events\Dispatcher;
+use App\Exceptions\StreamingServiceException;
 use App\Services\Kafka\NoActionMessageHandler;
 use App\Services\Kafka\SuccessfulMessageHandler;
+use App\Exceptions\StreamingServiceEndOfFIleException;
 
 /**
  * @property array $topics
@@ -93,18 +97,58 @@ class KafkaConsumer implements MessageConsumer
 
         $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
         $successHandler->setNext(app()->make(NoActionMessageHandler::class))
-            ->setNext(app()->make(ErrorMessageHandler::class));
+            ->setNext(app()->make(ErrorMessageHandler::class))
+            ->setNext(app()->make(NoNewMessageHandler::class));
 
-        $message = $this->kafkaConsumer->consume(10000);
-        try {
-            $successHandler->handle($message);
-        } catch (\Throwable $th) {
-            report($th);
+        $storeMessageHandler = new StoreMessageHandler();
+        $storeMessageHandler->setNext($successHandler);
+    
+
+        while (true) {
+            $message = $this->kafkaConsumer->consume(10000);
+            try {
+                $storeMessageHandler->handle($message);
+            } catch (StreamingServiceEndOfFIleException $e) {
+                break;
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
         }
 
         return $this;
     }
-    
+
+    public function consumeSomeMessages($numberOfMessages): MessageConsumer
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+
+        $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
+        $successHandler->setNext(app()->make(NoActionMessageHandler::class))
+            ->setNext(app()->make(ErrorMessageHandler::class))
+            ->setNext(app()->make(NoNewMessageHandler::class));
+
+        $count = 0;
+        dump('NumbeOfMessages == '.$numberOfMessages);
+        while (true) {
+            if ($count >= $numberOfMessages) {
+                break;
+            }
+            $message = $this->kafkaConsumer->consume(10000);
+            try {
+                $successHandler->handle($message);
+                $count++;
+                dump($count);
+            } catch (StreamingServiceEndOfFIleException $e) {
+                break;
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
+        }
+
+
+        return $this;
+    }
+
     /**
      * Make sure topic list is unique.
      */

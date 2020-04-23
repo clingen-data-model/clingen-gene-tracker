@@ -20,6 +20,8 @@ class GciStatusMap
         $this->map->put('approved', $this->map['curation approved']);
         $this->map->put('provisional', $this->map['curation provisional']);
         $this->map->put('provisionally approved', $this->map['curation provisional']);
+        $this->map->put('provisionally_approved', $this->map['curation provisional']);
+        $this->map->put('unpublished', $this->map['published']);
     }
 
     public function get($gciStatus)

@@ -36,7 +36,8 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\StreamMessages\PushMessage'
         ],
         'App\Events\StreamMessages\Received' => [
-            'App\Listeners\Curations\UpdateFromStreamMessage'
+            'App\Listeners\Curations\UpdateFromStreamMessage',
+            'App\Listeners\SteamMessages\SetTopicOffset'
         ]
     ];
 

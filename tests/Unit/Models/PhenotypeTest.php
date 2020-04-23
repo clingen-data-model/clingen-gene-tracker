@@ -64,15 +64,17 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function mim_number_must_be_unique()
+    public function mim_number_and_name_must_be_unique()
     {
         $phenotype = factory(Phenotype::class)->create([
-            'mim_number' => 12345
+            'mim_number' => 12345,
+            'name' => 'test test test'
         ]);
 
         $this->expectException(QueryException::class);
         $phenotype2 = factory(Phenotype::class)->create([
-            'mim_number' => 12345
+            'mim_number' => 12345,
+            'name' => 'test test test'
         ]);
     }
 
@@ -119,6 +121,4 @@ class PhenotypeTest extends TestCase
 
         $this->assertNull(Phenotype::findByMimNumber(666));
     }
-    
-    
 }
