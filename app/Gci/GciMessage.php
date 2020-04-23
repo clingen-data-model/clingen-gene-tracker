@@ -68,6 +68,10 @@ class GciMessage
 
     public function getStatus():string
     {
+        if (is_object($this->payload->status) && isset($this->payload->status->name)) {
+            return $this->payload->status->name;
+        }
+
         return $this->payload->status;
     }
 
@@ -78,6 +82,14 @@ class GciMessage
 
     public function getMessageDate():Carbon
     {
+        return Carbon::parse($this->payload->date);
+    }
+
+    public function getStatusDate():Carbon
+    {
+        if (is_object($this->payload->status) && isset($this->payload->status->date)) {
+            return Carbon::parse($this->payload->status->date);
+        }
         return Carbon::parse($this->payload->date);
     }
 }

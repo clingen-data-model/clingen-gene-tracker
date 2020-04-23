@@ -57,31 +57,6 @@ class UpdateFromStreamMessage
 
         $job = app()->makeWith(GeneValidityCurationUpdateJob::class, ['curation' => $curation, 'gciMessage' => $gciMessage]);
         $this->dispatcher->dispatch($job);
-
-        // $affiliation = Affiliation::findByClingenId($gciMessage->affiliation->id);
-        // $moi = ModeOfInheritance::findByHpId($gciMessage->moi);
-
-        // $curation->update([
-        //     'gdm_uuid' => $gciMessage->uuid,
-        //     'affiliation_id' => $affiliation->id,
-        //     'moi_id' => $moi->id
-        // ]);
-
-        // if ($gciMessage->status == 'created') {
-        //     return;
-        // }
-
-        // AddStatus::dispatch(
-        //     $curation,
-        //     $this->statusMap->get($gciMessage->status),
-        //     $gciMessage->date
-        // );
-
-        // AddClassification::dispatch(
-        //     $curation,
-        //     $this->classificationMap->get($gciMessage->classification),
-        //     $gciMessage->date
-        // );
     }
 
     private function matchCuration(GciMessage $message)
