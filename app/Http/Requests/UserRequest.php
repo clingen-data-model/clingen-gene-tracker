@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\User;
 use App\Http\Requests\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -25,9 +27,19 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
+        $user = new User();
+        if ($this->user) {
+            $user = User::findOrFail($this->user);
+        }
+
         return [
             'name' => 'required|min:5|max:255',
-            'email' => 'required|email|max:255'
+            'email' => [
+                        'required',
+                        'email',
+                        'max:255',
+                        Rule::unique('users', 'email')->ignore($user)
+                    ]
         ];
     }
 
