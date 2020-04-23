@@ -141,6 +141,27 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    public function unpublished_gci_status_maps_to_published_gt_status()
+    {
+        $curation = $this->createDICER1();
+
+        $payload = json_decode(file_get_contents($this->provisionalMsgPath));
+        $payload->status = 'unpublished';
+        $kafkaMessage = $this->makeMessage(json_encode($payload));
+        $event = new Received($kafkaMessage);
+
+        event($event);
+
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.published'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+        ]);
+    }
+
+    /**
+     * @test
+     */
     public function updates_classification_if_updated()
     {
         $curation = $this->createDICER1();
