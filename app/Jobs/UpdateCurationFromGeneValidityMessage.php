@@ -10,6 +10,7 @@ use Illuminate\Bus\Queueable;
 use App\Services\GciStatusMap;
 use App\Gci\GciClassificationMap;
 use App\Jobs\Curations\AddStatus;
+use App\Exceptions\GciSyncException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\AddClassification;
@@ -51,7 +52,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
         $this->curation->update([
             'gdm_uuid' => $this->gciMessage->uuid,
-            'affiliation_id' => $affiliation->id,
+            'affiliation_id' => ($affiliation) ? $affiliation->id : null,
             'moi_id' => $moi->id
         ]);
 
@@ -65,10 +66,14 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             $this->gciMessage->statusDate
         );
 
-        AddClassification::dispatch(
-            $this->curation,
-            $this->classificationMap->get($this->gciMessage->classification),
-            $this->gciMessage->statusDate
-        );
+        try {
+            AddClassification::dispatch(
+                $this->curation,
+                $this->classificationMap->get($this->gciMessage->classification),
+                $this->gciMessage->statusDate
+            );
+        } catch (GciSyncException $e) {
+            report($e);
+        }
     }
 }

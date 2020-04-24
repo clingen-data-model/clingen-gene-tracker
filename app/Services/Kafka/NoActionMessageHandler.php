@@ -12,7 +12,6 @@ class NoActionMessageHandler extends AbstractMessageHandler
     public function handle(\RdKafka\Message $message)
     {
         if (in_array($message->err, $this->noActionErrors)) {
-            // dump('RD_KAFKA_RESP_ERR__TIMED_OUT');
             return;
         }
 

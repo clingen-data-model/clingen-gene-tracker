@@ -14,7 +14,7 @@ class ConsumeGeneValidityEvents extends Command
      *
      * @var string
      */
-    protected $signature = 'gci:consume {--dry-run : dry run only} {--topic=gene_validity_events} {--message-number= : number of messages to listen for}';
+    protected $signature = 'gci:consume {--dry-run : dry run only} {--topic=gene_validity_events} {--message-number= : number of messages to listen for} {--listen : Keep listening until told to stop}';
 
     /**
      * The console command description.
@@ -45,11 +45,20 @@ class ConsumeGeneValidityEvents extends Command
         }
 
         $consumer->addTopic($this->option('topic'));
-        $this->info('listening to '.implode(', ', $consumer->topics));
         if ($this->option('message-number')) {
+            $this->info('listening to '.implode(', ', $consumer->topics));
             $consumer->consumeSomeMessages((integer)$this->option("message-number"));
             return;
         }
-        $consumer->listen();
+
+
+        if ($this->option('listen')) {
+            $this->info('Listening.  ctrl+c to stop.');
+            $consumer->listen();
+            return;
+        }
+
+        $this->info('listening to '.implode(', ', $consumer->topics));
+        $consumer->consume();
     }
 }

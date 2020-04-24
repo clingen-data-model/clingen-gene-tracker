@@ -86,28 +86,43 @@ class KafkaConsumer implements MessageConsumer
     }
     
 
+    public function listen(): MessageConsumer
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+    
+        $handlerChain = $this->getMessageHandlerChain();
+        while (true) {
+            $message = $this->kafkaConsumer->consume(10000);
+            // if ($message->err == 0) {
+            //     \Log::debug(['offset'=> $message->offset, 'err_code' => $message->err, 'payload' => $message->payload]);
+            // }
+            try {
+                $handlerChain->handle($message);
+            } catch (StreamingServiceEndOfFIleException $e) {
+                continue;
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * Begin listening for messages on topics in topic list
      *
      * @return MessageConsumer
      */
-    public function listen(): MessageConsumer
+    public function consume(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-
-        $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
-        $successHandler->setNext(app()->make(NoActionMessageHandler::class))
-            ->setNext(app()->make(ErrorMessageHandler::class))
-            ->setNext(app()->make(NoNewMessageHandler::class));
-
-        $storeMessageHandler = new StoreMessageHandler();
-        $storeMessageHandler->setNext($successHandler);
     
+        $handlerChain = $this->getMessageHandlerChain();
 
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $storeMessageHandler->handle($message);
+                $handlerChain->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {
@@ -122,20 +137,17 @@ class KafkaConsumer implements MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 
-        $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
-        $successHandler->setNext(app()->make(NoActionMessageHandler::class))
-            ->setNext(app()->make(ErrorMessageHandler::class))
-            ->setNext(app()->make(NoNewMessageHandler::class));
+        $handlerChain = $this->getMessageHandlerChain();
 
         $count = 0;
-        dump('NumbeOfMessages == '.$numberOfMessages);
+        dump('NumberOfMessages == '.$numberOfMessages);
         while (true) {
             if ($count >= $numberOfMessages) {
                 break;
             }
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $successHandler->handle($message);
+                $handlerChain->handle($message);
                 $count++;
                 dump($count);
             } catch (StreamingServiceEndOfFIleException $e) {
@@ -149,6 +161,24 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
+    private function getMessageHandlerChain()
+    {
+        $noActionHandler = new NoActionMessageHandler();
+        $storeMessageHandler = new StoreMessageHandler();
+        $successHandler = new SuccessfulMessageHandler($this->eventDispatcher);
+        $errorMessageHandler = new ErrorMessageHandler();
+        $noNewMessageHandler = new NoNewMessageHandler();
+
+        $noActionHandler->setNext($storeMessageHandler)
+            ->setNext($successHandler)
+            ->setNext($errorMessageHandler)
+            ->setNext($noNewMessageHandler);
+
+        $chainHead = $noActionHandler;
+
+        return $chainHead;
+    }
+
     /**
      * Make sure topic list is unique.
      */
@@ -156,8 +186,5 @@ class KafkaConsumer implements MessageConsumer
     {
         $this->topics = array_unique($this->topics);
         $this->topics = array_values($this->topics);
-        if ($this->listening) {
-            $this->listen();
-        }
     }
 }

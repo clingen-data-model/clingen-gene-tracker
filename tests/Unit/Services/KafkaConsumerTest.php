@@ -120,8 +120,7 @@ class KafkaConsumerTest extends TestCase
         $appConsumer = new KafkaConsumer($mkRdConsumer, app()->make(Dispatcher::class));
         $appConsumer->addTopic('test');
 
-        $appConsumer->listen();
-        // $appConsumer->stopListening();
+        $appConsumer->consume();
         \Event::assertDispatched(Received::class, function ($event) use ($message) {
             return $event->message == $message;
         });
@@ -152,7 +151,7 @@ class KafkaConsumerTest extends TestCase
         $appConsumer = new KafkaConsumer($mkRdConsumer, app()->make(Dispatcher::class));
         $appConsumer->addTopic('test');
 
-        $appConsumer->listen();
+        $appConsumer->consume();
 
         $this->assertDatabaseHas('incoming_stream_messages', [
             'topic' => $message->topic_name,

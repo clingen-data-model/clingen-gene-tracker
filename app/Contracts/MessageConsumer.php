@@ -20,18 +20,26 @@ interface MessageConsumer
     public function removeTopic(String $topic): MessageConsumer;
         
     /**
-     * Starts listening for incoming messages
+     * Consumes incoming messages until end-of-file exception
      *
-     * @return void
+     * @return MessageConsumer
      */
-    public function listen(): messageConsumer;
+    public function consume(): MessageConsumer;
 
     /**
      * Starts listening for incoming messages
      *
-     * @return void
+     * @return MessageConsumer
      */
-    public function consumeSomeMessages($number): messageConsumer;
+    public function consumeSomeMessages($number): MessageConsumer;
+
+
+    /**
+     * Listen to topic until told to stop
+     *
+     * @return MessageConsumer
+     */
+    public function listen(): MessageConsumer;
 
     /**
      * @return Array List of topics
