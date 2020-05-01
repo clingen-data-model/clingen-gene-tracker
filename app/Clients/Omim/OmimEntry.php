@@ -2,6 +2,14 @@
 
 namespace App\Clients\Omim;
 
+/**
+ * Value object for an OMIM API entry.
+ *
+ * @property-read object $phenotypeMap
+ * @property-read integer $mimNumber
+ * @property-read object $titles
+ * @property-read object|null $geneMap
+ */
 class OmimEntry
 {
     protected $rawEntry;
@@ -11,6 +19,9 @@ class OmimEntry
         $this->rawEntry = $rawEntry[0]->entry;
     }
 
+    /**
+     * Gets the phenotypeMapList whether inside geneMap or at root level
+     */
     public function getPhenotypeMapList()
     {
         if (isset($this->rawEntry->geneMap) && isset($this->rawEntry->geneMap->phenotypeMapList)) {
