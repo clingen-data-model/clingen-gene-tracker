@@ -24,7 +24,7 @@ class OmimController extends Controller
             return new JsonResponse(['errors' => ['You must provide a mim_number to get a omim record.']], 422);
         }
         $entry = $this->omim->getEntry($request->mim_number);
-        return $entry;
+        return $entry->toArray();
     }
 
     public function search(Request $request)

@@ -184,7 +184,7 @@ class BulkCurationProcessor
             if (isset($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
-                    $omimData = $this->omim->getEntry($mimNumber)[0]->entry;
+                    $omimData = $this->omim->getEntry($mimNumber);
                     $phenotypes[] = ['mim_number'=>$omimData->mimNumber, 'name'=> $omimData->titles->preferredTitle];
                 } catch (ClientException $e) {
                     $badMimNumbers[] = 'Bad mim number at OMIM ID '.$i.': '.$mimNumber;
@@ -237,8 +237,8 @@ class BulkCurationProcessor
             if (isset($rowData['omim_id_'.$i]) && !empty($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
-                    $entries = $this->omim->getEntry($mimNumber);
-                    if (count($entries) < 1) {
+                    $entry = $this->omim->getEntry($mimNumber);
+                    if (count($entry->isValid()) < 1) {
                         $errors['OMIM ID '.$i] = 'Bad mim number: '.$mimNumber;
                         $valid = false;
                     }
