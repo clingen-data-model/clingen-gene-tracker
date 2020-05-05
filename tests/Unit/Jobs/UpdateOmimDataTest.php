@@ -57,7 +57,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function updates_phenotype_name_if_preferredTitle_is_different()
+    public function updates_phenotype_name_to_preferredTitle_is_different_and_no_phenotypeMapList()
     {
         $jsonString = file_get_contents(base_path('tests/files/omim_api/607084.json'));
         $omim = $this->getOmimClient([
@@ -72,6 +72,26 @@ class UpdateOmimDataTest extends TestCase
             'name' => 'DEAFNESS, AUTOSOMAL RECESSIVE 31; DFNB31'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function updates_phenotype_name_to_geneMap_phenotypeMapList_first_phenotypeMap_phenotype_if_exists()
+    {
+        $jsonString = file_get_contents(base_path('tests/files/omim_api/607084_with_geneMap.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $jsonString)
+        ]);
+
+        $job = new UpdateOmimData($this->phenotype);
+        $job->handle($omim);
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 607084,
+            'name' => 'Deafness, autosomal recessive 31'
+        ]);
+    }
+    
     
     /**
      * @test
@@ -164,5 +184,4 @@ class UpdateOmimDataTest extends TestCase
 
         \Mail::assertSent(PhenotypeOmimEntryMoved::class);
     }
-    
 }

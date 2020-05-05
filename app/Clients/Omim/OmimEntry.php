@@ -39,7 +39,15 @@ class OmimEntry implements OmimEntryContract
 
     public function getPhenotypeName()
     {
-        return $this->rawEntry->titles->preferredTitle;
+        try {
+            if (count($this->phenotypeMapList) == 0) {
+                return $this->titles->preferredTitle;
+            }
+    
+            return $this->phenotypeMapList[0]->phenotypeMap->phenotype;
+        } catch (OmimResponseException $e) {
+            return $this->titles->preferredTitle;
+        }
     }
 
     public function __get($key)

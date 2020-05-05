@@ -58,7 +58,7 @@ class UpdateOmimData implements ShouldQueue
     }
     private function nameUpdated($omimEntry)
     {
-        return strtoupper($this->phenotype->name) != strtoupper($omimEntry->titles->preferredTitle);
+        return strtoupper($this->phenotype->name) != strtoupper($omimEntry->phenotypeName);
     }
 
     private function entryHasMoved($omimEntry)
@@ -69,7 +69,7 @@ class UpdateOmimData implements ShouldQueue
     private function updatePhenotypeName($omimEntry)
     {
         $this->phenotype->update([
-            'name' => $omimEntry->titles->preferredTitle,
+            'name' => $omimEntry->phenotypeName,
             'omim_entry' => $omimEntry
         ]);
     }
@@ -88,7 +88,7 @@ class UpdateOmimData implements ShouldQueue
 
         $this->phenotype->update([
             'mim_number' => $newEntry->mimNumber,
-            'name' => $newEntry->titles->preferredTitle,
+            'name' => $newEntry->phenotypeName,
             'omim_entry' => $newEntry
         ]);
     }
