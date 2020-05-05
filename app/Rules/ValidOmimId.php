@@ -30,12 +30,8 @@ class ValidOmimId implements Rule
     public function passes($attribute, $value)
     {
         try {
-            $entries = $this->omim->getEntry($value);
-            if (count($entries) > 0) {
-                return true;
-            }
-
-            return false;
+            $entry = $this->omim->getEntry($value);
+            return $entry->isValid();
         } catch (ClientException $e) {
             if ($e->getCode() == 400) {
                 return false;

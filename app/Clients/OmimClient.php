@@ -3,6 +3,9 @@
 namespace App\Clients;
 
 use GuzzleHttp\Client;
+use App\Clients\Omim\OmimEntry;
+use App\Clients\Omim\NullOmimEntry;
+use App\Clients\Omim\OmimEntryContract;
 use Illuminate\Support\Facades\Cache;
 use App\Contracts\OmimClient as OmimClientContract;
 
@@ -33,17 +36,16 @@ class OmimClient implements OmimClientContract
         return Cache::remember($cacheKey, 20*60, function () use ($path, $query) {
             $response = $this->client->request('GET', $path, $query);
             return json_decode($response->getBody()->getContents());
-
         });
     }
 
     /**
      * Fetches one or more entries from the OMIM API
-     * 
+     *
      * @param mixed $mimNumber integer or array or integers
-     * @return array Array or records returned by API
+     * @return OmimEntry omim entry
      */
-    public function getEntry($mimNumber)
+    public function getEntry($mimNumber): OmimEntryContract
     {
         if (is_array($mimNumber)) {
             $mimNumber = implode(',', $mimNumber);
@@ -51,7 +53,10 @@ class OmimClient implements OmimClientContract
         $query = $this->buildQuery(compact('mimNumber'));
         $response = $this->fetch('entry', compact('query'));
 
-        return $response->omim->entryList;
+        if (count($response->omim->entryList) > 0) {
+            return new OmimEntry($response->omim->entryList[0]->entry);
+        }
+        return new NullOmimEntry();
     }
 
     public function search($searchData)

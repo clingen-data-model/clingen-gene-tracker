@@ -39,14 +39,14 @@ class UpdateOmimData implements ShouldQueue
     public function handle(OmimClient $omimClient)
     {
         $this->omimClient = $omimClient;
-        $omimEntry = $omimClient->getEntry($this->phenotype->mim_number)[0]->entry;
+        $omimEntry = $omimClient->getEntry($this->phenotype->mim_number);
 
         if ($this->nameUpdated($omimEntry)) {
             $oldName = $this->phenotype->name;
             
             if ($this->entryHasMoved($omimEntry)) {
                 $oldMimNumber = $this->phenotype->mim_number;
-                $newOmimEntry = $this->omimClient->getEntry($omimEntry->movedTo)[0]->entry;
+                $newOmimEntry = $this->omimClient->getEntry($omimEntry->movedTo);
                 $this->updatePhenotypeWithNewEntry($newOmimEntry);
                 $this->sendEntryMovedNotification($oldName, $oldMimNumber);
                 return;

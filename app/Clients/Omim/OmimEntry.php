@@ -10,13 +10,13 @@ namespace App\Clients\Omim;
  * @property-read object $titles
  * @property-read object|null $geneMap
  */
-class OmimEntry
+class OmimEntry implements OmimEntryContract
 {
     protected $rawEntry;
 
     public function __construct($rawEntry)
     {
-        $this->rawEntry = $rawEntry[0]->entry;
+        $this->rawEntry = $rawEntry;
     }
 
     /**
@@ -44,5 +44,30 @@ class OmimEntry
         if (in_array($key, array_keys(get_object_vars($this->rawEntry)))) {
             return $this->rawEntry->{$key};
         }
+    }
+
+    public function jsonSerialize()
+    {
+        return json_encode($this->rawEntry);
+    }
+
+    public function toJson()
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function toArray()
+    {
+        return json_decode(json_encode($this->rawEntry), true);
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->rawEntry);
+    }
+
+    public function isValid()
+    {
+        return true;
     }
 }

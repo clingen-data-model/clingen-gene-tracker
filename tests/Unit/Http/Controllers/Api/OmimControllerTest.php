@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Clients\Omim\OmimEntry;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group omim
@@ -24,10 +25,11 @@ class OmimControllerTest extends TestCase
      */
     public function gets_an_entity_from_omim()
     {
-        $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')), true);
-        $this->actingAs($this->u, 'api')
-            ->call('GET', '/api/omim/entry?mim_number=100100')
-            ->assertJson($omimEntryResponse['omim']['entryList']);
+        $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')));
+        $entry = new OmimEntry($omimEntryResponse->omim->entryList[0]->entry);
+        $response = $this->actingAs($this->u, 'api')
+            ->call('GET', '/api/omim/entry?mim_number=100100');
+        $response->assertJson($entry->toArray());
     }
 
     /**

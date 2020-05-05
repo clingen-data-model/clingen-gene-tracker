@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use App\Clients\OmimClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use App\Clients\Omim\OmimEntry;
 use Tests\Traits\GetsOmimClient;
 use GuzzleHttp\Handler\MockHandler;
 
@@ -43,7 +44,7 @@ class OmimClientTest extends TestCase
         $omim = $this->getOmimClient([ new Response(200, [], $entryJson) ]);
         $entry = $omim->getEntry(100100);
 
-        $expectedEntry = json_decode($entryJson)->omim->entryList;
+        $expectedEntry = new OmimEntry(json_decode($entryJson)->omim->entryList[0]->entry);
 
         $this->assertEquals($expectedEntry, $entry);
     }
