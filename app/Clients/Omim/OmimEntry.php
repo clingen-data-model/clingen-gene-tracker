@@ -2,6 +2,8 @@
 
 namespace App\Clients\Omim;
 
+use App\Exceptions\OmimResponseException;
+
 /**
  * Value object for an OMIM API entry.
  *
@@ -32,7 +34,12 @@ class OmimEntry implements OmimEntryContract
             return $this->rawEntry->phenotypeMapList;
         }
 
-        throw new \Exception("No phenotypeMapList on Entry");
+        throw new OmimResponseException("No phenotypeMapList on Entry", 422);
+    }
+
+    public function getPhenotypeName()
+    {
+        return $this->rawEntry->titles->preferredTitle;
     }
 
     public function __get($key)
