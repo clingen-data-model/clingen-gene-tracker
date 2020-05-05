@@ -50,7 +50,11 @@ class OmimClient implements OmimClientContract
         if (is_array($mimNumber)) {
             $mimNumber = implode(',', $mimNumber);
         }
-        $query = $this->buildQuery(compact('mimNumber'));
+
+        $query = $this->buildQuery([
+            'mimNumber' => $mimNumber,
+            'include'=>'geneMap'
+        ]);
         $response = $this->fetch('entry', compact('query'));
 
         if (count($response->omim->entryList) > 0) {
