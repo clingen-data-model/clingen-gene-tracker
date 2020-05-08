@@ -4,10 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Phenotype extends Model
 {
     use SoftDeletes;
+    use RevisionableTrait;
+
+    protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
         'mim_number',
@@ -29,11 +33,10 @@ class Phenotype extends Model
     public function scopeMimNumber($query, $mimNumber)
     {
         return $query->where('mim_number', $mimNumber);
-    }   
+    }
 
     public static function findByMimNumber($mimNumber)
     {
         return static::mimNumber($mimNumber)->first();
     }
-    
 }
