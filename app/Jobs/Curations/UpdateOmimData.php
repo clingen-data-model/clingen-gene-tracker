@@ -46,6 +46,7 @@ class UpdateOmimData implements ShouldQueue
             
             if ($this->entryHasMoved($omimEntry)) {
                 $oldMimNumber = $this->phenotype->mim_number;
+                $this->phenotype->update(['omim_entry' => $omimEntry->toArray()]);
                 $newOmimEntry = $this->omimClient->getEntry($omimEntry->movedTo);
                 $this->updatePhenotypeWithNewEntry($newOmimEntry);
                 $this->sendEntryMovedNotification($oldName, $oldMimNumber);
@@ -109,6 +110,7 @@ class UpdateOmimData implements ShouldQueue
 
     private function sendEntryMovedNotification($oldName, $oldMimNumber)
     {
+        \Log::debug('entry moved: '.$oldMimNumber.' to '.$this->phenotype->mim_number);
         $this->phenotype
             ->curations
             ->each(function ($curation) use ($oldName, $oldMimNumber) {

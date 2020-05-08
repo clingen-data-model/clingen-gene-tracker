@@ -40,7 +40,8 @@ class CheckOmimUpdates extends Command
      */
     public function handle(OmimClient $omim)
     {
-        $phenotypeQuery = Phenotype::with('curations');
+        $phenotypeQuery = Phenotype::with('curations')
+            ->whereHas('curations');
         if ($this->option('limit')) {
             $phenotypeQuery->limit($this->option('limit'));
         }
