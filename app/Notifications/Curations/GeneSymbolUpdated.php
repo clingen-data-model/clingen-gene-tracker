@@ -34,7 +34,7 @@ class GeneSymbolUpdated extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
