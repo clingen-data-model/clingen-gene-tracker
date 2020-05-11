@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\User\Created;
-use App\Mail\UserWelcome;
+use App\Notifications\users\Welcome;
 
 class SendWelcomeEmail
 {
@@ -24,6 +24,6 @@ class SendWelcomeEmail
      */
     public function handle(Created $event)
     {
-        \Mail::to($event->user)->send(new UserWelcome());
+        $event->user->notify(new Welcome());
     }
 }

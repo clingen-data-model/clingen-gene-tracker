@@ -6,11 +6,12 @@ use App\Curation;
 use Illuminate\Bus\Queueable;
 use App\Contracts\MondoClient;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\Curations\MondoIdNotFound;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Jobs\SendCurationMailToCoordinators;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\Notifications\Curations\MondoIdNotFound;
 
 class AugmentWithMondoInfo implements ShouldQueue
 {
@@ -43,7 +44,7 @@ class AugmentWithMondoInfo implements ShouldQueue
             $mondoRecord = $mondoClient->fetchRecord($this->curation->numericMondoId);
             $this->curation->update(['mondo_name' => $mondoRecord->label]);
         } catch (\Throwable $th) {
-            SendCurationMailToCoordinators::dispatch($this->curation, MondoIdNotFound::class);
+            NotifyCoordinatorsAboutCuration::dispatch($this->curation, MondoIdNotFound::class);
             throw $th;
         }
     }

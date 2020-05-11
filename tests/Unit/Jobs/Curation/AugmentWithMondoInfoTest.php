@@ -8,10 +8,11 @@ use Tests\TestCase;
 use App\ExpertPanel;
 use App\MondoRecord;
 use App\Contracts\MondoClient;
-use App\Mail\Curations\MondoIdNotFound;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Curations\MondoIdNotFound;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -64,6 +65,8 @@ class AugmentWithMondoInfoTest extends TestCase
 
     /**
      * @test
+     * @group mail
+     * @group notifications
      */
     public function sends_MondoIdNotFound_to_coordinator_if_mondo_id_not_found()
     {
@@ -75,14 +78,14 @@ class AugmentWithMondoInfoTest extends TestCase
 
         $job = new AugmentWithMondoInfo($this->curation);
 
-        \Mail::fake();
+        Notification::fake();
         try {
             $job->handle($this->mondoClient);
         } catch (\Throwable $th) {
             //throw $th;
         }
 
-        \Mail::assertSent(MondoIdNotFound::class);
+        Notification::assertSentTo($this->user, MondoIdNotFound::class);
     }
     
 

@@ -7,11 +7,12 @@ use App\HgncRecord;
 use App\Contracts\HgncClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use App\Mail\HgncIdNotFoundNotification;
 use App\Exceptions\HttpNotFoundException;
-use App\Mail\Curations\GeneSymbolUpdated;
 use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Jobs\SendCurationMailToCoordinators;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\Notifications\Curations\HgncIdNotFoundNotification;
+use App\Notifications\Curations\GeneSymbolUpdated;
 
 class CheckForHgncUpdates extends Command
 {
@@ -80,7 +81,7 @@ class CheckForHgncUpdates extends Command
         $oldGeneSymbol = $curation->gene_symbol;
         $curation->update(['gene_symbol' => $hgncRecord->symbol]);
         $curation->expertPanel->coordinators->each(function ($coordinator) use ($curation, $oldGeneSymbol) {
-            \Mail::to($coordinator->email)->send(new GeneSymbolUpdated($curation, $oldGeneSymbol));
+            $coordinator->notify(new GeneSymbolUpdated($curation, $oldGeneSymbol));
         });
     }
 
@@ -90,7 +91,7 @@ class CheckForHgncUpdates extends Command
             try {
                 AugmentWithHgncInfo::dispatch($curation);
             } catch (HttpNotFoundException $e) {
-                SendCurationMailToCoordinators::dispatch($curation, HgncIdNotFoundNotification::class);
+                NotifyCoordinatorsAboutCuration::dispatch($curation, HgncIdNotFoundNotification::class);
             }
         });
     }
