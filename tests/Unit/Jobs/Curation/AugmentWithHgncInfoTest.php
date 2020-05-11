@@ -4,14 +4,15 @@ namespace Tests\Unit\Job\Curation;
 
 use App\User;
 use App\Curation;
+use App\HgncRecord;
 use Tests\TestCase;
 use App\ExpertPanel;
 use OutOfBoundsException;
 use App\Contracts\HgncClient;
 use App\Exceptions\HttpNotFoundException;
-use App\HgncRecord;
 use App\Jobs\Curations\AugmentWithHgncInfo;
-use App\Mail\Curations\GeneSymbolUpdated;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Curations\GeneSymbolUpdated;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
@@ -84,6 +85,8 @@ class AugmentWithHgncInfoTest extends TestCase
     
     /**
      * @test
+     * @group notifications
+     * @group mail
      */
     public function updates_previous_symbol_with_new_symbol_symbol_changed()
     {
@@ -100,7 +103,7 @@ class AugmentWithHgncInfoTest extends TestCase
 
         app()->instance(HgncClient::class, $this->hgncClient);
 
-        \Mail::fake();
+        Notification::fake();
         $job = new AugmentWithHgncInfo($this->curation);
         $job->handle($this->hgncClient);
 
@@ -110,8 +113,6 @@ class AugmentWithHgncInfoTest extends TestCase
             'hgnc_name' => 'Milton Dog'
         ]);
 
-        \Mail::assertSent(GeneSymbolUpdated::class, function ($mail) {
-            return $mail->hasTo($this->coord->email);
-        });
+        Notification::assertSentTo($this->coord, GeneSymbolUpdated::class);
     }
 }

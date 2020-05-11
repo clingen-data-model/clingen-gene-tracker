@@ -11,9 +11,10 @@ use GuzzleHttp\Psr7\Response;
 use Tests\Traits\GetsOmimClient;
 use App\Jobs\Curations\UpdateOmimData;
 use App\Jobs\SendCurationMailToCoordinators;
-use App\Mail\Curations\PhenotypeOmimEntryMoved;
-use App\Mail\Curations\PhenotypeNomenclatureUpdated;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Notifications\Curations\PhenotypeOmimEntryMoved;
+use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
 
 /**
  * @group omim
@@ -95,10 +96,12 @@ class UpdateOmimDataTest extends TestCase
     
     /**
      * @test
+     * @group mail
+     * @group notification
      */
     public function dispatches_email_to_coordinators_when_phenotype_name_changed()
     {
-        \Mail::fake();
+        Notification::fake();
 
         $jsonString = file_get_contents(base_path('tests/files/omim_api/607084.json'));
         $omim = $this->getOmimClient([
@@ -108,7 +111,7 @@ class UpdateOmimDataTest extends TestCase
         $job = new UpdateOmimData($this->phenotype);
         $job->handle($omim);
 
-        \Mail::assertSent(PhenotypeNomenclatureUpdated::class);
+        Notification::assertSentTo($this->coordinator, PhenotypeNomenclatureUpdated::class);
     }
 
     /**
@@ -167,10 +170,12 @@ class UpdateOmimDataTest extends TestCase
 
     /**
      * @test
+     * @group mail
+     * @group notification
      */
     public function dispatches_email_to_coordinators_when_phentotype_entry_moved()
     {
-        \Mail::fake();
+        Notification::fake();
 
         $movedJson = file_get_contents(base_path('tests/files/omim_api/entry_moved.json'));
         $newJson = file_get_contents(base_path('tests/files/omim_api/139139.json'));
@@ -182,6 +187,6 @@ class UpdateOmimDataTest extends TestCase
         $job = new UpdateOmimData($this->phenotype);
         $job->handle($omim);
 
-        \Mail::assertSent(PhenotypeOmimEntryMoved::class);
+        Notification::assertSentTo($this->coordinator, PhenotypeOmimEntryMoved::class);
     }
 }

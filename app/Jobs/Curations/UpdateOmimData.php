@@ -10,8 +10,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Jobs\SendCurationMailToCoordinators;
-use App\Mail\Curations\PhenotypeNomenclatureUpdated;
-use App\Mail\Curations\PhenotypeOmimEntryMoved;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\Notifications\Curations\PhenotypeOmimEntryMoved;
+use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
 
 class UpdateOmimData implements ShouldQueue
 {
@@ -104,7 +105,7 @@ class UpdateOmimData implements ShouldQueue
         $this->phenotype
             ->curations
             ->each(function ($curation) use ($oldName) {
-                SendCurationMailToCoordinators::dispatch($curation, PhenotypeNomenclatureUpdated::class, $this->phenotype, $oldName);
+                NotifyCoordinatorsAboutCuration::dispatch($curation, PhenotypeNomenclatureUpdated::class, $this->phenotype, $oldName);
             });
     }
 
@@ -114,7 +115,7 @@ class UpdateOmimData implements ShouldQueue
         $this->phenotype
             ->curations
             ->each(function ($curation) use ($oldName, $oldMimNumber) {
-                SendCurationMailToCoordinators::dispatch($curation, PhenotypeOmimEntryMoved::class, $this->phenotype, $oldName, $oldMimNumber);
+                NotifyCoordinatorsAboutCuration::dispatch($curation, PhenotypeOmimEntryMoved::class, $this->phenotype, $oldName, $oldMimNumber);
             });
     }
 }
