@@ -59,7 +59,8 @@ class MondoIdNotFound extends Notification
     public function toArray($notifiable)
     {
         return [
-            'curations' => $this->curation
+            'curation' => $this->curation,
+            'template' => 'email.curations.mondo_id_not_found'
         ];
     }
 }

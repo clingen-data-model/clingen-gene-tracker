@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Phenotype;
 use App\Contracts\OmimClient;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use App\Jobs\Curations\UpdateOmimData;
 
 class CheckOmimUpdates extends Command
@@ -40,6 +41,7 @@ class CheckOmimUpdates extends Command
      */
     public function handle(OmimClient $omim)
     {
+        Log::info('Checking OMIM for updates');
         $phenotypeQuery = Phenotype::with('curations')
             ->whereHas('curations');
         if ($this->option('limit')) {

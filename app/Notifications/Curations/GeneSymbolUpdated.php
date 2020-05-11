@@ -6,6 +6,7 @@ use App\Curation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class GeneSymbolUpdated extends Notification
@@ -59,7 +60,8 @@ class GeneSymbolUpdated extends Notification
     {
         return [
             'curation' => $this->curation,
-            'oldGeneSymbol' => $this->oldGeneSymbol
+            'oldGeneSymbol' => $this->oldGeneSymbol,
+            'template' => 'email.curations.gene_symbol_updated'
         ];
     }
 }
