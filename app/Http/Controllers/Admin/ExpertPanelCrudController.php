@@ -45,14 +45,14 @@ class ExpertPanelCrudController extends CrudController
             'attribute' => 'name',
         ]);
 
-        // $this->crud->addField([
-        //     'name' => 'affiliation_id',
-        //     'label' => 'Affiliation',
-        //     'entity' => 'affiliation',
-        //     'model' => Affiliation::class,
-        //     'type' => 'select2',
-        //     'attribute' => 'name',
-        // ]);
+        $this->crud->addField([
+            'name' => 'affiliation_id',
+            'label' => 'Affiliation',
+            'entity' => 'affiliation',
+            'model' => Affiliation::class,
+            'type' => 'select2',
+            'attribute' => 'name',
+        ]);
 
         // ------ COLUMNS
 
@@ -70,14 +70,14 @@ class ExpertPanelCrudController extends CrudController
            'model' => WorkingGroup::class
         ]);
 
-        // $this->crud->setColumnDetails('affiliation_id', [
-        //     'label' => "Affiliation", // Table column heading
-        //     'type' => "select",
-        //     'name' => 'affiliation_id', // the column that contains the ID of that connected entity;
-        //     'entity' => 'affiliation', // the method that defines the relationship in your Model
-        //     'attribute' => "name", // foreign key attribute that is shown to user
-        //     'model' => Affiliation::class
-        //  ]);
+        $this->crud->setColumnDetails('affiliation_id', [
+            'label' => "Affiliation", // Table column heading
+            'type' => "select",
+            'name' => 'affiliation_id', // the column that contains the ID of that connected entity;
+            'entity' => 'affiliation', // the method that defines the relationship in your Model
+            'attribute' => "name", // foreign key attribute that is shown to user
+            'model' => Affiliation::class
+         ]);
 
         // ------ CRUD ACCESS
         $this->crud->denyAccess(['list','create','update','deactivate','delete']);
