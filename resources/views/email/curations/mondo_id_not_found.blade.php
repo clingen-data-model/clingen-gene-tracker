@@ -1,4 +1,3 @@
-<li>
     The MonDO ID {{$curation['mondo_id']}} used for 
     <a href="{{url('/#/curations/'.$curation['id'])}}"> your curatation with id {{$curation['id']}}</a>
     could not be found in the Monarch Disease Ontology.
@@ -12,4 +11,3 @@
 
     <br>
     Please consult MonDO and update the curation with an existing MonDO ID.
-</li>
