@@ -9,6 +9,7 @@ We received info from the GCI about gene-disease in <strong>{{$stream_errors[0][
                 /
                 {{$streamError['moi']}}
             </a>
+            on {{$streamError['created_at']}}
         </li>
     @endforeach
 </ul>
