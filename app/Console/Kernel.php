@@ -31,8 +31,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt("02:00:00");
         $schedule->command('curations:check-omim-updates')
             ->dailyAt("03:00:00");
-        $schedule->command('gci:consume')
-            ->hourly();
+        
+        if (config('streaming-service.consume', true)) {
+            $schedule->command('gci:consume')
+                ->hourly();
+        }
     }
 
     /**

@@ -9,5 +9,6 @@ return [
     'ssl-key-password' => env('KAFKA_KEY_PASSWORD', null),
     'group' => env('KAFKA_GROUP', 'unc_demo'),
     'gci-topic' => env('GCI_TOPIC', 'gene_validity_events'),
-    'warn-disabled' => env('STREAMING_SERVICE_WARN_DISABLED', true)
+    'warn-disabled' => env('STREAMING_SERVICE_WARN_DISABLED', true),
+    'consume' => env('STREAMING_SERVICE_CONSUME', true),
 ];
