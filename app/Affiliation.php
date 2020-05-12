@@ -35,6 +35,11 @@ class Affiliation extends Model
         return $this->belongsTo(AffiliationType::class, 'affiliation_type_id');
     }
 
+    public function expertPanel()
+    {
+        return $this->hasOne(ExpertPanel::class);
+    }
+
     public static function findByClingenId($clingenId)
     {
         return static::where('clingen_id', $clingenId)->first();

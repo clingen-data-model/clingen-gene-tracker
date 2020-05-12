@@ -64,9 +64,9 @@ class UpdateFromStreamMessage
         $curation = Curation::findByUuid($message->uuid);
         if (!$curation) {
             $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
-                            // ->noUuid()
+                            ->noUuid()
                             ->first();
-
+                
             if (!$curation) {
                 throw new UnmatchableCurationException($message->payload);
             }
