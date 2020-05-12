@@ -41,7 +41,7 @@ class CreateNotificationsForStreamErrors extends Command
      */
     public function handle()
     {
-        $groupedErrors = StreamError::unsent()->get()->groupBy('message_payload.performed_by.on_behalf_of.id');
+        $groupedErrors = StreamError::unsent()->get()->groupBy('affiliation_id');
         $affiliations = Affiliation::with('expertPanel')->get()->keyBy('clingen_id');
         $groupedErrors->each(function ($errors, $affiliation_id) use ($affiliations) {
             $affiliation = $affiliations->get($affiliation_id);
@@ -60,6 +60,6 @@ class CreateNotificationsForStreamErrors extends Command
             Notification::send($affiliation->expertPanel->coordinators, new StreamErrorNotification($errors));
         });
 
-        // $groupedErrors->flatten()->each->markSent();
+        $groupedErrors->flatten()->each->markSent();
     }
 }

@@ -1,13 +1,13 @@
-We received info from the GCI about gene-disease records we cannot match against the GeneTracker:
+We received info from the GCI about gene-disease in <strong>{{$stream_errors[0]['affiliation']['name']}}</strong> records we cannot match against the GeneTracker for :
 <ul>
-    @foreach ($streamErrors as $streamError)
+    @foreach ($stream_errors as $streamError)
         <li>
-            <a href="https://curation.clinicalgenome.org/curation-central/?gdm={{$streamError->message_payload->report_id}}">
-                {{$streamError->message_payload->gene_validity_evidence_level->genetic_condition->gene}}
+            <a href="https://curation.clinicalgenome.org/curation-central/?gdm={{$streamError['message_payload']['report_id']}}">
+                {{$streamError['gene']}}
                 /
-                {{$streamError->message_payload->gene_validity_evidence_level->genetic_condition->condition}}
+                {{$streamError['condition']}}
                 /
-                {{$streamError->message_payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance}}
+                {{$streamError['moi']}}
             </a>
         </li>
     @endforeach

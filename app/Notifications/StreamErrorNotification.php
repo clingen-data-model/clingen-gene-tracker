@@ -43,8 +43,13 @@ class StreamErrorNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        $uniqueErrors = $this->streamErrors
+                            ->unique(function ($error) {
+                                return $error->gene.'-'.$error->condition.'-'.$error->moi;
+                            });
+
         return [
-            'stream_errors' => $this->streamErrors,
+            'stream_errors' => $uniqueErrors,
             'template' => 'email.stream_error_notification'
         ];
     }
