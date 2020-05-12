@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Curation;
 use Tests\TestCase;
+use App\Notifications\users\Welcome;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Curations\MondoIdNotFound;
@@ -40,12 +41,8 @@ class LogMailSentMailTest extends TestCase
      */
     public function system_logs_notification_sent_as_mail()
     {
-        // \Mail::raw('beans', function ($message) {
-        //     $message->subject('message subject')->to('test@example.org');
-        // });
-
         Notification::route('mail', 'test@example.org')
-            ->notify(new MondoIdNotFound(factory(Curation::class)->create()));
+            ->notify(new Welcome());
 
         $records = app('log')
                     ->channel('mail')
@@ -55,7 +52,7 @@ class LogMailSentMailTest extends TestCase
         $this->assertCount(1, $records);
         $this->assertEquals('INFO', $records[0]['level_name']);
         $this->assertContains('To: test@example.org', $records[0]['message']);
-        $this->assertContains('Subject: Mondo id not found', $records[0]['message']);
-        $this->assertContains('The MonDO ID is not correctly formatted', $records[0]['message']);
+        $this->assertContains('Subject: Welcome to ClinGen GeneTracker', $records[0]['message']);
+        $this->assertContains('To get started you\'ll need to', $records[0]['message']);
     }
 }

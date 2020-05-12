@@ -37,7 +37,7 @@ class PhenotypeNomenclatureUpdated extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -69,7 +69,8 @@ class PhenotypeNomenclatureUpdated extends Notification
         return [
             'curation' => $this->curation,
             'oldName' => $this->oldName,
-            'phenotype' => $this->phenotype
+            'phenotype' => $this->phenotype,
+            'template' => 'email.curations.omim_phenotype_updated'
         ];
     }
 }

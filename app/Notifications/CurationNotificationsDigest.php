@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Notifications\Curations;
+namespace App\Notifications;
 
-use App\Curation;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class HgncIdNotFoundNotification extends Notification
+class CurationNotificationsDigest extends Notification
 {
     use Queueable;
 
-    protected $curation;
+    public $notifications;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation)
+    public function __construct(Collection $notifications)
     {
         //
-        $this->curation = $curation;
+        $this->notifications = $notifications;
     }
 
     /**
@@ -33,7 +34,7 @@ class HgncIdNotFoundNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail'];
     }
 
     /**
@@ -45,9 +46,7 @@ class HgncIdNotFoundNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('There\'s an issue with one of your curations')
-            ->view('email.curations.hgnc_id_not_found')
-            ->with(['curation' => $this->curation]);
+                    ->view('email.curation_notifications_digest', ['notifications' => $this->notifications]);
     }
 
     /**
@@ -59,8 +58,7 @@ class HgncIdNotFoundNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'curation' => $this->curation,
-            'template' => 'email.curations.hgnc_id_not_found'
+            //
         ];
     }
 }
