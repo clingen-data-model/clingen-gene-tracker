@@ -3,7 +3,10 @@
 <ul>
 @foreach ($notifications as $notification)
     @if (isset($notification->data['template']))
-        @include($notification->data['template'], $notification['data'])
+        <li>
+            @include($notification->data['template'], $notification['data'])
+            <br>({{$notification->created_at->format('Y-m-d h:i a')}})
+        </li>
     @else
         <li>Notification: {{ $notifications }}</li>
     @endif

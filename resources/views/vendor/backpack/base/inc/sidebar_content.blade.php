@@ -20,6 +20,9 @@
     <li><a href="{{ url(config('backpack.base.route_prefix').'/rationale') }}"><i class="fa fa-file-o"></i> <span>Rationales</span></a></li>
 @endif
 
-@if(Auth::user()->hasPermissionTo('list pages'))
-    <li><a href="{{ url(config('backpack.base.route_prefix').'/page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
-@endif
+{{-- @if(Auth::user()->hasPermissionTo('view email')) --}}
+    <li><a href="{{ url(config('backpack.base.route_prefix').'/email') }}"><i class="fa fa-file-o"></i> <span>Email</span></a></li>
+{{-- @endif --}}
+{{-- @if(Auth::user()->hasPermissionTo('view logs')) --}}
+<li><a href="/logs" target="logs"><i class="fa fa-file-o"></i> <span>Logs</span></a></li>
+{{-- @endif --}}

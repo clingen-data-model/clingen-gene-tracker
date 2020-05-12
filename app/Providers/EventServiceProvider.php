@@ -38,6 +38,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\StreamMessages\Received' => [
             'App\Listeners\Curations\UpdateFromStreamMessage',
             'App\Listeners\SteamMessages\SetTopicOffset'
+        ],
+        'Illuminate\Mail\Events\MessageSent' => [
+            'App\Listeners\Mail\StoreMailInDatabase'
         ]
     ];
 
@@ -67,7 +70,7 @@ class EventServiceProvider extends ServiceProvider
             if (!isset($this->listen['Illuminate\Mail\Events\MessageSent'])) {
                 $this->listen['Illuminate\Mail\Events\MessageSent'] = [];
             }
-            $this->listen['Illuminate\Mail\Events\MessageSent'] = ['App\Listeners\LogSentMessage'];
+            $this->listen['Illuminate\Mail\Events\MessageSent'][] = 'App\Listeners\Mail\LogSentMessage';
         }
     }
 }

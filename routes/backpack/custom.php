@@ -11,6 +11,7 @@ Route::group([
     'middleware' => ['web', config('backpack.base.middleware_key'), 'auth', 'role:admin|programmer'],
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
     Route::get('dashboard', '\Backpack\Base\app\Http\Controllers\AdminController@dashboard')
         ->name('backpack.dashboard');
     Route::get('/', '\Backpack\Base\app\Http\Controllers\AdminController@redirect')
@@ -28,6 +29,7 @@ Route::group([
     CRUD::resource('working-group', 'WorkingGroupCrudController');
     CRUD::resource('curation-type', 'CurationTypeCrudController');
     CRUD::resource('rationale', 'RationaleCrudController');
+    CRUD::resource('email', 'EmailCrudController');
 
     Route::get('tests/slack-notification', function () {
         throw new \Exception('Testing Slack error notifications');
