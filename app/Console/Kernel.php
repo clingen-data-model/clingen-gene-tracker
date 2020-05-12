@@ -36,6 +36,9 @@ class Kernel extends ConsoleKernel
             $schedule->command('gci:consume')
                 ->hourly();
         }
+
+        $schedule->command('send-notifications')
+            ->weeklyOn(1);
     }
 
     /**
