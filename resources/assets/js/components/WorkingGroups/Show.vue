@@ -14,7 +14,7 @@
             <div class="card-body">
                 <h4>Expert Panels</h4>
                 <b-tabs pills card vertical v-show="hasPanels" nav-wrapper-class="w-25">
-                    <b-tab v-for="(panel, idx) in group.expert_panels" :key="panel.id" :title="panel.name">
+                    <b-tab v-for="panel in group.expert_panels" :key="panel.id" :title="panel.name">
                         <b-tabs>
                            <b-tab title="People">
                                 <template slot="title">
@@ -32,7 +32,9 @@
                                         <tr v-for="user in panel.users" :key="user.id">
                                             <td>{{user.name}}</td>
                                             <td>{{user.email}}</td>
-                                            <td>{{user.roles.map(role=>role.name).join(', ')}}</td>
+                                            <td>
+                                                {{getUserRoles(user).join(', ')}}
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -71,6 +73,7 @@
 <script>
     import {mapGetters, mapActions} from 'vuex'
     import CurationsTable from '../Curations/Table'
+    import {startCase} from 'lodash'
 
     export default {
         props: ['id'],
@@ -106,6 +109,17 @@
             ...mapActions('workingGroups', {
                 fetchGroup: 'fetchItem'
             }),
+            getUserRoles(user) {
+                let roles = user.roles.map(role=>startCase(role.name));
+                if (user.pivot.is_coordinator) {
+                    roles.push('Coordinator');
+                }
+                if (user.pivot.is_curator) {
+                    roles.push('Curator');
+                }
+                // console.log(roles);
+                return roles;
+            }
         },
         mounted() {
             this.loading = true;

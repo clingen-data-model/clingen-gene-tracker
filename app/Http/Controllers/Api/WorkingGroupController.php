@@ -17,6 +17,7 @@ class WorkingGroupController extends ApiController
             'expertPanels.curations',
             'expertPanels.curations.curator',
             'expertPanels.curations.curationStatuses',
+            'expertPanels.curations.classifications',
             'expertPanels.curations.expertPanel',
             'expertPanels.users',
             'expertPanels.users.roles'
