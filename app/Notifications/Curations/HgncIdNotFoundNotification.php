@@ -46,8 +46,7 @@ class HgncIdNotFoundNotification extends Notification
     {
         return (new MailMessage)
             ->subject('There\'s an issue with one of your curations')
-            ->view('email.curations.hgnc_id_not_found')
-            ->with(['curation' => $this->curation]);
+            ->view('email.curations.hgnc_id_not_found', ['curation' => $this->curation]);
     }
 
     /**
