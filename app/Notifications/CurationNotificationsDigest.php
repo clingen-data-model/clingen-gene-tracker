@@ -1,32 +1,29 @@
 <?php
 
-namespace App\Notifications\Curations;
+namespace App\Notifications;
 
-use App\Curation;
-use App\Phenotype;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class PhenotypeNomenclatureUpdated extends Notification
+class CurationNotificationsDigest extends Notification
 {
     use Queueable;
 
-    private $curation;
-    private $oldName;
-    private $phenotype;
+    public $notifications;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation, Phenotype $phenotype, $oldName)
+    public function __construct(Collection $notifications)
     {
-        $this->curation = $curation;
-        $this->oldName = $oldName;
-        $this->phenotype = $phenotype;
+        //
+        $this->notifications = $notifications;
     }
 
     /**
@@ -37,7 +34,7 @@ class PhenotypeNomenclatureUpdated extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail'];
     }
 
     /**
@@ -48,14 +45,8 @@ class PhenotypeNomenclatureUpdated extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->view(
-            'email.curations.omim_phenotype_updated',
-            [
-                'curation' => $this->curation,
-                'oldName' => $this->oldName,
-                'phenotype' => $this->phenotype
-            ]
-        );
+        return (new MailMessage)
+                    ->view('email.curation_notifications_digest', ['notifications' => $this->notifications]);
     }
 
     /**
@@ -67,10 +58,7 @@ class PhenotypeNomenclatureUpdated extends Notification
     public function toArray($notifiable)
     {
         return [
-            'curation' => $this->curation,
-            'oldName' => $this->oldName,
-            'phenotype' => $this->phenotype,
-            'template' => 'email.curations.omim_phenotype_updated'
+            //
         ];
     }
 }

@@ -40,7 +40,7 @@ class PhenotypeOmimEntryMoved extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -57,7 +57,7 @@ class PhenotypeOmimEntryMoved extends Notification
                 'oldName' => $this->oldName,
                 'oldMimNumber' => $this->oldMimNumber,
                 'phenotype' => $this->phenotype,
-                'curation' => $this->curation
+                'curation' => $this->curation,
             ]
         );
     }
@@ -74,7 +74,8 @@ class PhenotypeOmimEntryMoved extends Notification
             'oldName' => $this->oldName,
             'oldMimNumber' => $this->oldMimNumber,
             'phenotype' => $this->phenotype,
-            'curation' => $this->curation
+            'curation' => $this->curation,
+            'template' => 'email.curations.omim_entry_moved'
         ];
     }
 }
