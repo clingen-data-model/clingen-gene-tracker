@@ -11,6 +11,7 @@ import GroupList from './components/WorkingGroups/List'
 import GroupShow from './components/WorkingGroups/Show'
 import UserDashboard from './components/UserDashboard'
 import CurationExportForm from './components/Curations/ExportForm'
+import BulkLookup from './components/Curations/BulkLookup'
 
 Vue.use(VueRouter)
 
@@ -65,6 +66,10 @@ const routes = [
                 name: 'curations-edit'
             },
         ]
+    },
+    {
+        path: '/bulk-lookup',
+        component: BulkLookup,
     }
 ]
 

@@ -48,6 +48,9 @@
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
+                        <li>
+                            <a class="nav-link" href="/#/bulk-lookup">Bulk Lookup</a>
+                        </li>
                     </ul>
                     @endif
 

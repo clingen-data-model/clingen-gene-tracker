@@ -31,7 +31,10 @@ class CurationSearchService implements SearchService
                 $query->with($value);
             }
             if (in_array($key, $this->validFilters)) {
-                $query->where($key, $value);
+                $values = array_map(function ($item) {
+                    return trim($item);
+                }, preg_split("/,|\n| /", $value));
+                $query->whereIn($key, array_filter($values));
             }
 
             if ($key == 'user_id') {
