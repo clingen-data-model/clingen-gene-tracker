@@ -33,7 +33,7 @@ class HgncIdNotFoundNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -57,6 +57,9 @@ class HgncIdNotFoundNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        return ['curation' => $this->curation];
+        return [
+            'curation' => $this->curation,
+            'template' => 'email.curations.hgnc_id_not_found'
+        ];
     }
 }

@@ -32,7 +32,7 @@ class MondoIdNotFound extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -59,7 +59,8 @@ class MondoIdNotFound extends Notification
     public function toArray($notifiable)
     {
         return [
-            'curations' => $curation
+            'curation' => $this->curation,
+            'template' => 'email.curations.mondo_id_not_found'
         ];
     }
 }
