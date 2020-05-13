@@ -77,6 +77,7 @@ class CurationController extends Controller
             $query->where('gene_symbol', 'like', '%'.$request->filter.'%')
                 ->orWhere('expert_panels.name', 'like', '%'.$request->filter.'%')
                 ->orWhere('users.name', 'like', '%'.$request->filter.'%')
+                ->orWhere('hgnc_id', $request->filter)
                 ;
         }
 
