@@ -53,19 +53,20 @@ class CurationControllerTest extends TestCase
              ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
-    public function index_lists_curations_filtered_by_gene_symbol()
-    {
-        $testGene = 'BRCA1';
-        $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
+    // /**
+    //  * @test
+    //  */
+    // public function index_lists_curations_filtered_by_gene_symbol()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $testGene = 'BRCA1';
+    //     $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
 
-        $response = $this->actingAs($this->user, 'api')
-            ->json('GET', '/api/curations?gene_symbol='.$testGene);
-
-        $this->assertEquals(16, $response->original->count());
-    }
+    //     $response = $this->actingAs($this->user, 'api')
+    //         ->json('GET', '/api/curations?gene_symbol='.$testGene);
+        
+    //     $this->assertEquals(16, $response->original->count());
+    // }
 
     /**
      * @test
@@ -725,26 +726,5 @@ class CurationControllerTest extends TestCase
             ->assertStatus(422);
 
         $this->assertArrayHasKey('isolated_phenotype', $response->original['errors']);
-    }
-
-    /**
-     * @test
-     */
-    public function can_filter_index_results_by_mondo_id()
-    {
-        $curation1 = $this->curations->shift();
-        $curation1->update([
-            'mondo_id' => 'MONDO:12345'
-        ]);
-        $curation2 = $this->curations->shift();
-        $curation2->update([
-            'mondo_id' => 'MONDO:98765'
-        ]);
-
-        $this->actingAs($this->user, 'api')
-            ->json('GET', '/api/curations/?mondo_id=MONDO:12345')
-            ->assertJsonFragment(['id' => $curation1->id, 'mondo_id'=>'MONDO:12345'])
-            ->assertJsonMissing(['id' => $curation2->id])
-            ->assertJsonMissing(['id' => $this->curations->first()->id]);
     }
 }
