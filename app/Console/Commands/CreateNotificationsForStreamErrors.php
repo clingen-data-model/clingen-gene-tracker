@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\User;
 use App\Affiliation;
 use App\StreamError;
 use Illuminate\Console\Command;
@@ -46,15 +47,10 @@ class CreateNotificationsForStreamErrors extends Command
         $groupedErrors->each(function ($errors, $affiliation_id) use ($affiliations) {
             $affiliation = $affiliations->get($affiliation_id);
             if (!$affiliation) {
-                // do what?
                 return;
             }
-            if (!$affiliation->expertPanel) {
-                // do what?
-                return;
-            }
-            if ($affiliation->expertPanel->coordinators->count() == 0) {
-                // do what?
+            if (!$affiliation->expertPanel || $affiliation->expertPanel->coordinators->count() == 0) {
+                Notification::send(User::role('admin')->get(), new StreamErrorNotification($errors));
                 return;
             }
             Notification::send($affiliation->expertPanel->coordinators, new StreamErrorNotification($errors));
