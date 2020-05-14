@@ -219,7 +219,7 @@ export default {
     methods: {
         search() {
             this.loadingResults = true;
-            getCurations({'gene_symbol': this.geneSymbols, 'with': 'classifications'})
+            axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {
                     this.results = response.data.data
                     return response;
@@ -254,7 +254,7 @@ export default {
         },
         downloadCsv() {
             this.search();
-            axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
+            axios.post('/api/bulk-lookup/csv', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {
                     const a = document.createElement('a');
                     a.style.display = "none";

@@ -30,7 +30,8 @@ Route::group([
     Route::resource('/rationales', 'RationaleController')->only(['index']);
     Route::resource('/classifications', 'ClassificationController')->only(['index']);
     Route::resource('/mois', 'MoiController')->only(['index']);
-    Route::post('/bulk-lookup', 'BulkLookupController@download');
+    Route::post('/bulk-lookup', 'BulkLookupController@data');
+    Route::post('/bulk-lookup/csv', 'BulkLookupController@download');
 
     // OMIM
     Route::get('/omim/entry', 'OmimController@entry');
