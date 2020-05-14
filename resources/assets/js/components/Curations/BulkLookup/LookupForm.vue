@@ -6,7 +6,7 @@
             <b-tab title="Manual entry">
                 <label for="gene-symbol-input">Gene Symbols:</label>
                 &nbsp;
-                <textarea cols="10" rows="3" id="gene-symbol-input" :value="value" @input="$emit('input', $event.target.value)" class="form-control" maxlength="1900"></textarea>
+                <textarea cols="10" rows="3" id="gene-symbol-input" :value="value" @input="$emit('input', $event.target.value)" class="form-control" maxlength="1900" placeholder="Comma, space, or new-line separated gene symboels, i.e.: BCRA1, TP53 ABSC"></textarea>
                 <div class="mt-1">
                     <button @click="$emit('input', '')" class="btn btn-sm btn-light border">Clear</button>
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
@@ -23,7 +23,10 @@
                         @change="processFile($event.target.files)"
                         class="d-block" 
                     >
-                    <div class="form-check border-bottom my-2 pb-1">
+                    <div class="text-info text-small">
+                        <small>File should contain a single column with gene symbols.</small>
+                    </div>
+                    <div class="form-check my-2">
                         <input type="checkbox" v-model="hasHeader" class="form-check-input" id="has-header">
                         <label for="has-header" class="form-check-label"> has header row</label>
                     </div>

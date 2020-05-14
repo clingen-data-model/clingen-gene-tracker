@@ -86,7 +86,7 @@ export default {
     },
     data() {
         return {
-            geneSymbols: 'BRCA1, TP53,',
+            geneSymbols: [],
             results: [],
             fields: [
                 {
