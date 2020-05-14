@@ -97,29 +97,23 @@ export default {
     },
     computed: {
         emptyText: function () {
-            if (this.geneSymbols.length == 0) {
-                return 'Add comma speparated gene symbols in the textarea to do a bulk lookup';
-            }
-            return 'No curations matched genes in you list.'
+            return 'Add comma speparated gene symbols in the textarea to do a bulk lookup';
         }
     },
     methods: {
         search() {
             this.loadingResults = true;
-            getCurations({'gene_symbol': this.geneSymbols})
+            getCurations({'gene_symbol': this.geneSymbols, 'with': 'classifications'})
                 .then(response => {
                     this.results = response.data.data
                     return response;
                 })
                 .then(response => {
                     this.loadingResults = false;
-                }) 
-            setTimeout(() => {
-                this.loadingResults = false;
-            }, 1000);
+                });
         },
         downloadCsv() {
-            axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols})
+            axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {
                     const a = document.createElement('a');
                     a.style.display = "none";
