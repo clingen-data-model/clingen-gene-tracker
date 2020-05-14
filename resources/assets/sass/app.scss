@@ -9,11 +9,16 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+.text-small {
+    font-size: .8rem;
+}
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.cursor-pointer,
 .crsr-pointer {
     cursor: pointer;
 }
@@ -74,6 +79,11 @@ input.error, select.error, textarea.error {
     input, select, textarea {
         @extend .border-danger
     }
+}
+
+input[type=file].form-control {
+    height: auto;
+    padding: .5rem;
 }
 
 

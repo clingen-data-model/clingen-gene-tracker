@@ -20,8 +20,8 @@ class CurationResource extends JsonResource
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
         $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
         $data['classifications'] = $this->whenLoaded('classifications');
-        $data['current_status'] = $this->currentStatus;
-        $data['current_classification'] = $this->currentClassification;
+        $data['current_status'] = ($this->currentStatus && $this->currentStatus->id) ? $this->currentStatus : null;
+        $data['current_classification'] = $this->currentClassification->id ? $this->currentClassification : null;
         $data['curation_type'] = $this->whenLoaded('curationType');
         $data['curation_type'] = $this->whenLoaded('curationType');
         $data['created_at'] = $this->created_at;
