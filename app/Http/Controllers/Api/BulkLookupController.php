@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CurationResource;
 use Illuminate\Support\Facades\Response;
 use App\Services\Curations\CurationSearchService;
 
@@ -16,6 +17,11 @@ class BulkLookupController extends Controller
         $this->search = $search;
     }
 
+    public function data(Request $request)
+    {
+        $results = $this->search->search($request->all());
+        return CurationResource::collection($results);
+    }
     
     public function download(Request $request)
     {
