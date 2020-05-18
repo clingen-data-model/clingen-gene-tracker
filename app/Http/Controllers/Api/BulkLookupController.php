@@ -43,7 +43,8 @@ class BulkLookupController extends Controller
                             'Classificaton' => ($curation->currentClassification) ? $curation->currentClassification->name : null,
                             'Classificaton date' => ($curation->currentClassification && $curation->currentClassification->pivot) ? $curation->currentClassification->pivot->classification_date : null,
                             'Status' => ($curation->currentStatus) ? $curation->currentStatus->name : null,
-                            'Status date' => ($curation->currentStatus && $curation->currentStatus->pivot) ? $curation->currentStatus->pivot->status_date : null
+                            'Status date' => ($curation->currentStatus && $curation->currentStatus->pivot) ? $curation->currentStatus->pivot->status_date : null,
+                            'Last updated' => $curation->updated_at->format('Y-m-d H:i:s')
                         ];
                     });
         $columns = array_keys($results->first());
