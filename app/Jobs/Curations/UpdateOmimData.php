@@ -4,6 +4,7 @@ namespace App\Jobs\Curations;
 
 use App\Phenotype;
 use App\Contracts\OmimClient;
+use App\Exceptions\OmimResponseException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -60,7 +61,15 @@ class UpdateOmimData implements ShouldQueue
     }
     private function nameUpdated($omimEntry)
     {
-        return strtoupper($this->phenotype->name) != strtoupper($omimEntry->phenotypeName);
+        try {
+            $omimNames = collect($omimEntry->phenotypeMapList)
+                            ->map(function ($item) {
+                                return strtolower($item->phenotypeMap->phenotype);
+                            })->toArray();
+            return !in_array(strtolower($this->phenotype->name), $omimNames);
+        } catch (OmimResponseException $e) {
+            return strtoupper($this->phenotype->name) != strtoupper($omimEntry->phenotypeName);
+        }
     }
 
     private function entryHasMoved($omimEntry)
@@ -70,6 +79,8 @@ class UpdateOmimData implements ShouldQueue
 
     private function updatePhenotypeName($omimEntry)
     {
+        // TODO: how do we handle the case when there are more than one phenotypes
+        // on the OMIM entry and we names don't match?
         $this->phenotype->update([
             'name' => $omimEntry->phenotypeName,
             'omim_entry' => $omimEntry

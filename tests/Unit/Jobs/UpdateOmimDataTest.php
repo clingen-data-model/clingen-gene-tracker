@@ -189,4 +189,35 @@ class UpdateOmimDataTest extends TestCase
 
         Notification::assertSentTo($this->coordinator, PhenotypeOmimEntryMoved::class);
     }
+
+    /**
+     * @test
+     */
+    public function checks_all_phenotypeMap_labels_to_determine_name_changed()
+    {
+        $pheno = factory(Phenotype::class)->create([
+            'mim_number' => 178600,
+            'name' => 'Pulmonary hypertension, familial primary, 1, with or without HHT'
+        ]);
+
+        $this->curation->phenotypes()->attach($pheno->id);
+
+        $pheno = $pheno->fresh();
+
+        $jsonString = file_get_contents(base_path('tests/files/omim_api/178600.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $jsonString)
+        ]);
+
+        Notification::fake();
+        $job = new UpdateOmimData($pheno);
+        $job->handle($omim);
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 178600,
+            'name' => 'Pulmonary hypertension, familial primary, 1, with or without HHT'
+        ]);
+
+        Notification::assertNothingSent();
+    }
 }

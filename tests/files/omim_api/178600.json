@@ -1,0 +1,61 @@
+{
+    "omim": {
+      "version": "1.0",
+      "entryList": [
+        {
+          "entry": {
+            "prefix": "#",
+            "mimNumber": 178600,
+            "status": "live",
+            "titles": {
+              "preferredTitle": "PULMONARY HYPERTENSION, PRIMARY, 1; PPH1",
+              "alternativeTitles": "PHT;;\nPULMONARY ARTERIAL HYPERTENSION; PAH",
+              "includedTitles": "PULMONARY HYPERTENSION, PRIMARY, DEXFENFLURAMINE-ASSOCIATED, INCLUDED;;\nPULMONARY HYPERTENSION, PRIMARY, FENFLURAMINE-ASSOCIATED, INCLUDED;;\nPULMONARY HYPERTENSION, PRIMARY, 1, WITH HEREDITARY HEMORRHAGIC TELANGIECTASIA, INCLUDED;;\nPPH1 WITH HHT, INCLUDED"
+            },
+            "phenotypeMapList": [
+              {
+                "phenotypeMap": {
+                  "mimNumber": 600799,
+                  "phenotype": "Pulmonary hypertension, primary, fenfluramine or dexfenfluramine-associated",
+                  "phenotypeMimNumber": 178600,
+                  "phenotypeMappingKey": 3,
+                  "phenotypeInheritance": "Autosomal dominant",
+                  "phenotypicSeriesNumber": "PS178600",
+                  "sequenceID": 2168,
+                  "chromosome": 2,
+                  "chromosomeSymbol": "2",
+                  "chromosomeSort": 832,
+                  "chromosomeLocationStart": 202376309,
+                  "chromosomeLocationEnd": 202567750,
+                  "transcript": "ENST00000374580.10",
+                  "cytoLocation": "2q33",
+                  "computedCytoLocation": "2q33.1-q33.2",
+                  "geneSymbols": "BMPR2, PPH1, POVD1"
+                }
+              },
+              {
+                "phenotypeMap": {
+                  "mimNumber": 600799,
+                  "phenotype": "Pulmonary hypertension, familial primary, 1, with or without HHT",
+                  "phenotypeMimNumber": 178600,
+                  "phenotypeMappingKey": 3,
+                  "phenotypeInheritance": "Autosomal dominant",
+                  "phenotypicSeriesNumber": "PS178600",
+                  "sequenceID": 2168,
+                  "chromosome": 2,
+                  "chromosomeSymbol": "2",
+                  "chromosomeSort": 832,
+                  "chromosomeLocationStart": 202376309,
+                  "chromosomeLocationEnd": 202567750,
+                  "transcript": "ENST00000374580.10",
+                  "cytoLocation": "2q33",
+                  "computedCytoLocation": "2q33.1-q33.2",
+                  "geneSymbols": "BMPR2, PPH1, POVD1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }

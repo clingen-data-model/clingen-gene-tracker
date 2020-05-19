@@ -27,6 +27,7 @@ class BulkCurationUploadTest extends TestCase
      */
     public function bulk_upload_page_returns_exists_and_has_link_to_template()
     {
+        $this->withoutExceptionHandling();
         $this->actingAs($this->user)
             ->call('GET', '/bulk-uploads')
             ->assertStatus(200)
@@ -42,6 +43,7 @@ class BulkCurationUploadTest extends TestCase
     {
         \DB::table('curations')->delete();
 
+        // $this->withoutExceptionHandling();
         $this->actingAs($this->user)
             ->call('POST', '/bulk-uploads', [
                 'expert_panel_id' => 1,
