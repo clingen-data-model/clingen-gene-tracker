@@ -17,3 +17,4 @@ google-sheets-api-credentials.json
 python/token.pickle
 kafka-auth/*
 .push.settings.jsonc
+psysh/psysh_history

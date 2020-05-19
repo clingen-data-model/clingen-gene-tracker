@@ -1,0 +1,1 @@
+oc run artisan-schedule-run --restart=OnFailure --overrides='{ "spec": {"successfulJobsHistoryLimit": "5", "failedJobsHistoryLimit": "5", "concurrencyPolicy": "Forbid"} }' --schedule="* * * * *" --image=192.168.227.248:5000/openshift/cron --env="PROJECT=$(oc project -q)" --env="DEPLOYMENT=gene-lookup" --env="OPENSHIFT_TOKEN=$TOKEN" -- cron "php artisan schedule:run"

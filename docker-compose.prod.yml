@@ -1,0 +1,33 @@
+version: "3"
+services: 
+    app:
+        build: .
+        depends_on:
+            - mariadb
+        ports:
+            - "8080:8080"
+        links:
+            - mariadb:mariadb
+        environment:
+            - DB_CONNECTION=mysql
+            - DB_HOST=mariadb
+            - DB_PORT=3306
+            - DB_DATABASE=gene-tracker
+            - DB_USERNAME=root
+            - DB_PASSWORD=password
+    mariadb:
+        image: mariadb:10.1.21
+        ports:
+            - "13306:3306"
+        environment:
+            - MYSQL_DATABASE=gene_tracker
+            - MYSQL_ROOT_PASSWORD=password
+    artisan:
+        image: gene-tracker-app
+        container_name: gene-tracker-artisan
+        # volumes:
+        #     - .:srv/app
+        entrypoint: [
+            "php",
+            "/srv/app/artisan"
+        ]

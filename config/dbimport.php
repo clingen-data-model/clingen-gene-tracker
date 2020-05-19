@@ -16,5 +16,11 @@ return [
         'database' => env('DEMO_DB_DATABASE'),
         'username' => env('DEMO_DB_USERNAME'),
         'password' => env('DEMO_DB_PASSWORD'),
-    ]
+    ],
+    /**
+     * Allows user to choose method of importing:
+     * * importFileWithMysqlDump - probably faster; requires mysqldump on system
+     * * importFileWithDB - Works on systems that do not have mysqldump installed
+     */
+    'import-method' => 'importFileWithDB',
 ];
