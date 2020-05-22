@@ -21,7 +21,7 @@ services:
         ports:
             - "13306:3306"
         volumes:
-            - ./.docker/mysql/init:/docker-entrypoint-initdb.d
+            - /Users/jward3/docker-dbs/gene-tracker:/var/lib/mysql
         environment:
             - MYSQL_DATABASE=gene_tracker
             - MYSQL_ROOT_PASSWORD=password
