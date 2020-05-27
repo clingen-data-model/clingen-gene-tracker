@@ -20,13 +20,12 @@ const mutations = {
         state.items.push(item)
     },
     updateItem: function (state, item) {
-        console.log('updateItem');
         let itemIdx = state.items.findIndex(i => i.id == item.id);
         if (itemIdx > -1) {
             Vue.set(state.items, itemIdx, item)
             return
         }
-        commit('addItem', item);
+        state.items.push(item);
     },
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);

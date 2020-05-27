@@ -3,8 +3,8 @@
     <div class="curations-table">
         <div class="row mb-2" v-show="!loading">
             <div class="col-md-6 form-inline">
-                <label for="#curations-filter-input">Search:</label>&nbsp;
-                <input v-model="filter" placeholder="search curations" class="form-control" id="curations-filter-input" />
+                <label :for="searchFieldId">Search:</label>&nbsp;
+                <input v-model="filter" placeholder="search curations" class="form-control" :id="searchFieldId" />
             </div>
             <div class="col-md-6">
                 <b-pagination 
@@ -77,6 +77,7 @@
 <script>
     import DeleteButton from './DeleteButton'
     import getPageOfCurations from '../../resources/curations/get_page_of_curations'
+    import uniqid from '../../helpers/uniqid'
 
     export default {
         components: {
@@ -110,6 +111,7 @@
                 sortDesc: false,
                 sortKey: null,
                 totalRows: 0,
+                searchFieldId: `search-filter-${uniqid()}`,
                 fields: [
                     {
                         key: 'gene_symbol',
