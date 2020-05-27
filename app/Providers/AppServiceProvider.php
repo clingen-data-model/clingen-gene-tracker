@@ -11,6 +11,7 @@ use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;
 use Illuminate\Events\Dispatcher;
 use App\Contracts\MessageConsumer;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Jobs\UpdateCurationFromGeneValidityMessage;
