@@ -73,6 +73,27 @@ class UpdateOmimDataTest extends TestCase
             'name' => 'DEAFNESS, AUTOSOMAL RECESSIVE 31; DFNB31'
         ]);
     }
+    
+    /**
+     * @test
+     */
+    public function does_not_notify_coordinator_if_no_gene_map_and_no_change_to_preferredTitle()
+    {
+        $this->phenotype->update([
+            'name' => 'DEAFNESS, AUTOSOMAL RECESSIVE 31; DFNB31'
+        ]);
+
+        $jsonString = file_get_contents(base_path('tests/files/omim_api/607084.json'));
+        $omim = $this->getOmimClient([
+            new Response(200, [], $jsonString)
+        ]);
+
+        Notification::fake();
+        $job = new UpdateOmimData($this->phenotype);
+        $job->handle($omim);
+        Notification::assertNothingSent();
+    }
+    
 
     /**
      * @test

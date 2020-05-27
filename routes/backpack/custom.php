@@ -30,6 +30,7 @@ Route::group([
     CRUD::resource('curation-type', 'CurationTypeCrudController');
     CRUD::resource('rationale', 'RationaleCrudController');
     CRUD::resource('email', 'EmailCrudController');
+    CRUD::resource('notification', 'NotificationCrudController');
 
     Route::get('tests/slack-notification', function () {
         throw new \Exception('Testing Slack error notifications');

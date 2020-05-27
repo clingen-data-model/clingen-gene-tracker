@@ -21,7 +21,10 @@
 @endif
 
 {{-- @if(Auth::user()->hasPermissionTo('view email')) --}}
-    <li><a href="{{ url(config('backpack.base.route_prefix').'/email') }}"><i class="fa fa-file-o"></i> <span>Email</span></a></li>
+    <li><a href="{{ url(config('backpack.base.route_prefix').'/email') }}"><i class="fa fa-file-o"></i> <span>Emails</span></a></li>
+{{-- @endif --}}
+{{-- @if(Auth::user()->hasPermissionTo('view notification')) --}}
+    <li><a href="{{ url(config('backpack.base.route_prefix').'/notification') }}"><i class="fa fa-file-o"></i> <span>Notifications</span></a></li>
 {{-- @endif --}}
 {{-- @if(Auth::user()->hasPermissionTo('view logs')) --}}
 <li><a href="/logs" target="logs"><i class="fa fa-file-o"></i> <span>Logs</span></a></li>
