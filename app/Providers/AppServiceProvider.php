@@ -27,7 +27,9 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('America/New_York');
         if ($this->app->environment('production')) {
             config(['backpack.base.skin'=>'skin-blue']);
+            URL::forceScheme('https');
         }
+        
         if ($this->app->environment('local', 'demo')) {
             config(['backpack.base.logo_lg' => '<b>ClinGen</b> - '.$this->app->environment()]);
         }
