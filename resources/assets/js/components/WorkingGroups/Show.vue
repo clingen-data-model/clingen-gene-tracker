@@ -3,9 +3,12 @@
     <div>
         <div>
             <router-link to="/working-groups">
-                    &lt; Back to working groups
+                Working groups 
             </router-link>
-        
+            &gt;
+            <router-link :to="`/working-groups/${group.id}`">
+                {{group.name}}
+            </router-link>
         </div>
         <div class="Working group detail card">
             <div class="card-header">
