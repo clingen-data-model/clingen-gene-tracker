@@ -13,6 +13,7 @@ return [
     'cipher' => 'AES-256-CBC',
     'omim_key' => env('OMIM_API_KEY'),
     'omim_cache_life' => 20*60,
+    'url_scheme' => env('URL_SCHEME', null),
     'providers' => [
 
         /*
