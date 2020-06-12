@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
         }
 
         $schedule->command('send-notifications')
-            ->weeklyOn(1);
+            ->weekly()->mondays()->at('6:00');
     }
 
     /**
