@@ -29,7 +29,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
             $message->subject('Subject');
         });
 
-        $email = Email::first();
+        $email = Email::orderBy('id', 'desc')->first();
         $this->assertEquals(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com'=>null], $email->from);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->sender);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->to);
