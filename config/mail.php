@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'sirsteam@listserv.unc.edu'),
-        'name' => env('MAIL_FROM_NAME', 'Sheps Web Team'),
+        'address' => env('MAIL_FROM_ADDRESS', 'clingentrackerhelp@unc.edu'),
+        'name' => env('MAIL_FROM_NAME', 'ClinGen Gene Tracker'),
     ],
 
     /*
