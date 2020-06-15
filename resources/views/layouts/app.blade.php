@@ -22,6 +22,8 @@
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
+    @include('google_analytics')
+
 </head>
 <body>
     <div>
