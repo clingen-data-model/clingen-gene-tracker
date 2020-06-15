@@ -6,12 +6,15 @@
  */
 
 require('./bootstrap');
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField'
+import configs from './configs.json';
+
+// console.log(configs);
 
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
@@ -19,6 +22,18 @@ window.Vue.use(BootstrapVue)
 if (user) {
     user = new User(user);
 }
+
+import 'autotrack';
+
+ga('create', configs.appGoogleAnalyticsId, 'auto');
+ga('require', 'urlChangeTracker');
+ga('send', 'pageview');
+
+router.afterEach(( to, from ) => {
+    ga('set', 'page', to.path);
+    ga('send', 'pageview');
+    console.log('set & send to ga');
+  });
 
 axios.interceptors.request.use(function (config) {
     store.commit('addRequest');
