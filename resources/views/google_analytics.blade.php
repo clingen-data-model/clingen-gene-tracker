@@ -6,6 +6,6 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', {{ config('app.google_analytics_id') }});
+        gtag('config', '{{ config('app.google_analytics_id') }}'');
     </script>
 @endif
