@@ -12,16 +12,9 @@
 */
 
 Route::group(['middleware'=>'auth'], function () {
-    Route::get('/', function () {
-        return view('main');
-    });
-    Route::get('/home', function () {
-        return redirect('/');
-    });
+    Route::get('/', 'MainController@index');
+    Route::get('/home', 'MainController@index');
 
-    Route::get('test', function () {
-        return view('test');
-    });
     Route::get('/omim/entry', 'Api\OmimController@entry');
     Route::get('/omim/search', 'Api\OmimController@search');
     Route::get('/omim/gene', 'Api\OmimController@gene');
@@ -34,30 +27,11 @@ Route::group(['middleware'=>'auth'], function () {
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
     Route::impersonate();
-
-    Route::group(['middleware' => ['role:programmer']], function () {
-        Route::get('info', function () {
-            phpinfo();
-        });
-    });
 });
 
 Auth::routes();
 
-$return403 = function () {
-    $data['title'] = '403';
-    $data['name'] = 'Registration is closed';
-
-    return response()
-        ->view('errors.403', $data, 403);
-};
-
-Route::get('admin/password/reset/{token}', function ($token) {
-    return redirect('/password/reset/'.$token);
-});
-
-Route::get('/register', $return403);
-Route::post('/register', $return403);
+Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 
 Route::get('{page}/{subs?}', ['uses' => 'PageController@index'])
     ->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);

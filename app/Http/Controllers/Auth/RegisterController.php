@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -28,6 +29,24 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = '/home';
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        return $this->return403();
+    }
+
+    public function register(Request $request)
+    {
+        return $this->return403();
+    }
+
+    
+  
 
     /**
      * Create a new controller instance.
@@ -67,5 +86,14 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    private function return403()
+    {
+        $data['title'] = '403';
+        $data['name'] = 'Registration is closed';
+    
+        return response()
+            ->view('errors.403', $data, 403);
     }
 }
