@@ -1,1 +1,9 @@
-oc run db-backup --restart=OnFailure --overrides='{ "spec": {"successfulJobsHistoryLimit": "5", "failedJobsHistoryLimit": "5", "concurrencyPolicy": "Forbid"} }' --schedule="5 */6 * * *" --image=192.168.227.248:5000/openshift/cron --env="PROJECT=$(oc project -q)" --env="DEPLOYMENT=mysql" --env="OPENSHIFT_TOKEN=$TOKEN" -- cron "mysqldump -u \$MYSQL_USER -p\$MYSQL_PASSWORD --all-databases > /backups/backup_\$(date +%Y_%m_%d.%H_%M).sql"
+oc run db-backup --restart=OnFailure \
+    --overrides='{ "spec": {"successfulJobsHistoryLimit": "5", "failedJobsHistoryLimit": "5", "concurrencyPolicy": "Forbid"} }' \
+    --schedule="5 */12 * * *" \
+    --image=192.168.227.248:5000/openshift/cron \
+    --env="PROJECT=$(oc project -q)" \
+    --env="DEPLOYMENT=mysql" \
+    --env="OPENSHIFT_TOKEN=$TOKEN" \
+    -- \
+    cron ". /opt/app-root/src/db_backup.sh"
