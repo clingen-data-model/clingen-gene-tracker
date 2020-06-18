@@ -217,4 +217,9 @@ class User extends Authenticatable
 
         return $this->allPermissions;
     }
+
+    public function routeNotificationForSlack()
+    {
+        return config('logging.channels.slack.url');
+    }
 }
