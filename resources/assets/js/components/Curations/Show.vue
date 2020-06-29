@@ -109,6 +109,16 @@
                         </transition>
                     </div>
                 </div>
+                <div class="row mt-2" v-if="curation.gdm_uuid">
+                    <strong class="col-md-2">GCI ID:</strong> 
+                    <div class="col-md">
+                        <a :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${curation.gdm_uuid}`" 
+                            target="gci"
+                        >
+                            {{ curation.gdm_uuid }}
+                        </a>
+                    </div>
+                </div>
                 <div class="row mt-3">
                     <strong class="col-md-2">Current Classification:</strong>
                     <div class="col-md-6">

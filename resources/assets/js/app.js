@@ -12,7 +12,7 @@ import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField'
-import configs from './configs.json';
+// import configs from './configs.json';
 
 // console.log(configs);
 
@@ -23,17 +23,17 @@ if (user) {
     user = new User(user);
 }
 
-import 'autotrack';
+// import 'autotrack';
 
-ga('create', configs.appGoogleAnalyticsId, 'auto');
-ga('require', 'urlChangeTracker');
-ga('send', 'pageview');
+// ga('create', configs.appGoogleAnalyticsId, 'auto');
+// ga('require', 'urlChangeTracker');
+// ga('send', 'pageview');
 
-router.afterEach(( to, from ) => {
-    ga('set', 'page', to.path);
-    ga('send', 'pageview');
-    console.log('set & send to ga');
-  });
+// router.afterEach(( to, from ) => {
+//     ga('set', 'page', to.path);
+//     ga('send', 'pageview');
+//     console.log('set & send to ga');
+//   });
 
 axios.interceptors.request.use(function (config) {
     store.commit('addRequest');

@@ -115,6 +115,14 @@
                     v-model="updatedCuration.gdm_uuid"
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 ></b-form-input>
+                <small>
+                    <a :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${updatedCuration.gdm_uuid}`" 
+                        v-if="updatedCuration.gdm_uuid"
+                        target="gci"
+                    >
+                        GCI Record
+                    </a>
+                </small>
                 <validation-error :messages="errors.gdm_uuid"></validation-error>
             </b-form-group>
         </div>
