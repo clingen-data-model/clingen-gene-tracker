@@ -13,7 +13,10 @@ class CurationSearchService implements SearchService
         'expert_panel_id',
         'curator_id',
         'phenotype',
-        'mondo_id'
+        'mondo_id',
+        'mondo_name',
+        'hgnc_id',
+        'hgnc_name',
     ];
 
     public function search($params)
@@ -56,7 +59,9 @@ class CurationSearchService implements SearchService
                 ->orWhere('expert_panels.name', 'like', '%'.$params['filter'].'%')
                 ->orWhere('users.name', 'like', '%'.$params['filter'].'%')
                 ->orWhere('hgnc_id', $params['filter'])
+                ->orWhere('hgnc_name', 'like', '%'.$params['filter'].'%')
                 ->orWhere('mondo_id', 'like', '%'.$params['filter'].'%')
+                ->orWhere('mondo_name', 'like', '%'.$params['filter'].'%')
                 ->orWhereHas('phenotypes', function ($q) use ($params) {
                     $q->where('mim_number', $params['filter']);
                 })
