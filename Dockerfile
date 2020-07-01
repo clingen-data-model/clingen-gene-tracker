@@ -18,7 +18,7 @@ RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
     && chmod g+x /srv/app/.openshift/deploy.sh \
     && apt-get install -yqq librdkafka-dev \
-    && pecl install rdkafka
+    && pecl install rdkafka-3.1.3
     # && pecl install xdebug-2.9.5 \
     # && docker-php-ext-enable xdebug \
 

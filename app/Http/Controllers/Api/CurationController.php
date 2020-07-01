@@ -111,7 +111,10 @@ class CurationController extends Controller
         if ($request->isolated_phenotype) {
             $pheno = $this->omim->getEntry($request->isolated_phenotype);
             SyncPhenotypes::dispatchNow($curation, [
-                ['mim_number'=>$pheno->mimNumber, 'name'=> $pheno->titles->preferredTitle]
+                [
+                    'mim_number'=>$pheno->mimNumber,
+                    'name'=> $pheno->titles->preferredTitle
+                ]
             ]);
         }
         
