@@ -4,11 +4,11 @@ namespace App\Console\Commands;
 
 use App\Curation;
 use App\Contracts\MondoClient;
+use Illuminate\Console\Command;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithMondoInfo;
-use Illuminate\Console\Command;
-use App\Mail\Curations\MondoIdNotFound;
 use App\Jobs\SendCurationMailToCoordinators;
+use App\Notifications\Curations\MondoIdNotFound;
 
 class CheckMondoForUpdates extends Command
 {
