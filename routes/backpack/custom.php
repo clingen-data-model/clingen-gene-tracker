@@ -33,6 +33,6 @@ Route::group([
     CRUD::resource('notification', 'NotificationCrudController');
 }); // this should be the absolute last line of this file
 
-Route::get('admin/login', 'Auth/LoginController@showLoginForm');
-Route::get('admin/logout', 'Auth/LoginController@logout');
-Route::post('admin/logout', 'Auth/LoginController@logout');
+Route::get('admin/login', '\App\Http\Controllers\Auth\LoginController@showLoginForm');
+Route::get('admin/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Route::post('admin/logout', '\App\Http\Controllers\Auth\LoginController@logout');
