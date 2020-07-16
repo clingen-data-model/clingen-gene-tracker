@@ -41,12 +41,16 @@
     </div>
 </template>
 <script>
+
 export default {
-    props: ['value'],
+    props: [
+        'value',
+        'errors'
+    ],
     data() {
         return {
             currentTab: 0,
-            hasHeader: false
+            hasHeader: false,
         }
     },
     watch: {

@@ -4,6 +4,11 @@
             <h3 class="mb-0">Bulk Lookup</h3>
         </div>
         <div class="card-body">
+            <div class="alert alert-danger" v-if="formErrors.length > 0">
+                <ul class="mb-0">
+                    <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
+                </ul>
+            </div>
             <lookup-form 
                 v-model="geneSymbols"
                 @lookup="search" 
@@ -13,39 +18,6 @@
 
 
             <div v-if="results.length > 0">
-                <!-- <div class="row">
-                    <div class="col-md-3">
-                        <h5>Filters:</h5>
-                        <filter-control 
-                            :items="responseGenes" 
-                            title="Genes" 
-                            :selectedFilters="filters.gene"
-                            @toggle="toggleFilter('gene', $event)"
-                            @remove="removeFilter('gene', $event)"
-                        ></filter-control>
-                        <filter-control 
-                            :items="resultsPanels" 
-                            title="Expert Panels" 
-                            :selectedFilters="filters.expertPanel"
-                            @toggle="toggleFilter('expertPanel', $event)"
-                            @remove="removeFilter('expertPanel', $event)"
-                        ></filter-control>
-                        <filter-control 
-                            :items="resultsClassifications" 
-                            title="Classifications" 
-                            :selectedFilters="filters.classification"
-                            @toggle="toggleFilter('classification', $event)"
-                            @remove="removeFilter('classification', $event)"
-                        ></filter-control>
-                        <filter-control 
-                            :items="resultsStatuses" 
-                            title="Statuses" 
-                            :selectedFilters="filters.status"
-                            @toggle="toggleFilter('status', $event)"
-                            @remove="removeFilter('status', $event)"
-                        ></filter-control>
-                    </div>
-                    <div class="col-md-9"> -->
                         <h5>Curations:</h5>
                         <b-table 
                             :fields="fields" 
@@ -75,11 +47,13 @@ import moment from 'moment';
 import testGeneSymbols from '../../../../../tests/files/med_gene_symbols';
 import LookupForm from './BulkLookup/LookupForm'
 import FilterControl from './BulkLookup/FilterControl'
+import ValidationError from '../ValidationError';
 
 export default {
     components: {
         LookupForm,
-        FilterControl
+        FilterControl,
+        ValidationError
     },
     props: {
         
@@ -153,7 +127,8 @@ export default {
                 expertPanel: [],
                 classification: [],
                 status: []
-            }
+            },
+            formErrors: []
         }
     },
     computed: {
@@ -224,6 +199,11 @@ export default {
                     this.results = response.data.data
                     return response;
                 })
+                .catch(error => {
+                    const flattenedErrors = Object.values(error.response.data.errors).flat();
+                    console.log(flattenedErrors);
+                    this.formErrors = flattenedErrors;
+                })
                 .then(response => {
                     this.loadingResults = false;
                 });
@@ -266,6 +246,11 @@ export default {
                     a.click();
 
                     document.body.removeChild(a);
+                })
+                .catch(error => {
+                    const flattenedErrors = Object.values(error.response.data.errors).flat();
+                    console.log(flattenedErrors);
+                    this.formErrors = flattenedErrors;
                 })
         }
     }
