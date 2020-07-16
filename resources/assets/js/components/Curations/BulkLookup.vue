@@ -47,13 +47,11 @@ import moment from 'moment';
 import testGeneSymbols from '../../../../../tests/files/med_gene_symbols';
 import LookupForm from './BulkLookup/LookupForm'
 import FilterControl from './BulkLookup/FilterControl'
-import ValidationError from '../ValidationError';
 
 export default {
     components: {
         LookupForm,
         FilterControl,
-        ValidationError
     },
     props: {
         
@@ -193,6 +191,7 @@ export default {
     },
     methods: {
         search() {
+            this.formErrors = [];
             this.loadingResults = true;
             axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {
