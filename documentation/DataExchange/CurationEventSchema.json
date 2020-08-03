@@ -1,0 +1,110 @@
+{ 
+    "$schema": "http://json-schema.org/schema#",
+
+    "$id": "https://gene-tracker.clinicalgenome.org/curation-schema",
+    
+    "properties": {
+        "type": "object",
+        "properties": {
+            "event_type" {
+                "type": "string",
+                "title": "Type of curation event",
+                "enum": ["created", "updated", "deleted"]
+            },
+            "data": {
+                "type": "object",
+                "id": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "gene": {
+                    "type": "object",
+                    "properties": {
+                        "hgnc_id": {
+                            "type": "string",
+                            "pattern": "^HGNC:[0-9]*$"
+                        },
+                        "symbol": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["hgnc_id", "symbol"]
+                },
+                "mondo_id": {
+                    "type": "string",
+                    "pattern": "^MONDO:[0-9]{7}"
+                },
+                "mode_of_inheritance": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "hp_id": {
+                            "type": "string", 
+                            "format": "^HP:[0-9]{7}"
+                        }
+                    }
+                },
+                "curator": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "name": {"type": "string"},
+                        "email": {
+                            "type": "string", 
+                            "format": "email"
+                        }
+                    }
+                },
+                "statuses": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": [
+                                    "uploaded",
+                                    "precuration",
+                                    "disease entity assigned",
+                                    "curation in progress",
+                                    "curation provisional",
+                                    "curation approved",
+                                    "recuration assigned",
+                                    "retired assignment",
+                                    "published"
+                                ],
+                                "uniqueItems": false,
+                            },
+                            "effective_date": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": ["name", "effective_date"]
+                    }
+                },
+                "pmids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "uniqueItems": true
+                    }
+                },
+                // Is this useful?
+                "curation_type": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "enum": []
+                        },
+                        "description": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "required": ["id", "gene"]
+    }
+}
