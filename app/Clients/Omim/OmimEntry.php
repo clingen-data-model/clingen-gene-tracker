@@ -26,11 +26,12 @@ class OmimEntry implements OmimEntryContract
      */
     public function getPhenotypeMapList()
     {
+        // dump($this->rawEntry);
         if (isset($this->rawEntry->geneMap) && isset($this->rawEntry->geneMap->phenotypeMapList)) {
             return $this->rawEntry->geneMap->phenotypeMapList;
         }
 
-        if (isset($this->rawEntry->phenotypeMapList)) {
+        if (isset($this->rawEntry->phenotypeMapList) && count($this->rawEntry->phenotypeMapList) > 0) {
             return $this->rawEntry->phenotypeMapList;
         }
 
