@@ -6,7 +6,7 @@
     "properties": {
         "type": "object",
         "properties": {
-            "event_type" {
+            "event_type": {
                 "type": "string",
                 "title": "Type of curation event",
                 "enum": ["created", "updated", "deleted"]
@@ -75,7 +75,7 @@
                                     "retired assignment",
                                     "published"
                                 ],
-                                "uniqueItems": false,
+                                "uniqueItems": false
                             },
                             "effective_date": {
                                 "type": "string",
@@ -92,7 +92,6 @@
                         "uniqueItems": true
                     }
                 },
-                // Is this useful?
                 "curation_type": {
                     "type": "object",
                     "properties": {

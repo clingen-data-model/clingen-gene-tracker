@@ -32,11 +32,9 @@ $dotenv = Dotenv\Dotenv::create(__DIR__);
 
 $dotenv->load();
 
-$sslCertLocation = env('KAFKA_CERT', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
-$sslKeyLocation =  env('KAFKA_KEY_LOCATION', '/etc/pki/tls/private/kafka.apache.key');
-$sslCaLocation =   env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
-$sslKeyPassword = env('KAFKA_KEY_PASSWORD', null);
-$group = env('KAFKA_GROUP', 'unc_demo');
+$kafkaUsername = env('KAFKA_USERNAME');
+$kafkaPassword = env('KAFKA_PASSWORD');
+$group = env('KAFKA_GROUP', 'unc_staging');
 echo "Group is $group\n\n";
 
 $conf = new RdKafka\Conf();
@@ -61,15 +59,19 @@ $conf->set('group.id', $group);
 echo "setting group to $group...\n";
 
 // Initial list of Kafka brokers
-$conf->set('security.protocol', 'ssl');
-$conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
-$conf->set('ssl.certificate.location', $sslCertLocation);
-$conf->set('ssl.key.location', $sslKeyLocation);
-$conf->set('ssl.ca.location', $sslCaLocation);
+$conf->set('security.protocol', 'sasl_ssl');
+$conf->set('metadata.broker.list', 'pkc-4yyd6.us-east1.gcp.confluent.cloud:9092');
+$conf->set('sasl.mechanism', 'PLAIN');
+// $conf->set('sasl.username', $kafkaUsername);
+$conf->set('sasl.username', $kafkaUsername);
+$conf->set('sasl.password', $kafkaPassword);
+// $conf->set('ssl.certificate.location', $sslCertLocation);
+// $conf->set('ssl.key.location', $sslKeyLocation);
+// $conf->set('ssl.ca.location', $sslCaLocation);
 
-if ($sslKeyPassword) {
-    $conf->set('ssl.key.password', $sslKeyPassword);
-}
+// if ($sslKeyPassword) {
+//     $conf->set('ssl.key.password', $sslKeyPassword);
+// }
 
 $topicConf = new RdKafka\TopicConf();
 
@@ -139,7 +141,16 @@ while (true) {
     // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-            echo $message->offset.': '.$message->payload."\n";
+            // echo $message->offset.': '.$message->payload."\n";
+            echo (json_encode([
+                'len' => $message->len,
+                'topic_name' => $message->topic_name,
+                'timestamp' => $message->timestamp,
+                'partition' => $message->partition,
+                'payload' => $message->payload,
+                'key' => $message->key,
+                'offset' => $message->offset,
+            ], JSON_PRETTY_PRINT));
             $count++;
             if ($count > 2) {
                 break 2;

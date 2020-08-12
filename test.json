@@ -1,0 +1,15 @@
+Group is unc_staging
+
+setting group to unc_staging...
+**Subscribing to the following topics:
+gene_validity_events...
+array(0) {
+}
+
+Waiting for partition assignment...
+Assign partions...Committing offset set to 0 for topic gene_validity_events on partition 0...
+
+Fatal error: Uncaught Error: Object of class RdKafka\Message could not be converted to string in /Users/jward3/code/gene-tracker/kafkaHighLevelConsumer.php:145
+Stack trace:
+#0 {main}
+  thrown in /Users/jward3/code/gene-tracker/kafkaHighLevelConsumer.php on line 145
