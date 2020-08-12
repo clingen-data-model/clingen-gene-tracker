@@ -40,9 +40,9 @@ class StreamingServiceSetTopicOffset extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(KafkaConfig $kafkaConfig)
     {
-        $conf = (new KafkaConfig())
+        $conf = $kafkaConfig
                  ->setRebalanceCallback(function (RdKafkaConsumer $consumer, $err, array $topicPartitions = null) {
                      dump('rebalanceCallback...');
                      if ($err == RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS) {

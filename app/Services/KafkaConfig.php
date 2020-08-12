@@ -3,14 +3,16 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
+use App\Services\Kafka\KafkaEnvValidator;
 use App\Exceptions\StreamingServiceException;
 
 class KafkaConfig
 {
     private $conf;
 
-    public function __construct($group = null)
+    public function __construct(KafkaEnvValidator $validator, $group = null)
     {
+        $validator();
         $this->conf = new \RdKafka\Conf();
         $this->setGroup($group);
 
@@ -20,14 +22,18 @@ class KafkaConfig
 
         // security config
         if (!app()->environment('testing')) {
-            $this->conf->set('security.protocol', 'ssl');
-            $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
-            $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
-            $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
+            $this->conf->set('security.protocol', 'sasl_ssl');
+            $this->conf->set('sasl.mechanism', 'PLAIN');
+            $this->conf->set('sasl.username', config('streaming-service.kafka_username'));
+            $this->conf->set('sasl.password', config('streaming-service.kafka_password'));
+            // $this->conf->set('security.protocol', 'ssl');
+            // $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
+            // $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
+            // $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
     
-            if (config('streaming-service.ssl-key-password', null)) {
-                $this->conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
-            }
+            // if (config('streaming-service.ssl-key-password', null)) {
+            //     $this->conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
+            // }
         }
         
         $this->conf->setErrorCb(function ($kafka, $err, $reason) {
@@ -46,7 +52,7 @@ class KafkaConfig
     }
     public function setGroup($group = null)
     {
-        $group = $group ? $group : config('streaming-service.group', 'unc_demo');
+        $group = $group ? $group : config('streaming-service.kafka_group', 'unc_demo');
         $this->conf->set('group.id', $group);
     }
 
