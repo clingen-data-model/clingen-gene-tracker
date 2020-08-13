@@ -8,13 +8,16 @@ class StoreMessageHandler extends AbstractMessageHandler
 {
     public function handle(\RdKafka\Message $message)
     {
+        $payload = json_decode($message->payload);
         IncomingStreamMessage::create([
+            'key' => $this->hasUuid($message->payload) ? $payload->report_id.'-'.$payload->date : null,
+            'timestamp' => $message->timestamp,
             'topic' => $message->topic_name,
             'partition' => $message->partition,
             'offset' => $message->offset,
             'error_code' => $message->err,
-            'payload' => json_decode($message->payload),
-            'gdm_uuid' => $this->hasUuid($message->payload) ? json_decode($message->payload)->report_id : null
+            'payload' => $payload,
+            'gdm_uuid' => $this->hasUuid($message->payload) ? $payload->report_id : null
         ]);
         return parent::handle($message);
     }
