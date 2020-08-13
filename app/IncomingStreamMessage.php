@@ -13,9 +13,17 @@ class IncomingStreamMessage extends Model
         'error_code',
         'gdm_uuid',
         'offset',
+        'timestamp',
+        'key'
     ];
 
     protected $casts = [
         'payload' => 'object'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+    }
+    
 }
