@@ -4,12 +4,34 @@ use App\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$topics = isset($argv[1]) ? explode(',', $argv[1]) : [];
+$topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
+$offset = (int)(isset($argv[2]) ? $argv[2] : -1);
+$dotenv = Dotenv\Dotenv::create(__DIR__);
 
-$offset = isset($argv[2]) ? explode(',', $argv[2]) : '-1';
+$dotenv->load();
+
+function rSortByKeys ($array) {
+    $obj = false;
+    if (is_object($array)) {
+        $array = (array)$array;
+        $obj = true;
+    }
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            $array[$key] = rSortByKeys($value);
+        }
+    }
+    ksort($array);
+    if ($obj) {
+        return (object)$array;
+    }
+    return $array;
+}
+
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
+    
     if ($offset >= 0) {
         echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
     } else {
@@ -19,99 +41,113 @@ function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
     // $topicPartition = new RdKafka\TopicPartition($topic, 0, $offset);
     $topicPartition->setOffset($offset);
     $consumer->commit([$topicPartition]);
-    // $offsetMessage = new RdKafka\Message();
-    // $offsetMessage->partition = $topicPartition->partition;
-    // $offsetMessage->topic_name = $topicPartition->topic;
-    // $offsetMessage->offset = $offset;
-    // $consumer->commit($offsetMessage);
 }
 
-$topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
-$offset = (int)(isset($argv[2]) ? $argv[2] : -1);
-$dotenv = Dotenv\Dotenv::create(__DIR__);
+function configure($offset)
+{
+    
+    $conf = new RdKafka\Conf();
 
-$dotenv->load();
+    // Configure the group.id. All consumer with the same group.id will consume
+    // different partitions.
+    $conf->setErrorCb(function ($kafka, $err, $reason) {
+        throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+    });
+    
+    $conf->setStatsCb(function ($kafka, $json, $json_len) {
+        Log::info('Kafka Stats ', json_decode($json));
+    });
+    
+    $conf->setDrMsgCb(function ($kafka, $message) {
+        if ($message->err) {
+            throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($message->err));
+        }
+    });
 
-$kafkaUsername = env('KAFKA_USERNAME');
-$kafkaPassword = env('KAFKA_PASSWORD');
-$group = env('KAFKA_GROUP', 'unc_staging');
-echo "Group is $group\n\n";
+    // Set where to start consuming messages when there is no initial offset in
+    // offset store or the desired offset is out of range.
+    // 'smallest': start from the beginning
+    
+    // $topicConf = new RdKafka\TopicConf();    
+    // $topicConf->set('auto.offset.reset', 'beginning');
+    // Set the configuration to use for subscribed/assigned topics
+    // $conf->setDefaultTopicConf($topicConf);
 
-$conf = new RdKafka\Conf();
+    $conf->set('auto.offset.reset', 'beginning');
+    
+    // Set a rebalance callback to log partition assignments (optional)
+    $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
+        switch ($err) {
+            case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
+                echo "Assign partions...";
+                $consumer->assign($topicPartitions);
+                
+                foreach ($topicPartitions as $tp) {
+                    commitOffset($consumer, $tp, $offset);
+                }
+    
+            break;
+    
+             case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+                $assignments = $consumer->getAssignment();
+                 $consumer->assign(null);
+                 break;
+    
+             default:
+                throw new \Exception($err);
+        }
+    });
 
-// Configure the group.id. All consumer with the same group.id will consume
-// different partitions.
-$conf->setErrorCb(function ($kafka, $err, $reason) {
-    throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
-});
+    return $conf;
 
-$conf->setStatsCb(function ($kafka, $json, $json_len) {
-    Log::info('Kafka Stats ', json_decode($json));
-});
+}
 
-$conf->setDrMsgCb(function ($kafka, $message) {
-    if ($message->err) {
-        throw new StreamingServiceException('DrMsg: '.rd_kafka_err2str($message->err));
+function configureForConfluent($offset)
+{
+    
+    $conf = configure($offset);
+
+    echo "setting group to ".env('KAFKA_GROUP', 'unc_staging')." for ".env('STREAMING_SERVICE_BROKER')."...\n";
+    $conf->set('group.id', env('KAFKA_GROUP', 'unc_staging'));
+    
+    $conf->set('security.protocol', 'sasl_ssl');
+    $conf->set('metadata.broker.list', env('STREAMING_SERVICE_BROKER'));
+    $conf->set('sasl.mechanism', 'PLAIN');
+    $conf->set('sasl.username', env('KAFKA_USERNAME'));
+    $conf->set('sasl.password', env('KAFKA_PASSWORD'));    
+
+    return $conf;
+}
+
+function configureForExchange($offset)
+{
+    throw new Exception("configureForExchange doesn't work b/c certs an no longer valid for group");
+
+    $group = 'tjward_unc';
+    $cert = "./kafka-auth/sha/unc.crt";
+    $keyLocation = "./kafka-auth/sha/exchange.clinicalgenome.org.key";
+    $caLocation = "./kafka-auth/ca-kafka-cert";
+
+    $conf = configure($offset);
+    
+    $conf->set('group.id', $group);
+    $conf->set('security.protocol', 'ssl');
+    $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
+    $conf->set('ssl.certificate.location', $cert);
+    $conf->set('ssl.key.location', $keyLocation);
+    $conf->set('ssl.ca.location', $caLocation);
+
+    if ($sslKeyPassword) {
+        $conf->set('ssl.key.password', $sslKeyPassword);
     }
-});
-$conf->set('group.id', $group);
 
-echo "setting group to $group...\n";
+    return $conf;
 
-// Initial list of Kafka brokers
-$conf->set('security.protocol', 'sasl_ssl');
-$conf->set('metadata.broker.list', 'pkc-4yyd6.us-east1.gcp.confluent.cloud:9092');
-$conf->set('sasl.mechanism', 'PLAIN');
-// $conf->set('sasl.username', $kafkaUsername);
-$conf->set('sasl.username', $kafkaUsername);
-$conf->set('sasl.password', $kafkaPassword);
-// $conf->set('ssl.certificate.location', $sslCertLocation);
-// $conf->set('ssl.key.location', $sslKeyLocation);
-// $conf->set('ssl.ca.location', $sslCaLocation);
+}
 
-// if ($sslKeyPassword) {
-//     $conf->set('ssl.key.password', $sslKeyPassword);
-// }
 
-$topicConf = new RdKafka\TopicConf();
-
-// Set where to start consuming messages when there is no initial offset in
-// offset store or the desired offset is out of range.
-// 'smallest': start from the beginning
-
-$topicConf->set('auto.offset.reset', 'beginning');
-$conf->set('auto.offset.reset', 'beginning');
-
-// Set a rebalance callback to log partition assignments (optional)
-$conf->setRebalanceCb(function (RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) use ($offset) {
-    switch ($err) {
-        case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-            echo "Assign partions...";
-            $consumer->assign($topicPartitions);
-            
-            foreach ($topicPartitions as $tp) {
-                commitOffset($consumer, $tp, $offset);
-            }
-
-        break;
-
-         case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-            echo "\nCommittedOffsets\n";
-            $assignments = $consumer->getAssignment();
-            var_dump($assignments);
-            var_dump($consumer->getCommittedOffsets($assignments, 10000000));
-
-            echo "\n...Assigning to null...\n";
-             $consumer->assign(null);
-             break;
-
-         default:
-            throw new \Exception($err);
-    }
-});
-
-// Set the configuration to use for subscribed/assigned topics
-// $conf->setDefaultTopicConf($topicConf);
+$conf = configureForConfluent($offset);
+// $conf = configureForExchange($offset);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
@@ -136,29 +172,40 @@ var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
 
 $count = 0;
+$keys = [];
 while (true) {
     $message = $consumer->consume(10000);
     // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
-            // echo $message->offset.': '.$message->payload."\n";
-            echo (json_encode([
-                'len' => $message->len,
-                'topic_name' => $message->topic_name,
-                'timestamp' => $message->timestamp,
-                'partition' => $message->partition,
-                'payload' => $message->payload,
-                'key' => $message->key,
-                'offset' => $message->offset,
-            ], JSON_PRETTY_PRINT));
-            $count++;
-            if ($count > 2) {
-                break 2;
+            $payload = rSortByKeys(json_decode($message->payload));
+            if ((isset($payload->status->name) && $payload->status->name == 'unpublished')
+                || $payload->status == 'unpublished'
+            ) 
+            {
+                continue 2;
             }
+
+            // echo (json_encode([
+            //     'len' => $message->len,
+            //     'topic_name' => $message->topic_name,
+            //     'timestamp' => $message->timestamp,
+            //     'partition' => $message->partition,
+            //     'payload' => json_encode($payload, JSON_PRETTY_PRINT),
+            //     'key' => $message->key,
+            //     'offset' => $message->offset,
+            // ], JSON_PRETTY_PRINT));
+            if (!isset($keys[$message->key])) {
+                $keys[$message->key] = [];
+            }
+            $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
+            $count++;
+            // if ($count > 2) {
+            //     break 2;
+            // }
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "\n\n**No more messages; will wait for more...\n\n";
-            // break;
             // echo "\n\nFound all messages. Closing for now.\n\n";
             break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
@@ -187,5 +234,20 @@ while (true) {
             echo "**Unknown Error: ".$message->err."\n";
             break;
 
+    }
+}
+
+echo count($keys)." keys that have the multple messages\n";
+foreach($keys as $key => $payloads) {
+    if (count($payloads) > 1) {
+        echo $key." has ".count($payloads)." messages.\n";
+        for ($i=0; $i < count($payloads); $i++) { 
+            if ($i == 0) {
+                continue;
+            }
+            $diff = xdiff_string_diff($payloads[($i-1)], $payloads[$i]);
+            echo (($diff) ? $diff : 'NO DIFFERENCE')."\n";
+        }
+        echo "-------\n";
     }
 }
