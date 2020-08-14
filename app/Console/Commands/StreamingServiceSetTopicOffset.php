@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\KafkaConfig;
+use App\Services\Kafka\KafkaConfig;
 use Illuminate\Console\Command;
 use \RdKafka\KafkaConsumer as RdKafkaConsumer;
 use App\Jobs\StreamingService\UpdateTopicPartitionOffset;
@@ -80,34 +80,33 @@ class StreamingServiceSetTopicOffset extends Command
                     UpdateTopicPartitionOffset::dispatch($message->topic_name, $message->partition, $setOffset);
                     // Set the offset again since we have to consume in order to get anything to work
                     break 2;
-                    break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                     echo "\n\n**No more messages; will wait for more...\n\n";
                     break 2;
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
                     echo "**Timed out\n";
-                    break;
+                    break 2;
                 case RD_KAFKA_RESP_ERR__FAIL:
                     echo "**Failed to communicate with broker\n";
-                    break;
+                    break 2;
                 case RD_KAFKA_RESP_ERR__BAD_MSG:
                     echo "**Bad message format\n";
                     break;
                 case RD_KAFKA_RESP_ERR__RESOLVE:
                     echo "**Host resolution failure";
-                    break;
+                    break 2;
                 case RD_KAFKA_RESP_ERR__UNKNOWN_TOPIC:
                     echo "**unknown topic\n";
-                    break;
+                    break 2;
                 case RD_KAFKA_RESP_ERR_INVALID_GROUP_ID:
                     echo "**invalid group id\n";
-                    break;
+                    break 2;
                 case RD_KAFKA_RESP_ERR_GROUP_AUTHORIZATION_FAILED:
                     echo "**group auth failed\n";
-                    break;
+                    break 2;
                 default:
                     echo "**Unknown Error: ".$message->err."\n";
-                    break;
+                    break 2;
         
             }
         }

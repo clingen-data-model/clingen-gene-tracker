@@ -7,7 +7,7 @@ use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\StreamMessage;
-use App\Services\KafkaProducer;
+use App\Services\Kafka\KafkaProducer;
 use App\Contracts\MessagePusher;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Exceptions\StreamingServiceException;

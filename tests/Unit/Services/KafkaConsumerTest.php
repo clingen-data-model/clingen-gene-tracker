@@ -3,7 +3,7 @@
 namespace Tests\Unit\Services;
 
 use Tests\TestCase;
-use App\Services\KafkaConsumer;
+use App\Services\Kafka\KafkaConsumer;
 use App\Contracts\MessageConsumer;
 use App\Events\StreamMessages\Received;
 use Illuminate\Contracts\Events\Dispatcher;

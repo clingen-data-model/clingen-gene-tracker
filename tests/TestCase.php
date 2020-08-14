@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Mockery;
-use App\Services\KafkaProducer;
+use App\Services\Kafka\KafkaProducer;
 use App\Contracts\MessagePusher;
 use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Jobs\Curations\AugmentWithMondoInfo;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Kafka;
 
 use App\Services\KafkaConfig;
 use App\Contracts\MessagePusher;

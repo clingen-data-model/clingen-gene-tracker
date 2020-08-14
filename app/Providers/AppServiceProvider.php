@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
-use App\Services\KafkaConfig;
-use App\Services\KafkaConsumer;
-use App\Services\KafkaProducer;
+use App\Services\Kafka\KafkaConfig;
+use App\Services\Kafka\KafkaConsumer;
+use App\Services\Kafka\KafkaProducer;
 use App\Services\MessageLogger;
 use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;

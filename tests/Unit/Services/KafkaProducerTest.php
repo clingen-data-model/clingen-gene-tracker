@@ -4,7 +4,7 @@ namespace Tests\Unit\Services;
 
 use Mockery;
 use Tests\TestCase;
-use App\Services\KafkaProducer;
+use App\Services\Kafka\KafkaProducer;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Exceptions\StreamingServiceException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
