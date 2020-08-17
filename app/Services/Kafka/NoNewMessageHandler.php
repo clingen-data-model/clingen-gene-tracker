@@ -16,5 +16,7 @@ class NoNewMessageHandler extends AbstractMessageHandler
         if ($message->err == RD_KAFKA_RESP_ERR__PARTITION_EOF) {
             throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
         }
+
+        parent::handle($message);
     }
 }
