@@ -169,10 +169,10 @@ class KafkaConsumer implements MessageConsumer
         $errorMessageHandler = new ErrorMessageHandler();
         $noNewMessageHandler = new NoNewMessageHandler();
 
-        $noActionHandler->setNext($storeMessageHandler)
+        $noActionHandler->setNext($noNewMessageHandler)
+            ->setNext($storeMessageHandler)
             ->setNext($successHandler)
-            ->setNext($errorMessageHandler)
-            ->setNext($noNewMessageHandler);
+            ->setNext($errorMessageHandler);
 
         $chainHead = $noActionHandler;
 

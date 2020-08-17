@@ -15,6 +15,17 @@ class NoActionMessageHandler extends AbstractMessageHandler
             return;
         }
 
+        if ($this->isUnpublishedMessage($message)) {
+            return;
+        }
+
         return parent::handle($message);
     }
+
+    private function isUnpublishedMessage(\RdKafka\Message $message)
+    {
+        $payload = json_decode($message->payload);
+        return !is_null($payload) && (is_object($payload->status) && $payload->status->name == 'unpublished' || $payload->status == 'unpublished');
+    }
+    
 }
