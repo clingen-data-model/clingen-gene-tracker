@@ -15,7 +15,7 @@ class CheckOmimUpdates extends Command
      *
      * @var string
      */
-    protected $signature = 'curations:check-omim-updates {--limit= : Number of phenotypes for which to get updates}';
+    protected $signature = 'curations:check-omim-updates {--limit= : Number of phenotypes for which to get updates} {--mim-number= : specific mim-number to check.}';
 
     /**
      * The console command description.
@@ -44,9 +44,15 @@ class CheckOmimUpdates extends Command
         Log::info('Checking OMIM for updates');
         $phenotypeQuery = Phenotype::with('curations')
             ->whereHas('curations');
+
         if ($this->option('limit')) {
             $phenotypeQuery->limit($this->option('limit'));
         }
+
+        if ($this->option('mim-number')) {
+            $phenotypeQuery->where('mim_number', trim($this->option('mim-number')));
+        }
+
         $phenotypes = $phenotypeQuery->get();
 
         $bar = $this->output->createProgressBar($phenotypes->count());
