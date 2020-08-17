@@ -13,9 +13,11 @@ class DatabaseSeeder extends Seeder
         $this->call(AffiliationTypesTableSeeder::class);
         $this->call(AffiliationsTableSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
-        // $this->call(WorkingGroupsTableSeeder::class);
-        // $this->call(ExpertPanelsTableSeeder::class);
-        // $this->call(UsersTableSeeder::class);
+        if (!app()->environment('production')) {
+            $this->call(WorkingGroupsTableSeeder::class);
+            $this->call(ExpertPanelsTableSeeder::class);
+            $this->call(UsersTableSeeder::class);
+        }
         $this->call(CurationStatusesTableSeeder::class);
         $this->call(CurationTypesTableSeeder::class);
         $this->call(RationalesTableSeeder::class);

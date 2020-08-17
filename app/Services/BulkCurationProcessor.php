@@ -15,6 +15,7 @@ use App\Jobs\Curations\SyncPhenotypes;
 use GuzzleHttp\Exception\ClientException;
 use App\Exceptions\BulkUploads\InvalidRowException;
 use App\Exceptions\BulkUploads\InvalidFileException;
+use App\Exceptions\DuplicateBulkCurationException;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
@@ -53,9 +54,58 @@ class BulkCurationProcessor
         $newCurations = collect();
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($sheet->getName() === 'Curations') {
-                if ($this->sheetIsValid($sheet)) {
-                    $newCurations = $this->handleSheet($sheet, $expertPanelId);
+                if (!$this->sheetIsValid($sheet)) {
+                    DB::rollBack();
+                    throw new InvalidFileException($this->validationErrors);
                 }
+
+                if ($this->sheetHasDuplicates($sheet)) {
+                    DB::rollBack();
+                    throw new DuplicateBulkCurationException($this->duplicates);
+                }
+
+                $newCurations = $this->handleSheet($sheet, $expertPanelId);
+            }
+        }
+
+        DB::commit();
+
+        return $newCurations;
+    }
+
+    private function sheetHasDuplicates($sheet) {
+        $genes = collect();
+        $this->applyToSheet($sheet, function ($idx, $data) use ($genes) {
+            $genes->push(['gene_symbol' => $data['gene_symbol'], 'row' => $idx]);
+        });
+
+        $genes = $genes->groupBy('gene_symbol');
+
+        $duplicates = Curation::select('id', 'gene_symbol', 'hgnc_id', 'expert_panel_id', 'mondo_id', 'mondo_name')
+                                ->with('expertPanel', 'phenotypes', 'curationStatuses')
+                                ->whereIn('gene_symbol', $genes->keys())
+                                ->get();
+
+        if ($duplicates->count() > 0) {
+            $this->duplicates = $duplicates;
+            return true;
+        }
+
+        return false;
+    }
+
+    public function processWithDuplicates($path, $expertPanelId)
+    {
+        ini_set('max_execution_time', '360');
+        
+        DB::beginTransaction();
+
+        $reader = ReaderEntityFactory::createXLSXReader();
+        $reader->open($path);
+        $newCurations = collect();
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($sheet->getName() === 'Curations') {
+                $newCurations = $this->handleSheet($sheet, $expertPanelId);
             }
         }
 
@@ -68,6 +118,7 @@ class BulkCurationProcessor
 
         return $newCurations;
     }
+    
 
     private function sheetIsValid($sheet)
     {
