@@ -5,6 +5,7 @@ namespace Tests\Unit\Jobs\Curations;
 use App\Curation;
 use Tests\TestCase;
 use App\Classification;
+use App\CurationClassification;
 use App\Jobs\Curations\AddClassification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -64,4 +65,34 @@ class AddClassificationTest extends TestCase
             'classification_date' => '2020-12-25'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function does_not_add_previously_added_classification_if_date_matches_existing_classification_date()
+    {
+        \Event::fake();
+        $classification = factory(Classification::class)->create([]);
+        $curation = factory(Curation::class)->create();
+        $job = new AddClassification($curation, $classification, '2020-02-25');
+        $job->handle();
+
+        AddClassification::dispatchNow(
+            $curation->fresh(), 
+            Classification::find(config('project.classifications.moderate')),
+            '2019-12-01'
+        );
+
+        AddClassification::dispatchNow(
+            $curation->fresh(), 
+            Classification::find(config('project.classifications.moderate')),
+            '2019-12-01'
+        );
+
+        // dump($curation->classifications()->get()->toArray());
+
+        $this->assertEquals(2, $curation->fresh()->classifications()->count());
+
+    }
+
 }

@@ -31,7 +31,7 @@ class AddStatus implements ShouldQueue
         //
         $this->curation = $curation;
         $this->curationStatus = $curationStatus;
-        $this->date = $date;
+        $this->date = Carbon::parse($date);
     }
 
     /**
@@ -41,14 +41,30 @@ class AddStatus implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->curation->currentStatus && $this->curation->currentStatus->id == $this->curationStatus->id) {
+        if ($this->isCurrentStatus() || $this->isPreviousDatedStatus()) {
             return;
         }
 
         $this->curation->statuses()->attach([
             $this->curationStatus->id => [
-                'status_date' => Carbon::parse($this->date)
+                'status_date' => $this->date
             ]
         ]);
     }
+
+    private function isCurrentStatus()
+    {
+        return $this->curation->currentStatus && $this->curation->currentStatus->id == $this->curationStatus->id;
+    }
+
+    private function isPreviousDatedStatus()
+    {        
+        $filtered = $this->curation->statuses->filter( function ($status) {
+                return $status->id == $this->curationStatus->id
+                    && $status->pivot->status_date == $this->date;
+            });
+
+        return $filtered->count() > 0;
+    }
+    
 }

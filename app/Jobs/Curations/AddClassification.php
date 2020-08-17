@@ -27,7 +27,7 @@ class AddClassification
     {
         $this->curation = $curation;
         $this->classification = $classification;
-        $this->date = $date;
+        $this->date = Carbon::parse($date);
     }
 
     /**
@@ -37,12 +37,32 @@ class AddClassification
      */
     public function handle()
     {
-        if ($this->curation->currentClassification->id != $this->classification->id) {
-            $this->curation->classifications()->attach([
-                $this->classification->id => [
-                    'classification_date' => $this->date ?? Carbon::now()
-                ]
-            ]);
+        if ($this->isCurrentClassification() || $this->isExistingDatedClassification()) {
+            return;
         }
+
+        $this->curation->classifications()->attach([
+            $this->classification->id => [
+                'classification_date' => $this->date
+            ]
+        ]);
     }
+
+    private function isCurrentClassification()
+    {
+        return $this->curation->currentClassification->id == $this->classification->id;
+    }
+
+    private function isExistingDatedClassification()
+    {
+        $filtered = $this->curation->classifications
+                        ->filter(function($classification) {
+                            return $classification->id == $this->classification->id
+                                && $classification->pivot->classification_date = $this->date;
+                        });
+
+        return $filtered->count() > 0;
+    }
+    
+    
 }
