@@ -105,15 +105,15 @@ class KafkaConsumerTest extends TestCase
      */
     public function dispatches_StreamMessages_Received_event_when_message_received_without_error()
     {
-        $message = $this->makeMessage('unit_test', 1, '"monkeys"');
-        $message2 = $this->makeMessage('unit_test', 2, null, RD_KAFKA_RESP_ERR_NO_ERROR);
+        $message = $this->makeMessage('unit_test', 1, '{"a": "monkeys"}');
+        // $message2 = $this->makeMessage('unit_test', 2, null, RD_KAFKA_RESP_ERR_NO_ERROR);
         $eofMessage = $this->makeMessage('unit_test', 3, null, RD_KAFKA_RESP_ERR__PARTITION_EOF);
 
         // Mock Consumer that makes final call
         $mkRdConsumer = \Mockery::mock(\RdKafka\KafkaConsumer::class);
         $mkRdConsumer->shouldReceive('subscribe');
         $mkRdConsumer->shouldReceive('consume')
-            ->andReturn($message, $message2, $eofMessage);
+            ->andReturn($message, $eofMessage);
 
         \Event::fake([Received::class]);
 
@@ -123,10 +123,6 @@ class KafkaConsumerTest extends TestCase
         $appConsumer->consume();
         \Event::assertDispatched(Received::class, function ($event) use ($message) {
             return $event->message == $message;
-        });
-
-        \Event::assertDispatched(Received::class, function ($event) use ($message2) {
-            return $event->message == $message2;
         });
     }
 
@@ -168,7 +164,7 @@ class KafkaConsumerTest extends TestCase
             'error_code' => $message2->err,
             'gdm_uuid' => null
         ]);
-        $this->assertDatabaseHas('incoming_stream_messages', [
+        $this->assertDatabaseMissing('incoming_stream_messages', [
             'topic' => $eofMessage->topic_name,
             'partition' => $eofMessage->partition,
             'offset' => $eofMessage->offset,
