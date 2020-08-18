@@ -9,6 +9,7 @@ use App\ExpertPanel;
 use App\CurationType;
 use App\CurationStatus;
 use App\Clients\OmimClient;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Jobs\Curations\AddStatus;
 use App\Rules\ValidHgncGeneSymbol;
@@ -38,7 +39,7 @@ class BulkCurationProcessor
         $this->validationErrors = collect();
         $this->omim = new OmimClient();
 
-        $this->uploadedStatus = CurationStatus::find(config('project.curation-statuses.uploaded'));
+        $this->statuses = CurationStatus::all()->keyBy('id');
     }
     
     public function getValidationErrors()
@@ -197,12 +198,9 @@ class BulkCurationProcessor
         SyncPhenotypes::dispatchNow($curation, $this->getPhenotypes($rowData));
         $curation->rationales()->sync($this->getRationales($rowData));
         
-        $this->addStatus($curation, 1, 'uploaded_date', $rowData);
-        $this->addStatus($curation, 2, 'precuration_date', $rowData);
-        $this->addStatus($curation, 3, 'disease_entity_assigned_date', $rowData);
-        $this->addStatus($curation, 4, 'curation_in_progress_date', $rowData);
-        $this->addStatus($curation, 5, 'curation_provisional_date', $rowData);
-        $this->addStatus($curation, 6, 'curation_approved_date', $rowData);
+        foreach ($this->getStatusNames() as $id => $statusName) {
+            $this->addStatus($curation, $this->statuses->get($id), $statusName.'_date', $rowData);
+        }
 
         if (!$curation->fresh()->currentStatus) {
             AddStatus::dispatch($curation, $this->uploadedStatus);
@@ -212,15 +210,19 @@ class BulkCurationProcessor
         return $curation;
     }
 
-    private function addStatus($curation, $status_id, $dateName, $row)
+    public function getStatusNames()
+    {
+        return array_map(function($statusName) { 
+                return Str::snake(Str::camel($statusName)); 
+            },  
+            array_flip(config('project.curation-statuses'))
+        );
+    }
+
+    private function addStatus($curation, $status, $dateName, $row)
     {
         if (isset($row[$dateName])) {
-            $curation->curationStatuses()
-                ->attach([
-                    $status_id => [
-                        'created_at' => $row[$dateName]
-                    ]
-                ]);
+            AddStatus::dispatch($curation, $status, $row[$dateName]);
         }
     }
 
