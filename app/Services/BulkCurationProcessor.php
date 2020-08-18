@@ -7,15 +7,17 @@ use App\Curation;
 use App\Rationale;
 use App\ExpertPanel;
 use App\CurationType;
+use App\CurationStatus;
 use App\Clients\OmimClient;
 use Illuminate\Validation\Rule;
+use App\Jobs\Curations\AddStatus;
 use App\Rules\ValidHgncGeneSymbol;
 use Illuminate\Support\Facades\DB;
 use App\Jobs\Curations\SyncPhenotypes;
 use GuzzleHttp\Exception\ClientException;
+use App\Exceptions\DuplicateBulkCurationException;
 use App\Exceptions\BulkUploads\InvalidRowException;
 use App\Exceptions\BulkUploads\InvalidFileException;
-use App\Exceptions\DuplicateBulkCurationException;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
@@ -35,6 +37,8 @@ class BulkCurationProcessor
         $this->panels = ExpertPanel::all();
         $this->validationErrors = collect();
         $this->omim = new OmimClient();
+
+        $this->uploadedStatus = CurationStatus::find(config('project.curation-statuses.uploaded'));
     }
     
     public function getValidationErrors()
@@ -199,6 +203,10 @@ class BulkCurationProcessor
         $this->addStatus($curation, 4, 'curation_in_progress_date', $rowData);
         $this->addStatus($curation, 5, 'curation_provisional_date', $rowData);
         $this->addStatus($curation, 6, 'curation_approved_date', $rowData);
+
+        if (!$curation->fresh()->currentStatus) {
+            AddStatus::dispatch($curation, $this->uploadedStatus);
+        }
 
         config(['app.bulk_uploading' => false]);
         return $curation;
