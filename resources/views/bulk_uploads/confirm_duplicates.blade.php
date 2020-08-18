@@ -1,5 +1,5 @@
 <div class="alert alert-warning">
-    <h4>Some of the genes in your upload already have curations in the GeneTracker:</h4>
+    <h5>Some of the genes in your upload already have curations in the GeneTracker:</h5>
     <small>
         <table class="table table-sm table-striped bg-white">
             <tr>
@@ -7,21 +7,29 @@
                 <th>ExpertPanel</th>
                 <th>Status</th>
                 <th>Phenotypes</th>
+                <th>Last updated</th>
             </tr>
             @foreach ($duplicates->sortBy('gene_symbol') as $dup)
                 <tr>
                     <td>{{$dup->gene_symbol}}</td>
                     <td>{{$dup->expertPanel->name}}</td>
                     <td>{{$dup->currentStatus ? $dup->currentStatus->name : '??'}}</td>
-                    <td>{{$dup->phenotypes->pluck('name', 'mim_number')->join(', ')}}</td>
+                    <td>
+                        <ul class="list-unstyled">
+                            @foreach ($dup->phenotypes as $pheno)
+                                <li>{{$pheno->name}}</li> 
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td>{{$dup->updated_at->format('Y-m-d')}}</td>
                 </tr>
             @endforeach
         </table>
     </small>
     <form action="/bulk-uploads" method="POST">
         {{csrf_field()}}
-        <input type="text" name="path" value="{{$path}}">
-        <input type="text" name="expert_panel_id" value="{{$expert_panel_id}}">
+        <input type="hidden" name="path" value="{{$path}}">
+        <input type="hidden" name="expert_panel_id" value="{{$expert_panel_id}}">
 
         <a href="/bulk-uploads" class="btn btn-light btn-sm border"> 
             Cancel upload
