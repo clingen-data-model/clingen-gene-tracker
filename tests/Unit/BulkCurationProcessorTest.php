@@ -26,7 +26,10 @@ class BulkCurationProcessorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
+        $this->user = User::where('email', 'sirs@unc.edu')->first();
+        if (!$this->user) {
+            $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
+        }
         $this->ep = factory(ExpertPanel::class)->create([]);
         $omimClientMock = $this->createMock(OmimClient::class);
         $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
