@@ -6,6 +6,10 @@
     "properties": {
         "type": "object",
         "properties": {
+            "key": {
+                "type": "string",
+                "pattern": "\\w{6}(-\\w{4}){3}-\\w{12}^$",
+            },
             "event_type": {
                 "type": "string",
                 "title": "Type of curation event",
@@ -92,14 +96,32 @@
                         "uniqueItems": true
                     }
                 },
+                "rationales": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                    }
+                },
                 "curation_type": {
                     "type": "object",
                     "properties": {
                         "name": {
                             "type": "string",
-                            "enum": []
+                            "enum": [
+                                "single-omim",
+                                "single-new",
+                                "isolated-phenotype",
+                                "lumped"
+                            ]
                         },
                         "description": {"type": "string"}
+                    }
+                },
+                "omim_phenotypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^\\d{7}$"
                     }
                 }
             }

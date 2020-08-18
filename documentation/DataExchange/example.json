@@ -1,0 +1,39 @@
+{
+    "key": "2bf5282a-2cbd-45f2-bc87-e41c0d9d3737",
+    "event_type": "updated",
+    "data": {
+        "id": 164,
+        "gene": {
+            "symbol": "PDLIM3",
+            "hgnc_id": "HGNC:20767"
+        },
+        "mondo_id": "MONDO:0005021",
+        "mode_of_inheritance": {
+            "name": "Autosomal dominant inheritance",
+            "hp_id": "HP:0000006"
+        },
+        "curator": {
+            "id": 5,
+            "name": "Courtney Thaxton",
+            "email": "courtney_thaxton@med.unc.edu"        
+        },
+        "curation_type": {
+            "name": "single-new",
+            "description": "Curate a single gene-disease entity not on this list"
+        },
+        "statuses": [
+            {
+                "name": "uploaded",
+                "effective_date": "2020-01-01"
+            },
+            {
+                "name": "curation in progress",
+                "effective_date": "2020-07-13"
+            }
+        ],
+        "pmids": [],
+        "rationales": [],
+        "omim_phenotypes": []
+    }
+
+}
