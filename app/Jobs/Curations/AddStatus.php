@@ -26,7 +26,7 @@ class AddStatus implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Curation $curation, CurationStatus $curationStatus, string $date = null)
+    public function __construct(Curation $curation, CurationStatus $curationStatus, $date = null)
     {
         //
         $this->curation = $curation;
