@@ -22,18 +22,7 @@ class KafkaConfig
 
         // security config
         if (!app()->environment('testing')) {
-            $this->conf->set('security.protocol', 'sasl_ssl');
-            $this->conf->set('sasl.mechanism', 'PLAIN');
-            $this->conf->set('sasl.username', config('streaming-service.kafka_username'));
-            $this->conf->set('sasl.password', config('streaming-service.kafka_password'));
-            // $this->conf->set('security.protocol', 'ssl');
-            // $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
-            // $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
-            // $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
-    
-            // if (config('streaming-service.ssl-key-password', null)) {
-            //     $this->conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
-            // }
+            $this->configSecurity();
         }
         
         $this->conf->setErrorCb(function ($kafka, $err, $reason) {
@@ -66,4 +55,27 @@ class KafkaConfig
     {
         return $this->conf;
     }
+
+    private function configSecurity()
+    {
+        if (config('streaming-service.broker') == 'exchange.clinicalgenome.org:9093') {
+            $this->conf->set('security.protocol', 'ssl');
+            $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
+            $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
+            $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
+
+            if (config('streaming-service.ssl-key-password', null)) {
+                $this->conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
+            }
+
+            return;
+
+        }
+        
+        $this->conf->set('security.protocol', 'sasl_ssl');
+        $this->conf->set('sasl.mechanism', 'PLAIN');
+        $this->conf->set('sasl.username', config('streaming-service.kafka_username'));
+        $this->conf->set('sasl.password', config('streaming-service.kafka_password'));
+}
+    
 }
