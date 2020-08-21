@@ -18,7 +18,14 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '',
-        component: UserDashboard
+        component: UserDashboard,
+        beforeEnter: (to, from, next) => {
+            if (!user.hasPermission('create curations')) {
+                next({path: '/curations'})
+                return;
+            }
+            next()
+        }
     },
     {
         path: '/working-groups',
@@ -33,10 +40,18 @@ const routes = [
                 component: GroupShow,
                 props: true
             }
-        ]
+        ],
+        beforeEnter: (to, from, next) => {
+            if (!user.hasPermission('list working-groups')) {
+                next({path: '/curations'})
+                return;
+            }
+            next()
+        }
     },
     { 
         path: '/curations',
+        name: 'Curations',
         component: Curations,
         children: [
             {
@@ -47,7 +62,15 @@ const routes = [
             { 
                 path: 'create', 
                 component: CurationCreate,
-                name: 'curations-create'
+                name: 'curations-create',
+                beforeEnter: (to, from, next) => {
+                    if (!user.hasPermission('create curations')) {
+                        next({path: '/curations'})
+                        return;
+                    }
+                    
+                    next()
+                }
             },
             {
                 path: 'export',
@@ -63,7 +86,14 @@ const routes = [
                 path: ':id/edit', 
                 component: CurationEdit,
                 props: true,
-                name: 'curations-edit'
+                name: 'curations-edit',
+                beforeEnter: (to, from, next) => {
+                    if (!user.hasPermission('update curations')) {
+                        next(from)
+                        return;
+                    }
+                    next()
+                }
             },
         ]
     },

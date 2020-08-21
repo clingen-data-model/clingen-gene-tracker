@@ -59,6 +59,9 @@ class RolesAndPermissionsSeeder extends Seeder
         // }
 
         // Role::firstOrcreate(['name' => 'curator']);
+
+        $viewer = Role::firstOrCreate(['name' => 'viewer']);
+        $this->givePermissionsToRole($viewer, 'curations', ['list']);
     }
 
     protected function givePermissionsToRole($role, $entity, $actions = null)

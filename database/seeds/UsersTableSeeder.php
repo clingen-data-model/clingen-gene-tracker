@@ -101,6 +101,16 @@ class UsersTableSeeder extends Seeder
                     $epIds->first()->id => ['is_coordinator' => 1, 'can_edit_curations' => 1],
                 ]
             );
+
+            $viewer = User::updateOrCreate(
+                ['email'=> 'viewer@example.com'],
+                [
+                    'name' => 'Curation Viewer',
+                    'password' => 'tester'
+                ]
+            );
+
+            $viewer->assignRole('viewer');
         }
     }
 }

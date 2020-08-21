@@ -1,32 +1,37 @@
 <style></style>
 <template>
     <div class="new-curation-container">
-        <p>
-            <router-link to="/curations">
-                    &lt; Back to curations
-            </router-link>
-        </p>        
-        <b-card>
-            <template slot="header">
-                <h3>Add a curation to curate</h3>
-            </template>
-            <b-form id="new-curation-form">
-                <info
-                    :value="updatedCuration" 
-                    :errors="errors"
-                    @input="updatedCuration = $event"
-                ></info>         
-                <hr>
-                <div class="row">
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+        <div v-if="!user.hasPermission('create curations')" class="alert alert-danger">
+            Sorry.  You don't have permission to create curations.
+        </div>
+        <div v-else>
+            <p>
+                <router-link to="/curations">
+                        &lt; Back to curations
+                </router-link>
+            </p>        
+            <b-card>
+                <template slot="header">
+                    <h3>Add a curation to curate</h3>
+                </template>
+                <b-form id="new-curation-form">
+                    <info
+                        :value="updatedCuration" 
+                        :errors="errors"
+                        @input="updatedCuration = $event"
+                    ></info>         
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                        </div>
+                        <div class="col-md-11 text-right">
+                            <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
+                        </div>
                     </div>
-                    <div class="col-md-11 text-right">
-                        <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
-                    </div>
-                </div>
-            </b-form>
-        </b-card>
+                </b-form>
+            </b-card>
+        </div>
     </div>
 </template>
 <script>
@@ -38,6 +43,7 @@
         },
         data: function () {
             return {
+                user: user,
                 updatedCuration: {
                     gene_symbol: null
                 },

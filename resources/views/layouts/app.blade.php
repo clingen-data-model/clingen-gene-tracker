@@ -41,15 +41,19 @@
                     <!-- Left Side Of Navbar -->
                     @if (!Auth::guest())
                     <ul class="navbar-nav mr-auto">
-                        <li>
-                            <a class="nav-link" href="/#/">Dashboard</a>
-                        </li>
+                        @if (Auth::user()->can('create curations'))
+                            <li>
+                                <a class="nav-link" href="/#/">Dashboard</a>
+                            </li>
+                        @endif
                         <li>
                             <a class="nav-link" href="/#/curations">Curations</a>
                         </li>
+                        @if (Auth::user()->can('list working-groups'))
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
+                        @endif
                         <li>
                             <a class="nav-link" href="/#/bulk-lookup">Bulk Lookup</a>
                         </li>
