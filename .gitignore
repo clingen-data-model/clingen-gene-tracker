@@ -19,3 +19,4 @@ kafka-auth/*
 .push.settings.jsonc
 psysh/psysh_history
 certs/*
+gene_validity_raw*

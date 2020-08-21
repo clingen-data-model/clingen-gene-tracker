@@ -36,3 +36,12 @@ if (!function_exists('renderQuery')) {
         return call_user_func_array('sprintf', array_merge([$treated], $query->getBindings()));
     }
 }
+
+if (!function_exists('forEachFileInDirectory')) {
+    function forEachFileInDirectory($directory, $callback) {
+        $contents = array_filter(scandir($directory), function ($item) {return !in_array($item, ['.', '..']);});
+        foreach ($contents as $filename) {
+            yield $callback($filename, $directory);
+        }
+    }
+}

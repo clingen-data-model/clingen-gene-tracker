@@ -4,11 +4,31 @@ use App\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$topics = isset($argv[1]) ? explode(',', $argv[1]) : ['test'];
-$offset = (int)(isset($argv[2]) ? $argv[2] : -1);
-$dotenv = Dotenv\Dotenv::create(__DIR__);
+$argments = [];
+$options = [];
+foreach ($argv as $idx => $arg) {
+    if ($idx == 0) {
+        continue;
+    }
+    if (substr($arg, 0, 2) == '--') {
+        $name = substr($arg, 2);
+        $value = true;
+        if (preg_match('/=/', $name)) {
+            [$name, $value] = explode('=', $name);
+        }
+        $options[$name] = $value;
+        continue;
+    }
+    $arguments[] = $arg;
+}
 
+$topics = isset($arguments[0]) ? explode(',', $arguments[0]) : ['test'];
+$offset = (int)(isset($arguments[1]) ? $arguments[1] : -1);
+$limit = isset($options['limit']) ? (int)$options['limit'] : false;
+
+$dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
+
 
 function rSortByKeys ($array) {
     $obj = false;
@@ -151,7 +171,8 @@ $conf = configureForConfluent($offset);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
-if (count($topics) == 0) {
+if (count($topics) == 0 || array_key_exists('list-topics', $options)) {
+    dump('should list topics');
     $availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
     echo "Available Topics: \n";
     foreach ($availableTopics as $idx => $avlTopic) {
@@ -163,6 +184,10 @@ if (count($topics) == 0) {
     $line = fgets($stdin);
     $topics = explode(',', trim($line));
     fclose($stdin);
+}
+
+if (array_key_exists('dont-listen', $options)) {
+    exit;
 }
 
 // Subscribe to topic 'test'
@@ -179,30 +204,28 @@ while (true) {
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
             $payload = rSortByKeys(json_decode($message->payload));
-            if ((isset($payload->status->name) && $payload->status->name == 'unpublished')
-                || $payload->status == 'unpublished'
-            ) 
-            {
-                continue 2;
-            }
 
+            $a = json_decode($message->payload, true);
+
+            $filePath = __DIR__.'/gene_validity_raw/'.$message->key.'.json';
+            file_put_contents($filePath, $message->payload);
             // echo (json_encode([
             //     'len' => $message->len,
             //     'topic_name' => $message->topic_name,
             //     'timestamp' => $message->timestamp,
             //     'partition' => $message->partition,
-            //     'payload' => json_encode($payload, JSON_PRETTY_PRINT),
+            //     'payload' => json_encode($payload),
             //     'key' => $message->key,
             //     'offset' => $message->offset,
             // ], JSON_PRETTY_PRINT));
             if (!isset($keys[$message->key])) {
                 $keys[$message->key] = [];
             }
-            $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
+            // $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
             $count++;
-            // if ($count > 2) {
-            //     break 2;
-            // }
+            if ($limit && $count > $limit) {
+                break 2;
+            }
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "\n\n**No more messages; will wait for more...\n\n";
