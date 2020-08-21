@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Curation;
 use App\HgncRecord;
 use App\Contracts\HgncClient;
+use App\Exceptions\ApiServerErrorException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use App\Exceptions\HttpNotFoundException;
@@ -21,7 +22,7 @@ class CheckForHgncUpdates extends Command
      *
      * @var string
      */
-    protected $signature = 'curations:check-hgnc-updates';
+    protected $signature = 'curations:check-hgnc-updates {--symbol= : gene symbol to check}';
 
     /**
      * The console command description.
@@ -48,9 +49,13 @@ class CheckForHgncUpdates extends Command
     public function handle(HgncClient $hgncClient)
     {
         \Log::info('Checking HGNC for updates.');
-        Curation::query()
-            ->with('expertPanel')
-            ->get()
+        $query = Curation::query()
+            ->with('expertPanel');
+        if ($this->option('symbol')) {
+            $query->where('gene_symbol', $this->option('symbol'));
+        }
+
+        $query->get()
             ->groupBy('hgnc_id')
             ->each(function ($curations, $hgncId) use ($hgncClient) {
                 $this->reconcileSymbol($hgncClient, $curations, $hgncId);
@@ -91,6 +96,8 @@ class CheckForHgncUpdates extends Command
                 AugmentWithHgncInfo::dispatch($curation);
             } catch (HttpNotFoundException $e) {
                 NotifyCoordinatorsAboutCuration::dispatch($curation, HgncIdNotFoundNotification::class);
+            } catch (ApiServerErrorException $e) {
+                report($e);
             }
         });
     }

@@ -36,11 +36,21 @@
                 </div>
                 <div class="row mt-2">
                     <strong class="col-md-2">HGNC ID:</strong> 
-                    <div class="col-md">hgnch:{{ curation.hgnc_id }}</div>
+                    <div class="col-md">
+                        <span v-if="curation.hgnc_id">{{`hgnch:${curation.hgnc_id}`}}</span>
+                        <small class="text-muted" v-else>
+                            HGNC info will update shortly
+                        </small>
+                    </div>
                 </div>
                 <div class="row mt-2">
                     <strong class="col-md-2">HGNC Name:</strong> 
-                    <div class="col-md">{{ curation.hgnc_name }}</div>
+                    <div class="col-md">
+                        <span v-if="curation.name">{{`hgnch:${curation.name}`}}</span>
+                        <small class="text-muted" v-else>
+                            HGNC info will update shortly
+                        </small>
+                    </div>
                 </div>
                 <div class="row mt-2">
                     <strong class="col-md-2">Expert Panel:</strong> 

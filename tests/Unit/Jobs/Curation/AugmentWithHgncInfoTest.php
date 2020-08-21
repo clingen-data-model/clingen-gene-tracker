@@ -9,6 +9,7 @@ use Tests\TestCase;
 use App\ExpertPanel;
 use OutOfBoundsException;
 use App\Contracts\HgncClient;
+use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithHgncInfo;
 use Illuminate\Support\Facades\Notification;
@@ -64,8 +65,19 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->expectException(HttpNotFoundException::class);
         $job->handle($this->hgncClient);
     }
-    
 
+    /**
+     * @test
+     */
+    public function throws_ApiServerErrorException_if_api_returns_500()
+    {
+        $this->hgncClient->method('fetchGeneSymbol')
+            ->will($this->throwException(new ApiServerErrorException('hgnc', 'http://rest.genenames.org/fetch/hgnc_id/2890')));
+
+        $this->expectException(ApiServerErrorException::class);
+
+        (new AugmentWithHgncInfo($this->curation))->handle($this->hgncClient);
+    }
 
     /**
      * @test

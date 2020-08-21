@@ -5,6 +5,7 @@ namespace App\Jobs\Curations;
 use App\Curation;
 use OutOfBoundsException;
 use App\Contracts\HgncClient;
+use App\Exceptions\ApiServerErrorException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -19,6 +20,7 @@ class AugmentWithHgncInfo implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $curation;
+    protected $attempts = 0;
 
     /**
      * Create a new job instance.

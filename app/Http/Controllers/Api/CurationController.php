@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\CurationStatus;
 use Illuminate\Http\Request;
 use App\Contracts\OmimClient;
+use App\Exceptions\ApiServerErrorException;
 use App\Jobs\Curations\AddStatus;
 use App\Http\Controllers\Controller;
 use App\Services\RequestDataCleaner;
@@ -50,16 +51,21 @@ class CurationController extends Controller
     public function store(CurationCreateRequest $request)
     {
         $this->authorize('create', Curation::class);
-        $data = $request->except('phenotypes', 'curation_status_id');
-        $curation = Curation::create($data);
-        if ($request->phenotypes) {
-            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+        $data = $request->except('phenotypes', 'curation_status_id', 'page');
+        try {
+            $curation = Curation::create($data);
+            if ($request->phenotypes) {
+                SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+            }
+            if ($request->curation_status_id) {
+                AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
+            }
+        } catch (ApiServerErrorException $th) {
+            report($th);
+            $curation = Curation::where($data)->first();
         }
-        if ($request->curation_status_id) {
-            AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
-        }
-        $this->loadRelations($curation);
 
+        $this->loadRelations($curation);
         return new CurationResource($curation);
     }
 
@@ -102,33 +108,38 @@ class CurationController extends Controller
             }, explode(',', $data['pmids']));
         }
 
-        $curation->update($data);
+        try {
 
-        if ($request->phenotypes) {
-            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
-        }
-
-        if ($request->isolated_phenotype) {
-            $pheno = $this->omim->getEntry($request->isolated_phenotype);
-            SyncPhenotypes::dispatchNow($curation, [
-                [
-                    'mim_number'=>$pheno->mimNumber,
-                    'name'=> $pheno->titles->preferredTitle
-                ]
-            ]);
-        }
-        
-        if ($request->rationales) {
-            $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
-        }
-
-        if ($request->curation_status_id) {
-            $status_date = ($request->curation_status_timestamp) ? Carbon::parse($request->curation_status_timestamp) : now();
-            $curation->curationStatuses()->attach([
-                $request->curation_status_id => [
-                    'status_date' => $status_date
-                ]
-            ]);
+            $curation->update($data);
+    
+            if ($request->phenotypes) {
+                SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+            }
+    
+            if ($request->isolated_phenotype) {
+                $pheno = $this->omim->getEntry($request->isolated_phenotype);
+                SyncPhenotypes::dispatchNow($curation, [
+                    [
+                        'mim_number'=>$pheno->mimNumber,
+                        'name'=> $pheno->titles->preferredTitle
+                    ]
+                ]);
+            }
+            
+            if ($request->rationales) {
+                $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
+            }
+    
+            if ($request->curation_status_id) {
+                $status_date = ($request->curation_status_timestamp) ? Carbon::parse($request->curation_status_timestamp) : now();
+                $curation->curationStatuses()->attach([
+                    $request->curation_status_id => [
+                        'status_date' => $status_date
+                    ]
+                ]);
+            }
+        } catch (ApiServerErrorException $e) {
+            report($e);
         }
 
         $this->loadRelations($curation);
