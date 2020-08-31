@@ -1,3 +1,5 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
 let mix = require('laravel-mix');
 
 mix.options({
@@ -30,16 +32,19 @@ mix.webpackConfig({
     }
 });
 
-/*
- |--------------------------------------------------------------------------
- | Mix Asset Management
- |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
- |
- */
+mix.config.webpackConfig.output = {
+    chunkFilename: mix.inProduction() ? 'js/modules/[name].[contenthash].js' : 'js/modules/[name].bundle.js',
+    publicPath: '/',
+}
+
+mix.webpackConfig({
+    plugins: [
+        new CleanWebpackPlugin({
+            // dry: true,
+            cleanOnceBeforeBuildPatterns: ['!**/*', 'js/**/*', 'js/modules/*', 'css/**/*']
+        }),
+    ]
+})
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css')

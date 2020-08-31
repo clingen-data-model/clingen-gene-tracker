@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Curations from './components/Curations/Curation'
-import CurationCreate from './components/Curations/Create'
-import CurationEdit from './components/Curations/Edit'
-import CurationShow from './components/Curations/Show'
-import CurationList from './components/Curations/List'
-import CriteriaOverview from './components/CriteriaOverview'
-import WorkingGroups from './components/WorkingGroups/Index'
-import GroupList from './components/WorkingGroups/List'
-import GroupShow from './components/WorkingGroups/Show'
-import UserDashboard from './components/UserDashboard'
-import CurationExportForm from './components/Curations/ExportForm'
-import BulkLookup from './components/Curations/BulkLookup'
+const Curations = () => import(/* webpackChunkName: "curations" */ './components/Curations/Curation')
+const CurationCreate = () =>  import(/* webpackChunkName: "CurationCreate" */ './components/Curations/Create')
+const CurationEdit = () =>  import(/* webpackChunkName: "CurationEdit" */ './components/Curations/Edit')
+const CurationShow = () =>  import(/* webpackChunkName: "CurationShow" */ './components/Curations/Show')
+const CurationList = () =>  import(/* webpackChunkName: "CurationList" */ './components/Curations/List')
+const CriteriaOverview = () =>  import(/* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview')
+const WorkingGroups = () =>  import(/* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index')
+const GroupList = () =>  import(/* webpackChunkName: "GroupList" */ './components/WorkingGroups/List')
+const GroupShow = () =>  import(/* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show')
+const UserDashboard = () =>  import(/* webpackChunkName: "UserDashboard" */ './components/UserDashboard')
+const CurationExportForm = () =>  import(/* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm')
+const BulkLookup = () =>  import(/* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup')
 
 Vue.use(VueRouter)
 
