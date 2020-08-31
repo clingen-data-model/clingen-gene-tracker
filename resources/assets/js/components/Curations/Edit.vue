@@ -13,7 +13,10 @@
                 </router-link>
                 <h3>{{ title }}</h3>
             </template>
-            <div v-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
+            <div v-if="!this.curation.id" class="alert alert-info">
+                Loading...
+            </div>
+            <div v-else-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
                 Sorry.  You don't have permission to edit this curation.
             </div>
             <div v-if="curations && user.canEditCuration(this.curation)">

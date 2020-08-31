@@ -86,6 +86,10 @@ class User {
         }).length > 0;
     }
 
+    canUpdateCurations() {
+        return this.canAddCurations();
+    }
+
     canDeleteCuration(curation) {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;

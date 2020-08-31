@@ -20,7 +20,7 @@
     <meta name="theme-color" content="#ffffff">    
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="preload stylesheet" as="style">
 
     @include('google_analytics')
 

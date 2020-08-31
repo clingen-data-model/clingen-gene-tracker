@@ -20,7 +20,7 @@ const routes = [
         path: '',
         component: UserDashboard,
         beforeEnter: (to, from, next) => {
-            if (!user.hasPermission('create curations')) {
+            if (!user.canAddCurations()) {
                 next({path: '/curations'})
                 return;
             }
@@ -64,7 +64,7 @@ const routes = [
                 component: CurationCreate,
                 name: 'curations-create',
                 beforeEnter: (to, from, next) => {
-                    if (!user.hasPermission('create curations')) {
+                    if (!user.canAddCurations()) {
                         next({path: '/curations'})
                         return;
                     }
@@ -88,7 +88,7 @@ const routes = [
                 props: true,
                 name: 'curations-edit',
                 beforeEnter: (to, from, next) => {
-                    if (!user.hasPermission('update curations')) {
+                    if (!user.canUpdateCurations()) {
                         next(from)
                         return;
                     }
