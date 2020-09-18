@@ -2,24 +2,24 @@
 
 namespace App\Services;
 
-use App\User;
-use App\Curation;
-use App\Rationale;
-use App\ExpertPanel;
-use App\CurationType;
-use App\CurationStatus;
 use App\Clients\OmimClient;
+use App\Curation;
+use App\CurationStatus;
+use App\CurationType;
+use App\Exceptions\BulkUploads\InvalidFileException;
+use App\Exceptions\BulkUploads\InvalidRowException;
+use App\Exceptions\DuplicateBulkCurationException;
+use App\ExpertPanel;
+use App\Jobs\Curations\AddStatus;
+use App\Jobs\Curations\SyncPhenotypes;
+use App\Rationale;
+use App\Rules\ValidHgncGeneSymbol;
+use App\User;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Jobs\Curations\AddStatus;
-use App\Rules\ValidHgncGeneSymbol;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\Curations\SyncPhenotypes;
-use GuzzleHttp\Exception\ClientException;
-use App\Exceptions\DuplicateBulkCurationException;
-use App\Exceptions\BulkUploads\InvalidRowException;
-use App\Exceptions\BulkUploads\InvalidFileException;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
 {
@@ -29,7 +29,7 @@ class BulkCurationProcessor
     public $panels;
     protected $validationErrors;
     protected $omim;
-    
+
     public function __construct()
     {
         $this->users = User::all();
@@ -41,17 +41,16 @@ class BulkCurationProcessor
 
         $this->statuses = CurationStatus::all()->keyBy('id');
     }
-    
+
     public function getValidationErrors()
     {
         return $this->validationErrors;
     }
-    
 
     public function processFile($path, $expertPanelId)
     {
         ini_set('max_execution_time', '360');
-        
+
         DB::beginTransaction();
 
         $reader = ReaderEntityFactory::createXLSXReader();
@@ -78,7 +77,8 @@ class BulkCurationProcessor
         return $newCurations;
     }
 
-    private function sheetHasDuplicates($sheet) {
+    private function sheetHasDuplicates($sheet)
+    {
         $genes = collect();
         $this->applyToSheet($sheet, function ($idx, $data) use ($genes) {
             $genes->push(['gene_symbol' => $data['gene_symbol'], 'row' => $idx]);
@@ -93,6 +93,7 @@ class BulkCurationProcessor
 
         if ($duplicates->count() > 0) {
             $this->duplicates = $duplicates;
+
             return true;
         }
 
@@ -102,7 +103,7 @@ class BulkCurationProcessor
     public function processWithDuplicates($path, $expertPanelId)
     {
         ini_set('max_execution_time', '360');
-        
+
         DB::beginTransaction();
 
         $reader = ReaderEntityFactory::createXLSXReader();
@@ -123,23 +124,22 @@ class BulkCurationProcessor
 
         return $newCurations;
     }
-    
 
     private function sheetIsValid($sheet)
     {
         $rowCount = 0;
         $this->applyToSheet($sheet, function ($idx, $data) use (&$rowCount) {
             $this->rowIsValid($data, $idx);
-            $rowCount++;
+            ++$rowCount;
         });
 
         if ($rowCount > 50) {
             $this->validationErrors->put('file', ['Your upload contains '.($rowCount).' curations. At this time the bulk upload is limited to 50 curations.']);
         }
 
-        return ($this->validationErrors->count() == 0);
+        return $this->validationErrors->count() == 0;
     }
-    
+
     private function handleSheet($sheet, $expertPanelId)
     {
         $newCurations = collect();
@@ -191,30 +191,31 @@ class BulkCurationProcessor
             'mondo_id' => $rowData['mondo_id'],
             'disease_entity_if_there_is_no_mondo_id' => $rowData['disease_entity_if_there_is_no_mondo_id'],
             'rationale_notes' => $rowData['rationale_notes'],
-            'pmids' => $this->getPmids($rowData)
+            'pmids' => $this->getPmids($rowData),
         ];
         $curation = Curation::create($attributes);
 
         SyncPhenotypes::dispatchNow($curation, $this->getPhenotypes($rowData));
         $curation->rationales()->sync($this->getRationales($rowData));
-        
+
         foreach ($this->getStatusNames() as $id => $statusName) {
             $this->addStatus($curation, $this->statuses->get($id), $statusName.'_date', $rowData);
         }
 
         if (!$curation->fresh()->currentStatus) {
-            AddStatus::dispatch($curation, $this->uploadedStatus);
+            AddStatus::dispatch($curation, $this->statuses->get(config('project.curation-statuses.uploaded')));
         }
 
         config(['app.bulk_uploading' => false]);
+
         return $curation;
     }
 
     public function getStatusNames()
     {
-        return array_map(function($statusName) { 
-                return Str::snake(Str::camel($statusName)); 
-            },  
+        return array_map(function ($statusName) {
+            return Str::snake(Str::camel($statusName));
+        },
             array_flip(config('project.curation-statuses'))
         );
     }
@@ -229,11 +230,12 @@ class BulkCurationProcessor
     private function getPmids($rowData)
     {
         $pmids = [];
-        for ($i=0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             if (isset($rowData['pmid_'.$i])) {
                 $pmids[] = $rowData['pmid_'.$i];
             }
         }
+
         return $pmids;
     }
 
@@ -241,12 +243,12 @@ class BulkCurationProcessor
     {
         $badMimNumbers = [];
         $phenotypes = [];
-        for ($i=0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             if (isset($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
                     $omimData = $this->omim->getEntry($mimNumber);
-                    $phenotypes[] = ['mim_number'=>$omimData->mimNumber, 'name'=> $omimData->titles->preferredTitle];
+                    $phenotypes[] = ['mim_number' => $omimData->mimNumber, 'name' => $omimData->titles->preferredTitle];
                 } catch (ClientException $e) {
                     $badMimNumbers[] = 'Bad mim number at OMIM ID '.$i.': '.$mimNumber;
                 }
@@ -255,24 +257,26 @@ class BulkCurationProcessor
         if (count($badMimNumbers) > 0) {
             throw new InvalidRowException($rowData, $badMimNumbers);
         }
+
         return $phenotypes;
     }
 
     private function getRationales($rowData)
     {
         $rationales = [];
-        for ($i=0; $i < 4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             if (isset($rowData['rationale_'.$i])) {
                 $rationales[] = $this->rationales->firstWhere('name', $rowData['rationale_'.$i])->id;
             }
         }
+
         return $rationales;
     }
 
     public function rowIsValid($rowData, $rowNum = 0)
     {
         $validationRules = [
-            'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
+            'gene_symbol' => ['required', new ValidHgncGeneSymbol()],
             'curator_email' => ['nullable', 'exists:users,email'],
             'curation_type' => ['nullable', Rule::in($this->curationTypes->pluck('name')->toArray())],
         ];
@@ -294,7 +298,7 @@ class BulkCurationProcessor
 
         $valid = !$validator->fails();
 
-        for ($i=0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             if (isset($rowData['omim_id_'.$i]) && !empty($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
@@ -310,7 +314,7 @@ class BulkCurationProcessor
             }
         }
 
-        for ($i=1; $i < 5; $i++) {
+        for ($i = 1; $i < 5; ++$i) {
             $field = 'rationale_'.$i;
             if (!isset($rowData[$field]) || is_null($rowData[$field])) {
                 continue;
@@ -321,10 +325,11 @@ class BulkCurationProcessor
                 $valid = false;
             }
         }
-    
+
         if (count($errors) > 0) {
             $this->validationErrors->put($rowNum, $errors);
         }
+
         return $valid;
     }
 
@@ -337,13 +342,13 @@ class BulkCurationProcessor
                 }, $row->toArray());
                 continue;
             }
-                    
+
             $data = $this->collateRow($header, $row);
 
             if ($this->rowIsEmpty($data)) {
                 continue;
             }
-                    
+
             $callable($idx, $data);
         }
 
