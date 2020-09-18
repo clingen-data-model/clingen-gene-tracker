@@ -1,4 +1,4 @@
-FROM jward3/php:7.1-apache
+FROM jward3/php:7.4-apache
 
 LABEL maintainer="TJ Ward" \
     io.openshift.tags="gene-tracker:v1" \
