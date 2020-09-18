@@ -303,7 +303,7 @@ class BulkCurationProcessor
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
                     $entry = $this->omim->getEntry($mimNumber);
-                    if (count($entry->isValid()) < 1) {
+                    if (!$entry->isValid()) {
                         $errors['OMIM ID '.$i] = 'Bad mim number: '.$mimNumber;
                         $valid = false;
                     }

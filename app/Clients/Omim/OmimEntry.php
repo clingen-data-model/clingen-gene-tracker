@@ -7,10 +7,10 @@ use App\Exceptions\OmimResponseException;
 /**
  * Value object for an OMIM API entry.
  *
- * @property-read object $phenotypeMap
- * @property-read integer $mimNumber
- * @property-read object $titles
- * @property-read object|null $geneMap
+ * @property object      $phenotypeMap
+ * @property int         $mimNumber
+ * @property object      $titles
+ * @property object|null $geneMap
  */
 class OmimEntry implements OmimEntryContract
 {
@@ -22,7 +22,7 @@ class OmimEntry implements OmimEntryContract
     }
 
     /**
-     * Gets the phenotypeMapList whether inside geneMap or at root level
+     * Gets the phenotypeMapList whether inside geneMap or at root level.
      */
     public function getPhenotypeMapList()
     {
@@ -35,7 +35,7 @@ class OmimEntry implements OmimEntryContract
             return $this->rawEntry->phenotypeMapList;
         }
 
-        throw new OmimResponseException("No phenotypeMapList on Entry", 422);
+        throw new OmimResponseException('No phenotypeMapList on Entry', 422);
     }
 
     public function getPhenotypeName()
@@ -44,7 +44,7 @@ class OmimEntry implements OmimEntryContract
             if (count($this->phenotypeMapList) == 0) {
                 return $this->titles->preferredTitle;
             }
-    
+
             return $this->phenotypeMapList[0]->phenotypeMap->phenotype;
         } catch (OmimResponseException $e) {
             return $this->titles->preferredTitle;
@@ -55,6 +55,7 @@ class OmimEntry implements OmimEntryContract
     {
         if (method_exists($this, 'get'.ucfirst(camel_case($key)))) {
             $methodName = 'get'.ucfirst(camel_case($key));
+
             return $this->$methodName();
         }
         if (in_array($key, array_keys(get_object_vars($this->rawEntry)))) {
@@ -84,6 +85,11 @@ class OmimEntry implements OmimEntryContract
 
     public function isValid()
     {
-        return true;
+        return count($this->getPhenotypeMapList()) > 0;
+    }
+
+    public function isInvalid()
+    {
+        return count($this->getPhenotypeMapList()) < 1;
     }
 }
