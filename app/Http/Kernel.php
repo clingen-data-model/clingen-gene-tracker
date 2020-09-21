@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LogRequestsReceived;
 use App\Http\Middleware\LogResponsesSent;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -62,6 +63,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'log_request_received' => LogRequestsReceived::class,
         'log_response_sent' => LogResponsesSent::class,
     ];
 }

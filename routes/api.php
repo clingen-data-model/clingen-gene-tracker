@@ -20,7 +20,7 @@ Route::group([
     Route::resource('/curations/{id}/classifications', 'CurationClassificationController')
         ->only(['index', 'store', 'update', 'destroy']);
     Route::resource('/curations/{id}/statuses', 'CurationCurationStatusController');
-    Route::resource('/curations', 'CurationController')->middleware('log_response_sent');
+    Route::resource('/curations', 'CurationController')->middleware(['log_request_received', 'log_response_sent']);
     Route::resource('/users', 'UserController')->only(['index']);
     Route::resource('/curation-statuses', 'CurationStatusController')->only(['index']);
     Route::resource('/working-groups', 'WorkingGroupController')->only(['index', 'show']);
