@@ -12,10 +12,10 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'omim_key' => env('OMIM_API_KEY'),
-    'omim_cache_life' => 20*60,
+    'omim_cache_life' => 20 * 60,
     'url_scheme' => env('URL_SCHEME', null),
+    'log_debug' => env('LOG_DEBUG', false),
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -63,7 +63,6 @@ return [
     ],
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -99,5 +98,5 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
     ],
 
-    "google_analytics_id" => env('GOOGLE_ANALYTICS_ID', null),
+    'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', null),
 ];
