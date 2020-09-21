@@ -17,7 +17,7 @@ class LogResponsesSent
     {
         $response = $next($request);
 
-        logDebug(__METHOD__.': sending response', $response->getContent()->toArray());
+        logDebug(__METHOD__.': sending response');
 
         return $response;
     }

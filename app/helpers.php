@@ -52,7 +52,7 @@ if (!function_exists('logDebug')) {
     function logDebug($message, $data = [])
     {
         if (config('app.log_debug', false)) {
-            \Log::debug(microtime(true).' - '.$message, $data);
+            \Log::debug('request: '.spl_object_hash(request()).' - '.microtime(true).' - '.$message, $data);
         }
     }
 }
