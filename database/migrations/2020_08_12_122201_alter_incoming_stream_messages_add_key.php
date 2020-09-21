@@ -1,9 +1,9 @@
 <?php
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 
 class AlterIncomingStreamMessagesAddKey extends Migration
 {
@@ -13,11 +13,11 @@ class AlterIncomingStreamMessagesAddKey extends Migration
      * @return void
      */
     public function up()
-    {        
-        $this->backupDuplicateMessagesForRoleback();
+    {
+        // $this->backupDuplicateMessagesForRoleback();
         $this->deleteDuplicateIncomingMessages();
 
-        if (!Schema::hasColumn('incoming_stream_messages', 'key')) {            
+        if (!Schema::hasColumn('incoming_stream_messages', 'key')) {
             Schema::table('incoming_stream_messages', function (Blueprint $table) {
                 $table->string('key')->nullable()->after('topic')->unique();
                 $table->bigInteger('timestamp')->nullable()->after('offset');
@@ -25,7 +25,7 @@ class AlterIncomingStreamMessagesAddKey extends Migration
                 $table->index('timestamp');
             });
         }
-        
+
         DB::update('UPDATE `incoming_stream_messages` SET `key` = CONCAT(`gdm_uuid`, "-", payload->>"$.date")');
     }
 
@@ -36,7 +36,7 @@ class AlterIncomingStreamMessagesAddKey extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('incoming_stream_messages', 'key')) {            
+        if (Schema::hasColumn('incoming_stream_messages', 'key')) {
             Schema::table('incoming_stream_messages', function (Blueprint $table) {
                 $table->dropColumn('key');
                 $table->dropColumn('timestamp');
@@ -66,15 +66,15 @@ class AlterIncomingStreamMessagesAddKey extends Migration
                 $join->on('ism1.id', '<', 'ism2.id')
                     ->whereColumn('ism1.gdm_uuid', 'ism2.gdm_uuid')
                     ->whereColumn('ism1.payload', 'ism2.payload');
-                })
+            })
             ->orderBy('ism2.id');
-        
+
         $fh = fopen(storage_path('database/migrated_data/duplicate_incoming_stream_messages.csv'), 'w+');
         $query->chunk(5000, function ($chunk, $idx) use ($fh) {
             $chunk->each(function ($record, $i) use ($fh, $idx) {
-                $record = (array)$record;
+                $record = (array) $record;
                 if ($idx == 1 && $i == 0) {
-                    fputcsv($fh, array_keys($record),",","'");
+                    fputcsv($fh, array_keys($record), ',', "'");
                 }
                 fputcsv($fh, array_values($record));
             });
@@ -96,18 +96,15 @@ class AlterIncomingStreamMessagesAddKey extends Migration
             }
             // dump($keys);
             $records[] = array_combine($keys, $data);
-            
+
             if (count($records) == 100) {
                 DB::table('incoming_stream_messages')
                     ->insert($records);
                 $records = [];
             }
-        }   
+        }
 
         DB::table('incoming_stream_messages')
             ->insert($records);
     }
-    
-    
-    
 }
