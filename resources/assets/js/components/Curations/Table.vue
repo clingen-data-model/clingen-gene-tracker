@@ -108,8 +108,8 @@
                 user: user,
                 filter: null,
                 currentPage: 1,
-                sortDesc: false,
-                sortKey: null,
+                sortDesc: (this.sortDir == 'desc'),
+                sortKey: JSON.parse(JSON.stringify(this.sortBy)),
                 totalRows: 0,
                 searchFieldId: `search-filter-${uniqid()}`,
                 fields: [
@@ -154,6 +154,7 @@
                         }
                     }
                 ],
+                ctx: null
             }
         },
         computed: {
@@ -170,6 +171,11 @@
         },
         methods: {
             curationProvider(ctx, callback) {
+                if (ctx == this.ctx) {
+                    console.log("don't call again b/c context hasn't really changed");
+                    return;
+                }
+                console.info('curationProvider called', ctx)
                 const context = {...ctx, ...this.searchParams};
                 getPageOfCurations(context)
                     .then(response => {
@@ -202,10 +208,6 @@
             handleSortChanged() {
                 this.resetCurrentPage();
             }
-        },
-        mounted() {
-            this.sortKey = JSON.parse(JSON.stringify(this.sortBy));
-            this.sortDesc = (this.sortDir == 'desc');
         }
     }
 </script>
