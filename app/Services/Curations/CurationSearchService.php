@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Services\Curations;
 
-use App\User;
-use App\Curation;
 use App\Contracts\SearchService;
-use Illuminate\Support\Collection;
+use App\Curation;
+use App\User;
 
 class CurationSearchService implements SearchService
 {
@@ -21,7 +21,19 @@ class CurationSearchService implements SearchService
 
     public function search($params)
     {
+        logDebug(__METHOD__.': run search', $params);
         $pageSize = (isset($params['perPage']) && !is_null($params['perPage'])) ? $params['perPage'] : 25;
+        $query = $this->buildQuery($params);
+
+        $data = (isset($params['page'])) ? $query->paginate($pageSize) : $query->get();
+        logDebug(__METHOD__.': executed query', $params);
+
+        return $data;
+    }
+
+    public function buildQuery($params)
+    {
+        logDebug(__METHOD__.': Start building query', $params);
 
         $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel')
                     ->select('curations.*')
@@ -90,6 +102,8 @@ class CurationSearchService implements SearchService
         }
         $query->orderBy($sortField, $sortDir);
 
-        return (isset($params['page'])) ? $query->paginate($pageSize) : $query->get();
+        logDebug(__METHOD__.': Finished building query', $params);
+
+        return $query;
     }
 }
