@@ -49,11 +49,11 @@
                         <li>
                             <a class="nav-link" href="/#/curations">Curations</a>
                         </li>
-                        @if (Auth::user()->can('list working-groups'))
+                        {{-- @if (Auth::user()->can('list working-groups')) --}}
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
-                        @endif
+                        {{-- @endif --}}
                         <li>
                             <a class="nav-link" href="/#/bulk-lookup">Bulk Lookup</a>
                         </li>

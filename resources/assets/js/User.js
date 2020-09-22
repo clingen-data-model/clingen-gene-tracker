@@ -19,9 +19,9 @@ class User {
     }
 
     isPanelCoordinator(expertPanel) {
-        return this.user.expert_panels.filter(function (panel) {
-            return panel.id == expertPanel.id 
-                    && panel.pivot.is_coordinator === 1;
+        return this.user.expert_panels.filter(function(panel) {
+            return panel.id == expertPanel.id &&
+                panel.pivot.is_coordinator === 1;
         }).length > 0;
     }
 
@@ -36,7 +36,7 @@ class User {
         return this.inExpertPanel(expertPanel) || this.hasRole('programmer') || this.hasRole('admin')
     }
 
-    
+
     canEditPanelCurations(expertPanel) {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
@@ -44,19 +44,19 @@ class User {
         if (!this.inExpertPanel(expertPanel)) {
             return false;
         }
-        return this.user.expert_panels.filter(function (panel) {
-            return panel.id == expertPanel.id 
-                && (panel.pivot.can_edit_curations === 1 
-                    || panel.pivot.is_coordinator === 1);
+        return this.user.expert_panels.filter(function(panel) {
+            return panel.id == expertPanel.id &&
+                (panel.pivot.can_edit_curations === 1 ||
+                    panel.pivot.is_coordinator === 1);
         }).length > 0;
     }
 
     canSelectCurationStatus(status, curation) {
         switch (status.name) {
             case 'Recuration assigned':
-                return this.isPanelCoordinator(curation.expert_panel);            
+                return this.isPanelCoordinator(curation.expert_panel);
                 break;
-        
+
             default:
                 return this.canEditCuration(curation)
         }
@@ -73,7 +73,7 @@ class User {
         if (this.canEditPanelCurations(curation.expert_panel)) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -81,7 +81,7 @@ class User {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
         }
-        return this.user.expert_panels.filter(function (panel) {
+        return this.user.expert_panels.filter(function(panel) {
             return panel.pivot.is_coordinator
         }).length > 0;
     }

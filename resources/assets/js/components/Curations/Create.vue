@@ -1,7 +1,7 @@
 <style></style>
 <template>
     <div class="new-curation-container">
-        <div v-if="!user.hasPermission('create curations')" class="alert alert-danger">
+        <div v-if="!user.canAddCurations()" class="alert alert-danger">
             Sorry.  You don't have permission to create curations.
         </div>
         <div v-else>

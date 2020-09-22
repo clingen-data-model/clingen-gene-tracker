@@ -1,27 +1,38 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-const Curations = () => import(/* webpackChunkName: "curations" */ './components/Curations/Curation')
-const CurationCreate = () =>  import(/* webpackChunkName: "CurationCreate" */ './components/Curations/Create')
-const CurationEdit = () =>  import(/* webpackChunkName: "CurationEdit" */ './components/Curations/Edit')
-const CurationShow = () =>  import(/* webpackChunkName: "CurationShow" */ './components/Curations/Show')
-const CurationList = () =>  import(/* webpackChunkName: "CurationList" */ './components/Curations/List')
-const CriteriaOverview = () =>  import(/* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview')
-const WorkingGroups = () =>  import(/* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index')
-const GroupList = () =>  import(/* webpackChunkName: "GroupList" */ './components/WorkingGroups/List')
-const GroupShow = () =>  import(/* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show')
-const UserDashboard = () =>  import(/* webpackChunkName: "UserDashboard" */ './components/UserDashboard')
-const CurationExportForm = () =>  import(/* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm')
-const BulkLookup = () =>  import(/* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup')
+const Curations = () =>
+    import ( /* webpackChunkName: "curations" */ './components/Curations/Curation')
+const CurationCreate = () =>
+    import ( /* webpackChunkName: "CurationCreate" */ './components/Curations/Create')
+const CurationEdit = () =>
+    import ( /* webpackChunkName: "CurationEdit" */ './components/Curations/Edit')
+const CurationShow = () =>
+    import ( /* webpackChunkName: "CurationShow" */ './components/Curations/Show')
+const CurationList = () =>
+    import ( /* webpackChunkName: "CurationList" */ './components/Curations/List')
+const CriteriaOverview = () =>
+    import ( /* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview')
+const WorkingGroups = () =>
+    import ( /* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index')
+const GroupList = () =>
+    import ( /* webpackChunkName: "GroupList" */ './components/WorkingGroups/List')
+const GroupShow = () =>
+    import ( /* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show')
+const UserDashboard = () =>
+    import ( /* webpackChunkName: "UserDashboard" */ './components/UserDashboard')
+const CurationExportForm = () =>
+    import ( /* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm')
+const BulkLookup = () =>
+    import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup')
 
 Vue.use(VueRouter)
 
-const routes = [
-    {
+const routes = [{
         path: '',
         component: UserDashboard,
         beforeEnter: (to, from, next) => {
             if (!user.canAddCurations()) {
-                next({path: '/curations'})
+                next({ path: '/curations' })
                 return;
             }
             next()
@@ -30,8 +41,7 @@ const routes = [
     {
         path: '/working-groups',
         component: WorkingGroups,
-        children: [
-            {
+        children: [{
                 path: '',
                 component: GroupList
             },
@@ -41,34 +51,33 @@ const routes = [
                 props: true
             }
         ],
-        beforeEnter: (to, from, next) => {
-            if (!user.hasPermission('list working-groups')) {
-                next({path: '/curations'})
-                return;
-            }
-            next()
-        }
+        // beforeEnter: (to, from, next) => {
+        //     if (!user.hasPermission('list working-groups')) {
+        //         next({path: '/curations'})
+        //         return;
+        //     }
+        //     next()
+        // }
     },
-    { 
+    {
         path: '/curations',
         name: 'Curations',
         component: Curations,
-        children: [
-            {
+        children: [{
                 path: '',
                 component: CurationList,
                 name: 'curations-index'
             },
-            { 
-                path: 'create', 
+            {
+                path: 'create',
                 component: CurationCreate,
                 name: 'curations-create',
                 beforeEnter: (to, from, next) => {
                     if (!user.canAddCurations()) {
-                        next({path: '/curations'})
+                        next({ path: '/curations' })
                         return;
                     }
-                    
+
                     next()
                 }
             },
@@ -82,8 +91,8 @@ const routes = [
                 props: true,
                 name: 'curations-show'
             },
-            { 
-                path: ':id/edit', 
+            {
+                path: ':id/edit',
                 component: CurationEdit,
                 props: true,
                 name: 'curations-edit',
@@ -104,7 +113,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+    routes
 })
 
 export default router
