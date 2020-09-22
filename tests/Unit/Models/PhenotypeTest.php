@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\models;
+namespace Tests\Unit\Models;
 
 use App\Curation;
 use App\Phenotype;

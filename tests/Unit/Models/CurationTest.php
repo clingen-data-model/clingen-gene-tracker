@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit\models;
+namespace Tests\Unit\Models;
 
 use App\Affiliation;
-use App\Curation;
-use Tests\TestCase;
 use App\Classification;
+use App\Curation;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group curations
@@ -31,7 +31,7 @@ class CurationTest extends TestCase
     public function curation_has_fillable_gene_symbol()
     {
         $curation = new Curation();
-        $curation->fill(['gene_symbol'=>'TEST-1']);
+        $curation->fill(['gene_symbol' => 'TEST-1']);
 
         $this->assertEquals('TEST-1', $curation->gene_symbol);
     }
@@ -85,9 +85,9 @@ class CurationTest extends TestCase
      */
     public function curation_has_fillable_pmids()
     {
-        $this->curation->update(['pmids'=>[12345,123455,1231523523]]);
+        $this->curation->update(['pmids' => [12345, 123455, 1231523523]]);
 
-        $this->assertEquals([12345,123455,1231523523], $this->curation->pmids);
+        $this->assertEquals([12345, 123455, 1231523523], $this->curation->pmids);
     }
 
     /**
@@ -107,7 +107,7 @@ class CurationTest extends TestCase
     {
         $user = factory(\App\User::class)->create();
         $curation = factory(\App\Curation::class)->create([
-            'curator_id' => $user->id
+            'curator_id' => $user->id,
         ]);
 
         $this->assertEquals($user->name, $curation->curator->name);
@@ -120,7 +120,7 @@ class CurationTest extends TestCase
     {
         $panel = factory(\App\ExpertPanel::class)->create();
         $curation = factory(\App\Curation::class)->create([
-            'expert_panel_id' => $panel->id
+            'expert_panel_id' => $panel->id,
         ]);
 
         $this->assertEquals($panel->name, $curation->expertPanel->name);
@@ -164,7 +164,7 @@ class CurationTest extends TestCase
         $curation = factory(\App\Curation::class)->create();
 
         $statusesAtTime = $curationStatuses->map(function ($item, $idx) {
-            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx+1)]];
+            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx + 1)]];
         });
 
         $curation->curationStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));
@@ -217,7 +217,7 @@ class CurationTest extends TestCase
         $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO: 1234']);
         $this->assertEquals(1234, $curation->numericMondoId);
     }
-    
+
     /**
      * @test
      */
@@ -266,7 +266,7 @@ class CurationTest extends TestCase
     {
         $curation = factory(Curation::class)->create([
             'hgnc_id' => 17098,
-            'mondo_id' => 'MONDO:0011111'
+            'mondo_id' => 'MONDO:0011111',
         ]);
 
         $this->assertEquals($curation->id, Curation::hgncAndMondo(17098, 'MONDO:0011111')->first()->id);
@@ -281,7 +281,7 @@ class CurationTest extends TestCase
         $curationWithUuid = factory(Curation::class)->create([
             'hgnc_id' => 17098,
             'mondo_id' => 'MONDO:0011112',
-            'gdm_uuid' => '1234'
+            'gdm_uuid' => '1234',
         ]);
 
         $this->assertContains($this->curation->id, Curation::noUuid()->get()->pluck('id')->toArray());
@@ -295,7 +295,7 @@ class CurationTest extends TestCase
         $curationWithUuid = factory(Curation::class)->create([
             'hgnc_id' => 17098,
             'mondo_id' => 'MONDO:0011112',
-            'gdm_uuid' => '1234'
+            'gdm_uuid' => '1234',
         ]);
 
         $this->assertEquals($curationWithUuid->id, Curation::hasUuid()->first()->id);

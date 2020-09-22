@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\models;
+namespace Tests\Unit\Models;
 
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,7 +29,7 @@ class ExpertPanelTest extends TestCase
      */
     public function has_fillable_name()
     {
-        $this->panel->update(['name'=>'test name']);
+        $this->panel->update(['name' => 'test name']);
         $this->assertEquals('test name', $this->panel->name);
     }
 
@@ -39,7 +39,7 @@ class ExpertPanelTest extends TestCase
     public function has_fillable_working_group_id()
     {
         $wg = factory(\App\WorkingGroup::class)->create();
-        $this->panel->update(['working_group_id'=>$wg->id]);
+        $this->panel->update(['working_group_id' => $wg->id]);
         $this->assertEquals($wg->id, $this->panel->working_group_id);
     }
 

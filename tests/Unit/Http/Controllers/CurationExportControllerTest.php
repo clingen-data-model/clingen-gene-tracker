@@ -1,14 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Http\Controllers;
 
-use App\User;
 use App\Curation;
-use Tests\TestCase;
 use App\ExpertPanel;
+use App\User;
 use App\WorkingGroup;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CurationExportControllerTest extends TestCase
 {

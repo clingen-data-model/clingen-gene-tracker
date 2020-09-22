@@ -1,18 +1,16 @@
 <?php
 
-namespace Tests\Unit\ConsoleCommands;
+namespace Tests\Unit\Console\Commands;
 
 use App\Affiliation;
-use App\User;
-use Tests\TestCase;
 use App\ExpertPanel;
-use App\StreamError;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Notifications\StreamErrorNotification;
+use App\StreamError;
+use App\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 /**
  * @group notifications
@@ -21,12 +19,12 @@ use Illuminate\Support\Facades\Notification;
 class CreateNotificationsForStreamErrorsTest extends TestCase
 {
     use DatabaseTransactions;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->streamError1 = factory(StreamError::class)->create([
-            'message_payload' => json_decode(file_get_contents(base_path().'/tests/files/gci_messages/approved_with_status_date.json'))
+            'message_payload' => json_decode(file_get_contents(base_path().'/tests/files/gci_messages/approved_with_status_date.json')),
         ]);
 
         $this->admin = factory(User::class)->create();
@@ -86,7 +84,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
         $this->artisan('streaming-service:notify-errors');
         $this->assertDatabaseHas('stream_errors', [
             'id' => $this->streamError1->id,
-            'notification_sent_at' => '2020-06-01 00:00:00'
+            'notification_sent_at' => '2020-06-01 00:00:00',
         ]);
     }
 }

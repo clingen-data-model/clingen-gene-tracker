@@ -1,20 +1,19 @@
 <?php
 
-namespace Tests\Unit\Job\Curation;
+namespace Tests\Unit\Jobs\Curation;
 
-use App\User;
-use App\Curation;
-use App\HgncRecord;
-use Tests\TestCase;
-use App\ExpertPanel;
-use OutOfBoundsException;
 use App\Contracts\HgncClient;
+use App\Curation;
 use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
+use App\ExpertPanel;
+use App\HgncRecord;
 use App\Jobs\Curations\AugmentWithHgncInfo;
-use Illuminate\Support\Facades\Notification;
 use App\Notifications\Curations\GeneSymbolUpdated;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 /**
  * @group hgnc
@@ -23,17 +22,17 @@ class AugmentWithHgncInfoTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $this->ep = factory(ExpertPanel::class)->create();
         $this->coord = factory(User::class)->create();
         $this->coord->expertPanels()->attach([$this->ep->id => [
-            'is_coordinator' => 1
+            'is_coordinator' => 1,
         ]]);
         $this->curation = factory(Curation::class)->create([
             'gene_symbol' => 'TH',
-            'expert_panel_id' => $this->ep->id
+            'expert_panel_id' => $this->ep->id,
         ]);
         $this->hgncClient = $this->getMockBuilder(HgncClient::class)
                                 ->getMock();
@@ -42,10 +41,9 @@ class AugmentWithHgncInfoTest extends TestCase
                             'hgnc_id' => 'HGNC:11782',
                             'name' => 'tyrosine hydroxylase',
                             'symbol' => 'TH',
-                            'prev_symbol' => 'THH'
+                            'prev_symbol' => 'THH',
                         ]));
     }
-
 
     /**
      * @test
@@ -91,10 +89,10 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->assertDatabaseHas('curations', [
             'gene_symbol' => 'TH',
             'hgnc_name' => 'tyrosine hydroxylase',
-            'hgnc_id' => '11782'
+            'hgnc_id' => '11782',
         ]);
     }
-    
+
     /**
      * @test
      * @group notifications
@@ -110,7 +108,7 @@ class AugmentWithHgncInfoTest extends TestCase
                             'hgnc_id' => 'HGNC:11782',
                             'symbol' => 'MLTN2',
                             'name' => 'Milton Dog',
-                            'prev_symbol' => 'MLTN1'
+                            'prev_symbol' => 'MLTN1',
                         ]));
 
         app()->instance(HgncClient::class, $this->hgncClient);
@@ -122,7 +120,7 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->assertDatabaseHas('curations', [
             'hgnc_id' => 11782,
             'gene_symbol' => 'MLTN2',
-            'hgnc_name' => 'Milton Dog'
+            'hgnc_name' => 'Milton Dog',
         ]);
 
         Notification::assertSentTo($this->coord, GeneSymbolUpdated::class);

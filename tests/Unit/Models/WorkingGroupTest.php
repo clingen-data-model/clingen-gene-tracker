@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\models;
+namespace Tests\Unit\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

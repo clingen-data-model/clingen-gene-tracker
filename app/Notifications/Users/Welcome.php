@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Notifications\users;
+namespace App\Notifications\Users;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class Welcome extends Notification
 {
@@ -20,13 +19,13 @@ class Welcome extends Notification
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
@@ -37,25 +36,26 @@ class Welcome extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->subject('Welcome to ClinGen GeneTracker')
+        return (new MailMessage())->subject('Welcome to ClinGen GeneTracker')
             ->view('email.welcome');
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
+     *
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
-            //
         ];
     }
 }
