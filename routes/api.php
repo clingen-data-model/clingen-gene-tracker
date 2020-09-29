@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['namespace' => 'Api'], function () {
+Route::group(['namespace' => 'Api', 'middleware' => ['log_request_received', 'log_response_sent']], function () {
     Route::get('timeout-test', 'TimeoutTestController@index');
 
     Route::group(['middleware' => ['auth:api']], function () {

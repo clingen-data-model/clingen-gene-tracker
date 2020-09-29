@@ -15,7 +15,7 @@ class LogRequestsReceived
      */
     public function handle($request, Closure $next)
     {
-        logDebug('Request received');
+        logDebug('Request received', $request->all());
 
         return $next($request);
     }
