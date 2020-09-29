@@ -2,20 +2,16 @@
 
 namespace Tests\Unit\Listeners\Curations;
 
-use Bus;
-use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Affiliation;
-use App\Classification;
-use App\StreamError;
-use App\ModeOfInheritance;
-use App\Jobs\Curations\AddStatus;
+use App\Curation;
+use App\CurationStatus;
 use App\Events\StreamMessages\Received;
-use App\Jobs\Curations\AddClassification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Jobs\Curations\AddStatus;
+use App\ModeOfInheritance;
+use App\StreamError;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group gci
@@ -25,7 +21,7 @@ class UpdateFromStreamMessageTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->createMsgPath = base_path('tests/files/gci_messages/created_message.json');
@@ -48,7 +44,7 @@ class UpdateFromStreamMessageTest extends TestCase
             'type' => 'unmatchable curation',
             'direction' => 'incoming',
             // 'message_payload' => json_encode(json_decode($kafkaMessage->payload)),
-            'notification_sent_at' => null
+            'notification_sent_at' => null,
         ]);
 
         $streamError = StreamError::query()->first();
@@ -73,7 +69,7 @@ class UpdateFromStreamMessageTest extends TestCase
             'mondo_id' => 'MONDO:0011111',
             'affiliation_id' => Affiliation::findByClingenId($payload->performed_by->on_behalf_of->id)->id,
             'gdm_uuid' => $payload->report_id,
-            'moi_id' => ModeOfInheritance::findByHpId($payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance)->id
+            'moi_id' => ModeOfInheritance::findByHpId($payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance)->id,
         ]);
     }
 
@@ -116,7 +112,6 @@ class UpdateFromStreamMessageTest extends TestCase
             'mondo_id' => 'MONDO:0011111',
         ]);
     }
-    
 
     /**
      * @test
@@ -134,8 +129,33 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional'),
-            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_create_duplicate_status()
+    {
+        $curation = $this->createDICER1();
+        $curationStatus = CurationStatus::find(config('project.curation-statuses.approved'));
+        AddStatus::dispatchNow($curation, $curationStatus, '2019-01-08 18:16:30');
+
+        $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
+        $kafkaMessage = $this->makeMessage(json_encode($payload));
+        $event = new Received($kafkaMessage);
+
+        event($event);
+
+        $expected = [
+            'curation_id' => $curation->id,
+            'curation_status_id' => config('project.curation-statuses.approved'),
+            'status_date' => '2019-01-08 18:16:30',
+        ];
+        $this->assertDatabaseHas('curation_curation_status', $expected);
+
+        $this->assertEquals(1, \DB::table('curation_curation_status')->where($expected)->count());
     }
 
     /**
@@ -155,7 +175,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('project.curation-statuses.published'),
-            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s')
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -175,7 +195,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => config('project.classifications.limited'),
-            'classification_date' => Carbon::parse($payload->date)
+            'classification_date' => Carbon::parse($payload->date),
         ]);
     }
 
@@ -195,27 +215,24 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => config('project.classifications.limited'),
-            'classification_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s')
+            'classification_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s'),
         ]);
-
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-approved'),
-            'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s')
+            'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s'),
         ]);
     }
-    
 
     private function createDICER1()
     {
         return factory(Curation::class)->create([
             'gene_symbol' => 'DICER1',
             'hgnc_id' => 17098,
-            'mondo_id' => 'MONDO:0011111'
+            'mondo_id' => 'MONDO:0011111',
         ]);
     }
-    
 
     private function makeMessage($payload)
     {

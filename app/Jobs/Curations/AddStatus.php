@@ -3,17 +3,20 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use Carbon\Carbon;
 use App\CurationStatus;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class AddStatus implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $curation;
 
@@ -28,7 +31,6 @@ class AddStatus implements ShouldQueue
      */
     public function __construct(Curation $curation, CurationStatus $curationStatus, $date = null)
     {
-        //
         $this->curation = $curation;
         $this->curationStatus = $curationStatus;
         $this->date = Carbon::parse($date);
@@ -47,8 +49,8 @@ class AddStatus implements ShouldQueue
 
         $this->curation->statuses()->attach([
             $this->curationStatus->id => [
-                'status_date' => $this->date
-            ]
+                'status_date' => $this->date,
+            ],
         ]);
     }
 
@@ -58,13 +60,12 @@ class AddStatus implements ShouldQueue
     }
 
     private function isPreviousDatedStatus()
-    {        
-        $filtered = $this->curation->statuses->filter( function ($status) {
-                return $status->id == $this->curationStatus->id
-                    && $status->pivot->status_date == $this->date;
-            });
+    {
+        $filtered = $this->curation->statuses->filter(function ($status) {
+            return $status->id == $this->curationStatus->id
+                    && $status->pivot->status_date->format('Y-m-d H:i:s') == Carbon::parse($this->date)->format('Y-m-d H:i:s');
+        });
 
         return $filtered->count() > 0;
     }
-    
 }
