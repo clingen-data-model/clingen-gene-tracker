@@ -11,7 +11,13 @@
 |
 */
 
-Route::group(['middleware'=>'auth'], function () {
+Route::get('timeout-test', 'Api\TimeoutTestController@index');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');
+});
+
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'MainController@index');
     Route::get('/home', 'MainController@index');
 
