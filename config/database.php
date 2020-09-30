@@ -1,7 +1,8 @@
 <?php
 
-return [
+use Illuminate\Support\Str;
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -32,7 +33,6 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
@@ -92,7 +92,6 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
-
     ],
 
     /*
@@ -120,16 +119,27 @@ return [
     */
 
     'redis' => [
+        'client' => env('REDIS_CLIENT', 'predis'),
 
-        'client' => 'predis',
+        'options' => [
+            'cluster' => env('REDIS_CLUSTER', 'predis'),
+            'prefix' => Str::slug(env('APP_NAME', 'genetracker'), '_').'_database_',
+        ],
 
         'default' => [
+            'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
+            'database' => env('REDIS_DB', 0),
         ],
 
+        'cache' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_CACHE_DB', 1),
+        ],
     ],
-
 ];
