@@ -14,24 +14,24 @@ class TimeoutTestController extends Controller
     {
         $timer = TaskTimeSingleton::init();
 
-        $timer->addEvent(__METHOD__.': entered TimeoutTestController');
+        $timer->addEvent('TimeoutTestController: entered TimeoutTestController');
 
         $output = $request->all();
         if ($request->has('use_db')) {
             $users = \DB::table('users')->take(100)->get();
             $output['users'] = $users;
-            $timer->addEvent(__METHOD__.': Queried database for users.');
+            $timer->addEvent('TimeoutTestController: Queried database for users.');
         }
 
         if ($request->has('use_cache')) {
             Cache::put('timeout-test', Carbon::now()->format('Y-m-d H:i:s'));
             $output['cache'] = Cache::get('timeout-test');
-            $timer->addEvent(__METHOD__.': Did some stuff with the cache.');
+            $timer->addEvent('TimeoutTestController: Did some stuff with the cache.');
         }
 
         if ($request->has('use_view')) {
             $view = view('timeout_test', ['data' => $output]);
-            $timer->addEvent(__METHOD__.': Renderd a view.');
+            $timer->addEvent('TimeoutTestController: Renderd a view.');
 
             return $view;
         }

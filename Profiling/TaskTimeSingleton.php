@@ -2,6 +2,8 @@
 
 namespace Profiling;
 
+use Exception;
+
 require_once __DIR__.'/TaskTimingEvent.php';
 
 class TaskTimeSingleton
@@ -48,5 +50,24 @@ class TaskTimeSingleton
         return array_map(function ($evt) {
             return $evt->toArray();
         }, $this->events);
+    }
+
+    public function getStartTime()
+    {
+        if (count($this->events) == 0) {
+            throw new Exception('No events in TaskTimeSingleton instance.');
+        }
+
+        return $this->events[0]->getMicrotime();
+    }
+
+    public function getEndTime()
+    {
+        $eventCount = count($this->events);
+        if ($eventCount == 0) {
+            throw new Exception('No events in TaskTimeSingleton instance.');
+        }
+
+        return $this->events[$eventCount - 1]->getMicrotime();
     }
 }
