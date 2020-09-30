@@ -42,7 +42,8 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Profiling\\": "Profiling/"
         },
         "files": [
             "app/helpers.php"

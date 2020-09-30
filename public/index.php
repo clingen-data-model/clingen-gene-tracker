@@ -1,11 +1,17 @@
 <?php
 
 /**
- * Laravel - A PHP Framework For Web Artisans
+ * Laravel - A PHP Framework For Web Artisans.
  *
- * @package  Laravel
  * @author   Taylor Otwell <taylor@laravel.com>
  */
+require_once __DIR__.'/../Profiling/TaskTimeSingleton.php';
+require_once __DIR__.'/../Profiling/TaskTimeWriter.php';
+
+$timer = Profiling\TaskTimeSingleton::init();
+// var_dump($timer);
+// die();
+$timer->addEvent('public/index.php - initiaized public/index.php');
 
 define('LARAVEL_START', microtime(true));
 
@@ -22,6 +28,7 @@ define('LARAVEL_START', microtime(true));
 */
 
 require __DIR__.'/../vendor/autoload.php';
+$timer->addEvent('public/index.php - autoloaded dependencies');
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +43,7 @@ require __DIR__.'/../vendor/autoload.php';
 */
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
+$timer->addEvent('public/index.php - bootstrapped application');
 
 /*
 |--------------------------------------------------------------------------
@@ -50,11 +58,19 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 */
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$timer->addEvent('public/index.php - made the kernal');
 
-$response = $kernel->handle(
-    $request = Illuminate\Http\Request::capture()
-);
+$request = Illuminate\Http\Request::capture();
+$timer->addEvent('public/index.php - captured the request');
+
+$response = $kernel->handle($request);
+$timer->addEvent('public/index.php - handled the request');
 
 $response->send();
+$timer->addEvent('public/index.php - sent the response');
 
 $kernel->terminate($request, $response);
+$timer->addEvent('public/index.php - terminated the kernal');
+
+$writer = new Profiling\TaskTimeWriter($timer);
+$writer->writeToFile();
