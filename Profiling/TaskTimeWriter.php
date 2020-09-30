@@ -13,7 +13,7 @@ class TaskTimeWriter
 
     public function writeToFile($filename = null)
     {
-        $writeFileName = '/srv/app/public/'.($filename ?? 'timing-'.date('Y-m-d_H:i:s').'.log');
+        $writeFileName = '/srv/app/public/profile_logs/'.($filename ?? 'timing-'.date('Y-m-d_H:i:s').'.log');
 
         $entries = array_map(function ($evt) {
             return date('Y-m-d H:i:s', $evt->getMicroTime())."\t".$evt->getMicrotime()."\t".$evt->getName();
