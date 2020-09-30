@@ -13,7 +13,7 @@ class TaskTimeWriter
 
     public function writeToFile($filename = null)
     {
-        $writeFileName = '/srv/app/public/profile_logs/'.($filename ?? 'timing-'.date('Y-m-d_H:i:s').'.log');
+        $writeFileName = '/srv/app/public/profile_logs/'.($filename ?? $this->formatRequestUri($_SERVER['REQUEST_URI']).date('Y-m-d_H:i:s').'.log');
 
         $entries = array_map(function ($evt) {
             return date('Y-m-d H:i:s', $evt->getMicroTime())."\t".$evt->getMicrotime()."\t".$evt->getName();
@@ -22,5 +22,10 @@ class TaskTimeWriter
         $eventsString = implode("\n", $entries);
 
         file_put_contents($writeFileName, $_SERVER['REQUEST_URI']."\n\n".$eventsString);
+    }
+
+    private function formatRequestUri($uri)
+    {
+        return urlencode(preg_replace('/\//', '--', $uri));
     }
 }
