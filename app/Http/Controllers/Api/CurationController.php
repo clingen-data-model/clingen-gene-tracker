@@ -37,11 +37,9 @@ class CurationController extends Controller
      */
     public function index(Request $request)
     {
-        logDebug(__METHOD__.': handle curation search request');
         $curations = $this->search->search($request->all());
 
         $resourceResponse = CurationResource::collection($curations);
-        logDebug(__METHOD__.': Got $resourceResponse');
 
         return $resourceResponse;
     }
