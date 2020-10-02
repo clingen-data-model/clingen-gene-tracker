@@ -8,6 +8,7 @@ LABEL maintainer="TJ Ward" \
     io.openshift.tags="php,apache"
 
 COPY .docker/php/conf.d/* $PHP_INI_DIR/conf.d/
+COPY .docker/start.sh /usr/local/bin/start
 
 COPY . /srv/app
 
@@ -17,6 +18,7 @@ USER root
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
     && chmod g+x /srv/app/.openshift/deploy.sh \
+    && chmod g+x /usr/local/bin/start \
     && apt-get install -yqq librdkafka-dev \
     && pecl install rdkafka-3.1.3
     # && pecl install xdebug-2.9.5 \
@@ -30,6 +32,7 @@ RUN composer install \
         --no-scripts \
         --prefer-dist
 
+RUN php artisan storage:link
 # COPY .docker/php/xdebug-dev.ini /usr/local/etc/php/conf.d/xdebug-dev.ini
 
 # RUN cp -R /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d-dev \
@@ -39,3 +42,5 @@ RUN composer install \
 # RUN  echo 'alias art="php artisan"' >> ~/.bash_profile
 
 USER 1001
+
+CMD ["/usr/local/bin/start"]

@@ -4,6 +4,8 @@ services:
         build: .
         image: gt-app
         container_name: gt-app
+        sysctls:
+            - net.ipv4.ip_unprivileged_port_start=0
         depends_on:
             - database
             - redis
@@ -15,6 +17,10 @@ services:
         volumes:
             - .:/srv/app
         env_file: .docker.env
+        environment:
+            CONTAINER_ROLE: app
+            APP_ENV: local
+
     database:
         container_name: gt-db
         image: mysql:5.7
@@ -43,4 +49,33 @@ services:
             "php",
             "/srv/app/artisan"
         ]
-    
+        environment:
+            CONTAINER_ROLE: artisan
+            APP_ENV: local
+
+    scheduler:
+        image: gt-app
+        container_name: gt-scheduler
+        sysctls: 
+            - net.ipv4.ip_unprivileged_port_start=0
+        depends_on: 
+            - app
+        volumes:
+            - .:/srv/app
+        environment:
+            CONTAINER_ROLE: scheduler
+            APP_ENV: local
+
+    queue:
+        image: gt-app
+        container_name: gt-queue
+        sysctls: 
+            - net.ipv4.ip_unprivileged_port_start=0
+        depends_on: 
+            - app
+        volumes:
+            - .:/srv/app
+        environment:
+            CONTAINER_ROLE: queue
+            APP_ENV: local        
+        
