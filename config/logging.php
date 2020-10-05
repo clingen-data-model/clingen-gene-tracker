@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -73,8 +72,7 @@ return [
         'mail' => [
             'driver' => 'daily',
             'path' => storage_path('logs/mail.log'),
-            'level' => 'debug'
-        ]
+            'level' => 'debug',
+        ],
     ],
-
 ];
