@@ -2,19 +2,20 @@
 
 namespace App\Providers;
 
-use Carbon\Carbon;
+use App\Contracts\GeneValidityCurationUpdateJob;
+use App\Contracts\MessageConsumer;
+use App\Contracts\MessagePusher;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
+use App\Logging\ContainerRoleProcessor;
+use App\Services\DisabledPusher;
 use App\Services\Kafka\KafkaConfig;
 use App\Services\Kafka\KafkaConsumer;
 use App\Services\Kafka\KafkaProducer;
 use App\Services\MessageLogger;
-use App\Contracts\MessagePusher;
-use App\Services\DisabledPusher;
-use Illuminate\Events\Dispatcher;
-use App\Contracts\MessageConsumer;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\GeneValidityCurationUpdateJob;
-use App\Jobs\UpdateCurationFromGeneValidityMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,11 +26,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Log::pushProcessor(new ContainerRoleProcessor());
+
         date_default_timezone_set('America/New_York');
         if ($this->app->environment('production')) {
-            config(['backpack.base.skin'=>'skin-blue']);
+            config(['backpack.base.skin' => 'skin-blue']);
         }
-        
+
         if ($this->app->environment('local', 'demo')) {
             config(['backpack.base.logo_lg' => '<b>ClinGen</b> - '.$this->app->environment()]);
         }
@@ -69,23 +72,25 @@ class AppServiceProvider extends ServiceProvider
     private function bindInstances()
     {
         $this->app->bind(MessagePusher::class, function () {
-            if (! config('streaming-service.enable-push')) {
+            if (!config('streaming-service.enable-push')) {
                 return new DisabledPusher();
             }
             if (config('streaming-service.driver') == 'log') {
                 return new MessageLogger();
             }
+
             return $this->app->make(KafkaProducer::class);
         });
 
         $this->app->bind(\RdKafka\Producer::class, function () {
             $config = $this->app->make(KafkaConfig::class)->getConfig();
+
             return new \RdKafka\Producer($config);
         });
 
         $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
             $conf = $this->app->make(KafkaConfig::class)->getConfig();
- 
+
             // $topicConf = new \RdKafka\TopicConf();
             // $conf->setDefaultTopicConf($topicConf);
             $conf->set('auto.offset.reset', 'smallest');

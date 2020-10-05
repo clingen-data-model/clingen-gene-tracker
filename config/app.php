@@ -3,6 +3,7 @@
 return [
     'name' => env('APP_NAME', 'ClinGen Tracker'),
     'env' => env('APP_ENV', 'production'),
+    'container_role' => env('CONTAINER_ROLE', null),
     'debug' => env('APP_DEBUG', false),
     'storage_path' => env('APP_STORAGE_PATH'),
     'url' => env('APP_URL', 'http://localhost'),
