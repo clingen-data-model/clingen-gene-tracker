@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use App\Curation;
-use Tests\TestCase;
 use App\ExpertPanel;
-use Illuminate\Http\UploadedFile;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\UploadedFile;
+use Tests\TestCase;
 
 /**
  * @group bulk-curations
@@ -51,17 +51,17 @@ class BulkCurationUploadTest extends TestCase
                 'expert_panel_id' => $this->expertPanel->id,
                 'bulk_curations' => new UploadedFile(
                                             base_path('tests/files/bulk_curation_upload_good.xlsx'),
-                                            'bulk_curation_upload_good.xlsx', 
-                                            'application/xlsx', 
-                                            null, 
+                                            'bulk_curation_upload_good.xlsx',
+                                            'application/xlsx',
+                                            null,
                                             true
                                     ),
             ])
             ->assertOk();
-        
+
         $this->assertEquals(3, \DB::table('curations')->count());
     }
-    
+
     /**
      * @test
      */
@@ -72,9 +72,9 @@ class BulkCurationUploadTest extends TestCase
                 'expert_panel_id' => $this->expertPanel->id,
                 'bulk_curations' => new UploadedFile(
                                             base_path('tests/files/bulk_curation_upload_bad.xlsx'),
-                                            'bulk_curation_upload_good.xlsx', 
-                                            'application/xlsx', 
-                                            null, 
+                                            'bulk_curation_upload_good.xlsx',
+                                            'application/xlsx',
+                                            null,
                                             false
                                     ),
             ])
@@ -87,16 +87,16 @@ class BulkCurationUploadTest extends TestCase
     public function confirms_duplicates_before_saving_file()
     {
         factory(Curation::class)->create(['gene_symbol' => 'MYL2']);
-        
+
         $response = $this->actingAs($this->user)
             ->call('POST', '/bulk-uploads', [
                 'expert_panel_id' => $this->expertPanel->id,
             ], [], [
                 'bulk_curations' => new UploadedFile(
                                             base_path('tests/files/bulk_curation_upload_good.xlsx'),
-                                            'bulk_curation_upload_good.xlsx', 
-                                            'application/xlsx', 
-                                            null, 
+                                            'bulk_curation_upload_good.xlsx',
+                                            'application/xlsx',
+                                            null,
                                             true
                                     ),
             ])
@@ -111,13 +111,10 @@ class BulkCurationUploadTest extends TestCase
                         ->call('POST', '/bulk-uploads', [
                             'expert_panel_id' => $this->expertPanel->id,
                             'path' => $response->original->path,
-                            'continue_duplicate_upload' => 1
+                            'continue_duplicate_upload' => 1,
                         ])
                         ->assertOk();
-        
+
         $this->assertEquals(4, \DB::table('curations')->count());
     }
-    
-    
-    
 }

@@ -11,12 +11,12 @@ return [
         'uploaded' => 1,
         'precuration' => 2,
         'disease-entity-assigned' => 3,
-        'curation-in-progress' => 4,
         'in-progress' => 4,
-        'curation-provisional' => 5,
+        'curation-in-progress' => 4, // must come second for BulkCurationProcessor
         'provisional' => 5,
-        'curation-approved' => 6,
+        'curation-provisional' => 5, // must come second for BulkCurationProcessor
         'approved' => 6,
+        'curation-approved' => 6, // must come second for BulkCurationProcessor
         'recuration-assigned' => 7,
         'retired-assignment' => 8,
         'published' => 9,
