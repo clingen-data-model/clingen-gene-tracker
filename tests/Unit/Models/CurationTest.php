@@ -312,4 +312,15 @@ class CurationTest extends TestCase
 
         $this->assertEquals('MONDO:0000000', $curation->mondo_id);
     }
+
+    /**
+     * @test
+     */
+    public function trims_gene_symbol_when_set()
+    {
+        $curation = new Curation();
+        $curation->gene_symbol = ' BEANS ';
+
+        $this->assertEquals('BEANS', $curation->gene_symbol);
+    }
 }
