@@ -2,19 +2,19 @@
 
 namespace App;
 
-use Backpack\CRUD\CrudTrait;
-use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
+use App\Events\Curation\Saved;
 use App\Events\Curation\Updated;
 use App\Jobs\Curations\AddStatus;
+use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 /**
- * @property-read Classification $currentClassificiation
- * @property-read CurationStatus $currentStatus
- * @property-read string numericMondoId
+ * @property Classification $currentClassificiation
+ * @property CurationStatus $currentStatus
+ * @property string numericMondoId
  *
  **/
 class Curation extends Model
@@ -147,9 +147,8 @@ class Curation extends Model
     }
 
     /**
-     * SCOPES
+     * SCOPES.
      */
-
     public function scopeGene($query, $geneSymbol)
     {
         return $query->where('gene_symbol', $geneSymbol);
@@ -169,6 +168,7 @@ class Curation extends Model
             );
         }
         $formattedId = preg_replace('/HGNC:/i', '', trim($hgncId));
+
         return $query->where('hgnc_id', $formattedId);
     }
 
@@ -190,6 +190,7 @@ class Curation extends Model
         if (is_numeric($mondoId)) {
             $formattedId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
         }
+
         return $query->where('mondo_id', $formattedId);
     }
 
@@ -206,10 +207,10 @@ class Curation extends Model
 
         return $query->where([
             'hgnc_id' => $hgncId,
-            'mondo_id' => $mondoId
+            'mondo_id' => $mondoId,
         ]);
     }
-    
+
     public function scopeNoUuid($query)
     {
         return $query->whereNull('gdm_uuid');
@@ -219,7 +220,7 @@ class Curation extends Model
     {
         return $query->whereNotNull('gdm_uuid');
     }
-        
+
     public function getNumericMondoIdAttribute()
     {
         if (is_null($this->mondo_id)) {
@@ -230,8 +231,13 @@ class Curation extends Model
     }
 
     /**
-     * MUTATORS
+     * MUTATORS.
      */
+    public function setGeneSymbolAttribute($value)
+    {
+        $this->attributes['gene_symbol'] = trim($value);
+    }
+
     public function setMondoIdAttribute($value)
     {
         $formattedValue = $value;
@@ -246,7 +252,6 @@ class Curation extends Model
         $this->attributes['mondo_id'] = $formattedValue;
     }
 
-
     public static function findByUuid($uuid)
     {
         return static::where('gdm_uuid', $uuid)->first();
@@ -258,7 +263,7 @@ class Curation extends Model
 
         return static::where([
             'hgnc_id' => $hgncId,
-            'mondo_id' => $mondoId
+            'mondo_id' => $mondoId,
         ])->first();
     }
 }
