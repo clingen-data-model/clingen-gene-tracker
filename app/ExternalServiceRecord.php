@@ -26,7 +26,7 @@ class ExternalServiceRecord implements JsonSerializable
 
     public function __get($key)
     {
-        $method = 'get'.Str::camel_case($key);
+        $method = 'get'.Str::camel($key);
         if (method_exists($this, $method)) {
             return $this->$method($method, $this);
         }
