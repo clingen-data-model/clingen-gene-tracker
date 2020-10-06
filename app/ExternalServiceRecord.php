@@ -2,13 +2,16 @@
 
 namespace App;
 
-class ExternalServiceRecord
+use Illuminate\Support\Str;
+use JsonSerializable;
+
+class ExternalServiceRecord implements JsonSerializable
 {
     protected $attributes;
 
     public function __construct($attributes)
     {
-        $this->attributes = (object)$attributes;
+        $this->attributes = (object) $attributes;
     }
 
     public function getAttributes()
@@ -16,9 +19,14 @@ class ExternalServiceRecord
         return $this->attributes;
     }
 
+    public function jsonSerialize()
+    {
+        return $this->attributes;
+    }
+
     public function __get($key)
     {
-        $method = 'get'.camel_case($key);
+        $method = 'get'.Str::camel_case($key);
         if (method_exists($this, $method)) {
             return $this->$method($method, $this);
         }
