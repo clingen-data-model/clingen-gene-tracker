@@ -121,11 +121,12 @@
             }
         },
         computed: {
+            ...mapGetters({user: 'getUser'}),
             ...mapGetters('curationStatuses', {
                 curationStatuses: 'Items',
             }),
             statusOptions() {
-                return this.curationStatuses.filter(status => user.canSelectCurationStatus(status, this.curationCopy))
+                return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.curationCopy))
             },
         },
         methods: {

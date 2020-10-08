@@ -18,8 +18,8 @@ class RolesAndPermissionsSeeder extends Seeder
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         // create permissions
-        $this->createPermissionGroup('users', ['list','create','update','delete','deactivate']);
-        $this->createPermissionGroup('expert-panels', ['list','create','update','delete','deactivate']);
+        $this->createPermissionGroup('users', ['list', 'create', 'update', 'delete', 'deactivate']);
+        $this->createPermissionGroup('expert-panels', ['list', 'create', 'update', 'delete', 'deactivate']);
         $this->createPermissionGroup('curation-statuses');
         $this->createPermissionGroup('working-groups');
         $this->createPermissionGroup('curation-types');
@@ -29,11 +29,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $managePanelCurations = Permission::firstOrcreate(['name' => 'manage panel curations']);
 
         /**
-         * Programmer role can do everything
+         * Programmer role can do everything.
          */
         $role = Role::firstOrcreate(['name' => 'programmer']);
-        $this->givePermissionsToRole($role, 'users', ['list', 'create','update', 'deactivate', 'delete']);
-        $this->givePermissionsToRole($role, 'expert-panels', ['list', 'create','update', 'deactivate', 'delete']);
+        $this->givePermissionsToRole($role, 'users', ['list', 'create', 'update', 'deactivate', 'delete']);
+        $this->givePermissionsToRole($role, 'expert-panels', ['list', 'create', 'update', 'deactivate', 'delete']);
         $this->givePermissionsToRole($role, 'curation-statuses');
         $this->givePermissionsToRole($role, 'working-groups');
         $this->givePermissionsToRole($role, 'curation-types');
@@ -42,14 +42,14 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'curations');
 
         /**
-         * Admin Role can do most things
+         * Admin Role can do most things.
          */
         $role = Role::firstOrcreate(['name' => 'admin']);
-        $this->givePermissionsToRole($role, 'users', ['list', 'create','update', 'deactivate', 'delete']);
-        $this->givePermissionsToRole($role, 'expert-panels', ['list', 'create','update', 'deactivate', 'delete']);
+        $this->givePermissionsToRole($role, 'users', ['list', 'create', 'update', 'deactivate', 'delete']);
+        $this->givePermissionsToRole($role, 'expert-panels', ['list', 'create', 'update', 'deactivate', 'delete']);
         $this->givePermissionsToRole($role, 'curation-statuses');
         $this->givePermissionsToRole($role, 'working-groups');
-        $this->givePermissionsToRole($role, 'rationales', ['list','update']);
+        $this->givePermissionsToRole($role, 'rationales', ['list', 'update']);
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
         $this->givePermissionsToRole($role, 'curations');
 

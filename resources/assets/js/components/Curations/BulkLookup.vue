@@ -9,6 +9,7 @@
                     <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
                 </ul>
             </div>
+
             <lookup-form 
                 v-model="geneSymbols"
                 @lookup="search" 
@@ -18,25 +19,23 @@
 
 
             <div v-if="results.length > 0">
-                        <h5>Curations:</h5>
-                        <b-table 
-                            :fields="fields" 
-                            :items="filteredResults"
-                            primary-key="id"
-                            bordered
-                            show-empty
-                            :empty-text="emptyText"
-                            :busy="loadingResults"
-                            :small="true"
-                            class="text-small"
-                            striped
-                        >
-                            <div slot="table-busy" class="text-center">
-                                Looking for curations...
-                            </div>
-                        </b-table>
-                    <!-- </div>
-                </div> -->
+                <h5>Curations:</h5>
+                <b-table 
+                    :fields="fields" 
+                    :items="filteredResults"
+                    primary-key="id"
+                    bordered
+                    show-empty
+                    :empty-text="emptyText"
+                    :busy="loadingResults"
+                    :small="true"
+                    class="text-small"
+                    striped
+                >
+                    <div slot="table-busy" class="text-center">
+                        Looking for curations...
+                    </div>
+                </b-table>
             </div>
         </div>
     </div>

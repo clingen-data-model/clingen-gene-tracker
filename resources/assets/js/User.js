@@ -3,6 +3,10 @@ class User {
         this.user = user
     }
 
+    getRoles() {
+        return this.user.roles.map(role => role.name)
+    }
+
     hasRole(roleName) {
         return this.user.roles.filter((role) => role.name == roleName).length > 0
     }
@@ -16,6 +20,13 @@ class User {
             return false;
         }
         return this.user.expert_panels.filter(panel => panel.id == expertPanel.id).length > 0
+    }
+
+    isCurator() {
+        const curatorPanels = this.user.expert_panels
+            .filter(panel => panel.pivot.is_curator == 1);
+
+        return curatorPanels.length > 0
     }
 
     isPanelCoordinator(expertPanel) {

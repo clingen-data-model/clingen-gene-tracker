@@ -136,6 +136,14 @@ class Curation extends Model
                 ->using(CurationClassification::class);
     }
 
+    public function uploads()
+    {
+        return $this->hasMany(Upload::class);
+    }
+
+    /**
+     * ACCESSORS.
+     */
     public function getCurrentClassificationAttribute()
     {
         return $this->classifications
@@ -252,6 +260,9 @@ class Curation extends Model
         $this->attributes['mondo_id'] = $formattedValue;
     }
 
+    /**
+     * DOMAIN METHODS.
+     */
     public static function findByUuid($uuid)
     {
         return static::where('gdm_uuid', $uuid)->first();
@@ -265,5 +276,15 @@ class Curation extends Model
             'hgnc_id' => $hgncId,
             'mondo_id' => $mondoId,
         ])->first();
+    }
+
+    public function addUpload(Upload $upload): void
+    {
+        $this->uploads()->save($upload);
+    }
+
+    public function removeUpload(Upload $upload): void
+    {
+        $upload->delete();
     }
 }

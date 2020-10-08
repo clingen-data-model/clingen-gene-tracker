@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import { mapMutations, mapActions } from 'vuex'
+    import { mapMutations, mapActions, mapGetters } from 'vuex'
 
     export default {
         props: {
@@ -23,10 +23,10 @@
         },
         data() {
             return {
-                user: user,
             }
         },
         computed: {
+            ...mapGetters({user: 'getUser'}),
             title: function () {
                 let title = '';
                 if (this.curation && this.curation.gene_symbol) {
