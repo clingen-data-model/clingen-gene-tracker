@@ -43,7 +43,6 @@
         },
         data: function () {
             return {
-                user: user,
                 updatedCuration: {
                     gene_symbol: null
                 },
@@ -51,6 +50,7 @@
             }
         },
         computed: {
+            ...mapGetters({user: 'getUser'}),
             selectedPanel: function () {
                 return this.panels.find(
                     obj => { 

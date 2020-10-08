@@ -1,21 +1,17 @@
-
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
 // Variables
 @import "variables";
 @import "transitions";
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-
 .text-small {
     font-size: .8rem;
 }
 
 .navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .cursor-pointer,
@@ -35,8 +31,7 @@
 }
 
 .table.table-small th,
-.table.table-small td
-{
+.table.table-small td {
     font-size: .8rem;
     padding: .25rem;
     padding-left: .5rem;
@@ -56,11 +51,10 @@
     margin-left: .5rem;
     margin-right: .5rem;
     font-weight: bold;
-
     &:hover {
         transition: all .25s;
         @extend .btn-secondary;
-        @extend .text-light;   
+        @extend .text-light;
     }
 }
 
@@ -68,15 +62,19 @@
     font-size: .8rem;
 }
 
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     @extend .border-danger;
 }
 
-.error{
+.error {
     label {
         @extend .text-danger
     }
-    input, select, textarea {
+    input,
+    select,
+    textarea {
         @extend .border-danger
     }
 }
@@ -86,6 +84,9 @@ input[type=file].form-control {
     padding: .5rem;
 }
 
+.modal-backdrop {
+    opacity: .5;
+}
 
 // ENV color coding
 @import './env.scss';

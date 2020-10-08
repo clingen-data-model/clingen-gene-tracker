@@ -19,8 +19,18 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">    
 
+    
     <!-- Styles -->
+    <link 
+        rel="preload stylesheet" 
+        href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" 
+        as="style" 
+        onload="this.rel = 'stylesheet'"
+    >
+
     <link href="{{ mix('css/app.css') }}" rel="preload stylesheet" as="style">
+
+
 
     @include('google_analytics')
 
@@ -120,7 +130,7 @@
         {{-- @include('partials.version_info'); --}}
     <!-- Scripts -->
     <script>
-        let user = {!! json_encode($user) !!}.user
+        window.user = {!! json_encode($user) !!}.user
     </script>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>

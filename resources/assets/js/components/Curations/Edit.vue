@@ -87,7 +87,6 @@
         },
         data () {
             return {
-                user: user,
                 currentStep: 'info',
                 steps: {
                    info: {
@@ -136,6 +135,7 @@
             }
         },
         computed: {
+            ...mapGetters({user: 'getUser'}),
             ...mapGetters('curations', {
                 curations: 'Items',
                 getCuration: 'getItemById',

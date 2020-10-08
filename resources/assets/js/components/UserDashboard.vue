@@ -28,10 +28,8 @@
         components: {
             CurationsTable
         },
-        data() {
-            return {
-                user: user
-            }
+        computed: {
+            ...mapGetters({user: 'getUser'})
         }
     }
 </script>

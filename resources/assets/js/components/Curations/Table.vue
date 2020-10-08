@@ -78,6 +78,7 @@
     import DeleteButton from './DeleteButton'
     import getPageOfCurations from '../../resources/curations/get_page_of_curations'
     import uniqid from '../../helpers/uniqid'
+    import { mapGetters } from 'vuex'
 
     export default {
         components: {
@@ -105,7 +106,6 @@
         },
         data() {
             return {
-                user: user,
                 filter: null,
                 currentPage: 1,
                 sortDesc: false,
@@ -157,6 +157,7 @@
             }
         },
         computed: {
+            ...mapGetters({user: 'getUser'}),
             loading: function () {
                 return false;
             },

@@ -9,85 +9,97 @@ import rationales from './modules/rationales'
 import workingGroups from './modules/working_groups'
 import classifications from './modules/classifications'
 import mois from './modules/mois'
-
+import User from '../User'
+import getCurrentUser from '../resources/users/get_current_user';
 
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
-  requestCount: 0,
-  apiRequestCounts: {
-    omim: 0,
-    mondo: 0,
-    pubmed: 0,
-  }
+    requestCount: 0,
+    user: new User(window.user),
+    apiRequestCounts: {
+        omim: 0,
+        mondo: 0,
+        pubmed: 0,
+    }
 }
 
 const getters = {
-  loading (state) {
-    return state.requestCount > 0
-  },
-  apiLoading (state, apiKey) {
-    if (typeof apiKey == 'object') {
-      return false;
-    }
-    if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-      throw new Error(apiKey+' is not a valid key for apiRequestCounts.')
-    }
-    return state.apiRequestCounts[apiKey] > 0
-  },
-  omimLoading (state) {
-    return state.apiRequestCounts['omim'] > 0
-  }
+    loading(state) {
+        return state.requestCount > 0
+    },
+    apiLoading(state, apiKey) {
+        if (typeof apiKey == 'object') {
+            return false;
+        }
+        if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
+            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+        }
+        return state.apiRequestCounts[apiKey] > 0
+    },
+    omimLoading(state) {
+        return state.apiRequestCounts['omim'] > 0
+    },
+    getUser: state => state.user
 }
 
 const mutations = {
-  addRequest(state) {
-    state.requestCount++;
-  },
-  removeRequest(state) {
-    state.requestCount--;
-  },
-  addApiRequest(state, apiKey) {
-    if (typeof apiKey == 'object') {
-      return false;
+    setUser(state, user) {
+        state.user = new User(user)
+    },
+    addRequest(state) {
+        state.requestCount++;
+    },
+    removeRequest(state) {
+        state.requestCount--;
+    },
+    addApiRequest(state, apiKey) {
+        if (typeof apiKey == 'object') {
+            return false;
+        }
+        if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
+            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+        }
+        state.apiRequestCounts[apiKey]++
+    },
+    removeApiRequest(state, apiKey) {
+        if (typeof apiKey == 'object') {
+            return false;
+        }
+        if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
+            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+        }
+        state.apiRequestCounts[apiKey]--
     }
-    if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-      throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
-    }
-    state.apiRequestCounts[apiKey]++
-  },
-  removeApiRequest(state, apiKey) {
-    if (typeof apiKey == 'object') {
-      return false;
-    }
-    if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-      throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
-    }
-    state.apiRequestCounts[apiKey]--
-  }  
 }
 
 const actions = {
+    async fetchUser({ commit }) {
+        const user = await getCurrentUser();
+        if (user) {
+            commit('setUser', user);
+        }
+    }
 }
 
 export default new Vuex.Store({
-  state: state,
-  getters: getters,
-  mutations: mutations, 
-  modules: {
-    messages: messages,
-    panels: panels,
-    curations: curations,
-    curationStatuses: curationStatuses,
-    users: users,
-    rationales: rationales,
-    workingGroups: workingGroups,
-    classifications: classifications,
-    mois: mois,
-  },
-  actions: actions,
-  strict: debug,
-  // plugins: debug ? [createLogger()] : []
+    state: state,
+    getters: getters,
+    mutations: mutations,
+    modules: {
+        messages: messages,
+        panels: panels,
+        curations: curations,
+        curationStatuses: curationStatuses,
+        users: users,
+        rationales: rationales,
+        workingGroups: workingGroups,
+        classifications: classifications,
+        mois: mois,
+    },
+    actions: actions,
+    strict: debug,
+    // plugins: debug ? [createLogger()] : []
 })

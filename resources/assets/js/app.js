@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -35,28 +34,26 @@ if (user) {
 //     console.log('set & send to ga');
 //   });
 
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use(function(config) {
     store.commit('addRequest');
     const apiParts = config.url.split(/[\/?&]/)
     try {
         store.commit('addApiRequest', apiParts[2])
-    } catch (error) {        
-    }
+    } catch (error) {}
     return config;
 })
 
 axios.interceptors.response.use(
-    function (response) {
+    function(response) {
         store.commit('removeRequest');
         const url = new URL(response.request.responseURL);
         const apiParts = url.pathname.split(/[\/?&]/)
         try {
             store.commit('removeApiRequest', apiParts[2])
-        } catch (error) {
-        }
+        } catch (error) {}
         return response;
-    }, 
-    function (error) {
+    },
+    function(error) {
         store.commit('removeRequest');
         const url = new URL(error.response.request.responseURL);
         const apiParts = url.pathname.split(/[\/?&]/)
@@ -81,7 +78,7 @@ if (document.getElementById('app')) {
             CriteriaTable
         },
         computed: {
-            loading: function () {
+            loading: function() {
                 return this.$store.getters.loading;
             }
         }

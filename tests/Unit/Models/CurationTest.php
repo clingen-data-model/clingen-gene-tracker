@@ -7,6 +7,7 @@ use App\Classification;
 use App\Curation;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
+use App\Upload;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -322,5 +323,35 @@ class CurationTest extends TestCase
         $curation->gene_symbol = ' BEANS ';
 
         $this->assertEquals('BEANS', $curation->gene_symbol);
+    }
+
+    /**
+     * @test
+     */
+    public function can_add_an_upload_for_itself()
+    {
+        $curation = factory(Curation::class)->create([]);
+
+        $upload = factory(Upload::class)->make(['file_name' => 'test_file_name']);
+        $curation->addUpload($upload);
+
+        $this->assertContains('test_file_name', $curation->uploads->pluck('file_name'));
+    }
+
+    /**
+     * @test
+     */
+    public function can_remove_an_upload()
+    {
+        $curation = factory(Curation::class)->create();
+
+        $upload = factory(Upload::class)->create(['curation_id' => $curation->id]);
+        $curation->addUpload($upload);
+
+        $curation->removeUpload($upload);
+
+        $this->assertEquals(0, $curation->uploads->count());
+        // $this->assertEquals(1, $curation->uploads->count());
+        // $this->assertContains($upload->file_name, $curation->uploads->pluck('file_name'));
     }
 }

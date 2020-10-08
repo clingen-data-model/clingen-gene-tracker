@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store/index'
+
 const Curations = () =>
     import ( /* webpackChunkName: "curations" */ './components/Curations/Curation')
 const CurationCreate = () =>
@@ -27,11 +29,13 @@ const BulkLookup = () =>
 
 Vue.use(VueRouter)
 
+const user = store.getters.getUser;
+
 const routes = [{
         path: '',
         component: UserDashboard,
         beforeEnter: (to, from, next) => {
-            if (!user.canAddCurations()) {
+            if (!user.canAddCurations() && !user.isCurator()) {
                 next({ path: '/curations' })
                 return;
             }
@@ -61,7 +65,6 @@ const routes = [{
     },
     {
         path: '/curations',
-        name: 'Curations',
         component: Curations,
         children: [{
                 path: '',
@@ -96,13 +99,14 @@ const routes = [{
                 component: CurationEdit,
                 props: true,
                 name: 'curations-edit',
-                beforeEnter: (to, from, next) => {
-                    if (!user.canUpdateCurations()) {
-                        next(from)
-                        return;
-                    }
-                    next()
-                }
+                // beforeEnter: (to, from, next) => {
+                //     console.log(store);
+                //     if (!user.canUpdateCurations()) {
+                //         next(from)
+                //         return;
+                //     }
+                //     next()
+                // }
             },
         ]
     },

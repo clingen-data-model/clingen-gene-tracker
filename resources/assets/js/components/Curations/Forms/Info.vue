@@ -155,7 +155,6 @@
                 page: 'info',
                 newStatusDate: null,
                 newStatusId: null,
-                user: user
             }
         },
         watch: {
@@ -167,6 +166,7 @@
             today: function () {
                 return moment();
             },
+            ...mapGetters({user: 'getUser'}),
             ...mapGetters('mois', {
                 mois: 'Items',
             }),
