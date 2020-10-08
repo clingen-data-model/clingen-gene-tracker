@@ -19,7 +19,7 @@ services:
         env_file: .docker.env
         environment:
             CONTAINER_ROLE: app
-            APP_ENV: local
+            CONTAINER_ENV: local
 
     database:
         container_name: gt-db
@@ -51,7 +51,7 @@ services:
         ]
         environment:
             CONTAINER_ROLE: artisan
-            APP_ENV: local
+            CONTAINER_ENV: local
 
     scheduler:
         image: gt-app
@@ -64,7 +64,7 @@ services:
             - .:/srv/app
         environment:
             CONTAINER_ROLE: scheduler
-            APP_ENV: local
+            CONTAINER_ENV: local
 
     queue:
         image: gt-app
@@ -77,5 +77,5 @@ services:
             - .:/srv/app
         environment:
             CONTAINER_ROLE: queue
-            APP_ENV: local        
+            CONTAINER_ENV: local        
         

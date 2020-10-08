@@ -4,6 +4,8 @@ services:
         build: .
         image: gt-app
         container_name: gt-app
+        sysctls:
+            - net.ipv4.ip_unprivileged_port_start=0
         depends_on:
             - database
             - redis
@@ -13,7 +15,12 @@ services:
             - database:database
             - redis:redis
         volumes:
-            - ./storage:/srv/app/storage
+            - .:/srv/app
+        env_file: .docker.env
+        environment:
+            CONTAINER_ROLE: app
+            CONTAINER_ENV: production
+
     database:
         container_name: gt-db
         image: mysql:5.7
@@ -25,8 +32,9 @@ services:
             - MYSQL_DATABASE=gene_tracker
             - MYSQL_ROOT_PASSWORD=password
             - MYSQL_USER=gene_tracker
-            - MYSQL_USER=password
+            - MYSQL_PASSWORD=password
     redis:
+        container_name: gt-redis
         image: centos/redis-5-centos7
         ports:
             - "6379:6379"
@@ -35,8 +43,39 @@ services:
     artisan:
         image: gt-app
         container_name: gt-artisan
+        volumes:
+            - .:/srv/app
         entrypoint: [
             "php",
             "/srv/app/artisan"
         ]
-    
+        environment:
+            CONTAINER_ROLE: artisan
+            CONTAINER_ENV: production
+
+    scheduler:
+        image: gt-app
+        container_name: gt-scheduler
+        sysctls: 
+            - net.ipv4.ip_unprivileged_port_start=0
+        depends_on: 
+            - app
+        volumes:
+            - .:/srv/app
+        environment:
+            CONTAINER_ROLE: scheduler
+            CONTAINER_ENV: production
+
+    queue:
+        image: gt-app
+        container_name: gt-queue
+        sysctls: 
+            - net.ipv4.ip_unprivileged_port_start=0
+        depends_on: 
+            - app
+        volumes:
+            - .:/srv/app
+        environment:
+            CONTAINER_ROLE: queue
+            CONTAINER_ENV: production        
+        
