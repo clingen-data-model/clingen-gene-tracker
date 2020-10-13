@@ -17,6 +17,7 @@ class CurationSearchService implements SearchService
         'mondo_name',
         'hgnc_id',
         'hgnc_name',
+        'moi_id',
     ];
 
     public function search($params)
@@ -31,10 +32,11 @@ class CurationSearchService implements SearchService
 
     public function buildQuery($params)
     {
-        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel')
+        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel', 'modeOfInheritance')
                     ->select('curations.*')
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
                     ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
+                    ->leftJoin('mode_of_inheritances', 'mode_of_inheritances.id', '=', 'curations.moi_id')
                     ;
 
         foreach ($params as $key => $value) {
@@ -73,6 +75,10 @@ class CurationSearchService implements SearchService
                 ->orWhereHas('phenotypes', function ($q) use ($params) {
                     $q->where('mim_number', $params['filter']);
                 })
+                ->orWhereHas('modeOfInheritance', function ($q) use ($params) {
+                    $q->where('abbreviation', 'like', '%'.$params['filter'].'%')
+                        ->orWhere('name', 'like', '%'.$params['filter'].'%');
+                })
                 ;
             if (preg_match('/hgnc:/i', $params['filter'])) {
                 $hgncId = substr($params['filter'], 5);
@@ -86,9 +92,9 @@ class CurationSearchService implements SearchService
             if ($sortField == 'expert_panel') {
                 $sortField = 'expert_panels.name';
             }
-            // if ($sortField == 'status') {
-            //     $sortField = 'curation_statuses.name';
-            // }
+            if ($sortField == 'mode_of_inheritance') {
+                $sortField = 'mode_of_inheritances.name';
+            }
             if ($sortField == 'curator') {
                 $sortField = 'users.name';
             }

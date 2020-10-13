@@ -141,6 +141,16 @@ class Curation extends Model
         return $this->hasMany(Upload::class);
     }
 
+    public function modeOfInheritance()
+    {
+        return $this->belongsto(ModeOfInheritance::class, 'moi_id', 'id');
+    }
+
+    public function moi()
+    {
+        return $this->modeOfInheritance();
+    }
+
     /**
      * ACCESSORS.
      */
