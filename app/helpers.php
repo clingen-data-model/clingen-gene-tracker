@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 if (!function_exists('site_title')) {
     function site_title()
@@ -23,7 +24,7 @@ if (!function_exists('seedFromConfig')) {
             $modelClass::updateOrCreate([
               'id' => $id,
               'slug' => $slug,
-              'name' => title_case(preg_replace('/-/', ' ', $slug)),
+              'name' => Str::title(preg_replace('/-/', ' ', $slug)),
             ]);
         }
     }
@@ -54,6 +55,9 @@ if (!function_exists('logDebug')) {
         if (config('app.log_debug', false)) {
             \Log::debug('request: '.spl_object_hash(request())."\ttime: ".microtime(true)."\t".$message, $data);
         }
+    }
+}
+
 if (!function_exists('getMaxUploadSize')) {
     function getMaxUploadSize()
     {
