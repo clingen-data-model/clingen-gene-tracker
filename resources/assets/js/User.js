@@ -1,6 +1,6 @@
 class User {
     constructor(userData) {
-        this.user = user
+        this.user = userData
     }
 
     getRoles() {

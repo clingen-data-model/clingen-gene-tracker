@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Listeners;
 
-use Tests\TestCase;
 use App\Events\User\Created;
 use App\Listeners\SendWelcomeEmail;
 use App\Notifications\users\Welcome;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 /**
  * @group users
@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class SendWelcomeEmailTest extends TestCase
 {
     use DatabaseTransactions;
+
     /**
      * @test
      * @group mail
@@ -26,6 +27,7 @@ class SendWelcomeEmailTest extends TestCase
         Notification::fake();
         \Event::fake();
         $u = factory(\App\User::class)->create();
+        dump($u->email);
         $listener = new SendWelcomeEmail();
         $event = new Created($u);
         $listener->handle($event);

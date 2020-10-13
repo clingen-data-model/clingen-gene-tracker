@@ -173,9 +173,13 @@
             },
             deleteDocument(document) {
                 if (confirm('Are you sure you want to delete the document '+document.name+'?')) {
+                    this.documents.splice(this.documents.findIndex(doc => doc.id = document.id), 1);
                     axios.delete('/api/curations/'+this.curation.id+'/uploads/'+document.id)
                         .then(response => {
+                        })
+                        .catch(error => {
                             this.getDocuments();
+                            alert('There was a problem deleting the document.  Contact the administrator if the problem persists.');
                         })
                 }
             }
