@@ -19,9 +19,20 @@
             :ok-title="uploading ? 'Uploading...' : 'Upload'"
         >
             <div class="form-row">
-                <label class="col-sm-2" for="file-field">File:</label>
+                <label class="col-sm-2" for="file-field">
+                    File:
+                </label>
                 <div class="col-sm-10">
-                    <input type="file" ref="uploadField" class="form-control-file" id="file-field" @change="prepopulateName()" :disabled="uploading">
+                    <div class="d-flex justify-content-between">
+                        <div><input type="file" ref="uploadField" class="form-control-file" id="file-field" @change="prepopulateName()" :disabled="uploading"></div>
+                        <div>
+                            <small class="text-secondary material-icons cursor-pointer" v-b-toggle.file-info-collapse>info</small>
+                        </div>
+                    </div>
+                    <b-collapse id="file-info-collapse">
+                        <div><small class="text-muted">Supported types: {{supportedMimes.join(', ')}}</small></div>
+                        <div><small class="text-muted">Max size: {{maxUploadSize}}</small></div>
+                    </b-collapse>
                     <validation-error :messages="errors.file"></validation-error>
                 </div>
             </div>
@@ -72,6 +83,7 @@
 
 <script>
     import ValidationError from '../../ValidationError'
+    import {mapGetters} from 'vuex'
 
     export default {
         components: {
@@ -91,6 +103,12 @@
                 errors: {},
                 uploading: false
             }
+        },
+        computed: {
+            ...mapGetters({
+                maxUploadSize: 'getMaxUploadSize',
+                supportedMimes: 'getSupportedMimes'
+            })
         },
         methods: {
             getUploadCategories() {

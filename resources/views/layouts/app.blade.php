@@ -131,6 +131,8 @@
     <!-- Scripts -->
     <script>
         window.user = {!! json_encode($user) !!}.user
+        window.maxUploadSize = '{{getMaxUploadSizeForHumans()}}'
+        window.supportedMimes = {!! json_encode(config('project.supported-mimes')) !!}
     </script>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\User\Created;
-use App\Notifications\users\Welcome;
+use App\Notifications\Users\Welcome;
 
 class SendWelcomeEmail
 {
@@ -19,7 +19,6 @@ class SendWelcomeEmail
     /**
      * Handle the event.
      *
-     * @param  Created  $event
      * @return void
      */
     public function handle(Created $event)

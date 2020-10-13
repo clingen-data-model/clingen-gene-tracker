@@ -19,6 +19,8 @@ const debug = process.env.NODE_ENV !== 'production'
 const state = {
     requestCount: 0,
     user: new User(window.user),
+    maxUploadSize: window.maxUploadSize,
+    supportedMimes: window.supportedMimes,
     apiRequestCounts: {
         omim: 0,
         mondo: 0,
@@ -42,7 +44,9 @@ const getters = {
     omimLoading(state) {
         return state.apiRequestCounts['omim'] > 0
     },
-    getUser: state => state.user
+    getUser: state => state.user,
+    getMaxUploadSize: state => state.maxUploadSize,
+    getSupportedMimes: state => state.supportedMimes
 }
 
 const mutations = {
