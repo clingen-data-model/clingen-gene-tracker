@@ -32,47 +32,72 @@
             <div v-if="this.curations">
                 <div id="info">
                     <div class="row mt-2">
-                        <strong class="col-md-2">Gene Symbol:</strong> 
-                        <div class="col-md">{{ curation.gene_symbol }}</div>
+                        <strong class="col-md-3">Gene Symbol:</strong> 
+                        <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnch:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnch:${curation.hgnc_id}`}}</small>)</div>
                     </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-2">HGNC ID:</strong> 
+                    <!-- <div class="row mt-2">
+                        <strong class="col-md-3">HGNC ID:</strong> 
                         <div class="col-md">
                             <span v-if="curation.hgnc_id">{{`hgnch:${curation.hgnc_id}`}}</span>
                             <small class="text-muted" v-else>
                                 HGNC info will update shortly
                             </small>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-2">HGNC Name:</strong> 
+                    </div> -->
+                    <!-- <div class="row mt-2">
+                        <strong class="col-md-3">HGNC Name:</strong> 
                         <div class="col-md">
-                            <span v-if="curation.name">{{`hgnch:${curation.name}`}}</span>
+                            
                             <small class="text-muted" v-else>
                                 HGNC info will update shortly
                             </small>
                         </div>
+                    </div> -->
+                    <div class="row mt-2">
+                        <strong class="col-md-3">
+                            Mode Of Inheritance:
+                        </strong>
+                        <div class="col-md">
+                            <div v-if="curation.mode_of_inheritance">
+                                {{curation.mode_of_inheritance.name}} - ({{curation.mode_of_inheritance.hp_id}})
+                            </div>
+                            <div v-else>--</div>
+                        </div>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">Expert Panel:</strong> 
+                        <strong class="col-md-3">Disease Entity:</strong> 
+                        <div class="col-md">
+                            <div v-if="curation.mondo_id">
+                                <span v-if="curation.mondo_name">
+                                    {{ (curation.mondo_name ? curation.mondo_name : '')}} - 
+                                </span>
+                                <external-link :href="mondoUrl" target="mondo" class="external">
+                                    {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
+                                </external-link>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mt-2">
+                        <strong class="col-md-3">Expert Panel:</strong> 
                         <div class="col-md">{{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}</div>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">Curator:</strong> 
+                        <strong class="col-md-3">Curator:</strong> 
                         <div class="col-md">{{ (curation.curator) ? curation.curator.name : '--'}}</div>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">Curation Type:</strong>
+                        <strong class="col-md-3">Curation Type:</strong>
                         <div class="col-md">
                             {{curation.curation_type ? curation.curation_type.description : '--'}}
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <strong class="col-md-2">Phenotypes:</strong>
+                        <strong class="col-md-3">Phenotypes:</strong>
                         <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" class="col-md"></phenotype-list>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">Rationale:</strong>
+                        <strong class="col-md-3">Rationale:</strong>
                         <div class="col-md">
                             <ul class="list-inline">
                                 <li v-for="(rationale, idx) in curation.rationales" :key="rationale.id" class="list-inline-item">
@@ -82,7 +107,7 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">PMIDS</strong>
+                        <strong class="col-md-3">PMIDS</strong>
                         <div class="col-md" v-if="curation.pmids">
                             <ul class="list-inline">
                                 <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item" :key="idx">
@@ -92,24 +117,17 @@
                         </div>
                     </div>
                     <div class="row mt-2">
-                        <strong class="col-md-2">Notes on Rationale</strong>
+                        <strong class="col-md-3">Notes on Rationale</strong>
                         <div class="col-md">
                             {{curation.rationale_notes}}
                         </div>
                     </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-2">MonDO ID:</strong> 
-                        <div class="col-md">
-                            {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
-                            {{ (curation.mondo_name ? curation.mondo_name : '')}}
-                        </div>
-                    </div>
                     <div class="row mt-1">
-                        <strong class="col-md-2">Disease entity notes:</strong> 
+                        <strong class="col-md-3">Disease entity notes:</strong> 
                         <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
                     </div>
                     <div class="row mt-3">
-                        <strong class="col-md-2">Current Status:</strong>
+                        <strong class="col-md-3">Current Status:</strong>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 {{ (curation.current_status) ? curation.current_status.name : 'No status set' }} 
@@ -121,17 +139,17 @@
                         </div>
                     </div>
                     <div class="row mt-2" v-if="curation.gdm_uuid">
-                        <strong class="col-md-2">GCI ID:</strong> 
+                        <strong class="col-md-3">GCI ID:</strong> 
                         <div class="col-md">
-                            <a :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${curation.gdm_uuid}`" 
+                            <external-link :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${curation.gdm_uuid}`" 
                                 target="gci"
                             >
                                 {{ curation.gdm_uuid }}
-                            </a>
+                            </external-link>
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <strong class="col-md-2">Current Classification:</strong>
+                        <strong class="col-md-3">Current Classification:</strong>
                         <div class="col-md-6">
                             <div class="mb-2">
                                 {{ (curation.current_classification) ? curation.current_classification.name : 'No status set' }} 
@@ -143,7 +161,7 @@
                         </div>
                     </div>
                     <div class="row mt-1">
-                        <strong class="col-md-2">Notes:</strong> 
+                        <strong class="col-md-3">Notes:</strong> 
                         <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
                     </div>
                 </div>
@@ -219,6 +237,11 @@
                 }
                 return this.getCuration(this.id)
             },
+            mondoUrl: function () {
+                if (this.curation.mondo_id) {
+                    return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`
+                }
+            }
 
         },
         methods: {

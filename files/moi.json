@@ -1,165 +1,197 @@
 [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Autosomal dominant inheritance",
+        "abbreviation": "AD",
         "uri": "http://purl.obolibrary.org/obo/HP_0000006"
     },
     [{
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Autosomal dominant somatic cell mutation",
+            "abbreviation": "AD-SC",
             "uri": "http://purl.obolibrary.org/obo/HP_0001444"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Autosomal dominant contiguous gene syndrome",
+            "abbreviation": "AD-CG",
             "uri": "http://purl.obolibrary.org/obo/HP_0001452"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Sex-limited autosomal dominant",
+            "abbreviation": "AD-SL",
             "uri": "http://purl.obolibrary.org/obo/HP_0001470"
         },
         [{
             "parentUri": "http://purl.obolibrary.org/obo/HP_0001470",
             "name": "Male-limited autosomal dominant",
+            "abbreviation": "AD-ML",
             "uri": "http://purl.obolibrary.org/obo/HP_0001475"
         }],
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Autosomal dominant inheritance with paternal imprinting",
+            "abbreviation": "AD-PI",
             "uri": "http://purl.obolibrary.org/obo/HP_0012274"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Autosomal dominant inheritance with maternal imprinting",
+            "abbreviation": "AD-MI",
             "uri": "http://purl.obolibrary.org/obo/HP_0012275"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0000006",
             "name": "Autosomal dominant germline de novo mutation",
+            "abbreviation": "AD-DN",
             "uri": "http://purl.obolibrary.org/obo/HP_0025352"
         }
     ],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Autosomal recessive inheritance",
+        "abbreviation": "AR",
         "uri": "http://purl.obolibrary.org/obo/HP_0000007"
     },
     [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000007",
         "name": "Sex-limited autosomal recessive inheritance",
+        "abbreviation": "AR-SL",
         "uri": "http://purl.obolibrary.org/obo/HP_0031362"
     }],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Heterogeneous",
+        "abbreviation": "HT",
         "uri": "http://purl.obolibrary.org/obo/HP_0001425"
     },
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Multifactorial inheritance",
+        "abbreviation": "MF",
         "uri": "http://purl.obolibrary.org/obo/HP_0001426"
     },
     [{
             "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
             "name": "Polygenic inheritance",
+            "abbreviation": "MF-P",
             "uri": "http://purl.obolibrary.org/obo/HP_0010982"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
             "name": "Oligogenic inheritance",
+            "abbreviation": "MF-O",
             "uri": "http://purl.obolibrary.org/obo/HP_0010983"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0001426",
             "name": "Digenic inheritance",
+            "abbreviation": "MF-D",
             "uri": "http://purl.obolibrary.org/obo/HP_0010984"
         }
     ],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Mitochondrial inheritance",
+        "abbreviation": "MI",
         "uri": "http://purl.obolibrary.org/obo/HP_0001427"
     },
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Somatic mutation",
+        "abbreviation": "SMT",
         "uri": "http://purl.obolibrary.org/obo/HP_0001428"
     },
     [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0001428",
         "name": "Somatic mosaicism",
+        "abbreviation": "SMT-SC",
         "uri": "http://purl.obolibrary.org/obo/HP_0001442"
     }],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Contiguous gene syndrome",
+        "abbreviation": "CGS",
         "uri": "http://purl.obolibrary.org/obo/HP_0001466"
     },
     [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0001466",
         "name": "Autosomal dominant contiguous gene syndrome",
+        "abbreviation": "CGS-ADCGS",
         "uri": "http://purl.obolibrary.org/obo/HP_0001452"
     }],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Genetic anticipation",
+        "abbreviation": "GA",
         "uri": "http://purl.obolibrary.org/obo/HP_0003743"
     },
     [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0003743",
         "name": "Genetic anticipation with paternal anticipation bias",
+        "abbreviation": "GA-PAB",
         "uri": "http://purl.obolibrary.org/obo/HP_0003744"
     }],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Sporadic",
+        "abbreviation": "SP",
         "uri": "http://purl.obolibrary.org/obo/HP_0003745"
     },
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Gonosomal inheritance",
+        "abbreviation": "GON",
         "uri": "http://purl.obolibrary.org/obo/HP_0010985"
     },
     [{
             "parentUri": "http://purl.obolibrary.org/obo/HP_0010985",
             "name": "X-linked inheritance",
+            "abbreviation": "GON-XL",
             "uri": "http://purl.obolibrary.org/obo/HP_0001417"
         },
         [{
                 "parentUri": "http://purl.obolibrary.org/obo/HP_0001417",
                 "name": "X-linked recessive inheritance",
+                "abbreviation": "GON-XLR",
                 "uri": "http://purl.obolibrary.org/obo/HP_0001419"
             },
             {
                 "parentUri": "http://purl.obolibrary.org/obo/HP_0001417",
                 "name": "X-linked dominant inheritance",
+                "abbreviation": "GON-XLD",
                 "uri": "http://purl.obolibrary.org/obo/HP_0001423"
             }
         ],
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0010985",
             "name": "Y-linked inheritance",
+            "abbreviation": "YL",
             "uri": "http://purl.obolibrary.org/obo/HP_0001450"
         }
     ],
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Semidominant mode of inheritance",
+        "abbreviation": "SMD",
         "uri": "http://purl.obolibrary.org/obo/HP_0032113"
     },
     {
         "parentUri": "http://purl.obolibrary.org/obo/HP_0000005",
         "name": "Uniparental disomy",
+        "abbreviation": "UD",
         "uri": "http://purl.obolibrary.org/obo/HP_0032382"
     },
     [{
             "parentUri": "http://purl.obolibrary.org/obo/HP_0032382",
             "name": "Uniparental heterodisomy",
+            "abbreviation": "UH",
             "uri": "http://purl.obolibrary.org/obo/HP_0032383"
         },
         {
             "parentUri": "http://purl.obolibrary.org/obo/HP_0032382",
             "name": "Uniparental isodisomy",
+            "abbreviation": "UI",
             "uri": "http://purl.obolibrary.org/obo/HP_0032384"
         }
     ]

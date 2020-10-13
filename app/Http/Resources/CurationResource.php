@@ -9,7 +9,8 @@ class CurationResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     public function toArray($request)
@@ -19,6 +20,7 @@ class CurationResource extends JsonResource
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
         $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
+        $data['mode_of_inheritance'] = $this->whenLoaded('modeOfInheritance');
         $data['classifications'] = $this->whenLoaded('classifications');
         $data['current_status'] = ($this->currentStatus && $this->currentStatus->id) ? $this->currentStatus : null;
         $data['current_classification'] = $this->currentClassification->id ? $this->currentClassification : null;

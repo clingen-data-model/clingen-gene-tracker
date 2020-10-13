@@ -18,6 +18,9 @@ import ExpertPanelField from './components/admin/ExpertPanelField'
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
 
+import ExternalLink from './components/ExternalLink'
+window.Vue.component('external-link', ExternalLink)
+
 if (user) {
     user = new User(user);
 }
