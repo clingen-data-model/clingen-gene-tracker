@@ -43,6 +43,13 @@
                 </router-link>
                 <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>
             </template>
+            <template v-slot:cell(mode_of_inheritance)="{item}">
+                <div v-if="item.mode_of_inheritance !== null">
+                    <div :title="item.mode_of_inheritance.name">
+                        {{item.mode_of_inheritance.abbreviation}}
+                    </div>
+                </div>
+            </template>
             <template v-slot:cell(expert_panel)="{item}">
                 <div>{{(item.expert_panel) ? item.expert_panel.name : null}}</div>
             </template>
@@ -119,6 +126,19 @@
                         sortable: true
                     },
                     {
+                        key: 'mode_of_inheritance',
+                        label: 'MOI',
+                        sortable: true,
+                    },
+                    {
+                        key: 'mondo_id',
+                        label: 'Disease Entity',
+                        sortable: true,
+                        thStyle: {
+                            width: "9rem"
+                        }
+                    },
+                    {
                         key: 'expert_panel',
                         label: 'Expert Panel',
                         sortable: true,
@@ -135,14 +155,6 @@
                         sortable: false,
                         thStyle: {
                             width: "8rem"
-                        }
-                    },
-                    {
-                        key: 'mondo_id',
-                        label: 'Disease Entity',
-                        sortable: true,
-                        thStyle: {
-                            width: "9rem"
                         }
                     },
                     {

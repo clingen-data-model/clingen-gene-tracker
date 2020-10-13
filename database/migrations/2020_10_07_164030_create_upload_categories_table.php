@@ -13,11 +13,13 @@ class CreateUploadCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('upload_categories', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('upload_categories')) {
+            Schema::create('upload_categories', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -27,6 +29,8 @@ class CreateUploadCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('upload_categories');
+        if (Schema::hasTable('upload_categories')) {
+            Schema::dropIfExists('upload_categories');
+        }
     }
 }
