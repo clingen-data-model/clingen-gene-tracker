@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>{{ config('backpack.base.project_name') }} Error 503</title>
+    <title>{{ config('backpack.base.project_name') }} Down for maintenance</title>
 
     <link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 
@@ -10,7 +10,7 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        color: #B0BEC5;
+        color: #999;
         display: table;
         font-weight: 100;
         font-family: 'Lato';
@@ -43,8 +43,12 @@
   <body>
     <div class="container">
       <div class="content">
-        <div class="title">503</div>
-        <div class="quote">It's not you, it's me.</div>
+        <div class="title">BRB</div>
+        <div class="quote">
+          The GeneTracker needs a little down time.  
+          <br>
+          We'll be back up in a bit.
+        </div>
         <div class="explanation">
           <br>
           <small>
