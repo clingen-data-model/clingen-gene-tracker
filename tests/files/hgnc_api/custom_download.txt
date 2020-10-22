@@ -1,0 +1,21 @@
+HGNC ID	Approved symbol	Approved name	Status	Previous symbols	Alias symbols	Accession numbers	Date modified	NCBI Gene ID(supplied by NCBI)	OMIM ID(supplied by OMIM)
+HGNC:5	A1BG	alpha-1-B glycoprotein	Approved				2020-09-17	1	138670
+HGNC:37133	A1BG-AS1	A1BG antisense RNA 1	Approved	NCRNA00181, A1BGAS, A1BG-AS	FLJ23569	BC040926	2013-06-27	503538	
+HGNC:24086	A1CF	APOBEC1 complementation factor	Approved		ACF, ASP, ACF64, ACF65, APOBEC1CF	AF271790	2016-10-05	29974	618199
+HGNC:7	A2M	alpha-2-macroglobulin	Approved		FWP007, S863-7, CPAMD5	BX647329, X68728, M11313	2020-09-17	2	103950
+HGNC:27057	A2M-AS1	A2M antisense RNA 1	Approved				2018-03-21	144571	
+HGNC:23336	A2ML1	alpha-2-macroglobulin like 1	Approved	CPAMD9	FLJ25179, p170	AK057908	2018-04-17	144568	610627
+HGNC:41022	A2ML1-AS1	A2ML1 antisense RNA 1	Approved				2014-11-19	100874108	
+HGNC:41523	A2ML1-AS2	A2ML1 antisense RNA 2	Approved				2014-11-19	106478979	
+HGNC:8	A2MP1	alpha-2-macroglobulin pseudogene 1	Approved	A2MP		M24415	2016-08-22	3	
+HGNC:30005	A3GALT2	alpha 1,3-galactosyltransferase 2	Approved	A3GALT2P	IGBS3S, IGB3S		2018-02-08	127550	
+HGNC:18149	A4GALT	alpha 1,4-galactosyltransferase (P blood group)	Approved	P1	A14GALT, Gb3S, P(k)		2020-09-16	53947	607922
+HGNC:17968	A4GNT	alpha-1,4-N-acetylglucosaminyltransferase	Approved		alpha4GnT	AF141315	2016-10-05	51146	616709
+HGNC:13666	AAAS	aladin WD repeat nucleoporin	Approved			AJ289841	2018-03-12	8086	605378
+HGNC:21298	AACS	acetoacetyl-CoA synthetase	Approved		FLJ12389, SUR-5, ACSF1	AK022451	2015-08-24	65985	614364
+HGNC:18226	AACSP1	acetoacetyl-CoA synthetase pseudogene 1	Approved	AACSL			2020-04-20	729522	
+HGNC:17	AADAC	arylacetamide deacetylase	Approved		DAC, CES5A1	L32179	2020-09-17	13	600338
+HGNC:24427	AADACL2	arylacetamide deacetylase like 2	Approved		MGC72001	BC065724	2018-05-03	344752	
+HGNC:50301	AADACL2-AS1	AADACL2 antisense RNA 1	Approved				2014-04-07	101928142	
+HGNC:32037	AADACL3	arylacetamide deacetylase like 3	Approved		OTTHUMG00000001887		2018-05-03	126767	
+HGNC:32038	AADACL4	arylacetamide deacetylase like 4	Approved		OTTHUMG00000001889		2018-04-17	343066	

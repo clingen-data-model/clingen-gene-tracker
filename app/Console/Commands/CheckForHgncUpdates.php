@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Curation;
-use App\HgncRecord;
-use App\Contracts\HgncClient;
+use App\Hgnc\HgncRecord;
+use App\Hgnc\HgncClientContract;
 use App\Exceptions\ApiServerErrorException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
