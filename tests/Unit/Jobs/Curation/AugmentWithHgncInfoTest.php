@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Jobs\Curation;
 
-use App\Contracts\HgncClient;
+use App\Hgnc\HgncClientContract;
 use App\Curation;
 use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
 use App\ExpertPanel;
-use App\HgncRecord;
+use App\Hgnc\HgncRecord;
 use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Notifications\Curations\GeneSymbolUpdated;
 use App\User;

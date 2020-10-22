@@ -2,16 +2,15 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use GuzzleHttp\Client;
-use App\Clients\HgncClient;
-use App\Contracts\GeneSymbolUpdate;
-use App\Contracts\GeneSymbolUpdateContract;
 use App\Exceptions\HttpNotFoundException;
 use App\Exceptions\HttpUnexpectedResponseException;
+use App\Hgnc\HgncClient;
+use App\Hgnc\HgncRecord;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Handler\MockHandler;
+use Tests\TestCase;
 
 /**
  * @group hgnc
@@ -29,9 +28,9 @@ class HgncClientTest extends TestCase
      */
     public function app_resolves_abstract_HgncClient_w_concrete_implementation()
     {
-        $hgncClient = app()->make(\App\Contracts\HgncClient::class);
-        $this->assertInstanceOf(\App\Clients\HgncClient::class, $hgncClient);
-    }   
+        $hgncClient = app()->make(\App\Hgnc\HgncClientContract::class);
+        $this->assertInstanceOf(\App\Hgnc\HgncClient::class, $hgncClient);
+    }
 
     /**
      * @test
@@ -55,7 +54,7 @@ class HgncClientTest extends TestCase
         $record = $hgncClient->fetchGeneSymbol('HT');
 
         $expectedRecord = json_decode($json)->response->docs[0];
-        
+
         $this->assertEquals($expectedRecord, $record->getAttributes());
     }
 
@@ -71,7 +70,7 @@ class HgncClientTest extends TestCase
 
         $hgncClient->fetchGeneSymbol('MLTIRECORD1');
     }
-    
+
     /**
      * @test
      */
@@ -83,20 +82,55 @@ class HgncClientTest extends TestCase
         $record = $hgncClient->fetchHgncId('123');
 
         $expectedRecord = json_decode($json)->response->docs[0];
-        
+
         $this->assertEquals($expectedRecord, $record->getAttributes());
     }
-    
+
+    /**
+     * @test
+     * @group hgnc-custom-download
+     */
+    public function returns_collection_of_hgnc_records_for_custom_download()
+    {
+        $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
+        $client = $this->getClient([new Response(200, [], $data)]);
+        $records = $client->fetchCustomDownload([
+                    'col' => [
+                        'gd_hgnc_id',
+                        'gd_app_name',
+                        'gd_status',
+                        'gd_prev_sym',
+                        'gd_aliases',
+                        'gd_pub_acc_ids',
+                        'gd_date_mod',
+                        'md_mim_id',
+                        'md_eg_id',
+                    ],
+                    'status' => [
+                        'Approved',
+                        'Entry Withdrawn',
+                    ],
+                    'hgnc_dbtag' => 'on',
+                    'order_by' => 'gd_app_sym_sort',
+                    'format' => 'text',
+                    'submit' => 'submit',
+                ]);
+
+        $this->assertEquals(20, $records->count());
+        $this->assertInstanceOf(HgncRecord::class, $records->first());
+    }
+
     private function getClient($responses)
     {
         $mock = new MockHandler($responses);
         $stack = HandlerStack::create($mock);
         $guzzleClient = new Client([
             'handler' => $stack,
-            'headers'=>[
-                'Accept' => 'application/json'
-            ]
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
+
         return new HgncClient($guzzleClient);
     }
 }

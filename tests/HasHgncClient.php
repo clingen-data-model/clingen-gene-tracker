@@ -3,7 +3,7 @@
 namespace Tests;
 
 use GuzzleHttp\Client;
-use App\Clients\HgncClient;
+use App\Hgnc\HgncClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
 

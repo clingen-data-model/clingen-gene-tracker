@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\HgncRecord;
+use App\Hgnc\HgncRecord;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Clients\HgncClient;
+use App\Hgnc\HgncClient;
 use App\Clients\OmimClient;
 use App\Clients\MondoClient;
-use App\Contracts\HgncClient as HgncClientContract;
+use App\Hgnc\HgncClientContract as HgncClientContract;
 use App\Contracts\OmimClient as OmimClientContract;
 use App\Contracts\MondoClient as MondoClientContract;
 use GuzzleHttp\Client;

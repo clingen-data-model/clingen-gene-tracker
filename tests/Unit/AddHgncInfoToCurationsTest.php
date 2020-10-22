@@ -5,14 +5,14 @@ namespace Tests\Unit;
 use App\Curation;
 use Tests\TestCase;
 use GuzzleHttp\Client;
-use App\Clients\HgncClient;
+use App\Hgnc\HgncClient;
 use App\Console\Commands\AddHgncInfoToCurations;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Contracts\HgncClient as HgncClientContract;
+use App\Hgnc\HgncClientContract as HgncClientContract;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Contracts\HgncClient;
+use App\Hgnc\HgncClientContract;
 use Illuminate\Console\Command;
 
 class HgncClientProxy extends Command

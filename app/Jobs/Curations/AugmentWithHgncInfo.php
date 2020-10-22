@@ -4,7 +4,7 @@ namespace App\Jobs\Curations;
 
 use App\Curation;
 use OutOfBoundsException;
-use App\Contracts\HgncClient;
+use App\Hgnc\HgncClientContract;
 use App\Exceptions\ApiServerErrorException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
