@@ -11,7 +11,13 @@ class ModeOfInheritance extends Model
         'abbreviation',
         'parent_id',
         'hp_uri',
+        'curatable',
     ];
+
+    public function scopeCuratable($query)
+    {
+        return $query->where('curatable', 1);
+    }
 
     public static function findByHpId($hpId)
     {

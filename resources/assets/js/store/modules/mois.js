@@ -4,33 +4,33 @@ const state = {
 }
 
 const getters = {
-    Items: function (state) {
+    Items: function(state) {
         return state.items;
     }
 }
 
 const mutations = {
-    setItems: function (state, items) {
+    setItems: function(state, items) {
         state.items = items
     },
-    addItem: function (state, item) {
+    addItem: function(state, item) {
         state.items.push(item)
     }
 }
 
 const actions = {
-    getAllItems: function ({ commit }) {
+    getAllItems: function({ commit }) {
         const data = JSON.parse(localStorage.getItem('mois'));
         if (data) {
             commit('setItems', data)
-            return;
+                // return;
         }
         window.axios.get(baseUrl)
-            .then(function (response) {
+            .then(function(response) {
                 localStorage.setItem('mois', JSON.stringify(response.data));
                 commit('setItems', response.data)
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.error(error);
             })
     }
