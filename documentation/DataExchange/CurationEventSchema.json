@@ -1,8 +1,9 @@
 {
     "$schema": "http://json-schema.org/schema#",
-
     "$id": "https://gene-tracker.clinicalgenome.org/curation-schema.json",
-
+    "title": "GeneTracker Event",
+    "description": "A event published to the GeneTracker event feed.",
+    "type": "object",
     "properties": {
         "key": {
             "type": "string",
