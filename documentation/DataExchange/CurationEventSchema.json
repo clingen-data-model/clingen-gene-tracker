@@ -1,22 +1,21 @@
-{ 
+{
     "$schema": "http://json-schema.org/schema#",
 
-    "$id": "https://gene-tracker.clinicalgenome.org/curation-schema",
-    
+    "$id": "https://gene-tracker.clinicalgenome.org/curation-schema.json",
+
     "properties": {
-        "type": "object",
-        "properties": {
-            "key": {
-                "type": "string",
-                "pattern": "\\w{6}(-\\w{4}){3}-\\w{12}^$",
-            },
-            "event_type": {
-                "type": "string",
-                "title": "Type of curation event",
-                "enum": ["created", "updated", "deleted"]
-            },
-            "data": {
-                "type": "object",
+        "key": {
+            "type": "string",
+            "pattern": "\\w{6}(-\\w{4}){3}-\\w{12}^$"
+        },
+        "event_type": {
+            "type": "string",
+            "title": "Type of curation event",
+            "enum": ["created", "updated", "deleted"]
+        },
+        "data": {
+            "type": "object",
+            "properties": {
                 "id": {
                     "type": "integer",
                     "minimum": 1
@@ -45,7 +44,7 @@
                             "type": "string"
                         },
                         "hp_id": {
-                            "type": "string", 
+                            "type": "string",
                             "format": "^HP:[0-9]{7}"
                         }
                     }
@@ -53,10 +52,10 @@
                 "curator": {
                     "type": "object",
                     "properties": {
-                        "id": {"type": "integer"},
-                        "name": {"type": "string"},
+                        "id": { "type": "integer" },
+                        "name": { "type": "string" },
                         "email": {
-                            "type": "string", 
+                            "type": "string",
                             "format": "email"
                         }
                     }
@@ -99,7 +98,7 @@
                 "rationales": {
                     "type": "array",
                     "items": {
-                        "type": "string",
+                        "type": "string"
                     }
                 },
                 "curation_type": {
@@ -114,7 +113,7 @@
                                 "lumped"
                             ]
                         },
-                        "description": {"type": "string"}
+                        "description": { "type": "string" }
                     }
                 },
                 "omim_phenotypes": {
@@ -125,7 +124,7 @@
                     }
                 }
             }
-        },
-        "required": ["id", "gene"]
-    }
+        }
+    },
+    "required": ["id", "gene"]
 }
