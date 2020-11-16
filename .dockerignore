@@ -1,0 +1,62 @@
+# docker related files
+.dockerignore
+
+# Dependencies
+vendor
+node_modules
+.bablerc
+
+
+# Development stuff
+_ide_helper.php
+*.code-workspace
+.editorconfig
+.env
+.env.example
+.docker.env
+.docker/mysql
+.git
+.gitattributes
+.github
+.gitignore
+.styleci.yml
+.env.dusk.local
+.oauth-public.key
+.openshift/crons
+.openshift/secrets
+.oauth-private.key
+.php_cs.cache
+.php_cs.dist
+.phpunit-watcher.yml
+.rnd
+kafka-auth
+phpunit.result.cache
+phpunit.xml
+Profiling
+ruleset.xml
+tests/*
+docker-compose*
+Jenkinsfile
+kafkaProducer.php
+git-hooks
+
+# env centric files.
+bootstrap/cache/**/*
+files
+storage/debugbar
+storage/app/bulk_curation_uploads/**/*
+storage/app/pubilc/curator_uploads/**/*
+storage/framework/cache/**/*
+storage/framework/sessions/**/*
+storage/framework/testing/**/*
+storage/framework/views/**/*
+storage/logs/**/*
+database/migrated_data/**/*
+
+# miscilaneous files not related to running the app
+documentation/**/*
+README.md
+
+# Clientside assets are built before repo commit
+package*.json
+resources/assets
