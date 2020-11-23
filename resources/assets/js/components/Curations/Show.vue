@@ -33,12 +33,12 @@
                 <div id="info">
                     <div class="row mt-2">
                         <strong class="col-md-3">Gene Symbol:</strong> 
-                        <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnch:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnch:${curation.hgnc_id}`}}</small>)</div>
+                        <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
                     </div>
                     <!-- <div class="row mt-2">
                         <strong class="col-md-3">HGNC ID:</strong> 
                         <div class="col-md">
-                            <span v-if="curation.hgnc_id">{{`hgnch:${curation.hgnc_id}`}}</span>
+                            <span v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</span>
                             <small class="text-muted" v-else>
                                 HGNC info will update shortly
                             </small>
