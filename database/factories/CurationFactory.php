@@ -2,6 +2,7 @@
 
 use App\ExpertPanel;
 use Faker\Generator as Faker;
+use Ramsey\Uuid\Uuid;
 
 $expertPanels = ExpertPanel::all();
 
@@ -13,5 +14,6 @@ $factory->define(App\Curation::class, function (Faker $faker) use ($expertPanels
                                 : factory(ExpertPanel::class)->create()->id,
         'curator_id' => null,
         'notes' => null,
+        'uuid' => Uuid::uuid4()->toString(),
     ];
 });

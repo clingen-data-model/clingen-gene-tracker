@@ -7,6 +7,7 @@ use App\Events\Curation\Deleted;
 use App\Events\Curation\Saved;
 use App\Events\Curation\Updated;
 use App\Jobs\Curations\AddStatus;
+use App\Traits\HasUuid;
 use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -21,10 +22,12 @@ class Curation extends Model
 {
     use CrudTrait;
     use RevisionableTrait;
+    use HasUuid;
 
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
+        // 'uuid',
         'gdm_uuid',
         'gene_symbol',
         'hgnc_name',
@@ -275,7 +278,7 @@ class Curation extends Model
      */
     public static function findByUuid($uuid)
     {
-        return static::where('gdm_uuid', $uuid)->first();
+        return static::where('uuid', $uuid)->orWhere('gdm_uuid', $uuid)->first();
     }
 
     public static function findByHgncAndMondo($hgncId, $mondoId)
