@@ -1,8 +1,10 @@
 {
     "key": "2bf5282a-2cbd-45f2-bc87-e41c0d9d3737",
     "event_type": "updated",
+    "schema_version": 1,
     "data": {
         "id": 164,
+        "uuid": "c332bd48-33ec-11eb-8885-0242ac130003",
         "gene": {
             "symbol": "PDLIM3",
             "hgnc_id": "HGNC:20767"
@@ -15,14 +17,13 @@
         "curator": {
             "id": 5,
             "name": "Courtney Thaxton",
-            "email": "courtney_thaxton@med.unc.edu"        
+            "email": "courtney_thaxton@med.unc.edu"
         },
         "curation_type": {
             "name": "single-new",
             "description": "Curate a single gene-disease entity not on this list"
         },
-        "statuses": [
-            {
+        "statuses": [{
                 "name": "uploaded",
                 "effective_date": "2020-01-01"
             },
