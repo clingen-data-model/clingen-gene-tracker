@@ -10,6 +10,7 @@ use App\Events\Curation\Saved;
 use App\Upload;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 /**
@@ -353,5 +354,32 @@ class CurationTest extends TestCase
         $this->assertEquals(0, $curation->uploads->count());
         // $this->assertEquals(1, $curation->uploads->count());
         // $this->assertContains($upload->file_name, $curation->uploads->pluck('file_name'));
+    }
+
+    /**
+     * @test
+     * @group uuid
+     */
+    public function adds_uuid_when_creating_if_none_exists()
+    {
+        $curation = factory(Curation::class)->make(['uuid' => null]);
+        $this->assertNull($curation->uuid);
+
+        $curation->save();
+
+        $this->assertNotNull($curation->uuid);
+    }
+
+    /**
+     * @test
+     * @group uuid
+     */
+    public function can_find_a_curation_by_uuid()
+    {
+        $uuid = Uuid::uuid4()->toString();
+        $curations = factory(Curation::class, 5)->create();
+        $curation = factory(Curation::class)->create(['uuid' => $uuid]);
+
+        $this->assertNotNull(Curation::findByUuid($uuid));
     }
 }
