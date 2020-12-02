@@ -63,14 +63,7 @@ class User {
     }
 
     canSelectCurationStatus(status, curation) {
-        switch (status.name) {
-            case 'Recuration assigned':
-                return this.isPanelCoordinator(curation.expert_panel);
-                break;
-
-            default:
-                return this.canEditCuration(curation)
-        }
+        return this.canEditCuration(curation)
     }
 
     canEditCuration(curation) {
