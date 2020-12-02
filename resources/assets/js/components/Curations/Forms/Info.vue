@@ -94,7 +94,7 @@
             <status-form v-model="updatedCuration" class="mt-1"></status-form>
         </b-form-group>
         <br>
-        <div class="alert alert-info mt-3">
+        <div class="alert alert-info mt-3" v-if="user.hasPermission('update curation gdm_uuid')">
             <h5>
                 Advanced Info
                 <small class="text-muted float-right"><small>
@@ -104,7 +104,7 @@
                 </small></small>
             </h5>
             <hr>
-            <b-form-group v-if="user.hasRole('admin') || user.hasRole('programmer')" 
+            <b-form-group
                 horizontal 
                 label="GCI UUID" 
                 label-for="gdm_uuid"

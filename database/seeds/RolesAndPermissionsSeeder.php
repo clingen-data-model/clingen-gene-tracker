@@ -27,6 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('pages');
         $this->createPermissionGroup('curations');
         $managePanelCurations = Permission::firstOrcreate(['name' => 'manage panel curations']);
+        $updateGdmUuid = Permission::firstOrcreate(['name' => 'update curation gdm_uuid']);
 
         /**
          * Programmer role can do everything.
@@ -40,6 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'rationales');
         $this->givePermissionsToRole($role, 'pages');
         $this->givePermissionsToRole($role, 'curations');
+        $this->giveRolePermissionTo($role, $updateGdmUuid);
 
         /**
          * Admin Role can do most things.
@@ -52,6 +54,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'rationales', ['list', 'update']);
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
         $this->givePermissionsToRole($role, 'curations');
+        $this->giveRolePermissionTo($role, $updateGdmUuid);
 
         // $role = Role::firstOrcreate(['name' => 'coordinator']);
         // if (!$role->hasPermissionTo($managePanelCurations->name)) {
@@ -69,9 +72,14 @@ class RolesAndPermissionsSeeder extends Seeder
         $actions = $actions ?? ['list', 'create', 'update', 'delete'];
         foreach ($actions as $action) {
             $perm = $action.' '.$entity;
-            if (!$role->hasPermissionTo($perm)) {
-                $role->givePermissionTo($perm);
-            }
+            $this->giveRolePermissionTo($role, $perm);
+        }
+    }
+
+    protected function giveRolePermissionTo($role, $permission)
+    {
+        if (!$role->hasPermissionTo($permission)) {
+            $role->givePermissionTo($permission);
         }
     }
 

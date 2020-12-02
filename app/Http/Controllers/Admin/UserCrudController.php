@@ -6,7 +6,6 @@ use App\Affiliation;
 use App\ExpertPanel;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
-use App\Curation;
 use App\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Carbon\Carbon;
@@ -30,7 +29,7 @@ class UserCrudController extends CrudController
         |--------------------------------------------------------------------------
         */
         $this->crud->setModel(\App\User::class);
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/user');
+        $this->crud->setRoute(config('backpack.base.route_prefix').'/user');
         $this->crud->setEntityNameStrings('user', 'users');
 
         /*
@@ -50,7 +49,7 @@ class UserCrudController extends CrudController
             'entity' => 'expertPanels',
             'attribute' => 'name',
             'model' => ExpertPanel::class,
-            'pivot' => true
+            'pivot' => true,
         ], 'both');
 
         $this->crud->addField([
@@ -60,7 +59,17 @@ class UserCrudController extends CrudController
             'entity' => 'roles',
             'attribute' => 'name',
             'model' => Role::class,
-            'pivot' => true
+            'pivot' => true,
+        ], 'both');
+
+        $this->crud->addField([
+            'label' => 'Extra Permissions',
+            'type' => 'select2_multiple',
+            'name' => 'permissions',
+            'entity' => 'permissions',
+            'attribute' => 'name',
+            'model' => Permission::class,
+            'pivot' => true,
         ], 'both');
 
         // COmmented out b/c punt for now and focus on getting snapshot imported.
@@ -76,11 +85,11 @@ class UserCrudController extends CrudController
 
         $this->crud->removeField('deactivated_at');
         $this->crud->removeField('password');
-        
+
         // ------ CRUD BUTTONS
         $this->crud->addButtonFromView('line', 'deactivate', 'deactivate', 'end');
         // ------ CRUD ACCESS
-        $this->crud->denyAccess(['list','create','update','deactivate','delete']);
+        $this->crud->denyAccess(['list', 'create', 'update', 'deactivate', 'delete']);
         if ($this->user->hasPermissionTo('list users')) {
             $this->crud->allowAccess(['list']);
         }
@@ -107,6 +116,7 @@ class UserCrudController extends CrudController
         // use $this->data['entry'] or $this->crud->entry
 
         $this->processExpertPanels($request);
+
         return $redirect_location;
     }
 
@@ -121,6 +131,7 @@ class UserCrudController extends CrudController
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
         $this->processExpertPanels($request);
+
         return $redirect_location;
     }
 
@@ -129,13 +140,13 @@ class UserCrudController extends CrudController
         if ($this->user->hasPermissionTo('deactivate users')) {
             $user = User::findOrFail($request->id);
             $user->update([
-                'deactivated_at'=>Carbon::now()
+                'deactivated_at' => Carbon::now(),
             ]);
 
-            return Redirect::back()->with(['msg','User '.$user->name.' deactivated successfully']);
+            return Redirect::back()->with(['msg', 'User '.$user->name.' deactivated successfully']);
         }
 
-        return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);
+        return Redirect::back()->withErrors(['msg', 'Logged in user does not hae access to do deactivate users']);
     }
 
     public function reactivate(Request $request)
@@ -143,13 +154,13 @@ class UserCrudController extends CrudController
         if ($this->user->hasPermissionTo('deactivate users')) {
             $user = User::findOrFail($request->id);
             $user->update([
-                'deactivated_at'=>null
+                'deactivated_at' => null,
             ]);
 
-            return Redirect::back()->with(['msg','User '.$user->name.' reactivated successfully']);
+            return Redirect::back()->with(['msg', 'User '.$user->name.' reactivated successfully']);
         }
 
-        return Redirect::back()->withErrors(['msg','Logged in user does not hae access to do deactivate users']);
+        return Redirect::back()->withErrors(['msg', 'Logged in user does not hae access to do deactivate users']);
     }
 
     private function processExpertPanels(Request $request)
@@ -160,7 +171,7 @@ class UserCrudController extends CrudController
                 if (!isset($panel->id)) {
                     continue;
                 }
-                $expertPanels[$panel->id] = (array)$panel->pivot;
+                $expertPanels[$panel->id] = (array) $panel->pivot;
             }
             $this->crud->entry->expertPanels()->sync($expertPanels);
         }
