@@ -2,15 +2,17 @@
 
 namespace App;
 
-use Backpack\CRUD\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
+use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ExpertPanel extends Model implements HasAffiliation
 {
-    use RevisionableTrait, CrudTrait, HasAffiliationTrait;
+    use RevisionableTrait;
+    use CrudTrait;
+    use HasAffiliationTrait;
 
     protected $revisionCreationsEnabled = true;
     protected $fillable = [
@@ -52,5 +54,10 @@ class ExpertPanel extends Model implements HasAffiliation
     public function getFileSafeNameAttribute()
     {
         return preg_replace('/[\\:\\/\*\?"<>\| ]/', '-', $this->name);
+    }
+
+    public function addCoordinator(User $user)
+    {
+        $this->users()->attach($user->id, ['is_coordinator' => 1]);
     }
 }
