@@ -98,7 +98,12 @@ class User {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
         }
-        false;
+
+        if (this.hasPermission('delete curations') && this.canEditCuration(curation)) {
+            return true
+        }
+
+        return false;
     }
 
 }
