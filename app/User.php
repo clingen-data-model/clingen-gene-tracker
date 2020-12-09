@@ -4,26 +4,24 @@ namespace App;
 
 use App\Events\User\Created;
 use Backpack\CRUD\CrudTrait;
-use App\Contracts\HasAffiliation;
-use App\Traits\HasAffiliationTrait;
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Lab404\Impersonate\Models\Impersonate;
+use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
-    use HasApiTokens,
-        Notifiable,
-        RevisionableTrait,
-        CrudTrait,
-        SoftDeletes,
-        HasRoles,
-        Impersonate;
+    use HasApiTokens;
+    use Notifiable;
+    use RevisionableTrait;
+    use CrudTrait;
+    use SoftDeletes;
+    use HasRoles;
+    use Impersonate;
 
     protected $revisionCreationsEnabled = true;
 
@@ -38,7 +36,7 @@ class User extends Authenticatable
         'password',
         'deactivated_at',
         'gci_uuid',
-        'affiliation_id'
+        'affiliation_id',
     ];
 
     /**
