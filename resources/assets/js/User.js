@@ -103,6 +103,10 @@ class User {
             return true
         }
 
+        if (this.isPanelCoordinator(curation.expert_panel)) {
+            return true
+        }
+
         return false;
     }
 
