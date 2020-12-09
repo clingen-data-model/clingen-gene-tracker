@@ -3,12 +3,14 @@
 namespace App\Policies;
 
 use App\Curation;
+use App\Policies\Traits\KnowsPrivilegedRoles;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CurationPolicy
 {
     use HandlesAuthorization;
+    use KnowsPrivilegedRoles;
 
     /**
      * Create a new policy instance.
@@ -21,7 +23,7 @@ class CurationPolicy
 
     public function before($user, $ability)
     {
-        if ($user->hasRole('programmer|admin')) {
+        if ($this->hasPrivilegedRole($user)) {
             return true;
         }
     }
@@ -38,6 +40,23 @@ class CurationPolicy
         }
 
         if ($user->canEditPanelCurations($curation->expertPanel)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function delete(User $user, Curation $curation)
+    {
+        if ($this->hasPrivilegedRole($user)) {
+            return true;
+        }
+
+        if ($user->isPanelCoordinator($curation->expertPanel)) {
+            return true;
+        }
+
+        if ($user->can('delete curations') && $this->update($user, $curation)) {
             return true;
         }
 

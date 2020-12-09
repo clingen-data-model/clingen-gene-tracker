@@ -94,4 +94,16 @@ class ExpertPanelTest extends TestCase
 
         $this->assertEquals(1, $panel->fresh()->coordinators->count());
     }
+
+    /**
+     * @test
+     */
+    public function can_add_coordinator_to_EP()
+    {
+        $user = factory(User::class)->create();
+        $this->panel->addCoordinator($user);
+
+        $this->assertContains($user->id, $this->panel->coordinators->pluck('id')->toArray());
+        $this->assertEquals(1, $this->panel->coordinators->first()->pivot->is_coordinator);
+    }
 }

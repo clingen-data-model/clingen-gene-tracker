@@ -26,7 +26,7 @@ class CurationController extends Controller
     {
         $this->cleaner = $cleaner;
         $this->omim = $omim;
-        $this->middleware('role:programmer|admin')->only(['destroy']);
+        // $this->middleware('role:programmer|admin')->only(['destroy']);
         $this->search = $search;
     }
 
@@ -162,6 +162,7 @@ class CurationController extends Controller
     public function destroy($id)
     {
         $curation = Curation::findOrFail($id);
+        $this->authorize('delete', $curation);
         $curation->delete();
 
         return response()->json(['message' => 'You successfully deleted curation with id '.$id]);

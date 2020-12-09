@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Policies\Traits\KnowsPanelCoordinators;
+use App\Policies\Traits\KnowsPrivilegedRoles;
 use App\Upload;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -9,6 +11,8 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class UploadPolicy
 {
     use HandlesAuthorization;
+    use KnowsPrivilegedRoles;
+    use KnowsPanelCoordinators;
 
     /**
      * Determine whether the user can view any uploads.
@@ -115,22 +119,6 @@ class UploadPolicy
         }
 
         if ($user->id == $upload->user_id) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function hasPrivilegedRole($user, $roles = null)
-    {
-        $privilegedRoles = $roles ?? ['programmer', 'admin'];
-
-        return $user->hasAnyRole($privilegedRoles);
-    }
-
-    private function isPanelCoordinator($user, $upload)
-    {
-        if ($user->isPanelCoordinator($upload->curation->expertPanel)) {
             return true;
         }
 
