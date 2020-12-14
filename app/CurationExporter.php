@@ -3,7 +3,6 @@
 namespace App;
 
 use Carbon\Carbon;
-use App\ExpertPanel;
 
 class CurationExporter
 {
@@ -24,7 +23,7 @@ class CurationExporter
             });
         }
 
-        if (\Auth::user()->hasAnyRole(['programmer','admin'])) {
+        if (\Auth::user()->hasAnyRole(['programmer', 'admin'])) {
             return $query;
         }
 
@@ -54,13 +53,14 @@ class CurationExporter
                     ];
 
                     $curationStatuses->each(function ($status) use (&$line, $statuses) {
-                        $line[$status->name.' date']  = (isset($statuses[$status->id]))
+                        $line[$status->name.' date'] = (isset($statuses[$status->id]))
                                                             ? $statuses[$status->id]->format('Y-m-d')
                                                             : null;
                     });
 
                     $line['Classification'] = $curation->currentClassification->name;
                     $line['Created'] = $curation->created_at;
+                    $line['GCI UUID'] = $curation->gdm_uuid;
 
                     return $line;
                 });
@@ -69,7 +69,7 @@ class CurationExporter
     public function getCsv($params = [], $csvPath = null)
     {
         $filename = 'exports/curations_export';
-        
+
         if (isset($params['expert_panel_id'])) {
             $panel = ExpertPanel::findOrFail($params['expert_panel_id']);
             $filename .= '_'.$panel->fileSafeName;
@@ -90,9 +90,10 @@ class CurationExporter
                 fputcsv($fh, $row);
             }
         } else {
-            fputcsv($fh, ['Gene Symbol','Expert Panel', 'Curator', 'Status', 'Disease Entity', 'Created']);
+            fputcsv($fh, ['Gene Symbol', 'Expert Panel', 'Curator', 'Status', 'Disease Entity', 'Created']);
         }
         fclose($fh);
+
         return $path;
     }
 }
