@@ -50,6 +50,15 @@
                         }
                     }
                 },
+                "expert_panel": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "id": { "type": "integer" },
+                        "affliation_id": { "type": "string" }
+                    }
+
+                },
                 "curator": {
                     "type": "object",
                     "properties": {
@@ -96,6 +105,8 @@
                         "uniqueItems": true
                     }
                 },
+                // Should we re-structure to object w/ list of rationale categories, list of PMIDs, and rationale text
+                // Change to list of objects w/ rationale id and name
                 "rationales": {
                     "type": "array",
                     "items": {
