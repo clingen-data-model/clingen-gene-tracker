@@ -67,6 +67,9 @@
                         <li>
                             <a class="nav-link" href="/#/bulk-lookup">Bulk Lookup</a>
                         </li>
+                        <li>
+                            <a class="nav-link" href="/#/curations/export">Curation Export</a>
+                        </li>
                     </ul>
                     @endif
 
