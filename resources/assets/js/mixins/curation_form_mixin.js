@@ -14,11 +14,10 @@ export default {
         }
     },
     watch: {
-        updatedCuration: function (to, from) {
-            console.log('updatedCuration changed');
+        updatedCuration: function(to, from) {
             this.$emit('input', this.updatedCuration);
         },
-        value: function () {
+        value: function() {
             if (this.value != this.updatedCuration) {
                 this.syncValue();
             }

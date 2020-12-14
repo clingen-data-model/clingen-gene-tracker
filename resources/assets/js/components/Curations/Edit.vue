@@ -74,6 +74,7 @@
     import Info from './Forms/Info'
     import Mondo from './Forms/Mondo'
     import Classification from './Forms/Classification'
+    import Documents from './Forms/Documents'
 
     export default {
         props: ['id'],
@@ -83,7 +84,8 @@
             Mondo,
             CurationType,
             DeleteButton,
-            Classification
+            Classification,
+            Documents
         },
         data () {
             return {
@@ -108,8 +110,13 @@
                     },
                     classification: {
                         title: 'Classification',
-                        next: null,
+                        next: 'documents',
                         back: 'mondo' 
+                    },
+                    documents: {
+                        title: 'Documents',
+                        next: null,
+                        back: 'classification'
                     }
 
                 },
