@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpertPanelRequest extends FormRequest
@@ -26,7 +25,9 @@ class ExpertPanelRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:5|max:255'
+            'name' => 'required|min:5|max:255',
+            'affilation_id' => 'nullable|exists:affiliations,id',
+            'working_group_id' => 'nullable|exists:working_groups,id',
         ];
     }
 
@@ -38,7 +39,6 @@ class ExpertPanelRequest extends FormRequest
     public function attributes()
     {
         return [
-            //
         ];
     }
 
@@ -50,7 +50,6 @@ class ExpertPanelRequest extends FormRequest
     public function messages()
     {
         return [
-            //
         ];
     }
 }
