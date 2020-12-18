@@ -10,62 +10,46 @@ class AffiliationsTableSeeder extends Seeder
      */
     public function run()
     {
-        $affiliationData = json_decode(file_get_contents(__DIR__.'/../../files/affiliations.json'));
+        $affiliationData = json_decode(file_get_contents(__DIR__.'/../../files/new_affiliations.json'), true);
 
-        $keys = null;
-        foreach ($affiliationData as $values) {
-            if (!$keys) {
-                $keys = array_map(
-                    function ($key) {
-                        return strtolower($key);
-                    },
-                    $values
-                );
-                continue;
-            }
-
-            $values = array_map(
-                function ($value) {
-                    return !empty($value) ? $value : null;
-                },
-                $values
-            );
-
-            $data = array_combine($keys, array_pad(array_slice($values, 0, count($keys)), count($keys), null));
-
-            $this->addAffiliations($data);
+        foreach ($affiliationData as $line) {
+            $this->addAffiliations($line);
         }
     }
 
     private function addAffiliations($data)
     {
+        if ($data['submitter id'] == 'N/A') {
+            return;
+        }
+
         $parent = Affiliation::firstOrCreate(
             ['clingen_id' => $data['affiliationid']],
             [
                 'name' => $data['affiliation full name'],
-                'short_name' => $data['short base name (max 15 chars)'],
+                'short_name' => null,
                 'affiliation_type_id' => config('affiliations.types.working-group'),
             ]
         );
 
-        if (!empty($data['gcep id'])) {
+        if (!empty($data['gcep affiliation id'])) {
             Affiliation::updateOrCreate(
-                ['clingen_id' => $data['gcep id']],
+                ['clingen_id' => $data['gcep affiliation id']],
                 [
-                    'name' => $data['website (gcep long name)'],
-                    'short_name' => $data['website (gcep short name)'],
+                    'name' => $data['gcep affiliation name'],
+                    'short_name' => null,
                     'affiliation_type_id' => config('affiliations.types.gcep'),
                     'parent_id' => $parent->id,
                 ]
             );
         }
 
-        if (!empty($data['vcep id'])) {
+        if (!empty($data['vcep affiliation id'])) {
             Affiliation::firstOrCreate(
-                ['clingen_id' => $data['vcep id']],
+                ['clingen_id' => $data['vcep affiliation id']],
                 [
-                    'name' => $data['website (vcep long name)'],
-                    'short_name' => $data['website (vcep short name)'],
+                    'name' => $data['vcep affiliation name'],
+                    'short_name' => null,
                     'affiliation_type_id' => config('affiliations.types.vcep'),
                     'parent_id' => $parent->id,
                 ]
