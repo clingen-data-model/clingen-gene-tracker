@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Curation;
 use App\Contracts\MondoClient;
-use Illuminate\Console\Command;
+use App\Curation;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curations\AugmentWithMondoInfo;
-use App\Jobs\SendCurationMailToCoordinators;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\MondoIdNotFound;
+use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 
 class CheckMondoForUpdates extends Command
 {
@@ -18,6 +18,7 @@ class CheckMondoForUpdates extends Command
      * @var string
      */
     protected $signature = 'curations:check-mondo-updates 
+                                {--mondo-id : specific mondo id to look for}
                                 {--print-errors : Print out put to console} 
                                 {--print-requests : Print mondoIds being searched and outcome of search }
                             ';
@@ -54,11 +55,11 @@ class CheckMondoForUpdates extends Command
                         ->filter(function ($curation) {
                             return !is_null($curation->mondo_id);
                         });
-                        
+
         $bar = $this->output->createProgressBar($curations->count());
 
         $curationsByMondoId = $curations->groupBy('numericMondoId');
-        
+
         foreach ($curationsByMondoId as $mondoId => $curationsForMondo) {
             if ($printRequests) {
                 $this->info('looking up '.$mondoId);
@@ -81,13 +82,18 @@ class CheckMondoForUpdates extends Command
                     $this->warn($th->getMessage());
                     continue;
                 }
-                foreach ($curationsForMondo as $curation) {
-                    SendCurationMailToCoordinators::dispatch($curation, MondoIdNotFound::class);
-                }
+                $this->sendNotificationForCurations($curationsForMondo);
             }
 
             $bar->advance($curationsForMondo->count());
         }
         echo "\n";
+    }
+
+    public function sendNotificationForCurations(Collection $curations)
+    {
+        foreach ($curations as $curation) {
+            sendNotificationForCurations::dispatch($curation, MondoIdNotFound::class);
+        }
     }
 }
