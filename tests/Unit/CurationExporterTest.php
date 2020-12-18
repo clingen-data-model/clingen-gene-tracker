@@ -2,20 +2,18 @@
 
 namespace Tests\Unit;
 
-use App\User;
 use App\Curation;
-use Tests\TestCase;
-use App\ExpertPanel;
-use App\WorkingGroup;
 use App\CurationExporter;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\ExpertPanel;
+use App\User;
+use App\WorkingGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class CurationExporterTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
     public function setUp(): void
     {
         parent::setUp();
@@ -60,7 +58,8 @@ class CurationExporterTest extends TestCase
                 'Published date',
                 'Unublished on GCI date',
                 'Classification',
-                'Created'
+                'Created',
+                'GCI UUID',
             ],
             array_keys($curationData->first())
         );
@@ -77,7 +76,6 @@ class CurationExporterTest extends TestCase
 
         $this->assertEquals(3, $curationData->count());
     }
-
 
     /**
      * @test
@@ -98,7 +96,7 @@ class CurationExporterTest extends TestCase
         $rangeData1 = $this->exporter->getData(['start_date' => today()->subDays(1), 'end_date' => today()->addDays(10)]);
         $this->assertEquals(26, $rangeData1->count());
     }
-    
+
     /**
      * @test
      */
@@ -120,10 +118,10 @@ class CurationExporterTest extends TestCase
         $path = $this->exporter->getCsv();
 
         $this->assertFileExists($path);
-        
+
         $content = explode("\n", file_get_contents($path));
-        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Curation In Progress date","Curation Provisional date","Curation Approved date","Recuration assigned date","Retired Assignment date","Published date","Unublished on GCI date",Classification,Created', $content[0]);
-        $this->assertEquals($this->curations->count()+1, count(array_filter($content)));
+        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Curation In Progress date","Curation Provisional date","Curation Approved date","Recuration assigned date","Retired Assignment date","Published date","Unublished on GCI date",Classification,Created,"GCI UUID"', $content[0]);
+        $this->assertEquals($this->curations->count() + 1, count(array_filter($content)));
 
         unlink($path);
     }
@@ -136,8 +134,8 @@ class CurationExporterTest extends TestCase
         $coordinator = factory(User::class)->create();
         $coordinator->expertPanels()->attach([
             $this->panels->random()->id => [
-                'is_coordinator' => 1
-            ]
+                'is_coordinator' => 1,
+            ],
         ]);
         $this->actingAs($coordinator);
 
@@ -145,7 +143,7 @@ class CurationExporterTest extends TestCase
 
         $this->assertEquals($this->curations->count(), $data->count());
     }
-    
+
     /**
      * @test
      */
@@ -169,14 +167,14 @@ class CurationExporterTest extends TestCase
         $curator->expertPanels()->attach([
             $this->panels->random()->id => [
                 'is_coordinator' => 0,
-                'is_curator' => 1
-            ]
+                'is_curator' => 1,
+            ],
         ]);
         $this->actingAs($curator);
 
         $curation = Curation::create([
             'curator_id' => $curator->id,
-            'gene_symbol' => 'beans'
+            'gene_symbol' => 'beans',
         ]);
 
         $data = $this->exporter->getData();
