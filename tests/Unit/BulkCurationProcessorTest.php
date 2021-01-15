@@ -2,19 +2,16 @@
 
 namespace Tests\Unit;
 
-use Mockery;
-use App\User;
-use App\Curation;
-use Tests\TestCase;
-use App\ExpertPanel;
 use App\Clients\OmimClient;
-use App\Services\BulkCurationProcessor;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Contracts\OmimClient as OmimClientContract;
-use App\Exceptions\BulkUploads\InvalidRowException;
+use App\Curation;
 use App\Exceptions\BulkUploads\InvalidFileException;
+use App\ExpertPanel;
+use App\Services\BulkCurationProcessor;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Mockery;
+use Tests\TestCase;
 
 /**
  * @group bulk-curations
@@ -37,47 +34,46 @@ class BulkCurationProcessorTest extends TestCase
 
         app()->instance(OmimClient::class, $omimClientMock);
         $this->data = [
-            "gene_symbol" => "BRCA1",
-            "curator_email" => "sirs@unc.edu",
-            "curation_type" => "single-omim",
-            "omim_id_1" => 605724,
-            "omim_id_2" => null,
-            "omim_id_3" => null,
-            "omim_id_4" => null,
-            "omim_id_5" => null,
-            "omim_id_6" => null,
-            "omim_id_7" => null,
-            "omim_id_8" => null,
-            "omim_id_9" => null,
-            "omim_id_10" => null,
-            "mondo_id" => null,
-            "disease_entity_if_there_is_no_mondo_id" => null,
-            "rationale_1" => "Assertion",
-            "rationale_2" => "Molecular mechanism",
-            "rationale_3" => null,
-            "rationale_4" => null,
-            "rationale_5" => null,
-            "rationale_notes" => "notes on the rationale",
-            "pmid_1" => 819281721,
-            "pmid_2" => 123198121,
-            "pmid_3" => null,
-            "pmid_4" => null,
-            "pmid_5" => null,
-            "pmid_6" => null,
-            "pmid_7" => null,
-            "pmid_8" => null,
-            "pmid_9" => null,
-            "pmid_10" => null,
-            "uploaded_date" => '2016-01-01',
-            "precuration_date" => '2016-01-02',
-            "disease_entity_assigned_date" => null,
-            "curation_in_progress_date" => '2016-01-10',
-            "curation_provisional_date" => null,
-            "curation_approved_date" => null,
+            'gene_symbol' => 'BRCA1',
+            'curator_email' => 'sirs@unc.edu',
+            'curation_type' => 'single-omim',
+            'omim_id_1' => 605724,
+            'omim_id_2' => null,
+            'omim_id_3' => null,
+            'omim_id_4' => null,
+            'omim_id_5' => null,
+            'omim_id_6' => null,
+            'omim_id_7' => null,
+            'omim_id_8' => null,
+            'omim_id_9' => null,
+            'omim_id_10' => null,
+            'mondo_id' => null,
+            'disease_entity_if_there_is_no_mondo_id' => null,
+            'rationale_1' => 'Assertion',
+            'rationale_2' => 'Molecular mechanism',
+            'rationale_3' => null,
+            'rationale_4' => null,
+            'rationale_5' => null,
+            'rationale_notes' => 'notes on the rationale',
+            'pmid_1' => 819281721,
+            'pmid_2' => 123198121,
+            'pmid_3' => null,
+            'pmid_4' => null,
+            'pmid_5' => null,
+            'pmid_6' => null,
+            'pmid_7' => null,
+            'pmid_8' => null,
+            'pmid_9' => null,
+            'pmid_10' => null,
+            'uploaded_date' => '2016-01-01',
+            'precuration_date' => '2016-01-02',
+            'disease_entity_assigned_date' => null,
+            'curation_in_progress_date' => '2016-01-10',
+            'curation_provisional_date' => null,
+            'curation_approved_date' => null,
         ];
         $this->svc = new BulkCurationProcessor();
     }
-    
 
     /**
      * @test
@@ -133,27 +129,26 @@ class BulkCurationProcessorTest extends TestCase
 
         $this->assertDatabaseHas('curation_rationale', [
             'curation_id' => $curation->id,
-            'rationale_id' => 1
+            'rationale_id' => 1,
         ]);
         $this->assertDatabaseHas('curation_rationale', [
             'curation_id' => $curation->id,
-            'rationale_id' => 2
+            'rationale_id' => 2,
         ]);
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_status_id' => 1,
-            'curation_id' => $curation->id
+            'curation_id' => $curation->id,
         ]);
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_status_id' => 2,
-            'curation_id' => $curation->id
+            'curation_id' => $curation->id,
         ]);
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_status_id' => 4,
-            'curation_id' => $curation->id
+            'curation_id' => $curation->id,
         ]);
     }
-    
 
     /**
      * @test
@@ -183,7 +178,7 @@ class BulkCurationProcessorTest extends TestCase
     public function checks_curation_type_is_valid()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
-        
+
         $this->data['curation_type'] = null;
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
@@ -197,10 +192,10 @@ class BulkCurationProcessorTest extends TestCase
     public function checks_rationales_are_valid()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
-        
+
         $this->data['rationale_1'] = null;
         $this->assertTrue($this->svc->rowIsValid($this->data));
-        
+
         $this->data['rationale_2'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
     }
@@ -216,10 +211,10 @@ class BulkCurationProcessorTest extends TestCase
         $omimClientMock->shouldReceive(['getEntry' => false]);
 
         app()->instance(OmimClient::class, $omimClientMock);
-        
+
         $this->data['omim_id_1'] = 12983;
         $this->assertFalse($this->svc->rowIsValid($this->data));
-        
+
         $this->data['omim_id_2'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
     }
@@ -230,7 +225,7 @@ class BulkCurationProcessorTest extends TestCase
     public function checks_gene_symbol_is_valid_hgnc_symbol()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
-        
+
         $omimClientMock = $this->createMock(OmimClient::class);
         $omimClientMock->method('geneSymbolIsValid')
             ->willReturn(false);
@@ -238,6 +233,22 @@ class BulkCurationProcessorTest extends TestCase
         app()->instance(OmimClient::class, $omimClientMock);
         $this->data['gene_symbol'] = 'Bobs yer uncle';
         $this->assertFalse($this->svc->rowIsValid($this->data));
-        $this->assertTrue($this->svc->getValidationErrors()->contains("gene_symbol", "Bobs yer uncle is not a valid HGNC gene symbol according to OMIM"));
+        $this->assertTrue($this->svc->getValidationErrors()->contains('gene_symbol', 'Bobs yer uncle is not a valid HGNC gene symbol according to OMIM'));
+    }
+
+    /**
+     * @test
+     */
+    public function validates_column_headers_before_processing()
+    {
+        \DB::table('curations')->delete();
+
+        try {
+            $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad_header.xlsx'), 1);
+            $this->fail('InvalidRowException not thrown for data with bad rows');
+        } catch (InvalidFileException $e) {
+            $this->assertEquals(2, count($e->getValidationErrors()));
+            $this->assertEquals(0, \DB::table('curations')->count());
+        }
     }
 }

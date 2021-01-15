@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Bus;
-use App\Services\BulkCurationProcessor;
-use App\Http\Requests\BulkUploadRequest;
-use App\Exceptions\DuplicateBulkCurationException;
 use App\Exceptions\BulkUploads\InvalidFileException;
+use App\Exceptions\DuplicateBulkCurationException;
+use App\Http\Requests\BulkUploadRequest;
+use App\Services\BulkCurationProcessor;
 
 class BulkUploadController extends Controller
 {
@@ -17,8 +15,6 @@ class BulkUploadController extends Controller
     {
         $this->processor = $processor;
     }
-
-
 
     public function show()
     {
@@ -32,20 +28,27 @@ class BulkUploadController extends Controller
 
             try {
                 $newCurations = $this->processor->processFile(storage_path('app/'.$path), $request->expert_panel_id);
+                \Log::debug('got new curations');
+
                 return view('bulk_uploads.show', compact('newCurations'));
             } catch (InvalidFileException $e) {
+                \Log::debug('Invalid bulk file: '.$e->getMessage());
                 $errors = $e->getValidationErrors();
+
                 return view('bulk_uploads.show', compact('errors'));
             } catch (DuplicateBulkCurationException $e) {
+                \Log::debug('Duplicate Bulk Curations: '.$e->getMessage());
                 $duplicates = $e->duplicates;
                 $expert_panel_id = $request->expert_panel_id;
+
                 return view('bulk_uploads.show', compact('duplicates', 'path', 'expert_panel_id'));
             }
         }
 
         if ($request->path && storage_path(file_exists($request->path))) {
             $newCurations = $this->processor->processWithDuplicates(storage_path('app/'.$request->path), $request->expert_panel_id);
-            return view('bulk_uploads.show', compact('newCurations'));        
+
+            return view('bulk_uploads.show', compact('newCurations'));
         }
     }
 }

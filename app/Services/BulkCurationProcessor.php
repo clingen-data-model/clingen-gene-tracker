@@ -23,6 +23,15 @@ use Illuminate\Validation\Rule;
 
 class BulkCurationProcessor
 {
+    const VALID_HEADER_ARRAY = [
+        'gene_symbol', 'curator_email', 'curation_type',
+        'omim_id_1', 'omim_id_2', 'omim_id_3', 'omim_id_4', 'omim_id_5', 'omim_id_6', 'omim_id_7', 'omim_id_8', 'omim_id_9', 'omim_id_10',
+        'mondo_id', 'disease_entity_if_there_is_no_mondo_id',
+        'rationale_1', 'rationale_2', 'rationale_3', 'rationale_4', 'rationale_notes',
+        'pmid_1', 'pmid_2', 'pmid_3', 'pmid_4', 'pmid_5', 'pmid_6', 'pmid_7', 'pmid_8', 'pmid_9', 'pmid_10',
+        'date_uploaded', 'precuration_date', 'disease_entity_assigned_date', 'curation_in_progress_date', 'curation_provisional_date', 'curation_approved_date',
+    ];
+
     public $users;
     public $curationTypes;
     public $rationales;
@@ -128,13 +137,24 @@ class BulkCurationProcessor
     private function sheetIsValid($sheet)
     {
         $rowCount = 0;
+
+        $fileErrors = [];
+
+        if (!$this->headerIsValid($sheet)) {
+            $fileErrors[] = 'We can\'t proccess your file because the column headings do not match what we expected.  Please use the bulk upload template linked on this page to ensure you upload a correctly formatted file.';
+        }
+
         $this->applyToSheet($sheet, function ($idx, $data) use (&$rowCount) {
             $this->rowIsValid($data, $idx);
             ++$rowCount;
         });
 
         if ($rowCount > 50) {
-            $this->validationErrors->put('file', ['Your upload contains '.($rowCount).' curations. At this time the bulk upload is limited to 50 curations.']);
+            $fileErrors[] = 'Your upload contains '.($rowCount).' curations. At this time the bulk upload is limited to 50 curations.';
+        }
+
+        if (count($fileErrors) > 0) {
+            $this->validationErrors->put('file', $fileErrors);
         }
 
         return $this->validationErrors->count() == 0;
@@ -273,6 +293,33 @@ class BulkCurationProcessor
         return $rationales;
     }
 
+    public function headerIsValid($sheet)
+    {
+        foreach ($sheet->getRowIterator() as $idx => $row) {
+            if ($idx == 1) {
+                $headerArray = array_map(function ($item) {
+                    return implode('_', explode(' ', strtolower($item)));
+                }, $row->toArray());
+                if ($headerArray == static::VALID_HEADER_ARRAY) {
+                    return true;
+                }
+
+                $badHeaders = [];
+                for ($i = 0; $i < count(static::VALID_HEADER_ARRAY); ++$i) {
+                    if ($headerArray[$i] !== static::VALID_HEADER_ARRAY[$i]) {
+                        $badHeaders['Column 1'] = 'Header for column '.($i + 1).' should be "'
+                                            .ucwords(str_replace('_', ' ', static::VALID_HEADER_ARRAY[$i])).'"';
+                        $this->validationErrors->put(1, $badHeaders);
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function rowIsValid($rowData, $rowNum = 0)
     {
         $validationRules = [
@@ -346,10 +393,11 @@ class BulkCurationProcessor
             $data = $this->collateRow($header, $row);
 
             if ($this->rowIsEmpty($data)) {
+                \Log::debug(__METHOD__.': row is empty');
                 continue;
             }
 
-            $callable($idx, $data);
+            $result = $callable($idx, $data);
         }
 
         return $sheet;
