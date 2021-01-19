@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('timeout-test', 'Api\TimeoutTestController@index');
+Route::get('/org-chart', 'Api\OrgChartController@index');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');

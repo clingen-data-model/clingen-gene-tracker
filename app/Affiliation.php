@@ -40,6 +40,12 @@ class Affiliation extends Model
         return $this->hasOne(ExpertPanel::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Affiliation::class, 'parent_id');
+    }
+    
+
     public static function findByClingenId($clingenId)
     {
         return static::where('clingen_id', $clingenId)->first();
