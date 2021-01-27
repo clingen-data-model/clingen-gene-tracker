@@ -1,25 +1,30 @@
 {
     "$schema": "http://json-schema.org/schema#",
-    "$id": "https://gene-tracker.clinicalgenome.org/gene-tracker-event-schema.json",
+    "$id": "https://gene-tracker.clinicalgenome.org/gene-tracker-curation-stream-schema.json",
     "title": "GeneTracker Event",
-    "description": "A event published to the GeneTracker event feed. An example can be found at https://gene-tracker.clinicalgenome.org/gene-tracker-event-example.json",
+    "description": "A message published to the GeneTracker curation stream.",
     "type": "object",
     "properties": {
         "key": {
             "type": "string",
-            "pattern": "\\w{6}(-\\w{4}){3}-\\w{12}^$"
+            "pattern": "^\\w{6}(-\\w{4}){3}-\\w{12}$"
         },
         "event_type": {
             "type": "string",
             "title": "Type of curation event",
             "enum": ["created", "updated", "deleted"]
         },
+        "schema_version": { "type": "integer" },
         "data": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer",
                     "minimum": 1
+                },
+                "uuid": {
+                    "type": "string",
+                    "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
                 },
                 "gene": {
                     "type": "object",
@@ -50,6 +55,33 @@
                         }
                     }
                 },
+                "group": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                        },
+                        "name": { "type": "string" },
+                        "type": { "type": "string" },
+                        "uri": { "type": "string", "format": "uri" }
+                    }
+                },
+                // Reconsider structure as expected from GPM system
+                // "group": {
+                //     "type": "object",
+                //     "properties": {
+                //         "id": { "type": "string", "patthen": ... },
+                //         "name": { "type": "string" },
+                //         "gci_affiliation": {
+                //             "type": "object",
+                //             "properties": {
+                //                 "name": { "type": "string" },
+                //                 "id": { "type": "string" }
+                //             }
+                //         }
+                //     }
+                // },
                 "curator": {
                     "type": "object",
                     "properties": {
@@ -58,7 +90,8 @@
                         "email": {
                             "type": "string",
                             "format": "email"
-                        }
+                        },
+                        "clingen_id": { "type": "string" }
                     }
                 },
                 "statuses": {
@@ -75,9 +108,9 @@
                                     "curation in progress",
                                     "curation provisional",
                                     "curation approved",
-                                    "recuration assigned",
                                     "retired assignment",
-                                    "published"
+                                    "published",
+                                    "recuration assigned"
                                 ],
                                 "uniqueItems": false
                             },
@@ -99,7 +132,8 @@
                 "rationales": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": []
                     }
                 },
                 "curation_type": {
