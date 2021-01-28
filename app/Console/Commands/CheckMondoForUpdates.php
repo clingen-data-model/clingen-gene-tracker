@@ -82,6 +82,7 @@ class CheckMondoForUpdates extends Command
                     $this->warn($th->getMessage());
                     continue;
                 }
+                dd(get_class($curationsForMondo));
                 $this->sendNotificationForCurations($curationsForMondo);
             }
 
@@ -93,7 +94,7 @@ class CheckMondoForUpdates extends Command
     public function sendNotificationForCurations(Collection $curations)
     {
         foreach ($curations as $curation) {
-            sendNotificationForCurations::dispatch($curation, MondoIdNotFound::class);
+            NotifyCoordinatorsAboutCuration::dispatch($curation, MondoIdNotFound::class);
         }
     }
 }
