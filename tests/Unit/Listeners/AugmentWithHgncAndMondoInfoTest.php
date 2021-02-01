@@ -49,4 +49,17 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
 
         \Bus::assertDispatched(AugmentWithMondoInfo::class);
     }
+
+    /**
+     * @test
+     */
+    public function does_not_dispatch_AugmentWithMondoInfo_if_mondo_id_not_dirty()
+    {
+        $this->curation->save();
+
+        \Bus::fake();
+        $this->listener->handle($this->event);
+        \Bus::assertNotDispatched(AugmentWithMondoInfo::class);
+    }
+    
 }

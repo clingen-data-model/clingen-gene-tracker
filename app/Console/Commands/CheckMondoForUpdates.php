@@ -82,7 +82,6 @@ class CheckMondoForUpdates extends Command
                     $this->warn($th->getMessage());
                     continue;
                 }
-                dd(get_class($curationsForMondo));
                 $this->sendNotificationForCurations($curationsForMondo);
             }
 

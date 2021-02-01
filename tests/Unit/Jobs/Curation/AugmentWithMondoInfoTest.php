@@ -49,7 +49,7 @@ class AugmentWithMondoInfoTest extends TestCase
     /**
      * @test
      */
-    public function throws_HttpNotFoundException_if_mondo_id_not_found()
+    public function fails_silently_if_mondo_id_not_found()
     {
         $this->curation->mondo_id = 'mondo:0000000';
         $this->mondoClient->method('fetchRecord')
@@ -59,8 +59,8 @@ class AugmentWithMondoInfoTest extends TestCase
 
         $job = new AugmentWithMondoInfo($this->curation);
 
-        $this->expectException(HttpNotFoundException::class);
         $job->handle($this->mondoClient);
+        $this->assertTrue(true);
     }
 
     /**
@@ -99,5 +99,5 @@ class AugmentWithMondoInfoTest extends TestCase
         $job->handle($this->mondoClient);
 
         $this->assertDatabaseHas('curations', ['gene_symbol' => 'TH', 'mondo_name' => 'arteritis']);
-    }
+    }    
 }
