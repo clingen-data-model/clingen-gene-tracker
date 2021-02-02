@@ -18,7 +18,7 @@ class CurationNotificationsDigest extends Notification
 {
     use Queueable;
 
-    public $notifications;
+    public $groupedNotifications;
     private $map;
 
     /**
@@ -26,10 +26,10 @@ class CurationNotificationsDigest extends Notification
      *
      * @return void
      */
-    public function __construct(Collection $notifications)
+    public function __construct(Collection $groupedNotifications)
     {
         //
-        $this->notifications = $notifications;
+        $this->groupedNotifications = $groupedNotifications;
         $this->map = [
             GeneSymbolUpdated::class => 'email.digest.gene_symbol_updated',
             HgncIdNotFoundNotification::class => 'email.digest.hgncid_not_found',
@@ -58,14 +58,8 @@ class CurationNotificationsDigest extends Notification
      */
     public function toMail($notifiable)
     {
-        $groupedNotifications = $this->notifications->groupBy('type')
-                                    ->map(function ($group, $class) {
-                                        return $class::getValidUnique($group);
-                                    })->filter(function ($group) {
-                                        return $group->count() > 0;
-                                    });
         return (new MailMessage)
-                    ->view('email.curation_notifications_digest', ['groups' => $groupedNotifications, 'templateMap' => $this->map]);
+                    ->view('email.curation_notifications_digest', ['groups' => $this->groupedNotifications, 'templateMap' => $this->map]);
     }
 
     /**
