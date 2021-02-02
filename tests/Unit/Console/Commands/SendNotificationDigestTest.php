@@ -78,18 +78,4 @@ class SendNotificationDigestTest extends TestCase
         $this->assertEquals(0, $this->user1->unreadNotifications->count());
         $this->assertEquals(0, $this->user2->unreadNotifications->count());
     }
-
-    /**
-     * @test
-     */
-    public function digest_email_includes_messages_appropriate_to_notification()
-    {
-        // dd($this->user1->unreadNotifications->pluck('data.template'));
-        $renderedView = view('email.curation_notifications_digest', ['notifications' => $this->user1->unreadNotifications])->render();
-        $this->assertContains('There does not appear to be an HGNC record for', $renderedView);
-        $this->assertContains('The MonDO ID', $renderedView);
-        $this->assertContains('OMIM has moved the entry for a phenotype associated with one of your', $renderedView);
-        $this->assertContains('OMIM has updated the phenotype', $renderedView);
-        $this->assertContains('HGNC has updated the gene symbol', $renderedView);
-    }
 }
