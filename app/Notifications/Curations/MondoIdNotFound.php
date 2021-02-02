@@ -2,8 +2,12 @@
 
 namespace App\Notifications\Curations;
 
+use App\Contracts\MondoClient;
 use App\Curation;
+use App\Exceptions\HttpNotFoundException;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -63,4 +67,36 @@ class MondoIdNotFound extends Notification
             'template' => 'email.curations.mondo_id_not_found'
         ];
     }
+
+    public static function getUnique(Collection $collection):Collection
+    {
+        return $collection->unique(function ($item) {
+            return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+        });
+    }
+    public static function filterInvalid(Collection $collection):Collection
+    {
+        $mondoClient = app()->make(MondoClient::class);
+        return $collection->filter(function ($item) use ($mondoClient) {
+            $cid = $item->data['curation']['id'];
+            $curation = Curation::find($item->data['curation']['id']);
+            if ($curation->mondo_id == $item->data['curation']['mondo_id']) {
+                return true;
+            }
+
+            try {
+                $record = $mondoClient->fetchRecord($curation->numericMondoId);
+                return false;
+            } catch (HttpNotFoundException $e) {
+                return true;
+            } catch (ClientException $e) {
+                return true;
+            }
+        });
+    }
+    public static function getValidUnique(Collection $collection):Collection
+    {
+        return static::filterInvalid(static::getUnique($collection));
+    }
+
 }

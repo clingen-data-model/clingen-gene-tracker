@@ -4,12 +4,14 @@ namespace App\Notifications\Curations;
 
 use App\Curation;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\DigestibleNotificationInterface;
 
-class GeneSymbolUpdated extends Notification
+class GeneSymbolUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
@@ -63,5 +65,22 @@ class GeneSymbolUpdated extends Notification
             'oldGeneSymbol' => $this->oldGeneSymbol,
             'template' => 'email.curations.gene_symbol_updated'
         ];
+    }
+
+    public static function getUnique(Collection $items): Collection
+    {
+        return $items->unique(function ($item) {
+            return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
+        });
+    }
+
+    public static function filterInvalid(Collection $collection): Collection
+    {
+        return $collection;
+    }
+
+    public static function getValidUnique(Collection $collection): Collection
+    {
+        return $collection;
     }
 }

@@ -3,11 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class StreamErrorNotification extends Notification
+class StreamErrorNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
@@ -53,4 +54,18 @@ class StreamErrorNotification extends Notification
             'template' => 'email.stream_error_notification'
         ];
     }
+
+    public static function getUnique(Collection $collection):Collection
+    {
+        return $collection;
+    }
+    public static function filterInvalid(Collection $collection):Collection
+    {
+        return $collection;
+    }
+    public static function getValidUnique(Collection $collection):Collection
+    {
+        return $collection;
+    }
+
 }

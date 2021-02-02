@@ -3,13 +3,15 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
+use App\Notifications\DigestibleNotificationInterface;
 use App\Phenotype;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class PhenotypeNomenclatureUpdated extends Notification
+class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
@@ -72,5 +74,18 @@ class PhenotypeNomenclatureUpdated extends Notification
             'phenotype' => $this->phenotype,
             'template' => 'email.curations.omim_phenotype_updated'
         ];
+    }
+    
+    public static function getUnique(Collection $collection):Collection
+    {
+        return $collection;
+    }
+    public static function filterInvalid(Collection $collection):Collection
+    {
+        return $collection;
+    }
+    public static function getValidUnique(Collection $collection):Collection
+    {
+        return $collection;
     }
 }
