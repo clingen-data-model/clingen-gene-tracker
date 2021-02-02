@@ -20,7 +20,7 @@ We have received data from the GCI about a gene-disease relationship that may be
                 @foreach ($errors as $streamError)
                 <li>
                     {{-- @php dump($streamError) @endphp --}}
-                    <a href="https://curation.clinicalgenome.org/curation-central/?gdm={{$streamError['message_payload']['report_id']}}">
+                    <a href="https://curation.clinicalgenome.org/curation-central/{{$streamError['message_payload']['report_id']}}/">
                         {{$streamError['gene']}} / {{$streamError['condition']}} / {{$streamError['moi']}}
                     </a>
                     on {{\Carbon\Carbon::parse($streamError['created_at'])->format('Y-m-d')}}
