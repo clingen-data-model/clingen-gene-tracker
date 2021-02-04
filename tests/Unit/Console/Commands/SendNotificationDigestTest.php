@@ -34,7 +34,7 @@ class SendNotificationDigestTest extends TestCase
         $users = factory(User::class, 2)->create();
         $this->user1 = $users->first();
         $this->user2 = $users->last();
-        $curations = factory(Curation::class, 4)->create(['mondo_id' => '0afidafd83', 'hgnc_id' => 123]);
+        $curations = factory(Curation::class, 4)->create(['mondo_id' => '0afidafd83']);
         $phenotypes = factory(Phenotype::class, 2)->create([]);
 
         $realNow = Carbon::now();
@@ -61,11 +61,11 @@ class SendNotificationDigestTest extends TestCase
         Notification::fake();
         $this->artisan('send-notifications');
         Notification::assertSentTo($this->user1, CurationNotificationsDigest::class, function ($notification) {
-            return $notification->notifications->count() == 5;
+            return $notification->groupedNotifications->count() == 5;
         });
         
         Notification::assertSentTo($this->user2, CurationNotificationsDigest::class, function ($notification) {
-            return $notification->notifications->count() == 1;
+            return $notification->groupedNotifications->count() == 1;
         });
     }
 
