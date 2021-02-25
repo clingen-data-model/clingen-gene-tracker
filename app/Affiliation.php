@@ -24,6 +24,7 @@ class Affiliation extends Model
         'name',
         'short_name',
         'affiliation_type_id',
+        'parent_id'
     ];
 
     protected $with = [
