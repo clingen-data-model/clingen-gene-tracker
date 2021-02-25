@@ -59,10 +59,8 @@ class ImportGciAffiliations extends Command
     private function addOrUpdateAffiliation($data)
     {
         if (isset($data['parent_clingen_id'])) {
-            dump($data['parent_clingen_id']);
             $data['parent_id'] = $this->affiliations->get($data['parent_clingen_id'])->id;
             unset($data['parent_clingen_id']);
-            dump($data);
         }
 
         if ($this->affiliationExists($data)) {
