@@ -2,13 +2,16 @@
 
 namespace Tests\Unit;
 
-use App\Curation;
-use App\CurationExporter;
-use App\ExpertPanel;
 use App\User;
-use App\WorkingGroup;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Curation;
 use Tests\TestCase;
+use App\ExpertPanel;
+use App\WorkingGroup;
+use App\CurationStatus;
+use App\CurationExporter;
+use App\Jobs\Curations\AddStatus;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CurationExporterTest extends TestCase
 {
@@ -181,4 +184,40 @@ class CurationExporterTest extends TestCase
 
         $this->assertEquals(1, $data->count());
     }
+
+    /**
+     * @test
+     */
+    public function selects_latest_date_for_any_status()
+    {
+        $curation = factory(Curation::class)->create();
+        CurationStatus::all()
+            ->each(function ($st) use ($curation) {
+                AddStatus::dispatch($curation, $st, Carbon::now());
+                AddStatus::dispatch($curation, $st, Carbon::now()->subDays(1));
+                AddStatus::dispatch($curation, $st, Carbon::now()->subDays(2));
+            });            
+
+        $curationData = $this->exporter->getData(['expert_panel_id' => $curation->expert_panel_id]);
+
+        $dateFields = [
+            "Uploaded date",
+            "Precuration date",
+            "Disease entity assigned date",
+            "Curation In Progress date",
+            "Curation Provisional date",
+            "Curation Approved date",
+            "Recuration assigned date",
+            "Retired Assignment date",
+            "Published date",
+            "Unublished on GCI date",
+        ];
+            
+        foreach($dateFields as $dateKey) {
+            $this->assertEquals($curationData->first()[$dateKey],  Carbon::today()->format('Y-m-d'));
+        }
+
+        
+    }
+    
 }

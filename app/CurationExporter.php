@@ -8,7 +8,13 @@ class CurationExporter
 {
     protected function buildQuery($params)
     {
-        $query = Curation::with('expertPanel', 'curationStatuses', 'curator', 'statuses', 'classifications');
+        $query = Curation::with([
+            'expertPanel', 
+            'curationStatuses', 
+            'curator', 
+            'statuses', 
+            'classifications'
+        ]);
         if (isset($params['expert_panel_id'])) {
             $query->where('expert_panel_id', $params['expert_panel_id']);
         }
@@ -43,7 +49,7 @@ class CurationExporter
 
         return  $query->get()
                 ->transform(function ($curation) use ($curationStatuses) {
-                    $statuses = $curation->statuses->pluck('pivot.status_date', 'id');
+                    $statuses = $this->getLatestStatusDates($curation);
 
                     $line = [
                         'Gene Symbol' => $curation->gene_symbol,
@@ -96,4 +102,19 @@ class CurationExporter
 
         return $path;
     }
+
+    /**
+     * Filters $curation's statuses entries to the latest (by status_date) for each status
+     * b/c we only want the latest instance of a status for the curtion export.
+     */
+    private function getLatestStatusDates($curation)
+    {
+        return $curation->statuses
+        ->groupBy('id')
+        ->map(function ($statusGroup) {
+            return $statusGroup->sortByDesc('pivot.status_date')->first();
+        })
+        ->pluck('pivot.status_date', 'id');
+    }
+    
 }
