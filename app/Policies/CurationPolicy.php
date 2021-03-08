@@ -21,6 +21,17 @@ class CurationPolicy
     {
     }
 
+    /**
+     * Determine whether the user can view any uploads.
+     *
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        // return $user->hasPermissionTo('list uploads');
+        return true;
+    }
+
     public function before($user, $ability)
     {
         if ($this->hasPrivilegedRole($user)) {

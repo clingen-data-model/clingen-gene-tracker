@@ -66,5 +66,6 @@ class SendNotificationDigest extends Command
                     'read_at' => Carbon::now()
                 ]);
         });
+        \Log::info('Sent notification digests.');
     }
 }
