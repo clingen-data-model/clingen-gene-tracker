@@ -136,10 +136,8 @@
         methods: {
             async getDocuments() {
                 if (!this.curation.id) {
-                    console.info('DocumentsList.methods.getDocuments: !this.curation.id; abort request');
                     return;
                 }
-                console.info('DocumentsList.methods.getDocuments: this.curation.id == '+this.curation.id+'; make uploads request');
 
                 this.loadingDocuments = true;
                 this.documents = await getAllUploads(

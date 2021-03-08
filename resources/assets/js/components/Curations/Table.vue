@@ -188,7 +188,6 @@
                     console.log("don't call again b/c context hasn't really changed");
                     return;
                 }
-                console.info('curationProvider called', ctx)
                 const context = {...ctx, ...this.searchParams};
                 getPageOfCurations(context)
                     .then(response => {
