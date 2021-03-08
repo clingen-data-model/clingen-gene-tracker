@@ -106,7 +106,8 @@ class CurationController extends Controller
         $curation = Curation::findOrFail($id);
         $this->authorize('update', $curation);
 
-        $data = $request->except('curation_status_id');
+        // Ignore data that should not be manually updated.
+        $data = $request->except(['curation_status_id', 'hgnc_id', 'hgnc_name']);
 
         if (isset($data['pmids']) && is_string($data['pmids'])) {
             $data['pmids'] = array_map(function ($i) {

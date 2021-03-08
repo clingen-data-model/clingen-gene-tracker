@@ -731,6 +731,34 @@ class CurationControllerTest extends TestCase
 
     /**
      * @test
+     */
+    public function hgnc_id_and_hgnc_name_are_ignored_when_updating_data()
+    {
+        $status = factory(\App\CurationStatus::class)->create();
+        $curator = factory(\App\User::class)->create();
+        $curation = $this->curations->first();
+        $curation->update(['gene_symbol' => 'TP53', 'hgnc_id' => '777', 'hgnc_name' => 'if man is five']);
+
+        $data = [
+            'gene_symbol' => $curation->gene_symbol,
+            'expert_panel_id' => $curation->expert_panel_id,
+            'curator_id' => $curator->id,
+            'curation_status_id' => $status->id,
+            'nav' => 'next',
+            'hgnc_id' => 666666,
+            'hgnc_name' => 'beelzabub',
+            'page' => 'info'
+        ];
+        $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/curations/'.$curation->id, $data)
+            // ->assertStatus(200)
+            ->assertSee('"hgnc_id":'.$curation->hgnc_id)
+            ->assertSee('"hgnc_name":"'. $curation->hgnc_name.'"');
+    }
+    
+
+    /**
+     * @test
      * @group authorization
      */
     public function must_have_delete_permissions_to_delete_curation()
