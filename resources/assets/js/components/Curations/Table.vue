@@ -3,7 +3,7 @@
     <div class="curations-table">
         <div class="row mb-2" v-show="!loading">
             <div class="col-md-6 form-inline">
-                <label :for="searchFieldId">Search`:</label>&nbsp;
+                <label :for="searchFieldId">Search:</label>&nbsp;
                 <select name="" id="" v-model="filterField" class="form-control form-control-sm">
                     <option :value="null">Any Field</option>
                     <option :value="field.key" v-for="field in filterableFields" :key="field.name">{{field.label}}</option>
