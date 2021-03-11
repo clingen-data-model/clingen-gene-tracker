@@ -16,12 +16,15 @@ class AddUuidToCurations extends Migration
         if (!Schema::hasColumn('curations', 'uuid')) {
             Schema::table('curations', function (Blueprint $table) {
                 $table->uuid('uuid')->after('id');
-                $table->unique('uuid');
             });
         }
 
         DB::statement('UPDATE curations SET uuid = gdm_uuid WHERE gdm_uuid IS NOT NULL');
         DB::statement('UPDATE curations SET uuid = uuid() WHERE gdm_uuid is NULL');
+
+        Schema::table('curations', function (Blueprint $table) {
+            $table->unique('uuid');
+        });
     }
 
     /**
