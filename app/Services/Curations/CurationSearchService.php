@@ -2,9 +2,10 @@
 
 namespace App\Services\Curations;
 
-use App\Contracts\SearchService;
-use App\Curation;
 use App\User;
+use Exception;
+use App\Curation;
+use App\Contracts\SearchService;
 
 class CurationSearchService implements SearchService
 {
@@ -61,10 +62,61 @@ class CurationSearchService implements SearchService
                 }
             }
         }
+
+        $this->applyFilter($query, $params);
+
         $sortField = 'gene_symbol';
         $sortDir = 'asc';
 
+
+        if (isset($params['sortBy'])) {
+            $sortField = $params['sortBy'];
+            if ($sortField == 'expert_panel') {
+                $sortField = 'expert_panels.name';
+            }
+            if ($sortField == 'mode_of_inheritance') {
+                $sortField = 'mode_of_inheritances.name';
+            }
+            if ($sortField == 'curator') {
+                $sortField = 'users.name';
+            }
+            if ($params['sortDesc'] === 'true') {
+                $sortDir = 'desc';
+            }
+        }
+        $query->orderBy($sortField, $sortDir);
+
+        return $query;
+    }
+
+    private function applyFilter($query, $params)
+    {
+        
         if (isset($params['filter'])) {
+            if (isset($params['filter_field'])) {
+                switch ($params['filter_field']) {
+                    case 'gene_symbol':
+                        $query->where('gene_symbol', 'like', '%'.$params['filter'].'%');
+                        break;
+                    case 'expert_panel':
+                        $query->where('expert_panels.name', 'like', '%'.$params['filter'].'%');
+                        break;
+                    case 'mode_of_inheritance':
+                        $query->whereHas('modeOfInheritance', function ($q) use ($params) {
+                            $q->where('abbreviation', 'like', '%'.$params['filter'].'%')
+                                ->orWhere('name', 'like', '%'.$params['filter'].'%');
+                        });
+                        break;
+                    case 'mondo_id':
+                        $query->where('mondo_id', 'like', '%'.$params['filter'].'%')
+                            ->orWhere('mondo_name', 'like', '%'.$params['filter'].'%');
+                        break;
+                    default:
+                        throw new Exception('Unkown filter_field '.$params['filter_field']);
+                        break;
+                }
+                return;
+            }
             $query->where('gene_symbol', 'like', '%'.$params['filter'].'%')
                 ->orWhere('expert_panels.name', 'like', '%'.$params['filter'].'%')
                 ->orWhere('users.name', 'like', '%'.$params['filter'].'%')
@@ -86,24 +138,6 @@ class CurationSearchService implements SearchService
                 $query->orWhere('hgnc_id', $hgncId);
             }
         }
-
-        if (isset($params['sortBy'])) {
-            $sortField = $params['sortBy'];
-            if ($sortField == 'expert_panel') {
-                $sortField = 'expert_panels.name';
-            }
-            if ($sortField == 'mode_of_inheritance') {
-                $sortField = 'mode_of_inheritances.name';
-            }
-            if ($sortField == 'curator') {
-                $sortField = 'users.name';
-            }
-            if ($params['sortDesc'] === 'true') {
-                $sortDir = 'desc';
-            }
-        }
-        $query->orderBy($sortField, $sortDir);
-
-        return $query;
     }
+    
 }

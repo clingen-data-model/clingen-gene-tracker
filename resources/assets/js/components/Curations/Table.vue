@@ -3,8 +3,13 @@
     <div class="curations-table">
         <div class="row mb-2" v-show="!loading">
             <div class="col-md-6 form-inline">
-                <label :for="searchFieldId">Search:</label>&nbsp;
-                <input v-model="filter" placeholder="search curations" class="form-control" :id="searchFieldId" />
+                <label :for="searchFieldId">Search`:</label>&nbsp;
+                <select name="" id="" v-model="filterField" class="form-control form-control-sm">
+                    <option :value="null">Any Field</option>
+                    <option :value="field.key" v-for="field in filterableFields" :key="field.name">{{field.label}}</option>
+                </select>
+                &nbsp;
+                <input v-model="filter" placeholder="search curations" class="form-control form-control-sm" :id="searchFieldId" />
             </div>
             <div class="col-md-6">
                 <b-pagination 
@@ -20,6 +25,7 @@
             <p class="lead">loading...</p>
         </div>
         <b-table striped hover 
+            ref="table"
             :items="curationProvider" 
             :fields="fields" 
             :filter="filter"
@@ -78,7 +84,18 @@
                 </div>
             </template>
         </b-table>
-        <div class="float-right mr-3 mb-3">Total Records: {{totalRows}}</div>
+        <div class="row border-top pt-4">
+            <div class="col-md-6">Total Records: {{totalRows}}</div>
+            <div class="col-md-6">
+                <b-pagination 
+                    size="sm" 
+                    hide-goto-end-buttons 
+                    :total-rows="totalRows" 
+                    :per-page="pageLength" 
+                    v-model="currentPage" 
+                    class="curations-table-pagination my-0 float-right" />    
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -113,6 +130,7 @@
         },
         data() {
             return {
+                filterField: null,
                 filter: null,
                 currentPage: 1,
                 sortDesc: (this.sortDir == 'desc'),
@@ -123,17 +141,20 @@
                     {
                         key: 'gene_symbol',
                         label: 'Gene Symbol',
-                        sortable: true
+                        sortable: true,
+                        filterable: true,
                     },
                     {
                         key: 'mode_of_inheritance',
                         label: 'MOI',
                         sortable: true,
+                        filterable: true,
                     },
                     {
                         key: 'mondo_id',
                         label: 'Disease Entity',
                         sortable: true,
+                        filterable: true,
                         thStyle: {
                             width: "9rem"
                         }
@@ -141,6 +162,7 @@
                     {
                         key: 'expert_panel',
                         label: 'Expert Panel',
+                        filterable: true,
                         sortable: true,
                     },
                     {
@@ -153,6 +175,7 @@
                         label: 'Status',
                         // sortable: true,
                         sortable: false,
+                        // filterable: true,
                         thStyle: {
                             width: "8rem"
                         }
@@ -174,21 +197,32 @@
             loading: function () {
                 return false;
             },
+            filterableFields() {
+                return this.fields.filter(f => f.filterable)
+            }
         },
         watch: {
             filter: function (to, from) {
                 if (to != from) {
                     this.resetCurrentPage();
                 }
+            },
+            filterField: function () {
+                this.$refs.table.refresh()
             }
         },
         methods: {
             curationProvider(ctx, callback) {
                 if (ctx == this.ctx) {
-                    console.log("don't call again b/c context hasn't really changed");
+                    // console.log("don't call again b/c context hasn't really changed");
                     return;
                 }
-                const context = {...ctx, ...this.searchParams};
+
+                const context = {...ctx, ...this.searchParams, ...{filter_field: this.filterField}};
+                if (this.filterField) {
+                    context.filter_field = this.filterField;
+                }
+                console.info('context', context);
                 getPageOfCurations(context)
                     .then(response => {
                         this.totalRows = response.data.meta.total

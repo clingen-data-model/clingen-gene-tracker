@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\User;
+use App\Curation;
 use App\Phenotype;
 use Tests\TestCase;
+use App\ExpertPanel;
 use App\Contracts\SearchService;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Services\Curations\CurationSearchService;
@@ -103,4 +106,43 @@ class CurationSearchTest extends TestCase
         $this->assertContains($curation1->id, $results->pluck('id'));
         $this->assertNotContains($curation2->id, $results->pluck('id'));
     }
+
+    /**
+     * @test
+     */
+    public function can_eager_load_specified_relations()
+    {
+        $user = factory(User::class)->create();
+        $this->curations->first()->expertPanel->addCoordinator($user);
+
+        $results = $this->search->search(['with' => ['expertPanel', 'expertPanel.coordinators']]);
+        
+        $this->assertNotEquals(0, $results->pluck('expertPanel.coordinators')->flatten()->count());
+    }
+
+    /**
+     * @test
+     */
+    public function can_filter_by_specific_field()
+    {
+        \DB::table('curations')->delete();
+        $curation = factory(Curation::class)->create(['gene_symbol'=>'RETT']);
+        $ep = factory(ExpertPanel::class)->create(['name'=>'retina']);
+        $epCuration = factory(Curation::class)->create(['expert_panel_id' => $ep->id]);
+
+        $results = $this->search->search(['filter' => 'ret', 'filter_field' => 'gene_symbol']);
+        
+        $this->assertEquals(1, $results->count());
+    }
+
+    /**
+     * @test
+     */
+    public function can_filter_by_current_status()
+    {
+        // dd($this->curations->pluck('currentSatus')->toArray());
+    }
+    
+    
+    
 }
