@@ -46,7 +46,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Sirs\DBImport\DBImportServiceProvider::class,
 
         /*
          * Application Service Providers...
