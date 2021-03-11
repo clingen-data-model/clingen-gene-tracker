@@ -10,9 +10,10 @@
                     <thead>
                         <tr>
                             <th>Gene</th>
-                            <th>Expert Panel</th>
                             <th>Status</th>
                             <th>Phenotypes</th>
+                            <th>Expert Panel</th>
+                            <th>Coordinators</th>
                         </tr>
                     </thead>
                     <tbody v-for="(match, idx) in matchedGenes" :key="idx">
@@ -22,13 +23,23 @@
                                     {{match.gene_symbol}}
                                 </a>
                             </td>
-                            <td>{{match.expert_panel.name}}</td>
                             <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                             <td>
                                 <ul class="mb-0" v-if="match.phenotypes.length > 0">
                                     <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
                                         <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
                                         <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td>{{match.expert_panel.name}}</td>
+                            <td>
+                                <ul class="list-unstyled">
+                                    <li 
+                                        v-for="(coordinator, idx) in match.expert_panel.coordinators" 
+                                        :key="idx"
+                                    >
+                                        <a :href="`mailto:${coordinator.email}`">{{coordinator.name}}</a>
                                     </li>
                                 </ul>
                             </td>
@@ -40,6 +51,7 @@
     </div>
 </template>
 <script>
+import queryStringFromParams from '../../../http/query_string_from_params';
     import WarningAlert from '../../WarningAlert'
 
     export default {
@@ -74,7 +86,15 @@
         },
         methods: {
             checkCurations: _.debounce(function() {
-                window.axios.get('/api/curations?with=phenotypes&gene_symbol='+this.curation.gene_symbol)
+                const queryParams = {
+                    with: [
+                        'phenotypes',
+                        'expertPanel',
+                        'expertPanel.coordinators'
+                    ],
+                    gene_symbol: this.curation.gene_symbol
+                };
+                window.axios.get('/api/curations?'+queryStringFromParams(queryParams))
                     .then((response) => {
                         this.matchedGenes = Object.values(response.data.data).filter((t) => (t.id != this.curation.id));
                     })
