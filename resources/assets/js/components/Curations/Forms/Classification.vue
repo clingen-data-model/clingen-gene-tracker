@@ -1,8 +1,9 @@
 <style></style>
 
 <template>
-    <div class="component-container">
-        <classification-form v-model="updatedCuration" class="mt-1"></classification-form>
+    <div class="component-container w-50">
+        <classification-history :curation="value"></classification-history>
+
     </div>
 </template>
 
@@ -12,15 +13,14 @@
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import DateField from '../../DateField'
     import ValidationError from '../../ValidationError'
-    import ClassificationForm from './ClassificationForm'
-    import moment from 'moment'
+    import ClassificationHistory from '../ClassificationHistory'
 
     export default {
         components: {
             CurationNotifications,
             DateField,
             ValidationError,
-            ClassificationForm
+            ClassificationHistory
         },
         mixins: [
             curationFormMixin,
