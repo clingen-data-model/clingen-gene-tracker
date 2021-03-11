@@ -1,8 +1,7 @@
 <style></style>
 <template>
     <div class="component-container">
-        <div class="row">
-            <div class="col-lg-8">
+        <div>
                 <div class="alert alert-info" v-show="loading && phenotypes.length < 1">Loading phenotype information...</div>
                 <div  v-show="!loading || phenotypes.length > 0">
                     <div class="alert alert-secondary clearfix" v-show="phenotypes.length == 0">
@@ -31,10 +30,14 @@
                             >
                         </template>
                     </b-table>
-                    
+                    <curation-notifications :curation="updatedCuration" class="mt-2"></curation-notifications>
+
                     <div class="alert alert-info" v-show="message">{{message}}</div>
                 </div>
 
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
                     <select v-model="updatedCuration.rationales" multiple class="form-control" style="height: 8.5em">
@@ -74,7 +77,6 @@
                 <criteria-table></criteria-table>
             </div>
         </div>
-        <curation-notifications :curation="updatedCuration" class="mt-2"></curation-notifications>
     </div>
 </template>
 <script>
