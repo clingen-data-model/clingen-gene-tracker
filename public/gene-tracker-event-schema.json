@@ -55,6 +55,8 @@
                         }
                     }
                 },
+                // This structure takes into account the data model for groups in the 
+                // forthcoming OrgManager.
                 "group": {
                     "type": "object",
                     "properties": {
@@ -64,24 +66,10 @@
                         },
                         "name": { "type": "string" },
                         "type": { "type": "string" },
+                        "affiliation_id": { "type": "string" },
                         "uri": { "type": "string", "format": "uri" }
                     }
                 },
-                // Reconsider structure as expected from GPM system
-                // "group": {
-                //     "type": "object",
-                //     "properties": {
-                //         "id": { "type": "string", "patthen": ... },
-                //         "name": { "type": "string" },
-                //         "gci_affiliation": {
-                //             "type": "object",
-                //             "properties": {
-                //                 "name": { "type": "string" },
-                //                 "id": { "type": "string" }
-                //             }
-                //         }
-                //     }
-                // },
                 "curator": {
                     "type": "object",
                     "properties": {
@@ -153,13 +141,35 @@
                         "description": { "type": "string" }
                     }
                 },
+                // Should we track both included and excluded phenotypes?
+                // Should it depend on the curation-type?
                 "omim_phenotypes": {
                     "type": "array",
                     "items": {
                         "type": "string",
                         "pattern": "^\\d{7}$"
                     }
-                }
+                },
+                // Alternative
+                // "omim_phenotypes": {
+                //     "type": "object",
+                //     "properties": {
+                //         "included": {
+                //             "type": "array",
+                //             "items": {
+                //                 "type": "string",
+                //                 "pattern": "^\\d{7}$"
+                //             }
+                //         },
+                //         "excluded": {
+                //             "type": "array",
+                //             "items": {
+                //                 "type": "string",
+                //                 "pattern": "^\\d{7}$"
+                //             }        
+                //         }
+                //     } 
+                // },
             }
         }
     },
