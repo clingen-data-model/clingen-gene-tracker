@@ -43,7 +43,7 @@ return [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '13307'),
-            'database' => env('DB_DATABASE_TEST', 'gene_tracker_test'),
+            'database' => env('DB_DATABASE_TEST', 'testing'),
             'username' => env('DB_USERNAME', 'dbuser'),
             'password' => env('DB_PASSWORD', 'password'),
             'unix_socket' => env('DB_SOCKET', ''),
