@@ -41,7 +41,8 @@ class NotifyCoordinatorsAboutCuration implements ShouldQueue
     {
         $this->curation
             ->expertPanel
-            ->coordinators->each(function ($user) {
+            ->coordinators
+            ->each(function ($user) {
                 $user->notify(new $this->notificationClass($this->curation, ...$this->additional));
             });
     }
