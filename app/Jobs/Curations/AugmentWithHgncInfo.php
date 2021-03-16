@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Curations;
 
+use App\Gene;
 use App\Curation;
 use App\Hgnc\HgncClient;
 use OutOfBoundsException;
@@ -39,35 +40,43 @@ class AugmentWithHgncInfo implements ShouldQueue
      *
      * @return void
      */
-    public function handle(HgncClientContract $hgncClient)
+    public function handle()
     {
         try {
-            $this->updateCurationWithSymbol($hgncClient);
+            $this->updateCurationWithSymbol();
         } catch (HttpNotFoundException $e) {
             try {
-                $this->updateCurationWithPrevSymbol($hgncClient);
+                $this->updateCurationWithPrevSymbol();
             } catch (HttpNotFoundException $e) {
                 throw $e;
             }
         }
     }
 
-    private function updateCurationWithSymbol($hgncClient)
+    private function updateCurationWithSymbol()
     {
-        $geneSymbolRecord = $hgncClient->fetchGeneSymbol($this->curation->gene_symbol);
+        $gene = Gene::findBySymbol($this->curation->gene_symbol);
+        if (!$gene) {
+            throw new HttpNotFoundException();
+        }
         $this->curation->update([
-            'hgnc_name' => $geneSymbolRecord->name,
-            'hgnc_id' => $geneSymbolRecord->hgnc_id
+            'hgnc_name' => $gene->hgnc_name,
+            'hgnc_id' => $gene->hgnc_id
         ]);
     }
 
-    private function updateCurationWithPrevSymbol($hgncClient)
+    private function updateCurationWithPrevSymbol()
     {
         $oldGeneSymbol = $this->curation->gene_symbol;
-        $prevSymbolRecord = $hgncClient->fetchPreviousSymbol($this->curation->gene_symbol);
+        // $prevSymbolRecord = $hgncClient->fetchPreviousSymbol($this->curation->gene_symbol);
+        $prevSymbolRecord = Gene::findByPreviousSymbol($this->curation->gene_symbol);
+        if (!$prevSymbolRecord) {
+            throw new HttpNotFoundException();
+        }
+
         $this->curation->update([
-            'gene_symbol' => $prevSymbolRecord->symbol,
-            'hgnc_name' => $prevSymbolRecord->name,
+            'gene_symbol' => $prevSymbolRecord->gene_symbol,
+            'hgnc_name' => $prevSymbolRecord->hgnc_name,
             'hgnc_id' => $prevSymbolRecord->hgnc_id
         ]);
 
