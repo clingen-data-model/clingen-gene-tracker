@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Events\Genes\GeneSymbolChanged;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Event;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 /**
@@ -17,6 +19,7 @@ class Gene extends Model
     use SoftDeletes;
     use RevisionableTrait;
 
+    public $incrementing = false;
     protected $primaryKey = 'hgnc_id';
 
     public $fillable = [
@@ -45,4 +48,27 @@ class Gene extends Model
     ];
 
     public $revisionCreationsEnabled = true;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($model) {
+            if ($model->isDirty('gene_symbol')) {
+                event(new GeneSymbolChanged($model, $model->getOriginal('gene_symbol')));
+            }
+        });
+    }
+
+    // Access methods
+
+    public static function findBySymbol(String $symbol)
+    {
+        return static::where('gene_symbol', $symbol)->first();
+    }
+
+    public static function findByPreviousSymbol(String $symbol)
+    {
+        return static::whereJsonContains('previous_symbols', $symbol)->first();
+    }
 }
