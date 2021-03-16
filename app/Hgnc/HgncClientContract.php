@@ -13,6 +13,4 @@ interface HgncClientContract
     public function fetchPreviousSymbol(string $geneSymbol): HgncRecord;
 
     public function fetchHgncId(string $hgncId): HgncRecord;
-
-    public function fetchCustomDownload(array $params): Collection;
 }

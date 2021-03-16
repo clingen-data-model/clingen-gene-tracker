@@ -2,19 +2,15 @@
 
 namespace Tests\Unit\Console\Commands;
 
-use Artisan;
 use App\User;
 use App\Curation;
 use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Curations\MondoIdNotFound;
 use App\Notifications\CurationNotificationsDigest;
 use App\Notifications\Curations\GeneSymbolUpdated;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Curations\PhenotypeOmimEntryMoved;
 use App\Notifications\Curations\HgncIdNotFoundNotification;

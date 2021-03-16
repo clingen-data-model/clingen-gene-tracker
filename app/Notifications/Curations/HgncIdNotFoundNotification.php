@@ -3,7 +3,7 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
-use App\Contracts\HgncClient;
+use App\Hgnc\HgncClientContract;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use App\Exceptions\HttpNotFoundException;
@@ -72,12 +72,12 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     {
         return $collection->unique(function ($item) {
             return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-        });      
+        });
     }
 
     public static function filterInvalid(Collection $collection):Collection
     {
-        $hgncClient = app()->make(HgncClient::class);
+        $hgncClient = app()->make(HgncClientContract::class);
         return $collection->filter(function ($item) use ($hgncClient) {
             $curation = Curation::find($item->data['curation']['id']);
             if (!is_null($curation->hgnc_id)) {

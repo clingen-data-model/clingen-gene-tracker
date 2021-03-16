@@ -56,43 +56,4 @@ class HgncClient implements HgncClientContract
     {
         return $this->fetch('prev_symbol', $geneSymbol);
     }
-
-    public function fetchCustomDownload(array $params): Collection
-    {
-        $queryString = $this->queryStringFromParams($params);
-
-        $url = 'genenames.org/cgi-bin/download/custom?'.$queryString;
-        $response = $this->guzzleClient->request('GET', $url);
-
-        return $this->parseCustomResponse($response->getBody()->getContents());
-    }
-
-    private function queryStringFromParams($params)
-    {
-        return preg_replace('/\[\d\]/', '', urldecode(http_build_query($params)));
-    }
-
-    private function parseCustomResponse($responseString): Collection
-    {
-        $lines = explode("\n", $responseString);
-        $columnNames = null;
-        $collection = collect();
-        foreach ($lines as $idx => $line) {
-            $cols = explode("\t", $line);
-            if ($idx == 0) {
-                $columnNames = array_map(function ($heading) {
-                    $heading = preg_replace('/\(.*\)$/', '', $heading);
-
-                    return Str::snake(strtolower($heading));
-                }, $cols);
-                continue;
-            }
-
-            $data = array_combine($columnNames, $cols);
-
-            $collection->push(new HgncRecord($data));
-        }
-
-        return $collection;
-    }
 }

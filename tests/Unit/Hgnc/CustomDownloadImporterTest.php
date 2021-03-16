@@ -2,22 +2,23 @@
 
 namespace Tests\Unit\Hgnc;
 
-use App\Hgnc\CustomDownloadImporter;
-use App\Hgnc\HgncClient;
+use Tests\TestCase;
 use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\MocksGuzzleRequests;
 use Illuminate\Support\Facades\DB;
-use Tests\TestCase;
+use GuzzleHttp\Handler\MockHandler;
+use App\Hgnc\CustomDownloadImporter;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group hgnc-custom-download
  */
 class CustomDownloadImporterTest extends TestCase
 {
-    // use DatabaseTransactions;
+    use MocksGuzzleRequests;
+    use DatabaseTransactions;
 
     public function setup(): void
     {
@@ -72,13 +73,8 @@ class CustomDownloadImporterTest extends TestCase
 
     private function getImporter($responses)
     {
-        $mock = new MockHandler($responses);
+        $guzzleClient = $this->getGuzzleClient($responses);
 
-        $stack = HandlerStack::create($mock);
-        $guzzleClient = new Client([
-            'handler' => $stack,
-        ]);
-
-        return new CustomDownloadImporter(new HgncClient($guzzleClient));
+        return new CustomDownloadImporter($guzzleClient);
     }
 }

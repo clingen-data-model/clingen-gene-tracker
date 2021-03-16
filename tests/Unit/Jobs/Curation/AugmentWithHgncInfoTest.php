@@ -30,12 +30,15 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->coord->expertPanels()->attach([$this->ep->id => [
             'is_coordinator' => 1,
         ]]);
+        
         $this->curation = factory(Curation::class)->create([
             'gene_symbol' => 'TH',
             'expert_panel_id' => $this->ep->id,
         ]);
-        $this->hgncClient = $this->getMockBuilder(HgncClient::class)
+
+        $this->hgncClient = $this->getMockBuilder(HgncClientContract::class)
                                 ->getMock();
+
         $this->hgncClient->method('fetchGeneSymbol')
                         ->willReturn(new HgncRecord([
                             'hgnc_id' => 'HGNC:11782',

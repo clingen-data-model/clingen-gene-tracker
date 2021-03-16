@@ -3,13 +3,14 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
+use App\Hgnc\HgncClient;
 use OutOfBoundsException;
-use App\Hgnc\HgncClientContract;
-use App\Exceptions\ApiServerErrorException;
 use Illuminate\Bus\Queueable;
+use App\Hgnc\HgncClientContract;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
+use App\Exceptions\ApiServerErrorException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
@@ -38,7 +39,7 @@ class AugmentWithHgncInfo implements ShouldQueue
      *
      * @return void
      */
-    public function handle(HgncClient $hgncClient)
+    public function handle(HgncClientContract $hgncClient)
     {
         try {
             $this->updateCurationWithSymbol($hgncClient);
