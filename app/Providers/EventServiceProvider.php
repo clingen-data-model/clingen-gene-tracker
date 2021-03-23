@@ -32,9 +32,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Curation\Deleted' => [
             'App\Listeners\Curations\MakeCurationDeletedStreamMessage'
         ],
-        'App\Events\Genes\GeneSymbolChanged' => [
-            'App\Listeners\Genes\UpdateCurations',
-            'App\Listeners\Genes\NotifyGeneSymbolChanged'
+        \App\Events\Genes\GeneSymbolChanged::class => [
+            \App\Listeners\Genes\UpdateCurations::class,
+            \App\Listeners\Genes\NotifyGeneSymbolChanged::class
         ],
         'App\Events\StreamMessages\Created' => [
             'App\Listeners\StreamMessages\PushMessage'
