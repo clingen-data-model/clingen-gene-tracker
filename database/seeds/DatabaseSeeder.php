@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             $this->call(ExpertPanelsTableSeeder::class);
             $this->call(UsersTableSeeder::class);
         }
+        if (\DB::getDatabaseName() == 'testing') {
+            $this->call(TestGeneSeeder::class);
+        }
         $this->call(CurationStatusesTableSeeder::class);
         $this->call(CurationTypesTableSeeder::class);
         $this->call(RationalesTableSeeder::class);

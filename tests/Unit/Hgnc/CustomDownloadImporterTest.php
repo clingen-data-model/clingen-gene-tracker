@@ -26,6 +26,7 @@ class CustomDownloadImporterTest extends TestCase
     public function setup(): void
     {
         parent::setup();
+        DB::table('genes')->delete();
     }
 
     /**

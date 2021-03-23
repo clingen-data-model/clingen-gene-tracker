@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidGeneSymbolRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\ValidHgncGeneSymbol;
 
@@ -24,8 +25,11 @@ class CurationCreateRequest extends FormRequest
      */
     public function rules()
     {
+
+        $symbolRule = app()->make(ValidGeneSymbolRule::class);
+
         return [
-            'gene_symbol'=> ['required', new ValidHgncGeneSymbol],
+            'gene_symbol'=> ['required', $symbolRule],
             'expert_panel_id' => 'required',
             'moi_id' => 'nullable|exists:mode_of_inheritances,id',
             'gdm_uuid' => 'nullable|regex:/^\w{8}(-(\w){4}){3}-\w{12}$/'

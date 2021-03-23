@@ -2,20 +2,22 @@
 
 namespace App\Providers;
 
-use App\Contracts\GeneValidityCurationUpdateJob;
-use App\Contracts\MessageConsumer;
-use App\Contracts\MessagePusher;
-use App\Jobs\UpdateCurationFromGeneValidityMessage;
-use App\Logging\ContainerRoleProcessor;
-use App\Services\DisabledPusher;
-use App\Services\Kafka\KafkaConfig;
-use App\Services\Kafka\KafkaConsumer;
-use App\Services\Kafka\KafkaProducer;
-use App\Services\MessageLogger;
 use Carbon\Carbon;
+use App\Services\MessageLogger;
+use App\Contracts\MessagePusher;
+use App\Services\DisabledPusher;
+use App\Contracts\MessageConsumer;
+use App\Rules\ValidGeneSymbolRule;
+use App\Services\Kafka\KafkaConfig;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use App\Services\Kafka\KafkaConsumer;
+use App\Services\Kafka\KafkaProducer;
+use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\GeneValidityCurationUpdateJob;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
+use App\Rules\ValidHgncGeneSymbol;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -103,5 +105,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
+
+        $this->app->bind(ValidGeneSymbolRule::class, ValidHgncGeneSymbol::class);
     }
 }

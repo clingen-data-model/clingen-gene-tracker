@@ -2,12 +2,13 @@
 
 namespace Tests;
 
+use Mockery;
+use JsonSerializable;
 use App\Contracts\MessagePusher;
+use App\Rules\ValidGeneSymbolRule;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use JsonSerializable;
-use Mockery;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -71,5 +72,16 @@ abstract class TestCase extends BaseTestCase
         }
 
         return \DB::raw("CAST('{$json}' AS JSON)");
+    }
+
+    protected function assumeGeneSymbolValid()
+    {
+        app()->bind(\App\Rules\ValidGeneSymbolRule::class, function ($app) {
+            $stub = $this->createMock(ValidGeneSymbolRule::class);
+            $stub->method('passes')
+                ->willReturn(true);
+
+            return $stub;
+        });
     }
 }

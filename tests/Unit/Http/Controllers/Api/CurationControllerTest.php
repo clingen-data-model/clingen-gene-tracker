@@ -117,7 +117,7 @@ class CurationControllerTest extends TestCase
             ->assertStatus(422)
             ->assertJson([
                 'errors' => [
-                    'gene_symbol' => ['MLTN1 is not a valid HGNC gene symbol according to OMIM'],
+                    'gene_symbol' => ['MLTN1 is not a valid HGNC gene symbol.'],
                 ],
             ]);
     }
@@ -328,13 +328,7 @@ class CurationControllerTest extends TestCase
      */
     public function update_saves_new_curation_status_with_default_status_date()
     {
-        app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
-            $stub->method('geneSymbolIsValid')
-                ->willReturn(true);
-
-            return $stub;
-        });
+        $this->assumeGeneSymbolValid();
 
         $statuses = factory(\App\CurationStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
@@ -351,7 +345,7 @@ class CurationControllerTest extends TestCase
             'nav' => 'next',
         ];
 
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
@@ -364,13 +358,7 @@ class CurationControllerTest extends TestCase
      */
     public function update_saves_new_curation_status_and_status_date_when_set()
     {
-        app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
-            $stub->method('geneSymbolIsValid')
-            ->willReturn(true);
-
-            return $stub;
-        });
+        $this->assumeGeneSymbolValid();
 
         $statuses = factory(\App\CurationStatus::class, 3)->create();
         $curator = factory(\App\User::class)->create();
@@ -448,13 +436,7 @@ class CurationControllerTest extends TestCase
      */
     public function store_transforms_comma_separated_pmds_into_array()
     {
-        app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
-            $stub->method('geneSymbolIsValid')
-                ->willReturn(true);
-
-            return $stub;
-        });
+        $this->assumeGeneSymbolValid();
 
         $data = array_merge($this->curations->first()->toArray(), [
             'page' => 'info',
@@ -478,10 +460,9 @@ class CurationControllerTest extends TestCase
      */
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
+        $this->assumeGeneSymbolValid();
         app()->bind('App\Contracts\OmimClient', function ($app) {
             $stub = $this->createMock(OmimClient::class);
-            $stub->method('geneSymbolIsValid')
-                ->willReturn(true);
             $entryOutput = new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);
             $stub->method('getEntry')->willReturn($entryOutput);
 

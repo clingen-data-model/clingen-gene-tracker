@@ -2,12 +2,10 @@
 
 namespace App\Rules;
 
-use App\Contracts\OmimClient;
-use Illuminate\Contracts\Validation\Rule;
+use App\Gene;
 
-class ValidHgncGeneSymbol implements Rule
+class ValidHgncGeneSymbol implements ValidGeneSymbolRule
 {
-    protected $omim;
 
     /**
      * Create a new rule instance.
@@ -16,7 +14,6 @@ class ValidHgncGeneSymbol implements Rule
      */
     public function __construct()
     {
-        $this->omim = resolve(OmimClient::class);
     }
 
     /**
@@ -28,7 +25,7 @@ class ValidHgncGeneSymbol implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $this->omim->geneSymbolIsValid($value);
+        return Gene::findBySymbol($value);
     }
 
     /**
@@ -38,6 +35,6 @@ class ValidHgncGeneSymbol implements Rule
      */
     public function message()
     {
-        return ":input is not a valid HGNC gene symbol according to OMIM";
+        return ":input is not a valid HGNC gene symbol.";
     }
 }
