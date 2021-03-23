@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('curations:check-hgnc-updates')
+        $schedule->command('hgnc:update-data')
             ->dailyAt("01:00:00");
         $schedule->command('curations:check-mondo-updates')
             ->dailyAt("02:00:00");
