@@ -159,6 +159,7 @@
                 return this.$store.getters.loading;
             },
             showTable: function () {
+                // Show table when curation type is single NOT on list.
                 return (this.updatedCuration.curation_type_id != 2 && this.updatedCuration.curation_type_id != 3 && this.phenotypes.length > 0)
             },
             showRationale: function () {
