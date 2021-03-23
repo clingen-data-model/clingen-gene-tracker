@@ -35,6 +35,10 @@ class ExternalServiceRecord implements JsonSerializable
             return $this->attributes->{$key};
         }
 
+        if (!isset($this->{$key})) {
+            return null;
+        }
+
         return $this->{$key};
     }
 }
