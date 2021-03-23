@@ -4,14 +4,11 @@ namespace App\Jobs\Curations;
 
 use App\Gene;
 use App\Curation;
-use App\Hgnc\HgncClient;
 use OutOfBoundsException;
 use Illuminate\Bus\Queueable;
-use App\Hgnc\HgncClientContract;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
-use App\Exceptions\ApiServerErrorException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
