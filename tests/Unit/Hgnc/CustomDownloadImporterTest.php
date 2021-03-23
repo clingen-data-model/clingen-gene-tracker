@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Hgnc;
 
+use App\Gene;
 use Tests\TestCase;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -10,10 +11,12 @@ use Tests\MocksGuzzleRequests;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Handler\MockHandler;
 use App\Hgnc\CustomDownloadImporter;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group hgnc-custom-download
+ * @group hgnc
  */
 class CustomDownloadImporterTest extends TestCase
 {
@@ -33,7 +36,9 @@ class CustomDownloadImporterTest extends TestCase
         $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
         $importer = $this->getImporter([new Response(200, [], $data)]);
 
-        $importer->import();
+        foreach($importer->import() as $msg) {
+
+        }
 
         $this->assertEquals(20, DB::table('genes')->count());
 
@@ -44,7 +49,6 @@ class CustomDownloadImporterTest extends TestCase
             'hgnc_status' => 'Approved',
             'previous_symbols' => null,
             'alias_symbols' => null,
-            'ncbi_gene_id' => 1,
             'omim_id' => 138670,
         ]);
 
@@ -52,7 +56,6 @@ class CustomDownloadImporterTest extends TestCase
             'gene_symbol' => 'A1BG-AS1',
             'hgnc_id' => 37133,
             'omim_id' => null,
-            'ncbi_gene_id' => 503538,
             'hgnc_name' => 'A1BG antisense RNA 1',
             'hgnc_status' => 'Approved',
             'previous_symbols' => $this->castToJson(['NCRNA00181', 'A1BGAS', 'A1BG-AS']),
@@ -66,10 +69,41 @@ class CustomDownloadImporterTest extends TestCase
             'hgnc_status' => 'Approved',
             'alias_symbols' => $this->castToJson(['OTTHUMG00000001889']),
             'previous_symbols' => null,
-            'ncbi_gene_id' => 343066,
             'omim_id' => null,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function updates_gene_if_hgnc_id_found()
+    {
+        Carbon::setTestNow('2020-01-01');
+        $gene = Gene::create([
+            'hgnc_id' => 5,
+            'gene_symbol' => 'A1BG',
+            'hgnc_name' => 'geekoprotien',
+            'hgnc_status' => 'Approved',
+            'previous_symbols' => null,
+            'alias_symbols' => null,
+            'ncbi_gene_id' => 1,
+            'omim_id' => 138670,
+        ]);
+
+        $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
+        $importer = $this->getImporter([new Response(200, [], $data)]);
+
+        foreach($importer->import() as $a){}
+
+        $this->assertEquals(20, DB::table('genes')->count());
+        $this->assertDatabaseHas('genes', [
+            'hgnc_id' => 5,
+            'gene_symbol' => 'A1BG',
+            'hgnc_name' => 'alpha-1-B glycoprotein',
+            'updated_at' => Carbon::now()
+        ]);
+    }
+    
 
     private function getImporter($responses)
     {
