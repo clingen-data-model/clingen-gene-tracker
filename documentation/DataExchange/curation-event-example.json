@@ -9,19 +9,29 @@
             "symbol": "PDLIM3",
             "hgnc_id": "HGNC:20767"
         },
-        "mondo_id": "MONDO:0005021",
+        "mondo_id": "MONDO:0007903",
         "mode_of_inheritance": {
             "name": "Autosomal dominant inheritance",
             "hp_id": "HP:0000006"
         },
+        "group": {
+            "id": "a7152138-8142-4b40-9bab-b13e2f16ffa8",
+            "name": "UNC Biocuration Core",
+            "type": {
+                "id": "f94b04d4-67bc-467c-95fe-005f25e1532e",
+                "name": "Gene Curation Expert Panel"
+            },
+            "affiliation_id": "40035",
+            "uri": "https://clinicalgenome.org/affiliation/40035/"
+        },
         "curator": {
-            "id": 5,
+            "clingen_id": "4392eea5-45b7-4733-8ef9-c6e551860f4d",
             "name": "Courtney Thaxton",
             "email": "courtney_thaxton@med.unc.edu"
         },
         "curation_type": {
-            "name": "single-new",
-            "description": "Curate a single gene-disease entity not on this list"
+            "name": "lumped",
+            "description": "Create a \"lumped\" disease entity from this list"
         },
         "statuses": [{
                 "name": "uploaded",
@@ -32,9 +42,20 @@
                 "effective_date": "2020-07-13"
             }
         ],
-        "pmids": [],
-        "rationales": [],
-        "omim_phenotypes": []
+        "rationale": {
+            "pmids": [20301488],
+            "rationales": [
+                "Assertion",
+                "Molecular mechanism",
+                "Phenotypic variability",
+                "Inheritance pattern"
+            ],
+            "notes": "Li-Fraumeni syndrome is a rare, inherited disorder, that includes (but is not limited to) the potential for developing multiple types of cancers, including breast cancer, osteosarcoma, sarcomas, as well as brain tumors, leukemia, and adrenocortical carcinoma. Individuals with TP53 mutations can develop one or more of these carcinomas, and therefore w have lumped the individuals asserted cancer phenotypes into the broader Li-Fraumeni syndrome."
+        },
+        "omim_phenotypes": {
+            "included": [202300, 618165, 151623],
+            "excluded": [614740, 114500, 137800, 259500, 114480, 114550, 607107, 260350]
+        }
     }
 
 }

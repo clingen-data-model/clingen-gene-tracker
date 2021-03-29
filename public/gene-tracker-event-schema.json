@@ -55,8 +55,6 @@
                         }
                     }
                 },
-                // This structure takes into account the data model for groups in the 
-                // forthcoming OrgManager.
                 "group": {
                     "type": "object",
                     "properties": {
@@ -65,7 +63,16 @@
                             "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
                         },
                         "name": { "type": "string" },
-                        "type": { "type": "string" },
+                        "type": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                                },
+                                "name": { "type": "string" }
+                            }
+                        },
                         "affiliation_id": { "type": "string" },
                         "uri": { "type": "string", "format": "uri" }
                     }
@@ -73,13 +80,15 @@
                 "curator": {
                     "type": "object",
                     "properties": {
-                        "id": { "type": "integer" },
+                        "clingen_id": {
+                            "type": "string",
+                            "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                        },
                         "name": { "type": "string" },
                         "email": {
                             "type": "string",
                             "format": "email"
-                        },
-                        "clingen_id": { "type": "string" }
+                        }
                     }
                 },
                 "statuses": {
@@ -110,20 +119,32 @@
                         "required": ["name", "effective_date"]
                     }
                 },
-                "pmids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer",
-                        "uniqueItems": true
-                    }
-                },
-                // Should we re-structure to object w/ list of rationale categories, list of PMIDs, and rationale text
-                // Change to list of objects w/ rationale id and name
-                "rationales": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": []
+                "rationale": {
+                    "type": "object",
+                    "properties": {
+                        "pmids": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "uniqueItems": true
+                            }
+                        },
+                        "rationales": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Assertion",
+                                    "Inheritance pattern",
+                                    "Insufficient evidence for single disease entity",
+                                    "Molecular mechanism",
+                                    "Other",
+                                    "Phenotypic Variability",
+                                    "To dispute asserted entity"
+                                ]
+                            }
+                        },
+                        "notes": { "type": "string" }
                     }
                 },
                 "curation_type": {
@@ -141,35 +162,25 @@
                         "description": { "type": "string" }
                     }
                 },
-                // Should we track both included and excluded phenotypes?
-                // Should it depend on the curation-type?
                 "omim_phenotypes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "pattern": "^\\d{7}$"
+                    "type": "object",
+                    "properties": {
+                        "included": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        },
+                        "excluded": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        }
                     }
                 },
-                // Alternative
-                // "omim_phenotypes": {
-                //     "type": "object",
-                //     "properties": {
-                //         "included": {
-                //             "type": "array",
-                //             "items": {
-                //                 "type": "string",
-                //                 "pattern": "^\\d{7}$"
-                //             }
-                //         },
-                //         "excluded": {
-                //             "type": "array",
-                //             "items": {
-                //                 "type": "string",
-                //                 "pattern": "^\\d{7}$"
-                //             }        
-                //         }
-                //     } 
-                // },
             }
         }
     },
