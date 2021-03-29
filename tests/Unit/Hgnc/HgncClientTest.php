@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Hgnc;
 
 use App\Exceptions\HttpNotFoundException;
 use App\Exceptions\HttpUnexpectedResponseException;
