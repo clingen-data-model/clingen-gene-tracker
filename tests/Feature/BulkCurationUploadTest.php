@@ -86,6 +86,7 @@ class BulkCurationUploadTest extends TestCase
      */
     public function confirms_duplicates_before_saving_file()
     {
+        \DB::table('curations')->delete();
         factory(Curation::class)->create(['gene_symbol' => 'MYL2']);
 
         $response = $this->actingAs($this->user)
