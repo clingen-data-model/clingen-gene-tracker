@@ -68,24 +68,35 @@ class UpdateOmimData extends Command
                 $data = array_combine($keys, array_pad($values, count($keys), null));
                 
                 $geneSymbol = $data['approved_symbol'];
+                if (!$geneSymbol) {
+                    continue;
+                }
                 $geneMimNumber = $data['mim_number'];
-                $phenotypes = $this->parsePhenotypes($data['phenotypes']);
-                $pCount += count($phenotypes);
-
                 $gene = Gene::findByOmimId($geneMimNumber);
                 if (!$gene) {
-                    Log::warning('Gene with omim id '.$geneMimNumber.' not found.');
+                    Log::warning('Gene with approved_symbol '.$geneSymbol.' and omim id '.$geneMimNumber.' not found.');
+                    continue;
                 }
 
+
+                $phenotypes = $this->parsePhenotypes($data['phenotypes']);
+                if (count($phenotypes) == 0) {
+                    continue;
+                }
+                $pCount += count($phenotypes);
+
                 $phenotypes = collect($phenotypes)->map(function ($pheno) {
-                    return Phenotype::updateOrCreate(
-                        ['mim_number' => $pheno['mim_number']],
-                        [
-                            'name' => $pheno['name']
-                        ]
-                    );
+                    try {
+                        return Phenotype::updateOrCreate(
+                            ['mim_number' => $pheno['mim_number']],
+                            ['name' => $pheno['name']]
+                        );
+                    } catch (\Throwable $th) {
+                        Log::warning($th->getMessage());
+                        return null;
+                    }
                 });
-                $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id'));
+                $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
 
         } catch (ClientException $e) {
@@ -96,13 +107,17 @@ class UpdateOmimData extends Command
 
     private function parsePhenotypes($string)
     {
+        if (empty($string)) {
+            return [];
+        }
         $parts = explode(';', $string);
         $phenotypes = [];
         foreach ($parts as $part) {
             $matches = [];
             preg_match('/^(.*), (\d{6}) \(\d\)(, (.*))?$/', $part, $matches);
             if (count($matches) < 2) {
-                dd($part);
+                Log::debug('Phenotype string '.$string.' without mim number found', $matches);
+                continue;
             }
             $phenotypes[] = [
                 'name' => $matches[1],
