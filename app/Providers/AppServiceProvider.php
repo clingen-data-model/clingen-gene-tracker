@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use App\Services\MessageLogger;
+use GuzzleHttp\ClientInterface;
 use App\Contracts\MessagePusher;
 use App\Services\DisabledPusher;
 use App\Contracts\MessageConsumer;
 use App\Rules\ValidGeneSymbolRule;
+use App\Rules\ValidHgncGeneSymbol;
 use App\Services\Kafka\KafkaConfig;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
@@ -17,7 +20,6 @@ use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Jobs\UpdateCurationFromGeneValidityMessage;
-use App\Rules\ValidHgncGeneSymbol;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -107,5 +109,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
 
         $this->app->bind(ValidGeneSymbolRule::class, ValidHgncGeneSymbol::class);
+
+        $this->app->bind(ClientInterface::class, function () {
+            return new Client();
+        });
     }
 }
