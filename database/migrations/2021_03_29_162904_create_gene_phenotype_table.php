@@ -14,10 +14,10 @@ class CreateGenePhenotypeTable extends Migration
     public function up()
     {
         Schema::create('gene_phenotype', function (Blueprint $table) {
-            $table->bigIncrements('hgnc_id');
-            $table->bigIncrements('phenotype_id');
-            $table->foreign('hgnc_id')->references('id')->on('genes');
-            $table->foreign('phenotype_id')->references('id')->on('phenotypes');
+            $table->unsignedBigInteger('hgnc_id');
+            $table->unsignedInteger('phenotype_id');
+            $table->foreign('hgnc_id', 'hgnc_id_foreign')->references('hgnc_id')->on('genes');
+            $table->foreign('phenotype_id', 'phenotype_id_foreign')->references('id')->on('phenotypes');
             $table->primary(['hgnc_id', 'phenotype_id']);
             $table->timestamps();
         });
