@@ -69,7 +69,8 @@ class Gene extends Model
      */
     public function phenotypes(): BelongsToMany
     {
-        return $this->belongsToMany(Phenotype::class, 'gene_phenotype', 'hgnc_id', 'phenotype_id');
+        return $this->belongsToMany(Phenotype::class, 'gene_phenotype', 'hgnc_id', 'phenotype_id')
+            ->withTimestamps();
     }
 
     // Access methods
