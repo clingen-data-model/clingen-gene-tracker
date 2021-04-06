@@ -25,6 +25,8 @@ Route::group([
 ], function () {
     // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
+
+    Route::post('/curations/{id}/owner', 'CurationTransferController@store');
     Route::resource('/curations/{id}/classifications', 'CurationClassificationController')
         ->only(['index', 'store', 'update', 'destroy']);
     Route::resource('/curations/{id}/statuses', 'CurationCurationStatusController');

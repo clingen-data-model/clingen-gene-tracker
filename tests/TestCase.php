@@ -15,14 +15,18 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use DatabaseTransactions;
 
+    protected $fakeCurationSavedEvent = true;
+
     public function setUp(): void
     {
         parent::setUp();
         $mock = Mockery::mock(MessagePusher::class)->shouldIgnoreMissing();
         $this->instance(MessagePusher::class, $mock);
-        \Event::fake([
-            \App\Events\Curation\Saved::class,
-        ]);
+        if ($this->fakeCurationSavedEvent) {
+            \Event::fake([
+                \App\Events\Curation\Saved::class,
+            ]);
+        }
     }
 
     public function callApiAs($user, $method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null)

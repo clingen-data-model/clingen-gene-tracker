@@ -175,7 +175,7 @@ class CurationExporterTest extends TestCase
         ]);
         $this->actingAs($curator);
 
-        $curation = Curation::create([
+        $curation = factory(Curation::class)->create([
             'curator_id' => $curator->id,
             'gene_symbol' => 'beans',
         ]);

@@ -7,6 +7,7 @@ use App\Classification;
 use App\Curation;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
+use App\ExpertPanel;
 use App\Upload;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -382,4 +383,21 @@ class CurationTest extends TestCase
 
         $this->assertNotNull(Curation::findByUuid($uuid));
     }
+
+    /**
+     * @test
+     * @group curation-ownership
+     */
+    public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed()
+    {
+        $ep1 = factory(ExpertPanel::class)->create();
+        $curation = factory(Curation::class)->create(['expert_panel_id' => $ep1->id]);
+        $this->assertEquals(1, $curation->fresh()->expertPanels()->count());
+
+        // $ep2 = factory(ExpertPanel::class)->create();
+        // $curation->update(['expert_panel_id' => $ep2->id]);
+        // $this->assertEquals(2, $curation->fresh()->expertPanels()->count());
+
+    }
+    
 }
