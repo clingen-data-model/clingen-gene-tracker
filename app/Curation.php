@@ -180,8 +180,18 @@ class Curation extends Model
 
     public function setExpertPanelIdAttribute($value)
     {
-        if (!is_null($this->id) && !app()->environment('testing')) {
-            \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', debug_backtrace() );
+        if (isset($this->attributes['expert_panel_id']) && $value == $this->attributes['expert_panel_id']) {
+            $this->attributes['expert_panel_id'] = $value;
+            return;
+        }
+
+        // if (!is_null($this->id) && !app()->environment('testing')) {
+        if (!is_null($this->id)) {
+            $backtrace = collect(debug_backtrace())->map(function ($step) {
+                return $step['file'].":".$step['line'];
+            })->toArray();
+
+            \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace );
         }
         $this->attributes['expert_panel_id'] = $value;
     }
