@@ -14,9 +14,10 @@
             style="max-heigh: 1000px"
         >
             <template slot="header">
-                <h3>{{ title }}
+                <div class="d-float justify-content-between">
+                    <h3> {{ title }}</h3>
 
-                    <div class="float-right d-block" v-if="!loading">
+                    <div class="d-flex space-x-1" v-if="!loading">
                         <router-link
                             v-if="user.canEditCuration(curation)"
                             :id="'edit-curation-'+curation.id+'-btn'" 
@@ -25,9 +26,10 @@
                         >
                             Edit
                         </router-link>
-                        <delete-button class="btn-sm" :curation="curation"></delete-button>
+                        <delete-button class="btn btn-sm" :curation="curation"></delete-button>
+                        <transfer-curation-control :curation="curation"></transfer-curation-control>
                     </div>                
-                </h3>
+                </div>
            </template>
             <div v-if="this.curations">
                 <div id="info">
@@ -182,6 +184,7 @@
     import ClassificationHistory from './ClassificationHistory'
     import DeleteButton from './DeleteButton'
     import DocumentsCard from './Documents/DocumentsCard'
+    import TransferCurationControl from './TransferCurationControl'
 
     export default {
         props: ['id'],
@@ -190,7 +193,8 @@
             CurationStatusHistory,
             DeleteButton,
             ClassificationHistory,
-            DocumentsCard
+            DocumentsCard,
+            TransferCurationControl
         },
         data() {
             return {
