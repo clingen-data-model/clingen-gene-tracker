@@ -55,26 +55,31 @@
                         }
                     }
                 },
-                "group": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string",
-                            "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
-                        },
-                        "name": { "type": "string" },
-                        "type": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string",
-                                    "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
-                                },
-                                "name": { "type": "string" }
-                            }
-                        },
-                        "affiliation_id": { "type": "string" },
-                        "uri": { "type": "string", "format": "uri" }
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                            },
+                            "name": { "type": "string" },
+                            "type": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                                    },
+                                    "name": { "type": "string" }
+                                }
+                            },
+                            "affiliation_id": { "type": "string" },
+                            "uri": { "type": "string", "format": "uri" },
+                            "start_date": { "type": "string" },
+                            "end_date": { "type": "string|null" }
+                        }
                     }
                 },
                 "curator": {
