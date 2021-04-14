@@ -3,6 +3,7 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class SetOwner
@@ -18,8 +19,8 @@ class SetOwner
     {
         $this->curation = $curation;
         $this->expertPanelId = $expertPanelId;
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->startDate = Carbon::parse($startDate);
+        $this->endDate = Carbon::parse($endDate);
     }
 
     /**

@@ -25,7 +25,7 @@
                             </td>
                             <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                             <td>
-                                <ul class="mb-0" v-if="match.phenotypes.length > 0">
+                                <ul class="mb-0" v-if="match.phenotypes && match.phenotypes.length > 0">
                                     <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
                                         <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
                                         <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>

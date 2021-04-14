@@ -21,17 +21,23 @@ const queryStringFromParams = function(params = {}, paginate) {
             parsedParams[param].forEach(val => {
                 queryStringParts.push(encodeURIComponent(param) + '[]=' + encodeURIComponent(val));
             })
-        } else if (typeof parsedParams[param] == 'object' && parsedParams[param] !== null) {
-            Object.keys(parsedParams[param]).forEach(key => {
-                queryStringParts.push(`${encodeURIComponent(param)}[${key}]=${parsedParams[param][key]}`)
-            })
+        } else if (typeof parsedParams[param] === 'object' && parsedParams !== null) {
+            Object.keys(parsedParams[param])
+                .forEach(key => {
+                    const val = parsedParams[param][key];
+                    queryStringParts.push(`${encodeURIComponent(param)}[${key}]=${val}`)
+                })
         } else {
             queryStringParts.push(encodeURIComponent(param) + '=' + encodeURIComponent(parsedParams[param]));
         }
 
     }
+    if (queryStringParts.length > 0) {
+        return '?' + queryStringParts.join('&');
+    }
 
-    return queryStringParts.join('&');
+    return '';
+
 }
 
 export default queryStringFromParams;

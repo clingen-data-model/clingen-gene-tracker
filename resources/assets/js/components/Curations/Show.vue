@@ -37,24 +37,6 @@
                         <strong class="col-md-3">Gene Symbol:</strong> 
                         <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
                     </div>
-                    <!-- <div class="row mt-2">
-                        <strong class="col-md-3">HGNC ID:</strong> 
-                        <div class="col-md">
-                            <span v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</span>
-                            <small class="text-muted" v-else>
-                                HGNC info will update shortly
-                            </small>
-                        </div>
-                    </div> -->
-                    <!-- <div class="row mt-2">
-                        <strong class="col-md-3">HGNC Name:</strong> 
-                        <div class="col-md">
-                            
-                            <small class="text-muted" v-else>
-                                HGNC info will update shortly
-                            </small>
-                        </div>
-                    </div> -->
                     <div class="row mt-2">
                         <strong class="col-md-3">
                             Mode Of Inheritance:
@@ -143,11 +125,7 @@
                     <div class="row mt-2" v-if="curation.gdm_uuid">
                         <strong class="col-md-3">GCI ID:</strong> 
                         <div class="col-md">
-                            <external-link :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${curation.gdm_uuid}`" 
-                                target="gci"
-                            >
-                                {{ curation.gdm_uuid }}
-                            </external-link>
+                            <gci-link :curation="curation"></gci-link>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -185,6 +163,7 @@
     import DeleteButton from './DeleteButton'
     import DocumentsCard from './Documents/DocumentsCard'
     import TransferCurationControl from './TransferCurationControl'
+    import GciLink from '../Curations/GciLink'
 
     export default {
         props: ['id'],
@@ -194,7 +173,8 @@
             DeleteButton,
             ClassificationHistory,
             DocumentsCard,
-            TransferCurationControl
+            TransferCurationControl,
+            GciLink
         },
         data() {
             return {
@@ -213,7 +193,8 @@
             ...mapGetters({ user: 'getUser'}),
             ...mapGetters('curations', {
                 curations: 'Items',
-                getCuration: 'getItemById'
+                getCuration: 'getItemById',
+                curation: 'currentItem'
             }),            
             statusHistoryButtonText: function() {
                 return (this.showStatusHistory) ? 'Hide history' : 'Show history';
@@ -234,13 +215,13 @@
                 }
                 return title;
             },
-            curation: function(){
-                if (this.curations.length == 0) {
-                    return {
-                    }
-                }
-                return this.getCuration(this.id)
-            },
+            // curation: function(){
+            //     if (this.curations.length == 0) {
+            //         return {
+            //         }
+            //     }
+            //     return this.getCuration(this.id)
+            // },
             mondoUrl: function () {
                 if (this.curation.mondo_id) {
                     return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`

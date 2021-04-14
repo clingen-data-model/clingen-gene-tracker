@@ -1,5 +1,5 @@
 <template>
-    <ul class="text-red-800 m-0 p-0">
+    <ul class="text-danger list-unstyled pt-0 mt-0">
         <li v-for="error in errors" :key="error">{{error}}</li>
     </ul>
 </template>
