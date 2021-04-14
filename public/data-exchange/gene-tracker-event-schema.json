@@ -60,80 +60,87 @@
                     "properties": {
                         "id": {
                             "type": "string",
-                            "pattern": "^\w{6}-(\w{4}-){3}\w{12}"
+                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
                         },
                         "name": { "type": "string" },
-                        "type": { "type": "string" },
+                        "type": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                                },
+                                "name": { "type": "string" }
+                            }
+                        },
+                        "affiliation_id": { "type": "string" },
                         "uri": { "type": "string", "format": "uri" }
                     }
                 },
-                // Reconsider structure as expected from GPM system
-                // "group": {
-                //     "type": "object",
-                //     "properties": {
-                //         "id": { "type": "string", "patthen": ... },
-                //         "name": { "type": "string" },
-                //         "gci_affiliation": {
-                //             "type": "object",
-                //             "properties": {
-                //                 "name": { "type": "string" },
-                //                 "id": { "type": "string" }
-                //             }
-                //         }
-                //     }
-                // },
                 "curator": {
                     "type": "object",
                     "properties": {
-                        "id": { "type": "integer" },
+                        "clingen_id": {
+                            "type": "string",
+                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                        },
                         "name": { "type": "string" },
                         "email": {
                             "type": "string",
                             "format": "email"
-                        },
-                        "clingen_id": { "type": "string" }
+                        }
                     }
                 },
-                "statuses": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "enum": [
-                                    "uploaded",
-                                    "precuration",
-                                    "disease entity assigned",
-                                    "curation in progress",
-                                    "curation provisional",
-                                    "curation approved",
-                                    "retired assignment",
-                                    "published",
-                                    "recuration assigned"
-                                ],
-                                "uniqueItems": false
-                            },
-                            "effective_date": {
-                                "type": "string",
-                                "format": "date-time"
+                "status": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "enum": [
+                                "uploaded",
+                                "precuration",
+                                "disease entity assigned",
+                                "curation in progress",
+                                "curation provisional",
+                                "curation approved",
+                                "retired assignment",
+                                "published"
+                            ],
+                            "uniqueItems": false
+                        },
+                        "effective_date": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    "required": ["name", "effective_date"]
+                },
+                "rationale": {
+                    "type": "object",
+                    "properties": {
+                        "pmids": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "uniqueItems": true
                             }
                         },
-                        "required": ["name", "effective_date"]
-                    }
-                },
-                "pmids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer",
-                        "uniqueItems": true
-                    }
-                },
-                "rationales": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": []
+                        "rationales": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Assertion",
+                                    "Inheritance pattern",
+                                    "Insufficient evidence for single disease entity",
+                                    "Molecular mechanism",
+                                    "Other",
+                                    "Phenotypic Variability",
+                                    "To dispute asserted entity"
+                                ]
+                            }
+                        },
+                        "notes": { "type": "string" }
                     }
                 },
                 "curation_type": {
@@ -152,10 +159,22 @@
                     }
                 },
                 "omim_phenotypes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "pattern": "^\\d{7}$"
+                    "type": "object",
+                    "properties": {
+                        "included": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        },
+                        "excluded": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        }
                     }
                 }
             }
