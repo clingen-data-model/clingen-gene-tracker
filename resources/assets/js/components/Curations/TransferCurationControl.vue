@@ -9,6 +9,7 @@
         <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true">
             <div v-if="inGci" class="alert alert-secondary">
                 <p>This pre-curation is linked to a record in the GCI you must transfer onwership there.</p>
+                <p>Contact GCI support if you have questions at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
                 <gci-link :curation="curation">Go to the GCI record.</gci-link>
             </div>
             <div v-else>

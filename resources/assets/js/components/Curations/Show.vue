@@ -64,7 +64,17 @@
                     <hr>
                     <div class="row mt-2">
                         <strong class="col-md-3">Expert Panel:</strong> 
-                        <div class="col-md">{{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}</div>
+                        <div class="col-md">
+                            {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
+                            <toggle-button 
+                                v-model="showOwnerHistory" 
+                                show-label="Show history" 
+                                hide-label="Hide history"
+                            ></toggle-button>
+                            <transition name="fade">
+                                <history-table :items="curation.expert_panels" item-label="Expert Panel" date-field="start_date" v-show="showOwnerHistory"></history-table>
+                            </transition>
+                        </div>
                     </div>
                     <div class="row mt-2">
                         <strong class="col-md-3">Curator:</strong> 
@@ -118,7 +128,12 @@
                                 <button class="btn btn-sm"><small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small></button>
                             </div>
                             <transition name="fade">
-                                <curation-status-history :curation="curation" v-show="showStatusHistory"></curation-status-history>
+                                <history-table 
+                                    :items="curation.curation_statuses" 
+                                    item-label="Status" 
+                                    date-field="status_date"
+                                     v-show="showStatusHistory"
+                                ></history-table>
                             </transition>
                         </div>
                     </div>
@@ -136,6 +151,12 @@
                                 <button class="btn btn-sm"><small><small @click="showClassificationHistory = !showClassificationHistory">{{classificationButtonText}}</small></small></button>
                             </div>
                             <transition name="fade">
+                                <history-table 
+                                    :items="curation.classifications" 
+                                    item-label="Classification" 
+                                    date-field="classification_date"
+                                     v-show="showClassificationHistory"
+                                ></history-table>
                                 <classification-history :curation="curation" v-show="showClassificationHistory"></classification-history>
                             </transition>
                         </div>
@@ -158,12 +179,14 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
+    import HistoryTable from './HistoryTable'
     import CurationStatusHistory from './StatusHistory'
     import ClassificationHistory from './ClassificationHistory'
     import DeleteButton from './DeleteButton'
     import DocumentsCard from './Documents/DocumentsCard'
     import TransferCurationControl from './TransferCurationControl'
     import GciLink from '../Curations/GciLink'
+    import ToggleButton from '../buttons/ToggleButton'
 
     export default {
         props: ['id'],
@@ -174,10 +197,13 @@
             ClassificationHistory,
             DocumentsCard,
             TransferCurationControl,
-            GciLink
+            GciLink,
+            HistoryTable,
+            ToggleButton
         },
         data() {
             return {
+                showOwnerHistory: false,
                 showStatusHistory: false,
                 showClassificationHistory: false,
                 loading: true

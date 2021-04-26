@@ -7,7 +7,7 @@
     "properties": {
         "key": {
             "type": "string",
-            "pattern": "^\\w{6}(-\\w{4}){3}-\\w{12}$"
+            "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
         },
         "event_type": {
             "type": "string",
@@ -60,7 +60,7 @@
                     "properties": {
                         "id": {
                             "type": "string",
-                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                            "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}"
                         },
                         "name": { "type": "string" },
                         "type": {
@@ -68,7 +68,7 @@
                             "properties": {
                                 "id": {
                                     "type": "string",
-                                    "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                                    "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}"
                                 },
                                 "name": { "type": "string" }
                             }
@@ -82,7 +82,7 @@
                     "properties": {
                         "clingen_id": {
                             "type": "string",
-                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                            "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}"
                         },
                         "name": { "type": "string" },
                         "email": {
