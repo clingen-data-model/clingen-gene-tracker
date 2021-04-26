@@ -171,6 +171,6 @@ class CurationController extends Controller
 
     private function loadRelations(&$curation)
     {
-        $curation->load(['phenotypes', 'expertPanel', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance']);
+        $curation->load(['phenotypes', 'expertPanel', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance']);
     }
 }
