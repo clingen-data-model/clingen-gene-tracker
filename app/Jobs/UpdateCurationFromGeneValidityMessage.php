@@ -53,7 +53,8 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         $this->curation->update([
             'gdm_uuid' => $this->gciMessage->uuid,
             'affiliation_id' => ($affiliation) ? $affiliation->id : null,
-            'moi_id' => $moi->id
+            'moi_id' => $moi->id,
+            'mondo_id' => $this->gciMessage->mondoId
         ]);
 
         if ($this->gciMessage->status == 'created') {

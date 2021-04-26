@@ -94,9 +94,13 @@ class UpdateFromStreamMessageTest extends TestCase
     }
 
     /**
+     * If there's no gdm_uuid on the curation the event should 
+     * not be matchable if the hgnc_id and mondo_id do not match.
+     * If not matched it can't be updated.
+     * 
      * @test
      */
-    public function never_updates_mondo_id_on_curation()
+    public function does_not_update_mondo_id_when_curation_not_linked_to_gdm()
     {
         $curation = $this->createDICER1();
 
@@ -112,6 +116,35 @@ class UpdateFromStreamMessageTest extends TestCase
             'mondo_id' => 'MONDO:0011111',
         ]);
     }
+
+    /**
+     * @test
+     * 
+     * Assume a change in mondo id if curation has gdm_uuid
+     * and event with gdm_uuid has different mondo than curation.
+     * 
+     */
+    public function updates_mondo_id_on_update_when_matched_by_gdm_uuid()
+    {
+        $curation = $this->createDICER1();
+
+        $payload = json_decode(file_get_contents($this->approvedMsgPath));
+        $payload->gene_validity_evidence_level->genetic_condition->condition = 'MONDO:8888888';
+        
+        $curation->update(['gdm_uuid' => $payload->report_id]);
+        
+        $kafkaMessage = $this->makeMessage(json_encode($payload));
+        $event = new Received($kafkaMessage);
+
+        event($event);
+
+        $this->assertDatabaseHas('curations', [
+            'hgnc_id' => 17098,
+            'mondo_id' => 'MONDO:8888888',
+        ]);
+        
+    }
+    
 
     /**
      * @test
