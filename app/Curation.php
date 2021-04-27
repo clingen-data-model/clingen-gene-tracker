@@ -217,7 +217,7 @@ class Curation extends Model
 
     public function loadForMessage()
     {
-        $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes');
+        $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes', 'modeOfInheritance');
 
         return $this;
     }
