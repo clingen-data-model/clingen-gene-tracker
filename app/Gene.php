@@ -89,4 +89,10 @@ class Gene extends Model
     {
         return static::whereJsonContains('previous_symbols', $symbol)->first();
     }
+
+    // Domain methods
+    public function addPhenotype(Phenotype $phenotype)
+    {
+        $this->phenotypes->attach($phenotype);
+    }
 }
