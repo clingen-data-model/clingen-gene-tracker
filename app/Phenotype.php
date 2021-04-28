@@ -16,7 +16,9 @@ class Phenotype extends Model
     protected $fillable = [
         'mim_number',
         'name',
-        'omim_entry'
+        'omim_entry',
+        'omim_status',
+        'moved_mim_number'
     ];
 
     protected $touches = ['curations'];
