@@ -6,19 +6,23 @@ use App\Gene;
 use App\Phenotype;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Str;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
+use Tests\MocksGuzzleRequests;
 
 class UpdateOmimData extends Command
 {
+    use MocksGuzzleRequests;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'omim:update-data';
+    protected $signature = 'omim:update-data {--file= : Absolute path of genemap2 file to use. Note: remote file will not be fetched}';
 
     /**
      * The console command description.
@@ -44,40 +48,52 @@ class UpdateOmimData extends Command
      */
     public function handle()
     {
+        if ($this->hasOption('file')) {
+            if (!file_exists($this->option('file'))) {
+                $this->error('File not found. '.$this->option('file'). ' does not exist');
+                return;
+            }
+            $testGeneMap = file_get_contents($this->option('file'));
+            $httpClient = $this->getGuzzleClient([new Response(200, [], $testGeneMap)]);
+            app()->instance(ClientInterface::class, $httpClient);
+        }
+
         $client = app()->make(ClientInterface::class);
+
         try {
             $request = $client->get('https://data.omim.org/downloads/6tNWNo1sQ-O1xzRqwiP-KA/genemap2.txt', ['stream' => true]);
-            
+            $this->info('Retrieved file...');
+
             $keys = [];
             $pCount = 0;
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
                 $line = str_replace("\n", ',', $line);
-                if (substr($line, 0, 35) == '# Chromosome	Genomic Position Start') {
-                    $keys = explode("\t", $line);
-                    $keys = array_map(function ($key) { return Str::snake(strtolower(str_replace('# ', '', trim($key))));}, $keys);
-                }
-                if(substr($line, 0, 1) == '#') {
-                    continue;
-                }
 
-                $values = explode("\t", $line);
-                if ($values[0] == '') {
+                if ($this->lineIsHeader($line)) {
+                    $keys = $this->parseKeys($line);
                     continue;
                 }
-                $data = array_combine($keys, array_pad($values, count($keys), null));
                 
-                $geneSymbol = $data['approved_symbol'];
-                if (!$geneSymbol) {
-                    continue;
-                }
-                $geneMimNumber = $data['mim_number'];
-                $gene = Gene::findByOmimId($geneMimNumber);
-                if (!$gene) {
-                    Log::warning('Gene with approved_symbol '.$geneSymbol.' and omim id '.$geneMimNumber.' not found.');
+                if ($this->lineIsGarbage($line)) {
                     continue;
                 }
 
+                $data = $this->linkValuesToKeys($line, $keys);
+                if (count($data) == 0) {
+                    continue;
+                }
+
+                if (!$this->recordHasGeneSymbol($data)) {
+                    continue;
+                }
+
+                $gene = $this->getGene($data);
+
+                if (!$gene) {
+                    Log::warning('Gene with approved_symbol '.$data['approved_symbol'].' and omim id '.$data['mim_number'].' not found.');
+                    continue;
+                }
 
                 $phenotypes = $this->parsePhenotypes($data['phenotypes']);
                 if (count($phenotypes) == 0) {
@@ -85,25 +101,72 @@ class UpdateOmimData extends Command
                 }
                 $pCount += count($phenotypes);
 
-                $phenotypes = collect($phenotypes)->map(function ($pheno) {
-                    try {
-                        return Phenotype::updateOrCreate(
-                            ['mim_number' => $pheno['mim_number']],
-                            ['name' => $pheno['name']]
-                        );
-                    } catch (\Throwable $th) {
-                        Log::warning($th->getMessage());
-                        return null;
-                    }
-                });
+                $phenotypes = collect($phenotypes)
+                                ->map(function ($pheno) {
+                                    try {
+                                        return Phenotype::updateOrCreate(
+                                            ['mim_number' => $pheno['mim_number']],
+                                            ['name' => $pheno['name']]
+                                        );
+                                    } catch (\Throwable $th) {
+                                        Log::warning($th->getMessage());
+                                        return null;
+                                    }
+                                });
+                                
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
-
         } catch (ClientException $e) {
             $this->error($e->getMessage());
         }
-
     }
+
+    private function parseKeys($line)
+    {
+        $keys = explode("\t", $line);
+        $keys = array_map(function ($key) {
+            return Str::snake(strtolower(str_replace('# ', '', trim($key))));
+        }, $keys);
+        return $keys;
+    }
+    
+    private function lineIsHeader($line)
+    {
+        return substr($line, 0, 35) == '# Chromosome	Genomic Position Start';
+    }
+
+    private function lineIsGarbage($line)
+    {
+        return substr($line, 0, 1) == '#' && substr($line, 0, 35) != '# Chromosome	Genomic Position Start';
+    }
+
+    private function linkValuesToKeys($line, $keys)
+    {
+        $values = explode("\t", $line);
+        if ($values[0] == '') {
+            return [];
+        }
+        return array_combine($keys, array_pad($values, count($keys), null));
+    }
+
+    private function getGene($data)
+    {
+        if (!$this->recordHasGeneSymbol($data)) {
+            return null;
+        }
+
+        return Gene::findByOmimId($data['mim_number']);
+    }
+
+    private function recordHasGeneSymbol($data)
+    {
+        $geneSymbol = $data['approved_symbol'];
+        if (!$geneSymbol) {
+            return false;
+        }
+        return true;
+    }
+    
 
     private function parsePhenotypes($string)
     {
@@ -128,5 +191,4 @@ class UpdateOmimData extends Command
 
         return $phenotypes;
     }
-    
 }
