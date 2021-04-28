@@ -48,7 +48,7 @@ class UpdateOmimData extends Command
      */
     public function handle()
     {
-        if ($this->hasOption('file')) {
+        if ($this->option('file')) {
             if (!file_exists($this->option('file'))) {
                 $this->error('File not found. '.$this->option('file'). ' does not exist');
                 return;
