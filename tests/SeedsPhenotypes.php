@@ -13,11 +13,11 @@ trait SeedsPhenotypes
                 [
                     'name' => 'Cardiomyopathy, hypertrophic, 2',
                     'mim_number' => 115195,
-                ]
-                // [
-                //     'name' => 'Neurofibromatosis, type 2',
-                //     'mim_number' => 101000
-                // ],
+                ],
+                [
+                    'name' => 'Neurofibromatosis, type 2',
+                    'mim_number' => 139139
+                ],
                 // [
                 //     'name' => ' Retinoblastoma',
                 //     'mim_number' => 180200

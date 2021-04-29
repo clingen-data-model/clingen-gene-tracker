@@ -65,7 +65,6 @@ class UpdateOmimData extends Command
             $this->info('Retrieved file...');
 
             $keys = [];
-            $pCount = 0;
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
                 $line = str_replace("\n", ',', $line);
@@ -99,7 +98,6 @@ class UpdateOmimData extends Command
                 if (count($phenotypes) == 0) {
                     continue;
                 }
-                $pCount += count($phenotypes);
 
                 $phenotypes = collect($phenotypes)
                                 ->map(function ($pheno) {
