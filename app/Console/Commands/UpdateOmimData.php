@@ -104,7 +104,7 @@ class UpdateOmimData extends Command
                                     try {
                                         return Phenotype::updateOrCreate(
                                             ['mim_number' => $pheno['mim_number']],
-                                            ['name' => $pheno['name']]
+                                            ['name' => trim($pheno['name'])]
                                         );
                                     } catch (\Throwable $th) {
                                         Log::warning($th->getMessage());
