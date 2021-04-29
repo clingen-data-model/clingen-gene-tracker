@@ -51,6 +51,19 @@ class OmimEntry implements OmimEntryContract
         }
     }
 
+    public function getMappedGeneMimNumber()
+    {
+        try {
+            if (count($this->phenotypeMapList) == 0) {
+                return null;
+            }
+
+            return $this->phenotypeMapList[0]->phenotypeMap->mimNumber;
+        } catch (OmimResponseException $e) {
+            return null;
+        }
+    }
+
     public function __get($key)
     {
         if (method_exists($this, 'get'.ucfirst(camel_case($key)))) {

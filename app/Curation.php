@@ -154,6 +154,11 @@ class Curation extends Model
         return $this->modeOfInheritance();
     }
 
+    public function gene()
+    {
+        return $this->belongsTo(Gene::class, 'hgnc_id', 'hgnc_id');
+    }
+
     /**
      * ACCESSORS.
      */
@@ -299,5 +304,10 @@ class Curation extends Model
     public function removeUpload(Upload $upload): void
     {
         $upload->delete();
+    }
+
+    public function addPhenotype(Phenotype $phenotype): void
+    {
+        $this->phenotypes()->save($phenotype);
     }
 }
