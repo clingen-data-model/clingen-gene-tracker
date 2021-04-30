@@ -13,6 +13,9 @@ class CreateGenePhenotypeTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('gene_phenotype')) {
+            return;
+        }
         Schema::create('gene_phenotype', function (Blueprint $table) {
             $table->unsignedBigInteger('hgnc_id');
             $table->unsignedInteger('phenotype_id');
