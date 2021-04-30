@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CurationTypesTableSeeder::class);
         $this->call(RationalesTableSeeder::class);
         $this->call(CurationsTableSeeder::class);
+        $this->call(AppStatesTableSeeder::class);
     }
 }
