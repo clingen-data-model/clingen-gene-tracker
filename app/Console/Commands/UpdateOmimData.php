@@ -3,15 +3,17 @@
 namespace App\Console\Commands;
 
 use App\Gene;
+use App\AppState;
 use App\Phenotype;
+use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Str;
 use GuzzleHttp\Psr7\Response;
+use Tests\MocksGuzzleRequests;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
-use Tests\MocksGuzzleRequests;
 
 class UpdateOmimData extends Command
 {
@@ -60,6 +62,8 @@ class UpdateOmimData extends Command
 
         $client = app()->make(ClientInterface::class);
 
+        $newDateGenerated = null;
+        $lastGeneMapDownload = AppState::findByName('last_genemap_download');
         try {
             $request = $client->get('https://data.omim.org/downloads/6tNWNo1sQ-O1xzRqwiP-KA/genemap2.txt', ['stream' => true]);
             $this->info('Retrieved file...');
@@ -72,6 +76,13 @@ class UpdateOmimData extends Command
                 if ($this->lineIsHeader($line)) {
                     $keys = $this->parseKeys($line);
                     continue;
+                }
+               
+                if ($this->lineIsDateGenerated($line)) {
+                    $newDateGenerated = $this->getGeneratedDate($line);
+                    if (!is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
+                        return;
+                    }
                 }
                 
                 if ($this->lineIsGarbage($line)) {
@@ -114,6 +125,7 @@ class UpdateOmimData extends Command
                                 
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
+            $lastGeneMapDownload->update(['value' => $newDateGenerated]);
         } catch (ClientException $e) {
             $this->error($e->getMessage());
         }
@@ -137,6 +149,17 @@ class UpdateOmimData extends Command
     {
         return substr($line, 0, 1) == '#' && substr($line, 0, 35) != '# Chromosome	Genomic Position Start';
     }
+
+    private function lineIsDateGenerated($line)
+    {
+        return substr($line, 0, 13) == '# Generated: ';
+    }
+
+    private function getGeneratedDate($line)
+    {
+        return Carbon::parse(substr($line, 13, 10));
+    }
+    
 
     private function linkValuesToKeys($line, $keys)
     {
