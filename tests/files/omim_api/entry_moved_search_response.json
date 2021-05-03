@@ -2,6 +2,9 @@
     "omim": {
         "version": "1.0",
         "searchResponse": {
+            "startIndex": 0,
+            "endIndex": 1,
+            "totalResults": 1,
             "entryList": [{
                 "entry": {
                     "prefix": "^",
