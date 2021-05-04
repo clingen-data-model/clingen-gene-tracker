@@ -29,7 +29,8 @@ class Phenotype extends Model
     protected $touches = ['curations'];
 
     protected $casts = [
-        'omim_entry' => 'array'
+        'omim_entry' => 'array',
+        'moved_to_mim_number' => 'array'
     ];
 
     public static function boot()

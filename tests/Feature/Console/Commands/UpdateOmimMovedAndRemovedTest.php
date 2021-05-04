@@ -3,8 +3,10 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\User;
+use App\AppState;
 use App\Curation;
 use App\Phenotype;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\ExpertPanel;
 use Tests\SeedsGenes;
@@ -60,8 +62,9 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
-            'moved_to_mim_number' => 139139
+            // 'moved_to_mim_number' => json_encode(['139139'])
         ]);
+        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
     }
 
     /**
@@ -78,8 +81,9 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
-            'moved_to_mim_number' => 139139
+            // 'moved_to_mim_number' => json_encode(['139139'])
         ]);
+        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => 139139,
@@ -119,6 +123,79 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         Notification::assertSentTo($ep->coordinators->first(), PhenotypeOmimEntryMoved::class);
     }
 
+    /**
+     * @test
+     */
+    public function updates_last_omim_moved_check_state()
+    {
+        AppState::findByName('last_omim_moved_check')->update(['value' => Carbon::yesterday()]);
+        Carbon::setTestNow('2021-05-01 01:01:01');
+        $this->bindMovedResponse();
+        $this->artisan('omim:check-moved-and-removed');
+
+        $this->assertDatabaseHas('app_states', [
+            'name' => 'last_omim_moved_check',
+            'value' => '2021-05-01 01:01:01'
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function handles_moved_to_multiple_new_mim_numbers()
+    {
+        factory(Phenotype::class)->create([
+            'mim_number' => 193510
+        ]);
+        factory(Phenotype::class)->create([
+            'mim_number' => 606952
+        ]);
+
+        $this->bindMovedToMultipleResponse();
+        $this->artisan('omim:check-moved-and-removed');
+
+        $movedPh = Phenotype::findByMimNumber(180200);
+        $this->assertEquals(["193510", "606952"], $movedPh->moved_to_mim_number);
+    }
+    
+
+    /**
+     * @test
+     */
+    public function handle_all_pages_if_paginated()
+    {
+        factory(Phenotype::class)->create([
+            'mim_number' => 193510
+        ]);
+
+        $this->bindLargeResultSetResponse();
+        $this->artisan('omim:check-moved-and-removed');
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => $this->phenotypes->first()->mim_number,
+            'omim_status' => 'moved',
+        ]);
+        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 139139,
+            'omim_status' => 'live'
+        ]);
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => $this->phenotypes->last()->mim_number,
+            'omim_status' => 'moved',
+        ]);
+        $this->assertEquals(["193510"], $this->phenotypes->last()->fresh()->moved_to_mim_number);
+
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 193510,
+            'omim_status' => 'live'
+        ]);
+    }
+    
+
+
     private function bindRemoveResponse()
     {
         $omimClient = $this->getOmimClient([new Response(200, [], file_get_contents(base_path('tests/files/omim_api/entry_removed_search_response.json')))]);
@@ -133,6 +210,25 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         ]);
         app()->instance(OmimClient::class, $omimClient);
     }
+
+    private function bindMovedToMultipleResponse()
+    {
+        $omimClient = $this->getOmimClient([
+            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/moved_to_multiple_search_response.json'))),
+        ]);
+        app()->instance(OmimClient::class, $omimClient);
+    }
+        
+
+    private function bindLargeResultSetResponse()
+    {
+        $omimClient = $this->getOmimClient([
+            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/large_search_response_1.json'))),
+            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/large_search_response_2.json'))),
+        ]);
+        app()->instance(OmimClient::class, $omimClient);
+    }
+    
 
     private function makeEpAndCoordinator()
     {

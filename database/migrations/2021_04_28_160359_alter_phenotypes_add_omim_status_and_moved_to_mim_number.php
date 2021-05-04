@@ -15,9 +15,7 @@ class AlterPhenotypesAddOmimStatusAndMovedToMimNumber extends Migration
     {
         Schema::table('phenotypes', function (Blueprint $table) {
             $table->enum('omim_status', ['live', 'moved', 'removed'])->default('live')->after('name');
-            $table->integer('moved_to_mim_number')->nullable()->after('omim_status');
-
-            $table->foreign('moved_to_mim_number', 'moved_to_mim_number_foreign')->references('mim_number')->on('phenotypes')->onDelete('cascade');
+            $table->json('moved_to_mim_number')->nullable()->after('omim_status');
         });
     }
 
