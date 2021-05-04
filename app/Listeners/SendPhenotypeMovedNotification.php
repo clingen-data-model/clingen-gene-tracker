@@ -32,11 +32,10 @@ class SendPhenotypeMovedNotification
         $event->phenotype
             ->curations
             ->each(function ($curation) use ($event) {
-                $movedToPheno = $event->phenotype->movedToPhenotype;
                 NotifyCoordinatorsAboutCuration::dispatch(
                     $curation,
                     PhenotypeOmimEntryMoved::class,
-                    $movedToPheno,
+                    $event->phenotype->movedToPhenotypes,
                     $event->phenotype->name,
                     $event->phenotype->mim_number
                 );

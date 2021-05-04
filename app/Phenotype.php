@@ -7,6 +7,7 @@ use App\Events\Phenotypes\OmimMovedPhenotype;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\Phenotypes\OmimRemovedPhenotype;
 use App\Events\Phenotypes\PhenotypeNameChanged;
+use Illuminate\Database\Eloquent\Collection;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -65,11 +66,6 @@ class Phenotype extends Model
         return $this->belongsToMany(Gene::class);
     }
 
-    public function movedToPhenotype(): BelongsTo
-    {
-        return $this->belongsTo(Phenotype::class, 'moved_to_mim_number', 'mim_number');
-    }
-
     public function scopeMimNumber($query, $mimNumber)
     {
         return $query->where('mim_number', $mimNumber);
@@ -78,5 +74,10 @@ class Phenotype extends Model
     public static function findByMimNumber($mimNumber)
     {
         return static::mimNumber($mimNumber)->first();
+    }
+
+    public function getMovedToPhenotypesAttribute(): Collection
+    {
+        return Phenotype::whereIn('mim_number', $this->moved_to_mim_number)->get() ?? new Collection();
     }
 }
