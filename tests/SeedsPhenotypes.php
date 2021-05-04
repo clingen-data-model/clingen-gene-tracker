@@ -13,14 +13,17 @@ trait SeedsPhenotypes
                 [
                     'name' => 'Cardiomyopathy, hypertrophic, 2',
                     'mim_number' => 115195,
+                    'moi' => 'Autosomal dominant'
                 ],
                 [
                     'name' => 'Neurofibromatosis, type 2',
-                    'mim_number' => 607084
+                    'mim_number' => 607084,
+                    'moi' => 'Autosomal recessive'
                 ],
                 [
                     'name' => ' Retinoblastoma',
-                    'mim_number' => 180200
+                    'mim_number' => 180200,
+                    'moi' => 'Atosomal recessive'
                 ]
             ];
         }
