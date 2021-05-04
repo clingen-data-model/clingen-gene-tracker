@@ -128,14 +128,21 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
      */
     public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved()
     {
+        factory(Phenotype::class)->create([
+            'mim_number' => 193510
+        ]);
+        factory(Phenotype::class)->create([
+            'mim_number' => 606952
+        ]);
         $ep = $this->makeEpAndCoordinator();
-        $curation = $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
+        $curation = $this->makeCurationWithPhenotype($this->phenotypes->last(), ['expert_panel_id' => $ep->id]);
 
-        $this->bindMovedResponse();
+        $this->bindMovedToMultipleResponse();
 
         $this->artisan('omim:check-moved-and-removed');
 
-        $this->assertContains(139139, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
+        $this->assertContains(193510, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
+        $this->assertContains(606952, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
     }
 
     /**
