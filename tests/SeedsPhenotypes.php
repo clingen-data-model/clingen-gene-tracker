@@ -18,10 +18,10 @@ trait SeedsPhenotypes
                     'name' => 'Neurofibromatosis, type 2',
                     'mim_number' => 139139
                 ],
-                // [
-                //     'name' => ' Retinoblastoma',
-                //     'mim_number' => 180200
-                // ]
+                [
+                    'name' => ' Retinoblastoma',
+                    'mim_number' => 180200
+                ]
             ];
         }
         

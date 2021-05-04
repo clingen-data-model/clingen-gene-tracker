@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\AppState;
 use App\Phenotype;
 use Carbon\Carbon;
 use App\Contracts\OmimClient;
@@ -15,7 +16,7 @@ class UpdateOmimMovedAndRemoved extends Command
      *
      * @var string
      */
-    protected $signature = 'omim:check-moved-and-removed';
+    protected $signature = 'omim:check-moved-and-removed {--page-size=100 : Total number of results to get at once}';
 
     /**
      * The console command description.
@@ -41,10 +42,7 @@ class UpdateOmimMovedAndRemoved extends Command
      */
     public function handle(OmimClient $omimClient)
     {
-        $lastUpdated = $this->getLastUpdated();
-        $searchResults = $omimClient->search([
-            'search' => 'prefix:%5E AND date_updated:'.$lastUpdated->format('Y/m/d').'-*'
-        ]);
+        $searchResults = $this->getPaginatedSearchResults($omimClient, [], 0, $this->option('page-size'));
 
         $phenotypes = $this->getPhenotypes($searchResults);
         $moveToPhenotypes = $this->getMovedToPhenotypes($searchResults);
@@ -54,15 +52,45 @@ class UpdateOmimMovedAndRemoved extends Command
             $pheno->omim_status = $item->status;
 
             if (isset($item->movedTo)) {
-                if (!$moveToPhenotypes->get($item->movedTo)) {
-                    ImportOmimPhenotype::dispatch($item->movedTo);
+                $mimNumbers = explode(',', $item->movedTo);
+                foreach ($mimNumbers as $mimNum) {
+                    if (!$moveToPhenotypes->get($mimNum)) {
+                        ImportOmimPhenotype::dispatch($mimNum);
+                    }
                 }
 
-                $pheno->moved_to_mim_number = $item->movedTo;
+                $pheno->moved_to_mim_number = $mimNumbers;
             }
 
             $pheno->save();
         }
+
+        $this->updateLastCheck();
+    }
+
+    private function getPaginatedSearchResults($omimClient, $accumulator = [], $start = 0, $limit = 100)
+    {
+        $results = $omimClient->paginatedSearch(['search' => $this->buildSearchString()], $start, $limit);
+        $accumulator = array_merge($accumulator, $results['entries']->toArray());
+
+        if ($results['total'] == $results['end']+1) {
+            return $accumulator;
+        }
+
+        $newStart = $results['end']+1;
+        return $this->getPaginatedSearchResults($omimClient, $accumulator, $newStart, $limit);
+    }
+
+    private function buildSearchString()
+    {
+        $searchParams = ['prefix:%5E'];
+        
+        $lastUpdated = $this->getLastUpdated();
+        if ($lastUpdated) {
+            $searchParams[] = 'date_updated:'.$lastUpdated->format('Y/m/d').'-*';
+        }
+
+        return implode(' AND ', $searchParams);
     }
 
     private function getPhenotypes($searchResults)
@@ -78,15 +106,21 @@ class UpdateOmimMovedAndRemoved extends Command
     {
         $movedToMims = collect($searchResults)
                         ->map(function ($i) {
-                            return isset($i->movedTo) ? $i->movedTo : null;
+                            return isset($i->movedTo) ? explode(',', $i->movedTo) : null;
                         })
-                        ->filter();
+                        ->filter()
+                        ->flatten();
 
         return Phenotype::whereIn('mim_number', $movedToMims)->get()->keyBy('mim_number');
     }
 
     private function getLastUpdated()
     {
-        return Carbon::parse('2000-01-01');
+        return AppState::findByName('last_omim_moved_check')->value;
+    }
+
+    private function updateLastCheck()
+    {
+        AppState::findByName('last_omim_moved_check')->update(['value' => Carbon::now()]);
     }
 }
