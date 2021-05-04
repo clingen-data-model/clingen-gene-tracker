@@ -24,7 +24,8 @@ class Phenotype extends Model
         'name',
         'omim_entry',
         'omim_status',
-        'moved_to_mim_number'
+        'moved_to_mim_number',
+        'moi'
     ];
 
     protected $touches = ['curations'];
