@@ -37,9 +37,11 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Genes\NotifyGeneSymbolChanged::class
         ],
         \App\Events\Phenotypes\OmimRemovedPhenotype::class => [
-            \App\Listeners\SendPhenotypeRemovedNotification::class
+            \App\Listeners\SendPhenotypeRemovedNotification::class,
+            \App\Listeners\Curations\UnlinkRemovedPhenotype::class
         ],
         \App\Events\Phenotypes\OmimMovedPhenotype::class => [
+            \App\Listeners\Curations\UpdateLinkedPhenotype::class,
             \App\Listeners\SendPhenotypeMovedNotification::class
         ],
         \App\Events\Phenotypes\PhenotypeNameChanged::class => [

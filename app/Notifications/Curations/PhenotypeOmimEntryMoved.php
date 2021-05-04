@@ -8,6 +8,7 @@ use App\Phenotype;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Collection;
 
@@ -25,12 +26,12 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
      *
      * @return void
      */
-    public function __construct(Curation $curation, Phenotype $phenotype, string $oldName, int $oldMimNumber)
+    public function __construct(Curation $curation, EloquentCollection $phenotypes, string $oldName, int $oldMimNumber)
     {
         //
         $this->curation = $curation;
         $this->oldName = $oldName;
-        $this->phenotype = $phenotype;
+        $this->phenotypes = $phenotypes;
         $this->oldMimNumber = $oldMimNumber;
     }
 
@@ -58,7 +59,7 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
             [
                 'oldName' => $this->oldName,
                 'oldMimNumber' => $this->oldMimNumber,
-                'phenotype' => $this->phenotype,
+                'phenotypes' => $this->phenotypes,
                 'curation' => $this->curation,
             ]
         );
@@ -75,7 +76,7 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
         return [
             'oldName' => $this->oldName,
             'oldMimNumber' => $this->oldMimNumber,
-            'phenotype' => $this->phenotype,
+            'phenotypes' => $this->phenotypes,
             'curation' => $this->curation,
             'template' => 'email.curations.omim_entry_moved'
         ];
@@ -93,5 +94,4 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
     {
         return $collection;
     }
-
 }

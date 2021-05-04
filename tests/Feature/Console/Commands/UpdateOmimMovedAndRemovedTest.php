@@ -126,6 +126,37 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+    public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved()
+    {
+        $ep = $this->makeEpAndCoordinator();
+        $curation = $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
+
+        $this->bindMovedResponse();
+
+        $this->artisan('omim:check-moved-and-removed');
+
+        $this->assertContains(139139, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function curation_phenotype_removed_when_phenotype_related_to_curation_is_removed()
+    {
+        $ep = $this->makeEpAndCoordinator();
+        $curation = $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
+
+        $this->bindRemoveResponse();
+
+        $this->artisan('omim:check-moved-and-removed');
+
+        $this->assertNotContains(115195, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
+    }
+    
+
+    /**
+     * @test
+     */
     public function updates_last_omim_moved_check_state()
     {
         AppState::findByName('last_omim_moved_check')->update(['value' => Carbon::yesterday()]);
@@ -158,7 +189,6 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         $this->assertEquals(["193510", "606952"], $movedPh->moved_to_mim_number);
     }
     
-
     /**
      * @test
      */
