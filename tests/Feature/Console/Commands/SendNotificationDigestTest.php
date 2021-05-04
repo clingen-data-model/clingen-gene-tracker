@@ -44,7 +44,7 @@ class SendNotificationDigestTest extends TestCase
         $this->user1->notify(new MondoIdNotFound($curations->random()));
         $this->user2->notify(new PhenotypeNomenclatureUpdated($curations->random(), $phenotypes->random(), 'Bobsyeruncle'));
         Carbon::setTestNow($realNow);
-        $this->user1->notify(new PhenotypeOmimEntryMoved($curations->random(), $phenotypes->random(), 'beans', 123556));
+        $this->user1->notify(new PhenotypeOmimEntryMoved($curations->random(), $phenotypes->take(2), 'beans', 123556));
         $this->user1->notify(new PhenotypeNomenclatureUpdated($curations->random(), $phenotypes->random(), 'Bobsyeruncle'));
         $this->user1->notify(new GeneSymbolUpdated($curations->random(), 'ABCDE'));
     }
