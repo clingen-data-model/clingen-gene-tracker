@@ -115,7 +115,10 @@ class UpdateOmimData extends Command
                                     try {
                                         return Phenotype::updateOrCreate(
                                             ['mim_number' => $pheno['mim_number']],
-                                            ['name' => trim($pheno['name'])]
+                                            [
+                                                'name' => trim($pheno['name']),
+                                                'moi' => $pheno['moi']
+                                            ]
                                         );
                                     } catch (\Throwable $th) {
                                         Log::warning($th->getMessage());
@@ -206,7 +209,7 @@ class UpdateOmimData extends Command
             $phenotypes[] = [
                 'name' => $matches[1],
                 'mim_number' => $matches[2],
-                'moi' => isset($matches[4]) ? $matches[4] : null
+                'moi' => isset($matches[4]) ? trim($matches[4]) : null
             ];
         }
 

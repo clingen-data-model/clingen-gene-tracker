@@ -62,9 +62,9 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
-            // 'moved_to_mim_number' => json_encode(['139139'])
+            // 'moved_to_mim_number' => json_encode(['607084'])
         ]);
-        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
     }
 
     /**
@@ -72,7 +72,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
      */
     public function creates_movedTo_phenotype_model_if_not_found()
     {
-        Phenotype::findByMimNumber(139139)->forceDelete();
+        Phenotype::findByMimNumber(607084)->forceDelete();
 
         $this->bindMovedResponse();
         
@@ -81,13 +81,15 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
-            // 'moved_to_mim_number' => json_encode(['139139'])
+            // 'moved_to_mim_number' => json_encode(['607084'])
         ]);
-        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+
+        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
-            'mim_number' => 139139,
-            'omim_status' => 'live'
+            'mim_number' => 607084,
+            'omim_status' => 'live',
+            'moi' => 'Autosomal recessive'
         ]);
     }
 
@@ -212,10 +214,10 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
         ]);
-        $this->assertEquals(["139139"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
-            'mim_number' => 139139,
+            'mim_number' => 607084,
             'omim_status' => 'live'
         ]);
 
@@ -243,7 +245,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     {
         $omimClient = $this->getOmimClient([
             new Response(200, [], file_get_contents(base_path('tests/files/omim_api/entry_moved_search_response.json'))),
-            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/139139.json')))
+            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/607084_with_geneMap.json')))
         ]);
         app()->instance(OmimClient::class, $omimClient);
     }

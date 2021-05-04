@@ -52,6 +52,19 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+    public function adds_phenotype_moi_if_exists_on_row()
+    {
+        $this->artisan('omim:update-data');
+        $this->assertDatabaseHas('phenotypes', [
+            'mim_number' => 605429,
+            'moi' => 'Autosomal dominant'
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
     public function processes_if_newer_than_last_download()
     {
         AppState::findByName('last_genemap_download')->update(['value'=>Carbon::parse('2021-03-28')]);

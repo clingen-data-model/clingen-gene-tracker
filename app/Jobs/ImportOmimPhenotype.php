@@ -36,7 +36,8 @@ class ImportOmimPhenotype
             ['mim_number' => $omimEntry->mimNumber],
             [
                 'name' => $omimEntry->phenotypeName,
-                'status' => $omimEntry->status
+                'status' => $omimEntry->status,
+                'moi' => $omimEntry->moi
             ]
         );
         
