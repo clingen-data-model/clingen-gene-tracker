@@ -50,6 +50,7 @@ class UpdateOmimData extends Command
      */
     public function handle()
     {
+        Log::info('Starting Omim genemap2 update...');
         if ($this->option('file')) {
             if (!file_exists($this->option('file'))) {
                 $this->error('File not found. '.$this->option('file'). ' does not exist');
@@ -131,7 +132,9 @@ class UpdateOmimData extends Command
             $lastGeneMapDownload->update(['value' => $newDateGenerated]);
         } catch (ClientException $e) {
             $this->error($e->getMessage());
+            \Log::error($e->getMessage());
         }
+        Log::info('Finished Omim genemap2 update.');
     }
 
     private function parseKeys($line)

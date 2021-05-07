@@ -5,6 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\PopulateMimNames;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,8 +30,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt("01:00:00");
         $schedule->command('curations:check-mondo-updates')
             ->dailyAt("02:00:00");
-        $schedule->command('curations:check-omim-updates')
-            ->dailyAt("03:00:00");
+        $schedule->command('omim:update-data')
+            ->dailyAt("03:00:00")
+            ->after(function () {
+                Artisan::call('omim:check-moved-and-removed');
+            });
         
         if (config('streaming-service.consume', true)) {
             $schedule->command('gci:consume')
