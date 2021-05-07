@@ -2095,16 +2095,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v6.20.17",
+            "version": "v6.20.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "d0e4731e92ca88f4a78fe9e0c2c426a3e8c063c8"
+                "reference": "0117d797dc1ab64b1f88d4f6b966380ea7def091"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/d0e4731e92ca88f4a78fe9e0c2c426a3e8c063c8",
-                "reference": "d0e4731e92ca88f4a78fe9e0c2c426a3e8c063c8",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/0117d797dc1ab64b1f88d4f6b966380ea7def091",
+                "reference": "0117d797dc1ab64b1f88d4f6b966380ea7def091",
                 "shasum": ""
             },
             "require": {
@@ -2244,7 +2244,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-03-02T14:28:26+00:00"
+            "time": "2021-04-28T14:38:32+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -3772,16 +3772,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.30",
+            "version": "2.0.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "136b9ca7eebef78be14abf90d65c5e57b6bc5d36"
+                "reference": "233a920cb38636a43b18d428f9a8db1f0a1a08f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/136b9ca7eebef78be14abf90d65c5e57b6bc5d36",
-                "reference": "136b9ca7eebef78be14abf90d65c5e57b6bc5d36",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/233a920cb38636a43b18d428f9a8db1f0a1a08f4",
+                "reference": "233a920cb38636a43b18d428f9a8db1f0a1a08f4",
                 "shasum": ""
             },
             "require": {
@@ -3861,7 +3861,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.30"
+                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.31"
             },
             "funding": [
                 {
@@ -3877,7 +3877,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-17T05:42:04+00:00"
+            "time": "2021-04-06T13:56:45+00:00"
         },
         {
             "name": "predis/predis",
