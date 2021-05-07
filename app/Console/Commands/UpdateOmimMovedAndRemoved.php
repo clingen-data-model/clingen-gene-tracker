@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Contracts\OmimClient;
 use Illuminate\Console\Command;
 use App\Jobs\ImportOmimPhenotype;
+use Illuminate\Support\Facades\Log;
 
 class UpdateOmimMovedAndRemoved extends Command
 {
@@ -42,12 +43,20 @@ class UpdateOmimMovedAndRemoved extends Command
      */
     public function handle(OmimClient $omimClient)
     {
+        Log::info('Check for moved and removed omim phenotypes.');
+        $this->info('Getting search results...');
         $searchResults = $this->getPaginatedSearchResults($omimClient, [], 0, $this->option('page-size'));
-
+        
         $phenotypes = $this->getPhenotypes($searchResults);
         $moveToPhenotypes = $this->getMovedToPhenotypes($searchResults);
 
+        $this->info('iterate through results...');
+        $progressBar = $this->output->createProgressBar(count($searchResults));
+        
         foreach ($searchResults as $item) {
+            if (!$phenotypes->pluck('mim_number')->contains($item->mimNumber)) {
+                continue;
+            }
             $pheno = $phenotypes->get($item->mimNumber);
             $pheno->omim_status = $item->status;
 
@@ -63,9 +72,14 @@ class UpdateOmimMovedAndRemoved extends Command
             }
 
             $pheno->save();
+            $progressBar->advance();
         }
 
+        $progressBar->finish();
+
+        $this->info('update last check date.');
         $this->updateLastCheck();
+        Log::info('Finished checking for moved and removed omim phenotypes.');
     }
 
     private function getPaginatedSearchResults($omimClient, $accumulator = [], $start = 0, $limit = 100)
@@ -83,7 +97,7 @@ class UpdateOmimMovedAndRemoved extends Command
 
     private function buildSearchString()
     {
-        $searchParams = ['prefix:%5E'];
+        $searchParams = ['prefix:^'];
         
         $lastUpdated = $this->getLastUpdated();
         if ($lastUpdated) {
