@@ -39,10 +39,17 @@ class PushUnsentMessages extends Command
      */
     public function handle()
     {
-        StreamMessage::unsent()
-            ->get()
-            ->each(function ($msg) {
-                PushMessage::dispatch($msg);
-            });
+        $messages = StreamMessage::unsent()
+            ->get();
+
+        $progress = $this->output->createProgressBar($messages->count());
+
+        $messages->each(function ($msg) use ($progress) {
+            PushMessage::dispatchNow($msg);
+            $progress->advance();
+        });
+        
+        $progress->finish();
+        echo "\n";
     }
 }
