@@ -3,8 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Curation;
-use Illuminate\Console\Command;
 use Ramsey\Uuid\Uuid;
+use App\StreamMessage;
+use Illuminate\Console\Command;
 
 class ProduceBaselineGTEvents extends Command
 {
@@ -13,7 +14,7 @@ class ProduceBaselineGTEvents extends Command
      *
      * @var string
      */
-    protected $signature = 'gci:produce-baseline {--limit= : number of messags to produce}';
+    protected $signature = 'gci:produce-baseline {--limit= : number of messags to produce} {--topic=test}';
 
     /**
      * The console command description.
@@ -40,7 +41,8 @@ class ProduceBaselineGTEvents extends Command
     public function handle()
     {
         $query = Curation::query()
-                    ->with(['curationStatuses', 'expertPanel', 'expertPanel.affiliation', 'expertPanel.affiliation.parent', 'modeOfInheritance', 'curationType', 'phenotypes']);
+                    ->with(['curationStatuses', 'expertPanel', 'expertPanel.affiliation', 'expertPanel.affiliation.parent', 'modeOfInheritance', 'curationType', 'phenotypes'])
+                    ->whereNull('gdm_uuid');
 
         if ($this->getLimit()) {
             $query->limit($this->getLimit());
@@ -55,35 +57,40 @@ class ProduceBaselineGTEvents extends Command
 
         $messages = $curations->map(function ($curation) use ($bar) {
             $bar->advance();
-            return [
-                'key' => Uuid::uuid4()->toString(),
-                'event_type' => 'baseline_state',
-                'schema_version' => 1,
-                'data' => [
-                    'id' => $curation->id,
-                    'uuid' => $curation->uuid,
-                    'gene_symbol' => $curation->gene_symbol,
-                    'hgnc_id' => 'HGNC:'.$curation->hgnc_id,
-                    'mondo_id' => $curation->mondo_id,
-                    'mode_of_inheritance' => $curation->modeOfInheritance->hp_id,
-                    'group' => [
-                        'name' => $curation->expertPanel->name,
-                        'id' => $curation->expertPanel->id,
-                        'affiliation_id' => ($curation->expertPanel->affiliation) 
-                                                ? $curation->expertPanel->affiliation->clingen_id 
-                                                : null
-                    ],
-                    'curation_status' => [
-                        'name' => $curation->currentStatus->name,
-                        'id' => $curation->currentStatus->id
-                    ],
-                    'gdm_uuid' => $curation->gdm_uuid
-                ]
-            ];
+            if (!$curation->currentStatus) {
+                return;
+            }
+            $message = new StreamMessage([
+                        'topic' => $this->option('topic'),
+                        'message' => [
+                            'key' => Uuid::uuid4()->toString(),
+                            'event_type' => 'baseline_state',
+                            'schema_version' => 1,
+                            'data' => [
+                                'id' => $curation->id,
+                                'uuid' => $curation->uuid,
+                                'gene_symbol' => $curation->gene_symbol,
+                                'hgnc_id' => 'HGNC:'.$curation->hgnc_id,
+                                'mondo_id' => $curation->mondo_id,
+                                'mode_of_inheritance' => $curation->modeOfInheritance->hp_id,
+                                'group' => [
+                                    'name' => $curation->expertPanel->name,
+                                    'id' => $curation->expertPanel->id,
+                                    'affiliation_id' => ($curation->expertPanel->affiliation)
+                                                            ? $curation->expertPanel->affiliation->clingen_id
+                                                            : null
+                                ],
+                                'curation_status' => [
+                                    'name' => $curation->currentStatus->name,
+                                    'id' => $curation->currentStatus->id
+                                ],
+                                'gdm_uuid' => $curation->gdm_uuid
+                            ]
+                        ]
+                    ]);
+            $message->save();
+            return $message;
         });
-
-        $this->info("\n".$messages->count());
-        // dump($messages);
     }
 
     private function getLimit()
@@ -94,5 +101,4 @@ class ProduceBaselineGTEvents extends Command
 
         return null;
     }
-    
 }
