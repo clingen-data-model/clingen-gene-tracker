@@ -21,6 +21,10 @@ class StreamMessage extends Model
     protected $dispatchesEvents = [
         'created' => Created::class,
     ];
+
+    protected $casts = [
+        'message' => 'array'
+    ];
     
     public function scopeUnsent($query)
     {
