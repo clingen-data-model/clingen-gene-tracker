@@ -38,7 +38,8 @@ class PushMessage implements ShouldQueue
     {
         try {
             $pusher->topic($this->message->topic);
-            $pusher->push($this->message->message);
+            $message = $this->getMessageString($this->message->message);
+            $pusher->push($message);
             $this->message->update([
                 'sent_at' => Carbon::now()
             ]);
@@ -50,5 +51,18 @@ class PushMessage implements ShouldQueue
             report($e);
             return;
         }
+    }
+
+    private function getMessageString($message)
+    {
+        if (is_string($message)) {
+            return $message;
+        }
+        
+        if (is_array($message) || is_object($message)) {
+            return json_encode($message);
+        }
+
+        throw new \Exception("Expected message to be string, object, or array.  Got ".gettype($message));
     }
 }
