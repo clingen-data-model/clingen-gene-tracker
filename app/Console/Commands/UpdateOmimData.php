@@ -9,7 +9,6 @@ use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Str;
 use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -17,8 +16,6 @@ use GuzzleHttp\Exception\ClientException;
 
 class UpdateOmimData extends Command
 {
-    use MocksGuzzleRequests;
-
     /**
      * The name and signature of the console command.
      *
