@@ -179,7 +179,11 @@ class UpdateOmimData extends Command
             return null;
         }
 
-        return Gene::findByOmimId($data['mim_number']);
+        $gene = Gene::findByOmimId($data['mim_number']);
+        if (!$gene) {
+            $gene = Gene::findBySymbol($data['approved_symbol']);
+        }
+        return $gene;
     }
 
     private function recordHasGeneSymbol($data)
