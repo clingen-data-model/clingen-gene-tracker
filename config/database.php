@@ -123,7 +123,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
-            'prefix' => Str::slug(env('APP_NAME', 'genetracker'), '_').'_database_',
+            'prefix' => Str::slug(env('QUEUE_PREFIX', 'genetracker'), '_').'_database_',
         ],
 
         'default' => [
