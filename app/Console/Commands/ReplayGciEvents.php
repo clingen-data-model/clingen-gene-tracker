@@ -62,8 +62,5 @@ class ReplayGciEvents extends Command
         }
         $bar->finish();
         echo "\n";
-
-        
     }
-
 }
