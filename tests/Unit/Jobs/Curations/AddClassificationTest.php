@@ -89,8 +89,6 @@ class AddClassificationTest extends TestCase
             '2019-12-01'
         );
 
-        // dump($curation->classifications()->get()->toArray());
-
         $this->assertEquals(2, $curation->fresh()->classifications()->count());
 
     }
