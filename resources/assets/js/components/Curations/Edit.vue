@@ -11,7 +11,10 @@
                 <div class="d-flex justify-content-between">
                     <h3>{{ title }}</h3>
                     <div class="d-flex space-x-2">
-                        <transfer-curation-control :curation="curation"></transfer-curation-control>
+                        <transfer-curation-control 
+                            :curation="curation"
+                             v-if="$store.features.tranferEnabled"
+                        ></transfer-curation-control>
                         <router-link :to="'/curations/'+curation.id">
                             view
                         </router-link>

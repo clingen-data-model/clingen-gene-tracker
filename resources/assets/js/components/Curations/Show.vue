@@ -27,7 +27,10 @@
                             Edit
                         </router-link>
                         <delete-button class="btn btn-sm" :curation="curation"></delete-button>
-                        <transfer-curation-control :curation="curation"></transfer-curation-control>
+                        <transfer-curation-control 
+                            :curation="curation" 
+                            v-if="$store.state.features.transferEnabled"
+                        ></transfer-curation-control>
                     </div>                
                 </div>
            </template>
@@ -66,20 +69,22 @@
                         <strong class="col-md-3">Expert Panel:</strong> 
                         <div class="col-md">
                             {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
-                            <toggle-button 
-                                v-model="showOwnerHistory" 
-                                show-label="Show history" 
-                                hide-label="Hide history"
-                            ></toggle-button>
-                            <transition name="fade">
-                                <history-table 
-                                    :items="curation.expert_panels" 
-                                    item-label="Expert Panel" 
-                                    date-field="start_date" 
-                                    v-show="showOwnerHistory" 
-                                    index-attribute="id"
-                                ></history-table>
-                            </transition>
+                            <div v-if="$store.state.features.transferEnabled">
+                                <toggle-button 
+                                    v-model="showOwnerHistory" 
+                                    show-label="Show history" 
+                                    hide-label="Hide history"
+                                ></toggle-button>
+                                <transition name="fade">
+                                    <history-table 
+                                        :items="curation.expert_panels" 
+                                        item-label="Expert Panel" 
+                                        date-field="start_date" 
+                                        v-show="showOwnerHistory" 
+                                        index-attribute="id"
+                                    ></history-table>
+                                </transition>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-2">
