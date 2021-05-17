@@ -39,12 +39,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\StreamMessages\Created' => [
             'App\Listeners\StreamMessages\PushMessage'
         ],
-        'App\Events\StreamMessages\Received' => [
-            'App\Listeners\Curations\UpdateFromStreamMessage',
-            'App\Listeners\SteamMessages\SetTopicOffset'
+        \App\Events\StreamMessages\Received::class => [
+            \App\Listeners\Curations\UpdateFromStreamMessage::class,
+            \App\Listeners\SteamMessages\SetTopicOffset::class
         ],
-        'Illuminate\Mail\Events\MessageSent' => [
-            'App\Listeners\Mail\StoreMailInDatabase'
+        \Illuminate\Mail\Events\MessageSent::class => [
+            \App\Listeners\Mail\StoreMailInDatabase::class
         ]
     ];
 
