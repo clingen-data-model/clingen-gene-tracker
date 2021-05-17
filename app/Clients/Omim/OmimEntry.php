@@ -26,7 +26,6 @@ class OmimEntry implements OmimEntryContract
      */
     public function getPhenotypeMapList()
     {
-        // dump($this->rawEntry);
         if (isset($this->rawEntry->geneMap) && isset($this->rawEntry->geneMap->phenotypeMapList)) {
             return $this->rawEntry->geneMap->phenotypeMapList;
         }
@@ -50,6 +49,33 @@ class OmimEntry implements OmimEntryContract
             return $this->titles->preferredTitle;
         }
     }
+
+    public function getMappedGeneMimNumber()
+    {
+        try {
+            if (count($this->phenotypeMapList) == 0) {
+                return null;
+            }
+
+            return $this->phenotypeMapList[0]->phenotypeMap->mimNumber;
+        } catch (OmimResponseException $e) {
+            return null;
+        }
+    }
+
+    public function getMoi()
+    {
+        try {
+            if (count($this->phenotypeMapList) == 0) {
+                return null;
+            }
+
+            return $this->phenotypeMapList[0]->phenotypeMap->phenotypeInheritance;
+        } catch (OmimResponseException $e) {
+            return null;
+        }
+    }
+    
 
     public function __get($key)
     {

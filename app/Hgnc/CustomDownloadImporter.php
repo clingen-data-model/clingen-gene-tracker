@@ -49,15 +49,11 @@ class CustomDownloadImporter
     {
         $params = $params ?? $this->defaultParams;
 
-        yield 'get update timestamp for each gene...';
-        $hgncIdToUpdatedAt = Gene::select('hgnc_id', 'date_modified')->get()->pluck('date_modified', 'hgnc_id');
-        $lastGeneMod = $hgncIdToUpdatedAt->max();
-
         yield 'fetching data...';
         $customDownload = $this->fetchCustomDownload($params);
 
         yield 'parsing data...';
-        $records = $this->parseCustomResponse($customDownload, $lastGeneMod);
+        $records = $this->parseCustomResponse($customDownload);
         
         Log::debug('filtered records: '.$records->count());
 
@@ -68,41 +64,58 @@ class CustomDownloadImporter
             $count++;
             $prevSymbols = null;
 
-            if ($record->previous_symbols !== '') {
-                $prevSymbols = array_map(function ($sym) {
-                    return trim($sym);
-                }, explode(',', $record->previous_symbols));
-            }
-
-            $aliasSymbols = null;
-            if ($record->alias_symbols !== '') {
-                $aliasSymbols = array_map(function ($sym) {
-                    return trim($sym);
-                }, explode(',', $record->alias_symbols));
-            }
+            $prevSymbols = $this->parsePreviousSymbols($record);
+            $aliasSymbols = $this->parseAliasSymbols($record);
 
             $newAttributes = [
-                'gene_symbol' => $record->approved_symbol,
-                'omim_id' => $record->omim_id ? $record->omim_id : null,
-                'ncbi_gene_id' => (!empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
-                'hgnc_name' => ($record->status == 'Symbol Withdrawn') ? 'symbol withdrawn' : $record->approved_name,
-                'hgnc_status' => $record->status,
-                'previous_symbols' => $prevSymbols,
-                'alias_symbols' => $aliasSymbols,
-                'date_approved' => ($record->date_approved == '') ? null : $record->date_approved,
-                'date_modified' => ($record->date_modified == '') ? null : $record->date_modified,
-                'date_symbol_changed' => ($record->date_symbol_changed == '') ? null : $record->date_symbol_changed,
-                'date_name_changed' => ($record->date_name_changed == '') ? null : $record->date_name_changed,
+                'gene_symbol'       => $record->approved_symbol,
+                'omim_id'           => $record->omim_id ? $record->omim_id : null,
+                'ncbi_gene_id'      => (!empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
+                'hgnc_name'         => ($record->status == 'Symbol Withdrawn') 
+                                            ? 'symbol withdrawn' 
+                                            : $record->approved_name,
+                'hgnc_status'       => $record->status,
+                'previous_symbols'  => $prevSymbols,
+                'alias_symbols'     => $aliasSymbols,
+                'date_approved'     => $this->getValueOrNull($record->date_approved),
+                'date_modified'     => $this->getValueOrNull($record->date_modified),
+                'date_symbol_changed' => $this->getValueOrNull($record->date_symbol_changed),
+                'date_name_changed' => $this->getValueOrNull($record->date_name_changed),
             ];
 
             $newGene = Gene::updateOrCreate(['hgnc_id' => $record->hgnc_id], $newAttributes);
         });
-        if (file_exists($this->tmpPath)) {
-            yield 'Removing temp file';
-            unlink($this->tmpPath);
-        }
         yield 'done';
     }
+
+    private function getValueOrNull($attr)
+    {
+        return ($attr == '') ? null : $attr;
+    }
+    
+
+    private function parseAliasSymbols($record)
+    {
+        if ($record->alias_symbols !== '') {
+            return array_map(function ($sym) {
+                return trim($sym);
+            }, explode(',', $record->alias_symbols));
+        }
+
+        return null;
+    }
+    
+
+    private function parsePreviousSymbols($record)
+    {
+        if ($record->previous_symbols !== '') {
+            return array_map(function ($sym) {
+                return trim($sym);
+            }, explode(',', $record->previous_symbols));
+        }
+        return null;
+    }
+    
 
     public function fetchCustomDownload(array $params): String
     {
@@ -127,8 +140,23 @@ class CustomDownloadImporter
         return $contents;
     }
 
-    private function parseCustomResponse(String $responseString, $genesLastModified): Collection
+    private function getGeneData()
     {
+        $genes = Gene::select('hgnc_id', 'date_modified', 'omim_id')->get();
+
+        return [
+            $genes->filter(function ($gene) {
+                return is_null($gene->omim_id);
+            })->pluck('hgnc_id'),
+            $genes->pluck('date_modified', 'hgnc_id')->max()
+        ];
+    }
+
+    private function parseCustomResponse(String $responseString): Collection
+    {
+        
+        [$hgncsWithoutOmimId, $genesLastModified] = $this->getGeneData();
+
         $lines = explode("\n", $responseString);
         
         $columnNames = null;
@@ -137,6 +165,7 @@ class CustomDownloadImporter
         Log::debug('lines in download: '.count($lines));
         foreach ($lines as $idx => $line) {
             $cols = explode("\t", $line);
+
             // Get the column keys.
             if ($idx == 0) {
                 $columnNames = array_map(function ($heading) {
@@ -152,7 +181,18 @@ class CustomDownloadImporter
             if (count($columnNames) != count($cols)) {
                 break;
             }
+
             $data = array_combine($columnNames, $cols);
+            $hgncId = substr($data['hgnc_id'], 5);
+            
+            if ($hgncId == '16216')
+
+            if (!empty($hgncId) && $hgncsWithoutOmimId->contains($hgncId)) {
+                $hgncRecord = new HgncRecord($data);
+                $collection->push($hgncRecord);
+                continue;
+            }
+
             if ($genesLastModified) {
                 if ($data['date_modified'] == '' && Carbon::parse($data['date_approved'])->lt($genesLastModified)) {
                     continue;

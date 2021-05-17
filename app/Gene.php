@@ -2,12 +2,13 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Event;
 use App\Events\Genes\GeneSymbolChanged;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Event;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Do I treat this like an aggregateRoot or a Repository or is it a conflation of the two?
@@ -60,6 +61,18 @@ class Gene extends Model
         });
     }
 
+    // Relations
+    /**
+     * The phenotypes that belong to the Gene
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function phenotypes(): BelongsToMany
+    {
+        return $this->belongsToMany(Phenotype::class, 'gene_phenotype', 'hgnc_id', 'phenotype_id')
+            ->withTimestamps();
+    }
+
     // Access methods
 
     public static function findBySymbol(String $symbol)
@@ -67,8 +80,19 @@ class Gene extends Model
         return static::where('gene_symbol', $symbol)->first();
     }
 
+    public static function findByOmimId(Int $id)
+    {
+        return static::where('omim_id', $id)->first();
+    }
+
     public static function findByPreviousSymbol(String $symbol)
     {
         return static::whereJsonContains('previous_symbols', $symbol)->first();
+    }
+
+    // Domain methods
+    public function addPhenotype(Phenotype $phenotype)
+    {
+        $this->phenotypes->attach($phenotype);
     }
 }

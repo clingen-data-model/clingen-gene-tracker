@@ -126,7 +126,6 @@ class ImportGciSnapshot extends Command
                     $errors[$type][] = $e->getMessage();
                 }
             } catch (Exception $e) {
-                // dump($row);
                 throw $e;
             }
             $bar->advance();

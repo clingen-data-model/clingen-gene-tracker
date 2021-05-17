@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TODAY=`date +"%Y-%m-%-d"`
+TODAY=`date +"%Y-%m-%d"`
 NOW=`date +"%Y-%m-%d-%H:%M:%S"`
 
 BACKUP_RETAIN_DAYS=30

@@ -3,6 +3,7 @@
 namespace App\Hgnc\Artisan;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use App\Hgnc\CustomDownloadImporter;
 
 class ImportHgncCustomDownload extends Command
@@ -42,5 +43,6 @@ class ImportHgncCustomDownload extends Command
         foreach ($importer->import() as $message) {
             $this->info($message);
         }
+        Log::info('Update genes with HGNC data');
     }
 }

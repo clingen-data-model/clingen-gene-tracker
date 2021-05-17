@@ -73,4 +73,17 @@ class CurationPolicy
 
         return false;
     }
+
+    public function transfer(User $user, Curation $curation)
+    {
+        if ($this->hasPrivilegedRole($user)) {
+            return true;
+        }
+        if ($user->isPanelCoordinator($curation->expertPanel) || $user->canEditPanelCurations($curation->expertPanel)) {
+            return true;
+        }
+
+        return false;
+    }
+    
 }

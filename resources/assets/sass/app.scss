@@ -88,5 +88,25 @@ input[type=file].form-control {
     opacity: .5;
 }
 
+.space-x-0>*+* {
+    margin-right: calc(0px * var(0));
+    margin-left: calc(0px);
+}
+
+.space-x-1>*+* {
+    margin-right: calc(0.25rem);
+    margin-left: calc(0.25rem);
+}
+
+.space-x-2>*+* {
+    margin-right: calc(.5rem);
+    margin-left: calc(.5rem);
+}
+
+.space-x-3>*+* {
+    margin-right: calc(.75rem);
+    margin-left: calc(.75rem);
+}
+
 // ENV color coding
 @import './env.scss';

@@ -74,8 +74,8 @@ class UsersControllerTest extends TestCase
                         });
 
         $this->actingAs($this->user, 'api')
-            ->call('GET', 'api/users?with=role')
-            ->assertSee('name: curator');
+            ->call('GET', 'api/users?with=roles')
+            ->assertSee('"name":"admin"');
     }
 
     /**

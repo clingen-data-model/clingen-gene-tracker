@@ -1,5 +1,7 @@
 <?php
 
+use Monolog\Handler\StreamHandler;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +33,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack'] : ['daily'],
+            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack', 'syslog'] : ['daily', 'syslog'],
         ],
 
         'single' => [
@@ -74,5 +76,15 @@ return [
             'path' => storage_path('logs/mail.log'),
             'level' => 'debug',
         ],
+        'stderr' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+            'level' => env('LOG_LEVEL', 'debug')
+        ],
+
     ],
 ];

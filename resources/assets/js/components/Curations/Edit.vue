@@ -8,10 +8,18 @@
         </p>
         <b-card id="edit-curation-modal">
             <template slot="header">
-                <router-link :to="'/curations/'+curation.id" class='float-right'>
-                    view
-                </router-link>
-                <h3>{{ title }}</h3>
+                <div class="d-flex justify-content-between">
+                    <h3>{{ title }}</h3>
+                    <div class="d-flex space-x-2">
+                        <transfer-curation-control 
+                            :curation="curation"
+                             v-if="$store.features.tranferEnabled"
+                        ></transfer-curation-control>
+                        <router-link :to="'/curations/'+curation.id">
+                            view
+                        </router-link>
+                    </div>
+                </div>
             </template>
             <div v-if="!this.curation.id" class="alert alert-info">
                 Loading...
@@ -75,6 +83,7 @@
     import Mondo from './Forms/Mondo'
     import Classification from './Forms/Classification'
     import Documents from './Forms/Documents'
+    import TransferCurationControl from './TransferCurationControl'
 
     export default {
         props: ['id'],
@@ -85,7 +94,8 @@
             CurationType,
             DeleteButton,
             Classification,
-            Documents
+            Documents,
+            TransferCurationControl
         },
         data () {
             return {

@@ -25,6 +25,9 @@ const state = {
         omim: 0,
         mondo: 0,
         pubmed: 0,
+    },
+    features: {
+        transferEnabled: false
     }
 }
 

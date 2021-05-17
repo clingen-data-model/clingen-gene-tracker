@@ -3,169 +3,178 @@ import moment from 'moment';
 
 const baseUrl = '/api/curations'
 const state = {
-    items: []
-}
-
-const addOrUpdateItem = function (commit, item) {
-    let itemIdx = state.items.findIndex(i => i.id == item.id);
-    if (itemIdx > -1) {
-        commit('updateItem', item);
-        return
-    }
-    commit('addItem', item);
+    items: [],
+    currentItemIdx: null
 }
 
 const getters = {
-    Items: function (state) {
+    Items: function(state) {
         return state.items;
     },
     getItemById: (state) => (id) => {
-        return state.items.find( (item) => item.id == id)
-    }
+        return state.items.find((item) => item.id == id)
+    },
+    currentItem: state => {
+        if (state.currentItemIdx === null) {
+            return {};
+        }
+
+        return state.items[state.currentItemIdx]
+    },
 }
 
 const mutations = {
-    setItems: function (state, items) {
+    setItems: function(state, items) {
         state.items = items
     },
-    addItem: function (state, item) {
+    addItem: function(state, item) {
+        const idx = state.items.findIndex(i => i.id == item.id);
+        if (idx > -1) {
+            state.items.splice(idx, 1, item)
+            return;
+        }
+
         state.items.push(item)
     },
-    updateItem: function (state, item) {
-        let itemIdx = state.items.findIndex(i => i.id == item.id);
-        if (itemIdx > -1) {
-            Vue.set(state.items, itemIdx, item)
-            return
-        }
-        console.error('curation is not found in store.  you should commit(\'addItem\', item) instead');
+    updateItem: function(state, item) {
+        console.log('updateitem')
     },
-    removeItem: function (state, id) {
+    removeItem: function(state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
-        
+
         Vue.delete(state.items, itemIdx);
-    }
+    },
+    setCurrentItemIdx(state, curation) {
+        const idx = state.items.findIndex(i => i.id == curation.id);
+        state.currentItemIdx = idx;
+    },
 }
 
 const actions = {
-    getAllItems: function ( {commit} ) {
+    getAllItems: function({ commit }) {
         return window.axios.get(baseUrl)
-            .then(function (response) {
+            .then(function(response) {
                 commit('setItems', response.data.data)
             })
-            .catch(function (error) {
-                console.error(error);
-            })
+            .catch(function(error) {})
     },
-    storeNewItem: function ( {commit}, data ) {
+    storeNewItem: function({ commit }, data) {
         return window.axios.post(baseUrl, data)
-            .then(function (response) {
+            .then(function(response) {
                 commit('addItem', response.data.data);
                 return response;
             });
     },
-    storeItemUpdates: function ( {commit}, data ) {
-        return window.axios.put(baseUrl+'/'+data.id, data)
-            .then(function (response) {
-                addOrUpdateItem(commit, response.data.data);
+    storeItemUpdates: function({ commit }, data) {
+        return window.axios.put(baseUrl + '/' + data.id, data)
+            .then(function(response) {
+                commit('addItem', response.data.data);
                 return response;
             });
     },
-    fetchItem ( {commit}, id ) {
-        return window.axios.get(baseUrl+'/'+id)
+    fetchItem({ commit }, id) {
+        return window.axios.get(baseUrl + '/' + id)
             .then((response) => {
                 let item = response.data.data;
-                addOrUpdateItem(commit, item);
+                commit('addItem', item);
+                commit('setCurrentItemIdx', item);
                 return response;
             })
             .catch((error) => {
                 return Promise.reject(error.response);
             })
     },
-    destroyItem ( {commit}, id) {
-        return window.axios.delete(baseUrl+'/'+id)
-            .then(function (response) {
+    destroyItem({ commit }, id) {
+        return window.axios.delete(baseUrl + '/' + id)
+            .then(function(response) {
                 commit('removeItem', id);
                 return response;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return Promise.reject(error.response);
             })
     },
-    linkNewStatus ({commit}, {curation, data}) {
-        return window.axios.post(baseUrl+'/'+curation.id+'/statuses', data)
+    linkNewStatus({ commit }, { curation, data }) {
+        return window.axios.post(baseUrl + '/' + curation.id + '/statuses', data)
             .then((response) => {
                 curation.curation_statuses.push(response.data);
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
                 return response
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return Promise.reject(error.response);
             });
     },
-    updateStatusDate ({commit}, {curation, pivotId, statusDate}) {
-        return window.axios.put(baseUrl + '/' + curation.id + '/statuses/'+pivotId, {'status_date': statusDate})
+    updateStatusDate({ commit }, { curation, pivotId, statusDate }) {
+        return window.axios.put(baseUrl + '/' + curation.id + '/statuses/' + pivotId, { 'status_date': statusDate })
             .then((response) => {
                 const updatedStatusEntry = response.data;
                 const curationStatusEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == updatedStatusEntry.pivot.id);
                 curation.curation_statuses[curationStatusEntryIdx] = updatedStatusEntry;
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
                 return response
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return Promise.reject(error.response);
             });
     },
-    unlinkStatus ({commit}, {curation, pivotId}) {
-        return window.axios.delete(baseUrl+'/'+curation.id+'/statuses/'+pivotId)
+    unlinkStatus({ commit }, { curation, pivotId }) {
+        return window.axios.delete(baseUrl + '/' + curation.id + '/statuses/' + pivotId)
             .then(response => {
-                console.log(response);
                 const deletedEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == pivotId);
-                console.log('deletedEntryIdx: '+deletedEntryIdx);
-                console.log(curation.curation_statuses);
                 curation.curation_statuses.splice(deletedEntryIdx, 1);
-                console.log(curation.curation_statuses);
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
             })
             .catch(errors => {
                 return Promise.reject(errors.response)
             });
     },
-    linkNewClassification ({commit}, {curation, data}) {
-        return window.axios.post(baseUrl+'/'+curation.id+'/classifications', data)
+    linkNewClassification({ commit }, { curation, data }) {
+        return window.axios.post(baseUrl + '/' + curation.id + '/classifications', data)
             .then((response) => {
                 curation
                     .classifications
                     .push(response.data);
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
                 return response
             })
     },
-    updateClassification ({commit}, {curation, pivotId, data}) {
-        return window.axios.put(baseUrl + '/' + curation.id + '/classifications/'+pivotId, data)
+    updateClassification({ commit }, { curation, pivotId, data }) {
+        return window.axios.put(baseUrl + '/' + curation.id + '/classifications/' + pivotId, data)
             .then((response) => {
                 const updatedClassificationEntry = response.data;
                 const curationClassificationEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == updatedClassificationEntry.pivot.id);
                 curation.classifications[curationClassificationEntryIdx] = updatedClassificationEntry;
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
                 return response
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return Promise.reject(error.response);
             });
     },
-    unlinkClassification ({commit}, {curation, pivotId}) {
-        return window.axios.delete(baseUrl+'/'+curation.id+'/classifications/'+pivotId)
+    unlinkClassification({ commit }, { curation, pivotId }) {
+        return window.axios.delete(baseUrl + '/' + curation.id + '/classifications/' + pivotId)
             .then(response => {
-                console.log(response);
                 const deletedEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == pivotId);
-                console.log('deletedEntryIdx: '+deletedEntryIdx);
-                console.log(curation.classifications);
                 curation.classifications.splice(deletedEntryIdx, 1);
-                console.log(curation.classifications);
-                addOrUpdateItem(commit, curation);
+                commit('addItem', curation);
             })
             .catch(errors => {
                 return Promise.reject(errors.response)
+            });
+    },
+    updateOwner({ commit }, { curation, expertPanelId, startDate }) {
+        return window.axios.post(baseUrl + '/' + curation.id + '/owner', {
+                expert_panel_id: expertPanelId,
+                start_date: startDate
+            })
+            .then(response => {
+                const { curation_id, expert_panels } = response.data
+                curation.expert_panels = expert_panels;
+                curation.expert_panel_id = expertPanelId;
+                curation.expert_panel = expert_panels.find(ep => ep.id == expertPanelId);
+                commit('addItem', curation);
+                return response;
             });
     }
 }

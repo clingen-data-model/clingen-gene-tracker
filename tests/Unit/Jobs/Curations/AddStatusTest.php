@@ -58,9 +58,7 @@ class AddStatusTest extends TestCase
             $this->curation->fresh(), 
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
-
-        // dump($this->curation->statuses()->get()->toArray());
-
+        
         $this->assertEquals(2, $this->curation->statuses()->count());
 
     }
@@ -83,7 +81,7 @@ class AddStatusTest extends TestCase
             '2019-12-01'
         );
 
-        // dump($this->curation->statuses()->get()->toArray());
+        ($this->curation->statuses()->get()->toArray());
 
         $this->assertEquals(2, $this->curation->fresh()->statuses()->count());
 

@@ -45,7 +45,7 @@ class BulkCurationUploadTest extends TestCase
     {
         \DB::table('curations')->delete();
 
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user)
             ->json('POST', '/bulk-uploads', [
                 'expert_panel_id' => $this->expertPanel->id,

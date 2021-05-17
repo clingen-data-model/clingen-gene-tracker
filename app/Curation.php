@@ -2,13 +2,16 @@
 
 namespace App;
 
-use App\Events\Curation\Created;
-use App\Events\Curation\Deleted;
-use App\Events\Curation\Saved;
-use App\Events\Curation\Updated;
-use App\Jobs\Curations\AddStatus;
+use Carbon\Carbon;
 use App\Traits\HasUuid;
 use Backpack\CRUD\CrudTrait;
+use App\Events\Curation\Saved;
+use App\Events\Curation\Created;
+use App\Events\Curation\Deleted;
+use App\Events\Curation\Updated;
+use App\Jobs\Curations\SetOwner;
+use App\Jobs\Curations\AddStatus;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -39,7 +42,6 @@ class Curation extends Model
         'mondo_name',
         'curation_date',
         'disease_entity_notes',
-        'curation_status_id',
         'curation_type_id',
         'rationale_other',
         'rationale_notes',
@@ -74,6 +76,7 @@ class Curation extends Model
         static::created(function ($curation) {
             if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
                 AddStatus::dispatch($curation, CurationStatus::find(1));
+                SetOwner::dispatch($curation, $curation->expert_panel_id, Carbon::now());
             }
         });
     }
@@ -81,6 +84,14 @@ class Curation extends Model
     public function expertPanel()
     {
         return $this->belongsTo(ExpertPanel::class);
+    }
+
+    public function expertPanels()
+    {
+        return $this->belongsToMany(ExpertPanel::class)
+                ->using(CurationExpertPanel::class)
+                ->withPivot(['start_date', 'end_date'])
+                ->withTimestamps();
     }
 
     public function affiliation()
@@ -154,6 +165,11 @@ class Curation extends Model
         return $this->modeOfInheritance();
     }
 
+    public function gene()
+    {
+        return $this->belongsTo(Gene::class, 'hgnc_id', 'hgnc_id');
+    }
+
     /**
      * ACCESSORS.
      */
@@ -166,6 +182,25 @@ class Curation extends Model
                     ->first()
                 ?? new Classification();
     }
+
+    public function setExpertPanelIdAttribute($value)
+    {
+        if (isset($this->attributes['expert_panel_id']) && $value == $this->attributes['expert_panel_id']) {
+            $this->attributes['expert_panel_id'] = $value;
+            return;
+        }
+
+        // if (!is_null($this->id) && !app()->environment('testing')) {
+        if (!is_null($this->id)) {
+            $backtrace = collect(debug_backtrace())->map(function ($step) {
+                return $step['file'].":".$step['line'];
+            })->toArray();
+
+            \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace );
+        }
+        $this->attributes['expert_panel_id'] = $value;
+    }
+    
 
     /**
      * SCOPES.
@@ -299,5 +334,10 @@ class Curation extends Model
     public function removeUpload(Upload $upload): void
     {
         $upload->delete();
+    }
+
+    public function addPhenotype(Phenotype $phenotype): void
+    {
+        $this->phenotypes()->save($phenotype);
     }
 }

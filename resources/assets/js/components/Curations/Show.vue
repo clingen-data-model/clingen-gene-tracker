@@ -14,9 +14,10 @@
             style="max-heigh: 1000px"
         >
             <template slot="header">
-                <h3>{{ title }}
+                <div class="d-float justify-content-between">
+                    <h3> {{ title }}</h3>
 
-                    <div class="float-right d-block" v-if="!loading">
+                    <div class="d-flex space-x-1" v-if="!loading">
                         <router-link
                             v-if="user.canEditCuration(curation)"
                             :id="'edit-curation-'+curation.id+'-btn'" 
@@ -25,9 +26,13 @@
                         >
                             Edit
                         </router-link>
-                        <delete-button class="btn-sm" :curation="curation"></delete-button>
+                        <delete-button class="btn btn-sm" :curation="curation"></delete-button>
+                        <transfer-curation-control 
+                            :curation="curation" 
+                            v-if="$store.state.features.transferEnabled"
+                        ></transfer-curation-control>
                     </div>                
-                </h3>
+                </div>
            </template>
             <div v-if="this.curations">
                 <div id="info">
@@ -35,24 +40,6 @@
                         <strong class="col-md-3">Gene Symbol:</strong> 
                         <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
                     </div>
-                    <!-- <div class="row mt-2">
-                        <strong class="col-md-3">HGNC ID:</strong> 
-                        <div class="col-md">
-                            <span v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</span>
-                            <small class="text-muted" v-else>
-                                HGNC info will update shortly
-                            </small>
-                        </div>
-                    </div> -->
-                    <!-- <div class="row mt-2">
-                        <strong class="col-md-3">HGNC Name:</strong> 
-                        <div class="col-md">
-                            
-                            <small class="text-muted" v-else>
-                                HGNC info will update shortly
-                            </small>
-                        </div>
-                    </div> -->
                     <div class="row mt-2">
                         <strong class="col-md-3">
                             Mode Of Inheritance:
@@ -80,7 +67,25 @@
                     <hr>
                     <div class="row mt-2">
                         <strong class="col-md-3">Expert Panel:</strong> 
-                        <div class="col-md">{{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}</div>
+                        <div class="col-md">
+                            {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
+                            <div v-if="$store.state.features.transferEnabled">
+                                <toggle-button 
+                                    v-model="showOwnerHistory" 
+                                    show-label="Show history" 
+                                    hide-label="Hide history"
+                                ></toggle-button>
+                                <transition name="fade">
+                                    <history-table 
+                                        :items="curation.expert_panels" 
+                                        item-label="Expert Panel" 
+                                        date-field="start_date" 
+                                        v-show="showOwnerHistory" 
+                                        index-attribute="id"
+                                    ></history-table>
+                                </transition>
+                            </div>
+                        </div>
                     </div>
                     <div class="row mt-2">
                         <strong class="col-md-3">Curator:</strong> 
@@ -134,18 +139,19 @@
                                 <button class="btn btn-sm"><small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small></button>
                             </div>
                             <transition name="fade">
-                                <curation-status-history :curation="curation" v-show="showStatusHistory"></curation-status-history>
+                                <history-table 
+                                    :items="curation.curation_statuses" 
+                                    item-label="Status" 
+                                    date-field="status_date"
+                                     v-show="showStatusHistory"
+                                ></history-table>
                             </transition>
                         </div>
                     </div>
                     <div class="row mt-2" v-if="curation.gdm_uuid">
                         <strong class="col-md-3">GCI ID:</strong> 
                         <div class="col-md">
-                            <external-link :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${curation.gdm_uuid}`" 
-                                target="gci"
-                            >
-                                {{ curation.gdm_uuid }}
-                            </external-link>
+                            <gci-link :curation="curation"></gci-link>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -156,6 +162,12 @@
                                 <button class="btn btn-sm"><small><small @click="showClassificationHistory = !showClassificationHistory">{{classificationButtonText}}</small></small></button>
                             </div>
                             <transition name="fade">
+                                <history-table 
+                                    :items="curation.classifications" 
+                                    item-label="Classification" 
+                                    date-field="classification_date"
+                                     v-show="showClassificationHistory"
+                                ></history-table>
                                 <classification-history :curation="curation" v-show="showClassificationHistory"></classification-history>
                             </transition>
                         </div>
@@ -178,10 +190,14 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
+    import HistoryTable from './HistoryTable'
     import CurationStatusHistory from './StatusHistory'
     import ClassificationHistory from './ClassificationHistory'
     import DeleteButton from './DeleteButton'
     import DocumentsCard from './Documents/DocumentsCard'
+    import TransferCurationControl from './TransferCurationControl'
+    import GciLink from '../Curations/GciLink'
+    import ToggleButton from '../buttons/ToggleButton'
 
     export default {
         props: ['id'],
@@ -190,10 +206,15 @@
             CurationStatusHistory,
             DeleteButton,
             ClassificationHistory,
-            DocumentsCard
+            DocumentsCard,
+            TransferCurationControl,
+            GciLink,
+            HistoryTable,
+            ToggleButton
         },
         data() {
             return {
+                showOwnerHistory: false,
                 showStatusHistory: false,
                 showClassificationHistory: false,
                 loading: true
@@ -209,7 +230,8 @@
             ...mapGetters({ user: 'getUser'}),
             ...mapGetters('curations', {
                 curations: 'Items',
-                getCuration: 'getItemById'
+                getCuration: 'getItemById',
+                curation: 'currentItem'
             }),            
             statusHistoryButtonText: function() {
                 return (this.showStatusHistory) ? 'Hide history' : 'Show history';
@@ -230,13 +252,13 @@
                 }
                 return title;
             },
-            curation: function(){
-                if (this.curations.length == 0) {
-                    return {
-                    }
-                }
-                return this.getCuration(this.id)
-            },
+            // curation: function(){
+            //     if (this.curations.length == 0) {
+            //         return {
+            //         }
+            //     }
+            //     return this.getCuration(this.id)
+            // },
             mondoUrl: function () {
                 if (this.curation.mondo_id) {
                     return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`

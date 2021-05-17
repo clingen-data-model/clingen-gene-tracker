@@ -74,6 +74,25 @@ class OmimClient implements OmimClientContract
                 });
     }
 
+    public function paginatedSearch($searchString, $start = 0, $pageSize = 100)
+    {
+        $query = $this->buildQuery(array_merge($searchString, ['start'=> $start, 'limit' => $pageSize,             'include'=> 'geneMap'
+        ]));
+        $response = $this->fetch('entry/search', compact('query'));
+
+        $entries = collect($response->omim->searchResponse->entryList)
+                ->transform(function ($entry) {
+                    return $entry->entry;
+                });
+
+        return [
+            'start' => $response->omim->searchResponse->startIndex,
+            'end' => $response->omim->searchResponse->endIndex,
+            'total' => $response->omim->searchResponse->totalResults,
+            'entries' => $entries,
+        ];
+    }
+
     public function geneSymbolIsValid($geneSymbol)
     {
         return $this->search([

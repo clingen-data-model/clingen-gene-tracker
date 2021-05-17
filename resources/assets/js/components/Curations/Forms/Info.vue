@@ -29,6 +29,7 @@
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
         </b-form-group>
+
         <curation-notifications :curation="updatedCuration"></curation-notifications>
 
         <b-form-group horizontal label="Mode of Inheritance" label-for="moi_input"
@@ -53,6 +54,7 @@
             <b-form-select 
                 id="expert-panel-select" 
                 v-model="updatedCuration.expert_panel_id" 
+                :disabled="!canUpdateExpertPanel"
             >
                 <option :value="null">Select...</option>
                 <option v-for="panel in panelOptions" 
@@ -62,6 +64,9 @@
                     {{panel.name}}
                 </option>
             </b-form-select>
+            <small class="text-muted" v-if="!canUpdateExpertPanel">
+                To change the expert panel use click the "Transfer Curation" button.
+            </small>
             <validation-error :messages="errors.expert_panel_id"></validation-error>
         </b-form-group>
     
@@ -213,6 +218,9 @@
             expertPanelIdError: function () {
                 return (this.errors && this.errors.expert_panel_id && this.errors.expert_panel_id.length > 0) ? false : null;
             },
+            canUpdateExpertPanel() {
+                return !Boolean(this.updatedCuration && this.updatedCuration.expert_panel_id && this.updatedCuration.id);
+            }
         },
         methods: {
             handleDateSelected(evt) {
