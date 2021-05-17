@@ -12,7 +12,7 @@
             </tr>
             <tr 
                 v-for="(item, idx) in orderedItems" 
-                :key="item.pivot.id" 
+                :key="(indexAttribute) ? item[keyAttribute] : idx"
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{item.name}}</td>
@@ -38,6 +38,11 @@
             dateField: {
                 type: String,
                 required: true,
+            },
+            indexAttribute: {
+                type: String,
+                required: false,
+                default: null
             }
         },
         computed: {

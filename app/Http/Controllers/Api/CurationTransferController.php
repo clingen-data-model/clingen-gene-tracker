@@ -21,16 +21,16 @@ class CurationTransferController extends Controller
         }
 
         $job = new SetOwner(
-            $curation, 
-            $request->expert_panel_id, 
-            $request->start_date, 
+            $curation,
+            $request->expert_panel_id,
+            $request->start_date,
             $request->end_date
         );
         Bus::dispatch($job);
 
         $ownerRecords = $curation->expertPanels
                 ->sortByDesc('pivot.start_date')
-                ->map(function($epRel) {
+                ->map(function ($epRel) {
                     return [
                         'id' => $epRel->id,
                         'name' => $epRel->name,
@@ -42,5 +42,4 @@ class CurationTransferController extends Controller
                 });
         return ['curation_id' => $curation->id, 'expert_panels' => $ownerRecords->values()];
     }
-    
 }

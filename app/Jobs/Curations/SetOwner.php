@@ -30,17 +30,19 @@ class SetOwner
      */
     public function handle()
     {
-        if ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId || $this->curation->isDirty('expert_panel_id')) {
+        if (
+            ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)
+            || $this->curation->isDirty('expert_panel_id')
+        ) {
             \DB::transaction(function () {
-
                 $this->curation->expertPanels()
-                    ->updateExistingPivot($this->curation->expert_panel_id, ['end_date'=>$this->startDate]);
+                    ->updateExistingPivot($this->curation->expert_panel_id, ['end_date'=>$this->endDate]);
 
                 $this->curation->expertPanels()
                     ->attach([
                         $this->expertPanelId => [
-                            'start_date'=> $this->startDate, 
-                            'end_date' => $this->endDate
+                            'start_date'=> $this->startDate,
+                            'end_date' => null
                         ]
                     ]);
                 
@@ -48,5 +50,4 @@ class SetOwner
             });
         }
     }
-
 }

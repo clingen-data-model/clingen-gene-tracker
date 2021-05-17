@@ -72,7 +72,13 @@
                                 hide-label="Hide history"
                             ></toggle-button>
                             <transition name="fade">
-                                <history-table :items="curation.expert_panels" item-label="Expert Panel" date-field="start_date" v-show="showOwnerHistory"></history-table>
+                                <history-table 
+                                    :items="curation.expert_panels" 
+                                    item-label="Expert Panel" 
+                                    date-field="start_date" 
+                                    v-show="showOwnerHistory" 
+                                    index-attribute="id"
+                                ></history-table>
                             </transition>
                         </div>
                     </div>

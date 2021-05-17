@@ -28,7 +28,7 @@
                         </option>
                     </b-form-select>
                 </input-row>
-                <input-row v-model="startDate" :errors="errors.start_date" label="Start date" type="date"></input-row>
+                <input-row v-model="startDate" :errors="errors.start_date" label="Transfer date" type="date"></input-row>
                 <!-- <input-row label="">
                     <label>
                         <input type="checkbox" v-model="isHistorical">&nbsp;This is a historical entry
