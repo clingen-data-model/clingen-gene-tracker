@@ -89,12 +89,10 @@ class AlterIncomingStreamMessagesAddKey extends Migration
         $keys = [];
         $records = [];
         while (($data = fgetcsv($fh)) !== false) {
-            // dump($data);
             if (count($keys) == 0) {
                 $keys = $data;
                 continue;
             }
-            // dump($keys);
             $records[] = array_combine($keys, $data);
 
             if (count($records) == 100) {

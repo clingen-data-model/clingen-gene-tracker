@@ -1,0 +1,77 @@
+# Copyright (c) 1966-2021 Johns Hopkins University. Use of this file adheres to the terms specified at https://omim.org/help/agreement.
+# Generated: 2021-03-29
+# See end of file for additional documentation on specific fields
+# Chromosome	Genomic Position Start	Genomic Position End	Cyto Location	Computed Cyto Location	MIM Number	Gene Symbols	Gene Name	Approved Symbol	Entrez Gene ID	Ensembl Gene ID	Comments	Phenotypes	Mouse Gene Symbol/ID
+chr1	156054781	156058505	1q22	1q22	610389	LAMTOR2, MAPBPIP, p14,	Late endosomal/lysosomal adaptor, MAPK and MTOR activator 2	LAMTOR2	28956	ENSG00000116586	mutation identified in 1 family	:Immunodeficiency due to defect in MAPBP-interacting protein, 610798 (3), Autosomal recessive	Lamtor2 (MGI:1932697)
+chr1	171781659	171797715	1q24.3	1q24.3	617987	EEF1AKNMT, METTL13, FEAT, KIAA0859, DFNB26M	EEF1A lysine and N-terminal methyltransferase	EEF1AKNMT	51603	ENSG00000010165	mutation identified in 1 family	?{Deafness, autosomal recessive 26, modifier of}, 605429 (3), Autosomal dominant	Eef1aknmt (MGI:1918699)
+chr17	79776253	79787982	17q25	17q25.3	602770	CBX2, M33, SRXY5	Chromobox 2	CBX2	84733	ENSG00000173894	mutation identified in 1 SRXY5 patient	?46XY sex reversal 5, 613080 (3), Autosomal recessive	Cbx2 (MGI:88289)
+chr11	94021353	94114207	11q21	11q21	618455	HEPHL1, ZP, HJDD	Hephaestin-like protein 1	HEPHL1	341208	ENSG00000181333	mutation identified in 1 HJDD patient	?Abnormal hair, joint laxity, and developmental delay, 261990 (3), Autosomal recessive	Hephl1 (MGI:2685355)
+chrX	80014752	80031773	Xq12-q21	Xq21.1	300307	TBX22, CPX, ABERS	T-box 22	TBX22	50945	ENSG00000122145	1 ABERS family identified with mutation	?Abruzzo-Erickson syndrome, 302905 (3), X-linked; Cleft palate with ankyloglossia, 303400 (3), X-linked	Tbx22 (MGI:2389465)
+chr6	159762044	159779111	6q25.3-q26	6q25.3	100678	ACAT2	Acetyl-Coenzyme A acetyltransferase 2 (acetoacetyl Coenzyme A thiolase)	ACAT2	39	ENSG00000120437	encoded on strand opposite TCP1	?ACAT2 deficiency, 614055 (1), Isolated cases	Acat3,Acat2 (MGI:109182,MGI:87871)
+chr20	35433346	35454748	20q11.2	20q11.22	601146	GDF5, CDMP1, SYNS2, OS5, BDA1C, SYM1B, DUPANS	Growth/differentiation factor-5 (cartilage-derived morphogenetic protein-1)	GDF5	8200	ENSG00000125965	mutation identified in 1 AMDHT family	?Acromesomelic dysplasia, Hunter-Thompson type, 201250 (3), Autosomal recessive; Symphalangism, proximal, 1B, 615298 (3), Autosomal dominant; Brachydactyly, type A1, C, 615072 (3), Autosomal recessive, Autosomal dominant; Chondrodysplasia, Grebe type, 200700 (3), Autosomal recessive; Brachydactyly, type A2, 112600 (3), Autosomal dominant; Du Pan syndrome, 228900 (3), Autosomal recessive; {Osteoarthritis-5}, 612400 (3); Brachydactyly, type C, 113100 (3), Autosomal dominant; Multiple synostoses syndrome 2, 610017 (3), Autosomal dominant	Gdf5 (MGI:95688)
+chr2	238244037	238290101	2q37.3	2q37.3	603426	PER2, FASPS1, KIAA0347	Period circadian regulator 2	PER2	8864	ENSG00000132326	mutation identified in 1 FASPS1 family	?Advanced sleep phase syndrome, familial, 1, 604348 (3), Autosomal dominant	Per2 (MGI:1195265)
+chr1	7784284	7845180	1p36.33-p36.21	1p36.23	603427	PER3, FASPS3	Period circadian regulator 3	PER3	8863	ENSG00000049246	mutation identified in 1 FASPS3 family	?Advanced sleep phase syndrome, familial, 3, 616882 (3), Autosomal dominant	Per3 (MGI:1277134)
+chr10	96189170	96271568	10q23.2	10q24.1	604515	BLNK, SLP65, AGM4	B-cell linker protein (SH2 domain-containing leukocyte protein, 65kD)	BLNK	29760	ENSG00000095585	mutation identified in 1 AGM4 family	?Agammaglobulinemia 4, 613502 (3), Autosomal recessive	Blnk (MGI:96878)#
+#
+#
+#
+# Source of data in fields are as follows:
+# -------------------------------
+#
+# Chromosome (NCBI)
+# Genomic position start * (NCBI)
+# Genomic position end (NCBI)
+# Cyto location (OMIM)
+# Computed cyto location (UCSC)
+# MIM Number for Gene/Locus (OMIM)
+# Gene symbols (OMIM)
+# Gene name (OMIM)
+# Approved gene symbol (HGNC)
+# Entrez gene ID (NCBI)
+# Ensembl gene ID (Ensembl)
+# Comments (OMIM)
+# Phenotype(s) (OMIM)
+# Mouse gene symbol & ID (MGI)
+#
+# * for phenotypes with mapping key of (2) or genes not found in NCBI
+# data, genomic coordinates are derived from OMIM's cyto location mapped
+# to genomic using UCSC table.
+#
+#
+# OMIM Phenotype field is nested:
+# -------------------------------
+#
+# Each Phenotype is followed by its MIM number, if different from
+# that of the locus, preceded by a comma
+# Phenotype mapping key in parentheses follows the phenotype MIM
+# number (explanation below).
+# Allelic disorders are separated by a semi-colon following the
+# phenotype mapping key.
+# Inheritance for the phenotype follows the phenotype mapping key
+# preceded by a ,<space>
+# Explanation of the symbols and question marks (?) in the Phenotype
+# field is given in OMIM FAQ 1.6)
+#
+#
+# Phenotype Mapping Method - Appears in parentheses after a disorder :
+# --------------------------------------------------------------------
+#
+# 1 - the disorder is placed on the map based on its association with
+# a gene, but the underlying defect is not known.
+# 2 - the disorder has been placed on the map by linkage; no mutation has
+# been found.
+# 3 - the molecular basis for the disorder is known; a mutation has been
+# found in the gene.
+# 4 - a contiguous gene deletion or duplication syndrome, multiple genes
+# are deleted or duplicated causing the phenotype.
+#
+#
+# Genomic Coordinates - GRCh38 :
+# ------------------------------
+#
+# The genomic coordinates for the genes are for GRCh38, if you need
+# coordinates for for GRCh37, you can get them from this file and use
+# the MIM number or the Entrez gene ID to map them:
+#
+#   ftp://ftp.ncbi.nlm.nih.gov//genomes/H_sapiens/ARCHIVE/ANNOTATION_RELEASE.105/GFF/ref_GRCh37.p13_top_level.gff3.gz
+#

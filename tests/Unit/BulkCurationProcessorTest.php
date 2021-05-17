@@ -9,6 +9,7 @@ use App\Exceptions\BulkUploads\InvalidFileException;
 use App\ExpertPanel;
 use App\Services\BulkCurationProcessor;
 use App\User;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Mockery;
 use Tests\TestCase;
@@ -251,4 +252,21 @@ class BulkCurationProcessorTest extends TestCase
             $this->assertEquals(0, \DB::table('curations')->count());
         }
     }
+
+    /**
+     * @test
+     */
+    public function validates_file_has_Curations_sheet()
+    {
+        \DB::table('curations')->delete();
+        
+        try {
+            $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad_file.xlsx'), 1);
+            $this->fail('InvalidFileException not thrown for bad file.');
+        } catch (InvalidFileException $e) {
+            $this->assertEquals(1, count($e->getValidationErrors()));
+            $this->assertEquals(0, \DB::table('curations')->count());
+        }
+    }
+    
 }

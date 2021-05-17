@@ -72,6 +72,49 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
+    public function gets_moi_if_set()
+    {
+        $rawEntry = json_decode('{
+            "prefix": "#",
+            "mimNumber": 600105,
+            "status": "live",
+            "titles": {
+              "preferredTitle": "RETINITIS PIGMENTOSA 12; RP12",
+              "alternativeTitles": "RETINITIS PIGMENTOSA WITH OR WITHOUT PARAARTERIOLAR PRESERVATION OF RETINAL PIGMENT EPITHELIUM;;\nRP WITH OR WITHOUT PRESERVED PARAARTERIOLE RETINAL PIGMENT EPITHELIUM;;\nRP WITH OR WITHOUT PPRPE"
+            },
+            "phenotypeMapList": [
+              {
+                "phenotypeMap": {
+                  "mimNumber": 604210,
+                  "phenotype": "Retinitis pigmentosa-12",
+                  "phenotypeMimNumber": 600105,
+                  "phenotypeMappingKey": 3,
+                  "phenotypeInheritance": "Autosomal recessive",
+                  "phenotypicSeriesNumber": "PS268000",
+                  "sequenceID": 5260,
+                  "chromosome": 1,
+                  "chromosomeSymbol": "1",
+                  "chromosomeSort": 1410,
+                  "chromosomeLocationStart": 197201503,
+                  "chromosomeLocationEnd": 197478454,
+                  "transcript": "ENST00000367400.8",
+                  "cytoLocation": "1q31-q32.1",
+                  "computedCytoLocation": "1q31.3",
+                  "geneSymbols": "CRB1, RP12, LCA8"
+                }
+              }
+            ],
+            "matches": "pigmentosa, retiniti, rp"
+          }');
+        $entry = new OmimEntry($rawEntry);
+
+        $this->assertEquals('Autosomal recessive', $entry->getMoi());
+    }
+    
+
+    /**
+     * @test
+     */
     public function throws_OmimResponseException_if_phenotypeMapList_is_empty()
     {
         $rawEntry = json_decode('{
@@ -85,13 +128,10 @@ class OmimEntryTest extends TestCase
             "matches": "pigmentosa, retiniti, rp"
           }');
 
-          $entry = new OmimEntry($rawEntry);
+        $entry = new OmimEntry($rawEntry);
 
-          $this->expectException(OmimResponseException::class);
+        $this->expectException(OmimResponseException::class);
 
-          $entry->getPhenotypeMapList();
+        $entry->getPhenotypeMapList();
     }
-    
-    
-    
 }

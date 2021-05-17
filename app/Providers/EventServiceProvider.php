@@ -36,12 +36,22 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Genes\UpdateCurations::class,
             \App\Listeners\Genes\NotifyGeneSymbolChanged::class
         ],
-        'App\Events\StreamMessages\Created' => [
-            'App\Listeners\StreamMessages\PushMessage'
+        \App\Events\Phenotypes\OmimRemovedPhenotype::class => [
+            \App\Listeners\SendPhenotypeRemovedNotification::class,
+            \App\Listeners\Curations\UnlinkRemovedPhenotype::class
+        ],
+        \App\Events\Phenotypes\OmimMovedPhenotype::class => [
+            \App\Listeners\Curations\UpdateLinkedPhenotype::class,
+            \App\Listeners\SendPhenotypeMovedNotification::class
+        ],
+        \App\Events\Phenotypes\PhenotypeNameChanged::class => [
+            \App\Listeners\SendPhenotypeNameChangedNotification::class
+        ],
+        \App\Events\StreamMessages\Created::class => [
+            \App\Listeners\StreamMessages\PushMessage::class
         ],
         \App\Events\StreamMessages\Received::class => [
             \App\Listeners\Curations\UpdateFromStreamMessage::class,
-            \App\Listeners\SteamMessages\SetTopicOffset::class
         ],
         \Illuminate\Mail\Events\MessageSent::class => [
             \App\Listeners\Mail\StoreMailInDatabase::class

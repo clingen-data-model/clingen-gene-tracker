@@ -60,11 +60,16 @@ class BulkCurationProcessor
     {
         ini_set('max_execution_time', '360');
 
-        DB::beginTransaction();
-
         $reader = ReaderEntityFactory::createXLSXReader();
         $reader->open($path);
         $newCurations = collect();
+
+        if (!$this->fileIsValid($reader)) {
+            throw new InvalidFileException($this->validationErrors);
+        }
+        
+        DB::beginTransaction();
+
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($sheet->getName() === 'Curations') {
                 if (!$this->sheetIsValid($sheet)) {
@@ -132,6 +137,17 @@ class BulkCurationProcessor
         DB::commit();
 
         return $newCurations;
+    }
+
+    private function fileIsValid($reader)
+    {
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($sheet->getName() === 'Curations') {
+                return true;
+            }
+        }
+        $this->validationErrors->put('file', ['Your spreadsheet does not have a "Curations" sheet.  You\'re probably not using the template linked below.  Please download the template and use that as your starting point.']);
+        return false;
     }
 
     private function sheetIsValid($sheet)

@@ -63,7 +63,6 @@ class FixPhenotypeNames extends Command
                     return;
                 }
                 $newName = $omimEntry->phenotypeMapList[0]->phenotypeMap->phenotype;
-                // dump($pheno->name . ' -> '. $newName);
                 
                 $pheno->update(['name' => $newName]);
             } catch (OmimResponseException $e) {

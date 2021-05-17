@@ -1,0 +1,26 @@
+{
+    "omim": {
+        "version": "1.0",
+        "searchResponse": {
+            "startIndex": 1,
+            "endIndex": 1,
+            "totalResults": 2,
+            "entryList": [{
+                "entry": {
+                    "prefix": "^",
+                    "mimNumber": 180200,
+                    "titles": {
+                        "preferredTitle": "MOVED TO 193510"
+                    },
+                    "status": "moved",
+                    "movedTo": "193510",
+                    "epochCreated": 518227200,
+                    "dateCreated": "Wed, 04 Jun 1986 00:00:00 UTC",
+                    "epochUpdated": 1580688000,
+                    "dateUpdated": "Mon, 03 Feb 2020 00:00:00 UTC",
+                    "matches": "1420070400000 TO 9223372036854775807, ^"
+                }
+            }]
+        }
+    }
+}

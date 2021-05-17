@@ -68,7 +68,6 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
             ];
         } catch (GciSyncException $gciSyncException) {
             \Log::error($gciSyncException);
-            // dump($gciSyncException->getMessage());
         }
 
         \Log::debug($updateSummary);

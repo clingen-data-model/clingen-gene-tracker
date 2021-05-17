@@ -55,7 +55,14 @@ class UpdateFromStreamMessage
             return;
         }
 
-        $job = app()->makeWith(GeneValidityCurationUpdateJob::class, ['curation' => $curation, 'gciMessage' => $gciMessage]);
+        $job = app()->makeWith(
+                GeneValidityCurationUpdateJob::class, 
+                [
+                    'curation' => $curation, 
+                    'gciMessage' => $gciMessage
+                ]
+            );
+
         $this->dispatcher->dispatch($job);
     }
 
@@ -65,6 +72,9 @@ class UpdateFromStreamMessage
         if (!$curation) {
             $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
                             ->noUuid()
+                            // ->whereHas('expertPanel', function ($q) use ($message) {
+                            //     $q->where('affiliation_id', $message->affiliation->id);
+                            // })
                             ->first();
                 
             if (!$curation) {

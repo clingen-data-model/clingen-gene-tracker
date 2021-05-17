@@ -12,6 +12,8 @@ interface OmimClient
     public function getEntry($mimNumber);
     
     public function search($searchData);
+    
+    public function paginatedSearch($searchData, $start = 0, $pageSize = 100);
 
     public function geneSymbolIsValid($geneSymbol);
 

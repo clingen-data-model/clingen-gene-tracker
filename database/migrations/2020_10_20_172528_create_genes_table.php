@@ -15,8 +15,7 @@ class CreateGenesTable extends Migration
     {
         if (Schema::hasTable('genes')) {
             return;
-        };
-        
+        }
         Schema::create('genes', function (Blueprint $table) {
             $table->unsignedBigInteger('hgnc_id')->primary();
             $table->string('gene_symbol');
