@@ -16,11 +16,10 @@ class UserController extends Controller
         if ($request->has('role')) {
             $query->role(explode(',', $request->role));
         }
-
+        
         if ($request->has('with')) {
             $query->with(explode(',', $request->with));
         }
-
         return UserResource::collection($query->get());
     }
 
