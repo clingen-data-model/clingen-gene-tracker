@@ -76,8 +76,8 @@ class Curation extends Model
 
         static::created(function ($curation) {
             if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
-                AddStatus::dispatch($curation, CurationStatus::find(1));
-                SetOwner::dispatch($curation, $curation->expert_panel_id, Carbon::now());
+                AddStatus::dispatch($curation, CurationStatus::find(1), $curation->created_at->format("Y-m-d H:i:s"));
+                SetOwner::dispatch($curation, $curation->expert_panel_id, $curation->created_at);
             }
         });
     }
