@@ -6,6 +6,8 @@ use App\User;
 use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\CurationStatus;
+use App\Jobs\Curations\AddStatus;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -18,8 +20,15 @@ class CurationCurationStatusControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
-        $this->curation = factory(Curation::class)->create();
-        $this->curation->curationStatuses()->attach([2, 3]); // not including id 1 b/c it's added on creation -tjw
+        $this->curation = factory(Curation::class)->make();
+        $this->curation->created_at = '1977-01-01';
+        $this->curation->save();
+
+        $curationStatuses = CurationStatus::find([2,3])->keyBy('id');
+        // not including id 1 b/c it's added on creation -tjw
+        foreach ([2, 3] as $statusId) {
+            AddStatus::dispatch($this->curation, $curationStatuses->get($statusId), '1977-01-01');
+        }
         $this->actingAs($this->user, 'api');
     }
     
@@ -77,9 +86,9 @@ class CurationCurationStatusControllerTest extends TestCase
             'status_date' => '1982-05-17'
         ])
         ->assertStatus(200)
-        ->assertJson($this->curation->fresh()->statuses->first()->toArray());
+        ->assertJson($this->curation->fresh()->statuses->last()->toArray());
 
-        $this->assertEquals('1982-05-17', $this->curation->fresh()->statuses->first()->pivot->status_date->format('Y-m-d'));
+        $this->assertEquals('1982-05-17', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
     }
 
     public function test_update_status_date_validates_date()

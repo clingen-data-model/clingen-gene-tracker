@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Jobs\Curations\UpdateCurrentStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -55,7 +56,7 @@ class AddStatus implements ShouldQueue
                 ],
             ]);
             if ($this->isAfterPreviousStatus()) {
-                $this->curation->update(['curation_status_id' => $this->curationStatus->id]);
+                UpdateCurrentStatus::dispatch($this->curation);
             }
         });
     }
@@ -67,6 +68,9 @@ class AddStatus implements ShouldQueue
         }
 
         $status = $this->curation->statuses->keyBy('id')->get($this->previousStatus->id);
+        if (!$status) {
+            return true;
+        }
 
         return $this->date->gt($status->pivot->status_date);
     }

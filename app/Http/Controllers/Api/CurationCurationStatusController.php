@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Curation;
+use App\CurationStatus;
+use Illuminate\Http\Request;
+use App\Jobs\Curations\AddStatus;
+use App\Http\Controllers\Controller;
 
 class CurationCurationStatusController extends Controller
 {
@@ -33,13 +35,10 @@ class CurationCurationStatusController extends Controller
         ]);
 
         $curation = Curation::findOrFail($curationId);
-        $curation->statuses()->attach([
-            $request->curation_status_id => [
-                'status_date' => $request->status_date
-            ]
-        ]);
+        $status = CurationStatus::find($request->curation_status_id);
+        AddStatus::dispatchNow($curation, $status, $request->status_date);
         
-        return $curation->curationStatuses->sortByDesc('pivot.created_at')->first();
+        return $curation->fresh()->currentStatus;
     }
 
     /**
