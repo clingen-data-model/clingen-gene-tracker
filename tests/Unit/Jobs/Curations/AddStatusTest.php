@@ -49,18 +49,17 @@ class AddStatusTest extends TestCase
     {
         Carbon::setTestNow('2020-01-15');
         AddStatus::dispatchNow(
-            $this->curation->fresh(), 
+            $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
 
         Carbon::setTestNow('2020-02-01');
         AddStatus::dispatchNow(
-            $this->curation->fresh(), 
+            $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
         
         $this->assertEquals(2, $this->curation->statuses()->count());
-
     }
     
 
@@ -70,13 +69,13 @@ class AddStatusTest extends TestCase
     public function does_not_add_previously_added_status_if_date_matches_existing_status_date()
     {
         AddStatus::dispatchNow(
-            $this->curation->fresh(), 
+            $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
             '2019-12-01'
         );
 
         AddStatus::dispatchNow(
-            $this->curation->fresh(), 
+            $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
             '2019-12-01'
         );
@@ -84,7 +83,24 @@ class AddStatusTest extends TestCase
         ($this->curation->statuses()->get()->toArray());
 
         $this->assertEquals(2, $this->curation->fresh()->statuses()->count());
-
     }
-    
+
+    /**
+     * @test
+     */
+    public function sets_curation_status_id_on_curation()
+    {
+        $job = new AddStatus(
+            $this->curation,
+            CurationStatus::find(config('project.curation-statuses.curation-provisional')),
+            '2019-01-01'
+        );
+
+        $job->handle();
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $this->curation->id,
+            'curation_status_id' => config('project.curation-statuses.curation-provisional')
+        ]);
+    }
 }
