@@ -2,17 +2,18 @@
 
 namespace Tests\Unit\Models;
 
-use App\Affiliation;
-use App\Classification;
+use App\Upload;
 use App\Curation;
+use Tests\TestCase;
+use App\Affiliation;
+use App\ExpertPanel;
+use Ramsey\Uuid\Uuid;
+use App\Classification;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
-use App\ExpertPanel;
-use App\Upload;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Jobs\Curations\AddStatus;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Ramsey\Uuid\Uuid;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @group curations
@@ -166,11 +167,9 @@ class CurationTest extends TestCase
         $curationStatuses = CurationStatus::limit(2)->get();
         $curation = factory(\App\Curation::class)->create();
 
-        $statusesAtTime = $curationStatuses->map(function ($item, $idx) {
-            return ['id' => $item->id, 'pivotData' => ['status_date' => today()->addDays($idx + 1)]];
+        $statusesAtTime = $curationStatuses->map(function ($item, $idx) use ($curation) {
+            AddStatus::dispatch($curation, $item, today()->addDays($idx + 1));
         });
-
-        $curation->curationStatuses()->attach($statusesAtTime->pluck('pivotData', 'id'));
 
         $this->assertEquals($curationStatuses->last()['id'], $curation->fresh()->currentStatus->id);
     }
@@ -397,7 +396,5 @@ class CurationTest extends TestCase
         // $ep2 = factory(ExpertPanel::class)->create();
         // $curation->update(['expert_panel_id' => $ep2->id]);
         // $this->assertEquals(2, $curation->fresh()->expertPanels()->count());
-
     }
-    
 }
