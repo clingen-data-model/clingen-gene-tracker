@@ -93,7 +93,7 @@ class AddStatusTest extends TestCase
         $job = new AddStatus(
             $this->curation,
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
-            '2019-01-01'
+            Carbon::now()->addDays(2)
         );
 
         $job->handle();
@@ -101,6 +101,25 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curations', [
             'id' => $this->curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional')
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_sets_curation_status_id_on_curation_if_status_date_greater_than_last_status_date()
+    {
+        $job = new AddStatus(
+            $this->curation,
+            CurationStatus::find(config('project.curation-statuses.curation-provisional')),
+            '2019-01-01'
+        );
+
+        $job->handle();
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $this->curation->id,
+            'curation_status_id' => config('project.curation-statuses.uploaded')
         ]);
     }
 }

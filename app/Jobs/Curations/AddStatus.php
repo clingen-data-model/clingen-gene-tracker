@@ -20,10 +20,9 @@ class AddStatus implements ShouldQueue
     use SerializesModels;
 
     public $curation;
-
     public $curationStatus;
-
     public $date;
+    private $previousStatus;
 
     /**
      * Create a new job instance.
@@ -33,6 +32,7 @@ class AddStatus implements ShouldQueue
     public function __construct(Curation $curation, CurationStatus $curationStatus, $date = null)
     {
         $this->curation = $curation;
+        $this->previousStatus = $this->curation->fresh()->currentStatus;
         $this->curationStatus = $curationStatus;
         $this->date = Carbon::parse($date);
     }
@@ -44,7 +44,7 @@ class AddStatus implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->isCurrentStatus() || $this->isPreviousDatedStatus()) {
+        if ($this->hasCurationCurationStatus() && ($this->isCurrentStatus() || $this->isPreviousDatedStatus())) {
             return;
         }
 
@@ -54,13 +54,31 @@ class AddStatus implements ShouldQueue
                     'status_date' => $this->date,
                 ],
             ]);
-            $this->curation->update(['curation_status_id' => $this->curationStatus->id]);
+            if ($this->isAfterPreviousStatus()) {
+                $this->curation->update(['curation_status_id' => $this->curationStatus->id]);
+            }
         });
+    }
+
+    private function isAfterPreviousStatus()
+    {
+        if (!$this->previousStatus) {
+            return true;
+        }
+
+        $status = $this->curation->statuses->keyBy('id')->get($this->previousStatus->id);
+
+        return $this->date->gt($status->pivot->status_date);
     }
 
     private function isCurrentStatus()
     {
         return $this->curation->currentStatus && $this->curation->currentStatus->id == $this->curationStatus->id;
+    }
+
+    private function hasCurationCurationStatus()
+    {
+        return $this->curation->curationStatuses->count() > 0;
     }
 
     private function isPreviousDatedStatus()
