@@ -13,7 +13,7 @@
                     <div class="d-flex space-x-2">
                         <transfer-curation-control 
                             :curation="curation"
-                             v-if="$store.features.tranferEnabled"
+                             v-if="$store.state.features.transferEnabled"
                         ></transfer-curation-control>
                         <router-link :to="'/curations/'+curation.id">
                             view
