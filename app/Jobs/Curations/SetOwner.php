@@ -46,7 +46,9 @@ class SetOwner
                         ]
                     ]);
                 
-                $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
+                if ($this->curation->expert_panel_id != $this->expertPanelId) {
+                    $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
+                }
             });
         }
     }

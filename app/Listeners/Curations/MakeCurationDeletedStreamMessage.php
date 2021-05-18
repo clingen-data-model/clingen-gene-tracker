@@ -29,10 +29,10 @@ class MakeCurationDeletedStreamMessage
     {
         StreamMessage::create([
             'topic' => config('streaming-service.gci-topic'),
-            'message' => json_encode([
+            'message' => [
                 'event' => 'deleted',
                 'curation' => ['id' => $event->curation->id]
-            ])
+            ]
         ]);
     }
 }

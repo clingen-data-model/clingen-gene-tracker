@@ -36,6 +36,7 @@ class Curation extends Model
         'hgnc_name',
         'hgnc_id',
         'expert_panel_id',
+        'curation_status_id',
         'curator_id',
         'notes',
         'mondo_id',
@@ -123,15 +124,11 @@ class Curation extends Model
         return $this->curationStatuses();
     }
 
-    public function getCurrentStatusAttribute()
+    public function currentStatus()
     {
-        return $this->curationStatuses
-                ->sortByDesc(function ($item) {
-                    return $item->pivot->status_date->timestamp.'.'.$item->id;
-                })
-                ->first();
+        return $this->belongsTo(CurationStatus::class, 'curation_status_id', 'id');
     }
-
+    
     public function curationType()
     {
         return $this->belongsTo(CurationType::class);
@@ -196,7 +193,7 @@ class Curation extends Model
                 return $step['file'].":".$step['line'];
             })->toArray();
 
-            \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace );
+            \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace);
         }
         $this->attributes['expert_panel_id'] = $value;
     }
@@ -252,7 +249,7 @@ class Curation extends Model
 
     public function loadForMessage()
     {
-        $this->load('curationType', 'curationStatuses', 'rationales', 'curator', 'phenotypes', 'modeOfInheritance');
+        $this->load('curationType', 'currentStatus', 'rationales', 'curator', 'phenotypes', 'modeOfInheritance', 'expertPanel');
 
         return $this;
     }
