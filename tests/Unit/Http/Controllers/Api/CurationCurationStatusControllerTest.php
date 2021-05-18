@@ -82,13 +82,19 @@ class CurationCurationStatusControllerTest extends TestCase
 
     public function test_updates_status_date_of_related_status()
     {
-        $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id, [
+        $ccs = $this->curation->statuses->random();
+        $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$ccs->pivot->id, [
             'status_date' => '1982-05-17'
         ])
         ->assertStatus(200)
-        ->assertJson($this->curation->fresh()->statuses->last()->toArray());
+        ->assertJson($ccs->fresh()->toArray());
 
-        $this->assertEquals('1982-05-17', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
+        $curation = $this->curation->fresh();
+        $ccs = $curation->statuses->keyBy('pivot.id')->get($ccs->pivot->id);
+
+        $this->assertEquals('1982-05-17', $ccs->pivot->status_date->format('Y-m-d'));
+
+        $this->assertEquals($ccs->id, $curation->curation_status_id);
     }
 
     public function test_update_status_date_validates_date()
