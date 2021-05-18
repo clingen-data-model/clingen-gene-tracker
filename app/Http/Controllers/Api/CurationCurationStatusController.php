@@ -7,6 +7,7 @@ use App\CurationStatus;
 use Illuminate\Http\Request;
 use App\Jobs\Curations\AddStatus;
 use App\Http\Controllers\Controller;
+use App\Jobs\Curations\UpdateCurrentStatus;
 
 class CurationCurationStatusController extends Controller
 {
@@ -67,13 +68,15 @@ class CurationCurationStatusController extends Controller
             'status_date' => 'date_format:Y-m-d'
         ]);
         $curation = Curation::findOrFail($curationId);
-        
+               
         $relatedStatus = $curation->curationStatuses
-            ->firstWhere('pivot.id', $curationCurationStatusId)
-            ;
+            ->firstWhere('pivot.id', $curationCurationStatusId);
+
         $relatedStatus->pivot->update([
             'status_date' => $request->status_date
         ]);
+
+        UpdateCurrentStatus::dispatch($curation);
         
         return $relatedStatus;
     }
