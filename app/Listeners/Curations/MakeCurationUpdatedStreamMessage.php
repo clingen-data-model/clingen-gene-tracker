@@ -29,10 +29,10 @@ class MakeCurationUpdatedStreamMessage
     {
         StreamMessage::create([
             'topic' => config('streaming-service.gci-topic'),
-            'message' => json_encode([
+            'message' => [
                 'event' => 'updated',
                 'curation' => $event->curation->loadForMessage()->toArray()
-            ])
+            ]
         ]);
     }
 }

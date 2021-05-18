@@ -26,44 +26,41 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
-                                ->where('message', 'LIKE', '%\"id\":'.$curation->id.'%')
-                                ->where('message', 'LIKE', '%\"event\":\"created\"%')
-                                // ->unsent()
+                                ->topic(config('streaming-service.gci-topic'))
+                                ->where('message->curation->id', $curation->id)
+                                ->where('message->event', 'created')
                                 ->get();
-        // dd($matchingMessage);
         $this->assertEquals(1, $matchingMessages->count());
     }
     
     /**
      * @test
      */
-    public function updated_StreamMessage_created_when_curation_created()
+    public function updated_StreamMessage_created_when_curation_updated()
     {
         $curation = factory(Curation::class)->create();
         $curation->update(['notes' => 'test test test']);
-        $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
-                                ->where('message', 'LIKE', '%\"id\":'.$curation->id.'%')
-                                ->where('message', 'LIKE', '%\"event\":\"updated\"%')
-                                ->where('message', 'LIKE', '%\"notes\":\"test test test\"%')
-                                // ->unsent()
+                                ->where('message->curation->id', $curation->id)
+                                ->where('message->event', 'updated')
+                                ->where('message->curation->notes', 'test test test')
                                 ->get();
-        // dd($matchingMessage);
         $this->assertEquals(1, $matchingMessages->count());
     }
     
     /**
      * @test
      */
-    public function deleted_StreamMessage_created_when_curation_created()
+    public function deleted_StreamMessage_created_when_curation_deleted()
     {
         $curation = factory(Curation::class)->create();
         $curation->delete();
         $matchingMessages = StreamMessage::query()
-                                ->where('message', 'LIKE', '%\"id\":'.$curation->id.'%')
-                                ->where('message', 'LIKE', '%\"event\":\"deleted\"%')
+                                ->where('message->curation->id', $curation->id)
+                                ->where('message->event', 'deleted')
                                 // ->unsent()
                                 ->get();
+
         $this->assertEquals(1, $matchingMessages->count());
     }
 
