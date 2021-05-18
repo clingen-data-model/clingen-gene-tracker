@@ -3,13 +3,14 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use App\CurationStatus;
 use Carbon\Carbon;
+use App\CurationStatus;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class AddStatus implements ShouldQueue
 {
@@ -47,11 +48,14 @@ class AddStatus implements ShouldQueue
             return;
         }
 
-        $this->curation->statuses()->attach([
-            $this->curationStatus->id => [
-                'status_date' => $this->date,
-            ],
-        ]);
+        DB::transaction(function () {
+            $this->curation->statuses()->attach([
+                $this->curationStatus->id => [
+                    'status_date' => $this->date,
+                ],
+            ]);
+            $this->curation->update(['curation_status_id' => $this->curationStatus->id]);
+        });
     }
 
     private function isCurrentStatus()
