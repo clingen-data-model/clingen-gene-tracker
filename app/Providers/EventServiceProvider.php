@@ -14,23 +14,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        \App\Events\Event::class => [
+            \App\Listeners\EventListener::class,
         ],
-        'App\Events\User\Created' => [
-            'App\Listeners\SendWelcomeEmail',
+        \App\Events\User\Created::class => [
+            \App\Listeners\SendWelcomeEmail::class,
         ],
-        'App\Events\Curation\Saved' => [
-            'App\Listeners\Curations\AugmentWithHgncAndMondoInfo'
+        \App\Events\Curation\Saved::class => [
+            \App\Listeners\Curations\AugmentWithHgncAndMondoInfo::class,
         ],
-        'App\Events\Curation\Created' => [
-            'App\Listeners\Curations\MakeCurationCreatedStreamMessage'
+        \App\Events\Curation\Created::class => [
+            \App\Listeners\Curations\MakeCurationCreatedStreamMessage::class,
         ],
-        'App\Events\Curation\Updated' => [
-            'App\Listeners\Curations\MakeCurationUpdatedStreamMessage'
+        \App\Events\Curation\Updated::class => [
+            \App\Listeners\Curations\MakeCurationUpdatedStreamMessage::class,
         ],
-        'App\Events\Curation\Deleted' => [
-            'App\Listeners\Curations\MakeCurationDeletedStreamMessage'
+        \App\Events\Curation\Deleted::class => [
+            \App\Listeners\Curations\MakeCurationDeletedStreamMessage::class,
         ],
         \App\Events\Genes\GeneSymbolChanged::class => [
             \App\Listeners\Genes\UpdateCurations::class,
