@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Curation;
 use App\CurationStatus;
 use Illuminate\Console\Command;
+use App\Jobs\Curations\UpdateCurrentStatus;
 use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -72,15 +73,7 @@ class FixStatusOrder extends Command
             }
         }
 
-        $currentStatus = $curation->curationStatuses
-        ->sortByDesc(function ($item) {
-            return $item->pivot->status_date->timestamp.'.'.$item->id;
-        })
-        ->first();
-
-        $curation->update([
-            'curation_status_id' => $currentStatus->id
-        ]);
+        UpdateCurrentStatus::dispatch($curation);
     }
     
 
