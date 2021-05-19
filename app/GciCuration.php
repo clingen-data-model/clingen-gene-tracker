@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GciCuration extends Model
@@ -80,5 +81,15 @@ class GciCuration extends Model
     public function curation(): HasOne
     {
         return $this->hasOne(Curation::class, 'gdm_uuid', 'gdm_uuid');
+    }
+
+    /**
+     * Get all of the incomingStreamMessages for the GciCuration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function incomingStreamMessages(): HasMany
+    {
+        return $this->hasMany(IncomingStreamMessage::class, 'gdm_uuid', 'gdm_uuid');
     }
 }

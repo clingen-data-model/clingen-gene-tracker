@@ -14,6 +14,8 @@ use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property Classification $currentClassificiation
@@ -148,25 +150,41 @@ class Curation extends Model
                 ->using(CurationClassification::class);
     }
 
-    public function uploads()
+    public function uploads(): HasMany
     {
         return $this->hasMany(Upload::class);
     }
 
-    public function modeOfInheritance()
+    public function modeOfInheritance(): BelongsTo
     {
         return $this->belongsto(ModeOfInheritance::class, 'moi_id', 'id');
     }
 
-    public function moi()
+    public function moi(): BelongsTo
     {
         return $this->modeOfInheritance();
     }
 
-    public function gene()
+    public function gene(): BelongsTo
     {
         return $this->belongsTo(Gene::class, 'hgnc_id', 'hgnc_id');
     }
+
+    public function gciCuration(): BelongsTo
+    {
+        return $this->belongsTo(GciCuration::class, 'gdm_uuid', 'gdm_uuid');
+    }
+
+    /**
+     * Get all of the incomingStreamMessages for the GciCuration
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function incomingStreamMessages(): HasMany
+    {
+        return $this->hasMany(IncomingStreamMessage::class, 'gdm_uuid', 'gdm_uuid');
+    }
+
 
     /**
      * ACCESSORS.
