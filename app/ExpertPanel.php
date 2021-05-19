@@ -2,11 +2,12 @@
 
 namespace App;
 
+use Backpack\CRUD\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
-use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExpertPanel extends Model implements HasAffiliation
 {
@@ -49,6 +50,11 @@ class ExpertPanel extends Model implements HasAffiliation
         return $this->belongsToMany(User::class)
                 ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
                 ->wherePivot('is_coordinator', 1);
+    }
+
+    public function affiliation(): BelongsTo
+    {
+        return $this->belongsTo(Affiliation::class, 'affiliation_id', 'id');
     }
 
     public function getFileSafeNameAttribute()
