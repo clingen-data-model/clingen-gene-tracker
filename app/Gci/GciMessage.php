@@ -92,4 +92,12 @@ class GciMessage
         }
         return Carbon::parse($this->payload->date);
     }
+
+    public function getCreator():stdClass
+    {
+        return collect($this->payload->contributors)
+            ->filter(function ($c) {
+                return in_array('creator', $c->roles);
+            })->first();
+    }
 }
