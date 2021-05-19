@@ -55,9 +55,8 @@ class AddStatus implements ShouldQueue
                     'status_date' => $this->date,
                 ],
             ]);
-            if ($this->isAfterPreviousStatus()) {
-                UpdateCurrentStatus::dispatch($this->curation);
-            }
+
+            UpdateCurrentStatus::dispatch($this->curation);
         });
     }
 
@@ -72,7 +71,7 @@ class AddStatus implements ShouldQueue
             return true;
         }
 
-        return $this->date->gt($status->pivot->status_date);
+        return $this->date->gte($status->pivot->status_date);
     }
 
     private function isCurrentStatus()
