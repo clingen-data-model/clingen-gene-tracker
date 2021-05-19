@@ -32,11 +32,8 @@ class UpdateCurrentStatus implements ShouldQueue
      */
     public function handle()
     {
-        $currentStatus = $this->curation->curationStatuses
-            ->sortByDesc(function ($item) {
-                return $item->pivot->status_date->timestamp.'.'.$item->id;
-            })
-            ->first();
+        $curationStatuses = $this->curation->curationStatuses;
+        $currentStatus = $curationStatuses->last();
 
         $this->curation->update([
             'curation_status_id' => $currentStatus->id
