@@ -94,6 +94,7 @@ class BuildGciCurations extends Command
                         $newData['hgnc_id'] = substr($gciMessage->getHgncId(), 5);
                         $newData['creator_uuid'] = $gciMessage->getCreator()->id;
                         $newData['creator_email'] = $gciMessage->getCreator()->email;
+                        $newData['created_at'] = $gciMessage->getMessageDate();
                         $newData['gdm_uuid'] = $gciMessage->getUuid();
                         $gciCuration = GciCuration::firstOrCreate($newData);
                         $gciCurations->put($gciCuration->gdm_uuid, $gciCuration);
