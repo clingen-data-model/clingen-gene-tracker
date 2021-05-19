@@ -121,7 +121,7 @@
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 ></b-form-input>
                 <small>
-                    <a :href="`https://curation.clinicalgenome.org/curation-central/?gdm=${updatedCuration.gdm_uuid}`" 
+                    <a :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`" 
                         v-if="updatedCuration.gdm_uuid"
                         target="gci"
                     >

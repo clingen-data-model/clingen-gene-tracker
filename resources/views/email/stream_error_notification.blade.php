@@ -4,7 +4,7 @@ We have received data from the GCI about a gene-disease relationship that may be
 <ul>
     @foreach ($stream_errors as $streamError)
         <li>
-            <a href="https://curation.clinicalgenome.org/curation-central/?gdm={{$streamError['message_payload']['report_id']}}">
+            <a href="https://curation.clinicalgenome.org/curation-central/{{$streamError['message_payload']['report_id']}}">
                 {{$streamError['gene']}}
                 /
                 {{$streamError['condition']}}
