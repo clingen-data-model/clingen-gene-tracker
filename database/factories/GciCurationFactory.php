@@ -13,7 +13,7 @@ $factory->define(GciCuration::class, function (Faker $faker) {
         'moi_id' => DB::table('mode_of_inheritances')->select('hp_id')->get()->random()->hp_id,
         'classification_id' => DB::table('classifications')->select('id')->get()->random()->id,
         'status_id' => DB::table('curation_statuses')->select('id')->get()->random()->id,
-        'affiliation_id' => DB::table('affiliations')->select('clingen_id')->get()->random()->clingen_id,
+        'affiliation_id' => DB::table('affiliations')->select('id')->get()->random()->id,
         'creator_uuid' => $faker->uuid,
         'creator_email' => $faker->email
     ];
