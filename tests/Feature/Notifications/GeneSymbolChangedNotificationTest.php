@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\Curations\GeneSymbolUpdated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Listeners\Curations\AugmentWithHgncAndMondoInfo;
+use App\Listeners\Curations\AugmentWithMondoInfo;
 
 /**
  * @group hgnc
