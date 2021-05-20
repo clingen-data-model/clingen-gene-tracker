@@ -26,6 +26,10 @@
                     "type": "string",
                     "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
                 },
+                "gdm_uuid": {
+                    "type": "string",
+                    "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
+                },
                 "gene": {
                     "type": "object",
                     "properties": {
@@ -39,9 +43,17 @@
                     },
                     "required": ["hgnc_id", "symbol"]
                 },
-                "mondo_id": {
-                    "type": "string",
-                    "pattern": "^MONDO:[0-9]{7}"
+                "disease_entity": {
+                    "type": "object",
+                    "properties": {
+                        "mondo_id": {
+                            "type": "string",
+                            "pattern": "^MONDO:[0-9]{7}"
+                        },
+                        "notes": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "mode_of_inheritance": {
                     "type": "object",
@@ -176,9 +188,12 @@
                             }
                         }
                     }
+                },
+                "notes": {
+                    "type": "string"
                 }
             },
-            "required": ["id", "uuid"]
+            "required": ["id", "uuid", "gene", "group"]
         }
     },
     "required": ["key", "event_type", "schema_version", "data"]
