@@ -11,7 +11,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Notifications\StreamErrorNotification;
+use App\DataExchange\Notifications\StreamErrorNotification;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class CurationNotificationsDigest extends Notification

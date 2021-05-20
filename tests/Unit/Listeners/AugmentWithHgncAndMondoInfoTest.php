@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AugmentWithHgncAndMondoInfoTest extends TestCase
 {
-    use DatabaseTransactions;  
+    use DatabaseTransactions;
 
     public function setUp():void
     {
@@ -28,17 +28,6 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
-    public function dispatches_AugmentWithHgncInfo()
-    {
-        \Bus::fake();
-        $this->listener->handle($this->event);
-
-        \Bus::assertDispatched(AugmentWithHgncInfo::class);
-    }
-    
     /**
      * @test
      */
@@ -61,5 +50,4 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
         $this->listener->handle($this->event);
         \Bus::assertNotDispatched(AugmentWithMondoInfo::class);
     }
-    
 }

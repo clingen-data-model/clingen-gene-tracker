@@ -2,24 +2,28 @@
 
 namespace App\Services;
 
-use App\Clients\OmimClient;
-use App\Curation;
-use App\CurationStatus;
-use App\CurationType;
-use App\Exceptions\BulkUploads\InvalidFileException;
-use App\Exceptions\BulkUploads\InvalidRowException;
-use App\Exceptions\DuplicateBulkCurationException;
-use App\ExpertPanel;
-use App\Jobs\Curations\AddStatus;
-use App\Jobs\Curations\SyncPhenotypes;
-use App\Rationale;
-use App\Rules\ValidHgncGeneSymbol;
 use App\User;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use GuzzleHttp\Exception\ClientException;
-use Illuminate\Support\Facades\DB;
+use App\Curation;
+use App\Rationale;
+use App\ExpertPanel;
+use App\CurationType;
+use App\CurationStatus;
+use App\Clients\OmimClient;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Events\Curation\Created;
+use App\Jobs\Curations\AddStatus;
+use App\Rules\ValidHgncGeneSymbol;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Event;
+use App\Jobs\Curations\SyncPhenotypes;
+use GuzzleHttp\Exception\ClientException;
+use App\Exceptions\DuplicateBulkCurationException;
+use App\Exceptions\BulkUploads\InvalidRowException;
+use App\Exceptions\BulkUploads\InvalidFileException;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
 {
@@ -197,7 +201,7 @@ class BulkCurationProcessor
             array_map([$this, 'emptyStringToNull'], $row->toArray()),
             count($header),
             null
-                );
+        );
 
         return array_combine($header, $values);
     }
@@ -243,15 +247,17 @@ class BulkCurationProcessor
         }
 
         config(['app.bulk_uploading' => false]);
+        // Bus::dispatch(new CreatePrecurationStreamMessage($curation, 'created'));
 
         return $curation;
     }
 
     public function getStatusNames()
     {
-        return array_map(function ($statusName) {
-            return Str::snake(Str::camel($statusName));
-        },
+        return array_map(
+            function ($statusName) {
+                return Str::snake(Str::camel($statusName));
+            },
             array_flip(config('project.curation-statuses'))
         );
     }
@@ -259,7 +265,7 @@ class BulkCurationProcessor
     private function addStatus($curation, $status, $dateName, $row)
     {
         if (isset($row[$dateName])) {
-            AddStatus::dispatch($curation, $status, $row[$dateName]);
+            AddStatus::dispatchNow($curation, $status, $row[$dateName]);
         }
     }
 

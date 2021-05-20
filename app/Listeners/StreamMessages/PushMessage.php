@@ -3,12 +3,12 @@
 namespace App\Listeners\StreamMessages;
 
 use Carbon\Carbon;
-use App\Contracts\MessagePusher;
-use App\Events\StreamMessages\Created;
+use App\DataExchange\Contracts\MessagePusher;
+use App\DataExchange\Events\Created;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Jobs\StreamingService\PushMessage as PushMessageJob;
+use App\DataExchange\Jobs\PushMessage as PushMessageJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Exceptions\StreamingServiceException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 
 class PushMessage
 {

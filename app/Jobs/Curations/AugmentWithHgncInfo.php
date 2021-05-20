@@ -39,13 +39,15 @@ class AugmentWithHgncInfo implements ShouldQueue
      */
     public function handle()
     {
-        try {
-            $this->updateCurationWithSymbol();
-        } catch (HttpNotFoundException $e) {
+        if ($this->curation->isDirty('gene_symbol') || is_null($this->curation->hgnc_id) || is_null($this->curation->hgnc_name)) {
             try {
-                $this->updateCurationWithPrevSymbol();
+                $this->updateCurationWithSymbol();
             } catch (HttpNotFoundException $e) {
-                throw $e;
+                try {
+                    $this->updateCurationWithPrevSymbol();
+                } catch (HttpNotFoundException $e) {
+                    \Log::warning($e->getMessage());
+                }
             }
         }
     }
@@ -56,10 +58,8 @@ class AugmentWithHgncInfo implements ShouldQueue
         if (!$gene) {
             throw new HttpNotFoundException();
         }
-        $this->curation->update([
-            'hgnc_name' => $gene->hgnc_name,
-            'hgnc_id' => $gene->hgnc_id
-        ]);
+        $this->curation->hgnc_name = $gene->hgnc_name;
+        $this->curation->hgnc_id = $gene->hgnc_id;
     }
 
     private function updateCurationWithPrevSymbol()
@@ -71,7 +71,7 @@ class AugmentWithHgncInfo implements ShouldQueue
             throw new HttpNotFoundException();
         }
 
-        $this->curation->update([
+        $this->curation->fill([
             'gene_symbol' => $prevSymbolRecord->gene_symbol,
             'hgnc_name' => $prevSymbolRecord->hgnc_name,
             'hgnc_id' => $prevSymbolRecord->hgnc_id
