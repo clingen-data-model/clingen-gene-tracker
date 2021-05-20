@@ -4,7 +4,7 @@ namespace Tests;
 
 use Mockery;
 use JsonSerializable;
-use App\Contracts\MessagePusher;
+use App\DataExchange\Contracts\MessagePusher;
 use App\Rules\ValidGeneSymbolRule;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

@@ -15,6 +15,7 @@ use Tests\TestCase;
 class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
+    protected $fakeCurationSavedEvent = false;
 
     public function setUp(): void
     {
@@ -50,12 +51,12 @@ class BulkCurationUploadTest extends TestCase
             ->json('POST', '/bulk-uploads', [
                 'expert_panel_id' => $this->expertPanel->id,
                 'bulk_curations' => new UploadedFile(
-                                            base_path('tests/files/bulk_curation_upload_good.xlsx'),
-                                            'bulk_curation_upload_good.xlsx',
-                                            'application/xlsx',
-                                            null,
-                                            true
-                                    ),
+                    base_path('tests/files/bulk_curation_upload_good.xlsx'),
+                    'bulk_curation_upload_good.xlsx',
+                    'application/xlsx',
+                    null,
+                    true
+                ),
             ])
             ->assertOk();
 
@@ -71,12 +72,12 @@ class BulkCurationUploadTest extends TestCase
             ->json('POST', '/bulk-uploads', [
                 'expert_panel_id' => $this->expertPanel->id,
                 'bulk_curations' => new UploadedFile(
-                                            base_path('tests/files/bulk_curation_upload_bad.xlsx'),
-                                            'bulk_curation_upload_good.xlsx',
-                                            'application/xlsx',
-                                            null,
-                                            false
-                                    ),
+                    base_path('tests/files/bulk_curation_upload_bad.xlsx'),
+                    'bulk_curation_upload_good.xlsx',
+                    'application/xlsx',
+                    null,
+                    false
+                ),
             ])
             ->assertStatus(422);
     }
@@ -94,12 +95,12 @@ class BulkCurationUploadTest extends TestCase
                 'expert_panel_id' => $this->expertPanel->id,
             ], [], [
                 'bulk_curations' => new UploadedFile(
-                                            base_path('tests/files/bulk_curation_upload_good.xlsx'),
-                                            'bulk_curation_upload_good.xlsx',
-                                            'application/xlsx',
-                                            null,
-                                            true
-                                    ),
+                    base_path('tests/files/bulk_curation_upload_good.xlsx'),
+                    'bulk_curation_upload_good.xlsx',
+                    'application/xlsx',
+                    null,
+                    true
+                ),
             ])
             ->assertSee('Some of the genes in your upload already have curations in the GeneTracker:')
             ->assertSee('Continue with upload');

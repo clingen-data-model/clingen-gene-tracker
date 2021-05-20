@@ -2,14 +2,13 @@
 
 namespace App\Listeners\Curations;
 
-use App\Events\Curation\Saved;
-use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curations\AugmentWithHgncInfo;
-use App\Jobs\Curations\AugmentWithMondoInfo;
+use App\Event\Curation\Saving;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Exceptions\HttpNotFoundException;
+use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AugmentWithHgncAndMondoInfo
+class AugmentWithHgncInfo
 {
     /**
      * Create the event listener.
@@ -24,14 +23,14 @@ class AugmentWithHgncAndMondoInfo
     /**
      * Handle the event.
      *
-     * @param  Saved  $event
+     * @param  Saving  $event
      * @return void
      */
-    public function handle(Saved $event)
+    public function handle(Saving $event)
     {
-        if ($event->curation->isDirty('mondo_id')) {
+        if ($event->curation->isDirty('gene_symbol')) {
             try {
-                AugmentWithMondoInfo::dispatch($event->curation);
+                HgncInfoJob::dispatch($event->curation);
             } catch (HttpNotFoundException $e) {
                 \Log::warning($e->getMessage());
             }

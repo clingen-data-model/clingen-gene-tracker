@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\User\Created::class => [
             \App\Listeners\SendWelcomeEmail::class,
         ],
+        \App\Event\Curation\Saving::class => [
+            \App\Listeners\Curations\AugmentWithHgncInfo::class,
+        ],
         \App\Events\Curation\Saved::class => [
             \App\Listeners\Curations\AugmentWithHgncAndMondoInfo::class,
         ],
@@ -46,12 +49,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Phenotypes\PhenotypeNameChanged::class => [
             \App\Listeners\SendPhenotypeNameChangedNotification::class
-        ],
-        \App\Events\StreamMessages\Created::class => [
-            \App\Listeners\StreamMessages\PushMessage::class
-        ],
-        \App\Events\StreamMessages\Received::class => [
-            \App\Listeners\Curations\UpdateFromStreamMessage::class,
         ],
         \Illuminate\Mail\Events\MessageSent::class => [
             \App\Listeners\Mail\StoreMailInDatabase::class
