@@ -66,4 +66,9 @@ class ExpertPanel extends Model implements HasAffiliation
     {
         $this->users()->attach($user->id, ['is_coordinator' => 1]);
     }
+
+    public function getUuidAttribute()
+    {
+        return $this->id;
+    }
 }

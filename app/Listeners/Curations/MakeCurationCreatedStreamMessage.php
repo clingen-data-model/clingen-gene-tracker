@@ -2,21 +2,25 @@
 
 namespace App\Listeners\Curations;
 
+use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\Events\Curation\Created;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\StreamMessage;
 
 class MakeCurationCreatedStreamMessage
 {
+    private $factory;
+
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MessageFactoryInterface $factory)
     {
-        //
+        $this->factory = $factory;
     }
 
     /**
@@ -27,12 +31,6 @@ class MakeCurationCreatedStreamMessage
      */
     public function handle(Created $event)
     {
-        $msg = StreamMessage::create([
-            'topic' => config('streaming-service.gci-topic'),
-            'message' => [
-                'event' => 'created',
-                'curation' => $event->curation->loadForMessage()->toArray()
-            ]
-        ]);
+        \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'created'));
     }
 }

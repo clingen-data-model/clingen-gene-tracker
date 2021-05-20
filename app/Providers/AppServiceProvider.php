@@ -4,22 +4,13 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Services\MessageLogger;
 use GuzzleHttp\ClientInterface;
-use App\Contracts\MessagePusher;
-use App\Services\DisabledPusher;
-use App\Contracts\MessageConsumer;
 use App\Rules\ValidGeneSymbolRule;
 use App\Rules\ValidHgncGeneSymbol;
-use App\Services\Kafka\KafkaConfig;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
-use App\Services\Kafka\KafkaConsumer;
-use App\Services\Kafka\KafkaProducer;
 use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\GeneValidityCurationUpdateJob;
-use App\Jobs\UpdateCurationFromGeneValidityMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,18 +36,10 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme(config('app.url_scheme'));
         }
 
-        $this->bindInstances();
+        $this->app->bind(ValidGeneSymbolRule::class, ValidHgncGeneSymbol::class);
 
-        \Request::macro('dateParsed', function (...$dates) {
-            return collect($this->all())
-                    ->transform(function ($value, $key) use ($dates) {
-                        if (in_array($key, $dates)) {
-                            return Carbon::parse($value);
-                        }
-
-                        return $value;
-                    })
-                    ->toArray();
+        $this->app->bind(ClientInterface::class, function () {
+            return new Client();
         });
     }
 
@@ -71,47 +54,5 @@ class AppServiceProvider extends ServiceProvider
             // $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
             // $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
-    }
-
-    private function bindInstances()
-    {
-        $this->app->bind(MessagePusher::class, function () {
-            if (!config('streaming-service.enable-push')) {
-                return new DisabledPusher();
-            }
-            if (config('streaming-service.driver') == 'log') {
-                return new MessageLogger();
-            }
-
-            return $this->app->make(KafkaProducer::class);
-        });
-
-        $this->app->bind(\RdKafka\Producer::class, function () {
-            $config = $this->app->make(KafkaConfig::class)->getConfig();
-
-            return new \RdKafka\Producer($config);
-        });
-
-        $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
-            $conf = $this->app->make(KafkaConfig::class)->getConfig();
-
-            // $topicConf = new \RdKafka\TopicConf();
-            // $conf->setDefaultTopicConf($topicConf);
-            $conf->set('auto.offset.reset', 'smallest');
-
-            return new \RdKafka\KafkaConsumer($conf);
-        });
-
-        $this->app->bind(MessageConsumer::class, function () {
-            return $this->app->make(KafkaConsumer::class);
-        });
-
-        $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
-
-        $this->app->bind(ValidGeneSymbolRule::class, ValidHgncGeneSymbol::class);
-
-        $this->app->bind(ClientInterface::class, function () {
-            return new Client();
-        });
     }
 }
