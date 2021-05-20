@@ -93,6 +93,6 @@ class Gene extends Model
     // Domain methods
     public function addPhenotype(Phenotype $phenotype)
     {
-        $this->phenotypes->attach($phenotype);
+        $this->phenotypes()->attach($phenotype);
     }
 }

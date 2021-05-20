@@ -12,8 +12,10 @@ class CurationType extends Model
     use RevisionableTrait;
 
     protected $revisionCreationsEnabled = true;
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description'];
     protected $touches = ['curations'];
+    protected $hidden = ['created_at', 'updated-at'];
+
 
     public function curations()
     {

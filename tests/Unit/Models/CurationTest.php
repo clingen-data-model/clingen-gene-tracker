@@ -2,8 +2,11 @@
 
 namespace Tests\Unit\Models;
 
+use App\Gene;
 use App\Upload;
 use App\Curation;
+use App\Phenotype;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Affiliation;
 use App\ExpertPanel;
@@ -173,6 +176,24 @@ class CurationTest extends TestCase
 
         $this->assertEquals($curationStatuses->last()['id'], $curation->fresh()->currentStatus->id);
     }
+
+    /**
+     * @test
+     */
+    public function curation_can_get_current_status_date_attribute()
+    {
+        $curationStatuses = CurationStatus::limit(2)->get();
+        $curation = factory(\App\Curation::class)->create();
+
+        $statusesAtTime = $curationStatuses->map(function ($item, $idx) use ($curation) {
+            AddStatus::dispatch($curation, $item, today()->addDays($idx + 1));
+        });
+
+        $curation = $curation->fresh();
+
+        $this->assertEquals(Carbon::today()->addDays(2), $curation->currentStatusDate);
+    }
+    
 
     /**
      * @test
@@ -396,5 +417,25 @@ class CurationTest extends TestCase
         // $ep2 = factory(ExpertPanel::class)->create();
         // $curation->update(['expert_panel_id' => $ep2->id]);
         // $this->assertEquals(2, $curation->fresh()->expertPanels()->count());
+    }
+
+    /**
+     * @test
+     */
+    public function gets_phenotypes_not_included_in_curation()
+    {
+        $gene = factory(Gene::class)->create(['hgnc_id' => 6636, 'gene_symbol' => 'LMNA']);
+        $ph1 = factory(Phenotype::class)->create();
+        $ph2 = factory(Phenotype::class)->create();
+        $gene->addPhenotype($ph1);
+        $gene->addPhenotype($ph2);
+
+        $curation = factory(Curation::class)->create([
+            'gene_symbol' => 'LMNA',
+            'hgnc_id' => 6636
+        ]);
+        $curation->addPhenotype($ph1);
+
+        $this->assertEquals(collect($ph2->mim_number), $curation->fresh()->excludedPhenotypes->pluck('mim_number'));
     }
 }

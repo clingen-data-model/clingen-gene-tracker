@@ -6,6 +6,8 @@ use App\StreamMessage;
 use App\Events\Curation\Updated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
 class MakeCurationUpdatedStreamMessage
 {
@@ -14,9 +16,9 @@ class MakeCurationUpdatedStreamMessage
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MessageFactoryInterface $factory)
     {
-        //
+        $this->factory = $factory;
     }
 
     /**
@@ -27,12 +29,6 @@ class MakeCurationUpdatedStreamMessage
      */
     public function handle(Updated $event)
     {
-        StreamMessage::create([
-            'topic' => config('streaming-service.gci-topic'),
-            'message' => [
-                'event' => 'updated',
-                'curation' => $event->curation->loadForMessage()->toArray()
-            ]
-        ]);
+        \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'updated'));
     }
 }

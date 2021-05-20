@@ -6,6 +6,8 @@ use App\StreamMessage;
 use App\Events\Curation\Deleted;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
 class MakeCurationDeletedStreamMessage
 {
@@ -14,9 +16,9 @@ class MakeCurationDeletedStreamMessage
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MessageFactoryInterface $factory)
     {
-        //
+        $this->factory = $factory;
     }
 
     /**
@@ -27,12 +29,6 @@ class MakeCurationDeletedStreamMessage
      */
     public function handle(Deleted $event)
     {
-        StreamMessage::create([
-            'topic' => config('streaming-service.gci-topic'),
-            'message' => [
-                'event' => 'deleted',
-                'curation' => ['id' => $event->curation->id]
-            ]
-        ]);
+        \Bus::dispatchNow(new CreatePrecurationStreamMessage($event->curation, 'deleted'));
     }
 }

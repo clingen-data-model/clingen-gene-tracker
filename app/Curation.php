@@ -9,13 +9,14 @@ use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
+use App\Events\Curations\Saving;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property Classification $currentClassificiation
@@ -66,6 +67,7 @@ class Curation extends Model
     ];
 
     protected $dispatchesEvents = [
+        'saving' => Saving::class,
         'saved' => Saved::class,
         'created' => Created::class,
         'updated' => Updated::class,
@@ -216,6 +218,15 @@ class Curation extends Model
         }
         $this->attributes['expert_panel_id'] = $value;
     }
+
+    public function getCurrentStatusDateAttribute()
+    {
+        if ($this->statuses->count() > 0) {
+            return $this->statuses->where('id', $this->curation_status_id)->last()->pivot->status_date;
+        }
+        return null;
+    }
+    
     
 
     /**
@@ -301,6 +312,19 @@ class Curation extends Model
 
         return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
+
+    public function getExcludedPhenotypesAttribute()
+    {
+        if (!$this->gene) {
+            return collect();
+        }
+        $curationPhenos = $this->phenotypes()->get();
+        return $this->gene->phenotypes()
+                ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
+                ->select('mim_number')
+                ->get();
+    }
+    
 
     /**
      * MUTATORS.
