@@ -1,6 +1,6 @@
 <?php
 
-use App\Exceptions\StreamingServiceException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 
 require __DIR__ . '/vendor/autoload.php';
 

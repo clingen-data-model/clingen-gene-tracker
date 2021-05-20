@@ -59,6 +59,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ClientServiceProvider::class,
 
+        App\DataExchange\DataExchangeServiceProvider::class,
+
         Lab404\Impersonate\ImpersonateServiceProvider::class,
     ],
 

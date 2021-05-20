@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Events\StreamMessages\Created;
+use App\DataExchange\Events\Created;
 use Illuminate\Database\Eloquent\Model;
 
 class StreamMessage extends Model

@@ -7,10 +7,10 @@ use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\StreamMessage;
-use App\Services\Kafka\KafkaProducer;
-use App\Contracts\MessagePusher;
+use  App\DataExchange\Kafka\KafkaProducer;
+use App\DataExchange\Contracts\MessagePusher;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Exceptions\StreamingServiceException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -27,8 +27,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
                                 ->topic(config('streaming-service.gci-topic'))
-                                ->where('message->curation->id', $curation->id)
-                                ->where('message->event', 'created')
+                                ->where('message->data->id', $curation->id)
+                                ->where('message->event_type', 'created')
                                 ->get();
         $this->assertEquals(1, $matchingMessages->count());
     }
@@ -41,9 +41,9 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->update(['notes' => 'test test test']);
         $matchingMessages = StreamMessage::query()
-                                ->where('message->curation->id', $curation->id)
-                                ->where('message->event', 'updated')
-                                ->where('message->curation->notes', 'test test test')
+                                ->where('message->event_type', 'updated')
+                                ->where('message->data->id', $curation->id)
+                                ->where('message->data->notes', 'test test test')
                                 ->get();
         $this->assertEquals(1, $matchingMessages->count());
     }
@@ -56,8 +56,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->delete();
         $matchingMessages = StreamMessage::query()
-                                ->where('message->curation->id', $curation->id)
-                                ->where('message->event', 'deleted')
+                                ->where('message->data->id', $curation->id)
+                                ->where('message->event_type', 'deleted')
                                 // ->unsent()
                                 ->get();
 

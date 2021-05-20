@@ -4,11 +4,11 @@ namespace Tests\Unit\Services;
 
 use Mockery;
 use Tests\TestCase;
-use App\Services\Kafka\KafkaProducer;
+use  App\DataExchange\Kafka\KafkaProducer;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\Exceptions\StreamingServiceException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Services\KafkaConfig;
+use  App\DataExchange\KafkaConfig;
 /**
  * @group streaming-service
  * @group kafka
