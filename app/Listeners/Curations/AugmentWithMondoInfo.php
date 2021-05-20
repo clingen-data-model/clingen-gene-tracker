@@ -5,11 +5,11 @@ namespace App\Listeners\Curations;
 use App\Events\Curation\Saved;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithHgncInfo;
-use App\Jobs\Curations\AugmentWithMondoInfo;
+use App\Jobs\Curations\AugmentWithMondoInfo as MondoJob;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AugmentWithHgncAndMondoInfo
+class AugmentWithMondoInfo
 {
     /**
      * Create the event listener.
@@ -31,7 +31,7 @@ class AugmentWithHgncAndMondoInfo
     {
         if ($event->curation->isDirty('mondo_id')) {
             try {
-                AugmentWithMondoInfo::dispatch($event->curation);
+                MondoJob::dispatch($event->curation);
             } catch (HttpNotFoundException $e) {
                 \Log::warning($e->getMessage());
             }

@@ -5,14 +5,13 @@ namespace Tests\Unit\Listeners;
 use App\Curation;
 use Tests\TestCase;
 use App\Events\Curation\Saved;
-use App\Jobs\Curations\AugmentWithHgncInfo;
-use App\Jobs\Curations\AugmentWithMondoInfo;
+use App\Jobs\Curations\AugmentWithMondoInfo as MondoJob;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Listeners\Curations\AugmentWithHgncAndMondoInfo;
+use App\Listeners\Curations\AugmentWithMondoInfo;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class AugmentWithHgncAndMondoInfoTest extends TestCase
+class AugmentWithMondoInfoTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -24,7 +23,7 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
         $this->curation->gene_symbol = 'MLTN1';
         $this->curation->mondo_id = '00012345';
         $this->event = new Saved($this->curation);
-        $this->listener = new AugmentWithHgncAndMondoInfo();
+        $this->listener = new AugmentWithMondoInfo();
     }
     
 
@@ -36,7 +35,7 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
         \Bus::fake();
         $this->listener->handle($this->event);
 
-        \Bus::assertDispatched(AugmentWithMondoInfo::class);
+        \Bus::assertDispatched(MondoJob::class);
     }
 
     /**
@@ -48,6 +47,6 @@ class AugmentWithHgncAndMondoInfoTest extends TestCase
 
         \Bus::fake();
         $this->listener->handle($this->event);
-        \Bus::assertNotDispatched(AugmentWithMondoInfo::class);
+        \Bus::assertNotDispatched(MondoJob::class);
     }
 }

@@ -24,7 +24,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Curations\AugmentWithHgncInfo::class,
         ],
         \App\Events\Curation\Saved::class => [
-            \App\Listeners\Curations\AugmentWithHgncAndMondoInfo::class,
+            \App\Listeners\Curations\AugmentWithMondoInfo::class,
         ],
         \App\Events\Curation\Created::class => [
             \App\Listeners\Curations\MakeCurationCreatedStreamMessage::class,
