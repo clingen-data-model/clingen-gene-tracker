@@ -3,9 +3,9 @@
 namespace Tests\Unit\Services;
 
 use Tests\TestCase;
-use App\Services\Kafka\KafkaConsumer;
-use App\Contracts\MessageConsumer;
-use App\Events\StreamMessages\Received;
+use  App\DataExchange\Kafka\KafkaConsumer;
+use App\DataExchange\Contracts\MessageConsumer;
+use App\DataExchange\Events\Received;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;

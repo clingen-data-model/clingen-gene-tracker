@@ -4,7 +4,7 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Affiliation;
 use App\ExpertPanel;
-use App\Notifications\StreamErrorNotification;
+use App\DataExchange\Notifications\StreamErrorNotification;
 use App\StreamError;
 use App\User;
 use Carbon\Carbon;

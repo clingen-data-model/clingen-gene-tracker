@@ -5,7 +5,7 @@ namespace Tests\Unit\Listeners\Curations;
 use App\Affiliation;
 use App\Curation;
 use App\CurationStatus;
-use App\Events\StreamMessages\Received;
+use App\DataExchange\Events\Received;
 use App\Jobs\Curations\AddStatus;
 use App\ModeOfInheritance;
 use App\StreamError;

@@ -7,7 +7,7 @@ use App\Affiliation;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
-use App\Services\GciStatusMap;
+use App\DataExchange\Maps\GciStatusMap;
 use App\Gci\GciClassificationMap;
 use App\Jobs\Curations\AddStatus;
 use App\Exceptions\GciSyncException;
@@ -16,7 +16,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\AddClassification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 
 class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidityCurationUpdateJob
 {
