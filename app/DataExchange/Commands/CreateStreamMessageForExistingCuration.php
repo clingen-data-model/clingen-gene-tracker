@@ -44,7 +44,7 @@ class CreateStreamMessageForExistingCuration extends Command
 
         $curations->each(function ($curation) use ($bar) {
             StreamMessage::create([
-                    'topic'=>config('streaming-service.topic'),
+                    'topic'=>config('dx.topic'),
                     'message'=>json_encode([
                         'event'=>'created',
                         'curation' => $curation->loadForMessage()->toArray()

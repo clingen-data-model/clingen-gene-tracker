@@ -39,7 +39,7 @@ class CreatePrecurationStreamMessage implements ShouldQueue
     public function handle(MessageFactoryInterface $factory)
     {
         $msg = StreamMessage::create([
-            'topic' => config('streaming-service.gci-topic'),
+            'topic' => config('dx.gci-topic'),
             'message' => $factory->make($this->curation, $this->eventType)
         ]);
     }

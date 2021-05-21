@@ -44,7 +44,7 @@ class PushMessage implements ShouldQueue
                 'sent_at' => Carbon::now()
             ]);
         } catch (StreamingServiceDisabledException $e) {
-            if (config('streaming-service.warn-disabled', true)) {
+            if (config('dx.warn-disabled', true)) {
                 \Log::warning($e->getMessage());
             }
         } catch (StreamingServiceException $e) {

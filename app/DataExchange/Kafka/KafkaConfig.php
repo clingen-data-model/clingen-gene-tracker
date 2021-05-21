@@ -37,7 +37,7 @@ class KafkaConfig
     }
     public function setGroup($group = null)
     {
-        $group = $group ? $group : config('streaming-service.kafka_group', 'unc_demo');
+        $group = $group ? $group : config('dx.dx_group', 'unc_demo');
         $this->conf->set('group.id', $group);
     }
 
@@ -58,14 +58,14 @@ class KafkaConfig
             return;
         }
 
-        if (config('streaming-service.broker') == 'exchange.clinicalgenome.org:9093') {
+        if (config('dx.broker') == 'exchange.clinicalgenome.org:9093') {
             $this->conf->set('security.protocol', 'ssl');
-            $this->conf->set('ssl.certificate.location', config('streaming-service.cert-location'));
-            $this->conf->set('ssl.key.location', config('streaming-service.key-location'));
-            $this->conf->set('ssl.ca.location', config('streaming-service.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
+            $this->conf->set('ssl.certificate.location', config('dx.cert-location'));
+            $this->conf->set('ssl.key.location', config('dx.key-location'));
+            $this->conf->set('ssl.ca.location', config('dx.ca-location', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert'));
     
-            if (config('streaming-service.ssl-key-password', null)) {
-                $this->conf->set('ssl.key.password', config('streaming-service.ssl-key-password', null));
+            if (config('dx.ssl-key-password', null)) {
+                $this->conf->set('ssl.key.password', config('dx.ssl-key-password', null));
             }
 
             return;
@@ -73,8 +73,8 @@ class KafkaConfig
 
         $this->conf->set('security.protocol', 'sasl_ssl');
         $this->conf->set('sasl.mechanism', 'PLAIN');
-        $this->conf->set('sasl.username', config('streaming-service.kafka_username'));
-        $this->conf->set('sasl.password', config('streaming-service.kafka_password'));
+        $this->conf->set('sasl.username', config('dx.dx_username'));
+        $this->conf->set('sasl.password', config('dx.dx_password'));
     }
     
 }

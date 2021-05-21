@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
                 Artisan::call('omim:check-moved-and-removed');
             });
         
-        if (config('streaming-service.consume', true)) {
+        if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
                 ->hourly();
         }

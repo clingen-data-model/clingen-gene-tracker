@@ -61,10 +61,10 @@ class DataExchangeServiceProvider extends ServiceProvider
     protected function bindInstances()
     {
         $this->app->bind(MessagePusher::class, function () {
-            if (!config('streaming-service.enable-push')) {
+            if (!config('dx.enable-push')) {
                 return new DisabledPusher();
             }
-            if (config('streaming-service.driver') == 'log') {
+            if (config('dx.driver') == 'log') {
                 return new MessageLogger();
             }
             return $this->app->make(KafkaProducer::class);
