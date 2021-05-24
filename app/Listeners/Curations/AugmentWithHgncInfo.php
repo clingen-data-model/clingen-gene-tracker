@@ -2,11 +2,11 @@
 
 namespace App\Listeners\Curations;
 
-use App\Event\Curation\Saving;
+use App\Events\Curation\Saving;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
 
 class AugmentWithHgncInfo
 {

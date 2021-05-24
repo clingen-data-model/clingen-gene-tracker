@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Curations;
+namespace App\Events\Curation;
 
 use App\Curation;
 use Illuminate\Broadcasting\Channel;

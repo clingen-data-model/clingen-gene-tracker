@@ -9,7 +9,7 @@ use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
-use App\Events\Curations\Saving;
+use App\Events\Curation\Saving;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
@@ -221,7 +221,7 @@ class Curation extends Model
 
     public function getCurrentStatusDateAttribute()
     {
-        if ($this->statuses->count() > 0) {
+        if ($this->statuses->count() > 0 && $this->statuses->where('id', $this->curation_status_id)->last()) {
             return $this->statuses->where('id', $this->curation_status_id)->last()->pivot->status_date;
         }
         return null;
