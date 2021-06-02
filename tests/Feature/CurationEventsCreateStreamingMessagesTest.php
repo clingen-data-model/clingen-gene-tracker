@@ -26,7 +26,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
-                                ->topic(config('dx.gci-topic'))
+                                ->topic(config('dx.topics.incoming.gene-validity-events'))
                                 ->where('message->data->id', $curation->id)
                                 ->where('message->event_type', 'created')
                                 ->get();

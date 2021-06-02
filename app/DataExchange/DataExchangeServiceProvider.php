@@ -61,7 +61,7 @@ class DataExchangeServiceProvider extends ServiceProvider
     protected function bindInstances()
     {
         $this->app->bind(MessagePusher::class, function () {
-            if (!config('dx.enable-push')) {
+            if (!config('dx.push-enable')) {
                 return new DisabledPusher();
             }
             if (config('dx.driver') == 'log') {

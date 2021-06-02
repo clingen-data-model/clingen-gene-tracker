@@ -39,7 +39,7 @@ class CreatePrecurationStreamMessage implements ShouldQueue
     public function handle(MessageFactoryInterface $factory)
     {
         $msg = StreamMessage::create([
-            'topic' => config('dx.gci-topic'),
+            'topic' => config('dx.topics.incoming.gene-validity-events'),
             'message' => $factory->make($this->curation, $this->eventType)
         ]);
     }
