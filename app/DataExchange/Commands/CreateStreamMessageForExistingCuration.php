@@ -5,6 +5,7 @@ namespace App\DataExchange\Commands;
 use App\Curation;
 use App\StreamMessage;
 use Illuminate\Console\Command;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
 
 class CreateStreamMessageForExistingCuration extends Command
 {
@@ -43,13 +44,7 @@ class CreateStreamMessageForExistingCuration extends Command
         $bar = $this->output->createProgressBar($curations->count());
 
         $curations->each(function ($curation) use ($bar) {
-            StreamMessage::create([
-                    'topic'=>config('dx.topic'),
-                    'message'=>json_encode([
-                        'event'=>'created',
-                        'curation' => $curation->loadForMessage()->toArray()
-                    ])
-                ]);
+            \Bus::dispatchNow(new CreatePrecurationStreamMessage($curation, 'base_state'));
             $bar->advance();
         });
         echo "\n";
