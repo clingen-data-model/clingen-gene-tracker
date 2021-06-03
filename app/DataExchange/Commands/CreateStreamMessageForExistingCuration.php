@@ -44,7 +44,7 @@ class CreateStreamMessageForExistingCuration extends Command
         $bar = $this->output->createProgressBar($curations->count());
 
         $curations->each(function ($curation) use ($bar) {
-            \Bus::dispatchNow(new CreatePrecurationStreamMessage($curation, 'base_state'));
+            \Bus::dispatch(new CreatePrecurationStreamMessage($curation, 'created'));
             $bar->advance();
         });
         echo "\n";

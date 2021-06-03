@@ -133,6 +133,8 @@ class PrecurationV1MessageFactoryTest extends TestCase
                 'name' => 'Uploaded',
                 'effective_date' => Carbon::now()->toIsoString()
             ],
+            'date_created' => Carbon::now()->toIsoString(),
+            'date_updated' => Carbon::now()->toIsoString()
         ];
     }
     
