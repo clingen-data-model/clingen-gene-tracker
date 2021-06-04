@@ -221,8 +221,9 @@ class Curation extends Model
 
     public function getCurrentStatusDateAttribute()
     {
-        if ($this->statuses->count() > 0) {
-            return $this->statuses->where('id', $this->curation_status_id)->last()->pivot->status_date;
+        $lastStatus = $this->statuses->where('id', $this->curation_status_id)->last();
+        if ($lastStatus) {
+            return $lastStatus->pivot->status_date;
         }
         return null;
     }
@@ -322,6 +323,7 @@ class Curation extends Model
         return $this->gene->phenotypes()
                 ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
                 ->select('mim_number')
+                ->orderBy('mim_number')
                 ->get();
     }
     
