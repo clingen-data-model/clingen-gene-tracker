@@ -267,12 +267,12 @@ class BuildGciCurations extends Command
                             ->keyBy('name');
                             
         $this->statuses->put('none', $this->statuses['uploaded']);
-        $this->statuses->put('in progress', $this->statuses['curation in progress']);
-        $this->statuses->put('created', $this->statuses['curation in progress']);
+        $this->statuses->put('in progress', $this->statuses['precuration complete']);
+        $this->statuses->put('created', $this->statuses['precuration complete']);
         $this->statuses->put('approved', $this->statuses['curation approved']);
         $this->statuses->put('provisional', $this->statuses['curation provisional']);
         $this->statuses->put('provisionally approved', $this->statuses['curation provisional']);
-        $this->statuses->put('unpublished', $this->statuses['curation in progress']);
+        $this->statuses->put('unpublished', $this->statuses['precuration complete']);
 
         $this->classifications = Classification::all()
                                     ->map(function ($cl) {

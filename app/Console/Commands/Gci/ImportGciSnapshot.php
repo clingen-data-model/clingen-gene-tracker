@@ -73,7 +73,7 @@ class ImportGciSnapshot extends Command
             return strtolower($item->name);
         });
         $this->curationStatuses->put('none', $this->curationStatuses['uploaded']);
-        $this->curationStatuses->put('in progress', $this->curationStatuses['curation in progress']);
+        $this->curationStatuses->put('in progress', $this->curationStatuses['precuraction complete']);
         $this->curationStatuses->put('approved', $this->curationStatuses['curation approved']);
         $this->curationStatuses->put('provisional', $this->curationStatuses['curation provisional']);
 

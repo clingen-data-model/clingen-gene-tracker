@@ -34,7 +34,7 @@
             "description": "Create a \"lumped\" disease entity from this list"
         },
         "status": {
-            "name": "curation in progress",
+            "name": "precuration complete",
             "effective_date": "2020-07-13"
         },
         "rationale": {
@@ -50,7 +50,9 @@
         "omim_phenotypes": {
             "included": [202300, 618165, 151623],
             "excluded": [614740, 114500, 137800, 259500, 114480, 114550, 607107, 260350]
-        }
+        },
+        "created_date": {},
+        "updated_date": {}
     }
 
 }

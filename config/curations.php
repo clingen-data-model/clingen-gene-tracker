@@ -13,6 +13,7 @@ return [
         'disease-entity-assigned' => 3,
         'in-progress' => 4,
         'curation-in-progress' => 4, // must come second for BulkCurationProcessor
+        'precuration-complete' => 4, // must come second for BulkCurationProcessor
         'provisional' => 5,
         'curation-provisional' => 5, // must come second for BulkCurationProcessor
         'approved' => 6,

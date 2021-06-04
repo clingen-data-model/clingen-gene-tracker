@@ -161,7 +161,7 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.curation-provisional'),
+            'curation_status_id' => config('curations.statuses.curation-provisional'),
             'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
     }
@@ -172,7 +172,7 @@ class UpdateFromStreamMessageTest extends TestCase
     public function does_not_create_duplicate_status()
     {
         $curation = $this->createDICER1();
-        $curationStatus = CurationStatus::find(config('project.curation-statuses.approved'));
+        $curationStatus = CurationStatus::find(config('curations.statuses.approved'));
         AddStatus::dispatchNow($curation, $curationStatus, '2019-01-08 18:16:30');
 
         $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
@@ -183,7 +183,7 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $expected = [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.approved'),
+            'curation_status_id' => config('curations.statuses.approved'),
             'status_date' => '2019-01-08 18:16:30',
         ];
         $this->assertDatabaseHas('curation_curation_status', $expected);
@@ -207,7 +207,7 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.published'),
+            'curation_status_id' => config('curations.statuses.published'),
             'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
     }
@@ -253,7 +253,7 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.curation-approved'),
+            'curation_status_id' => config('curations.statuses.curation-approved'),
             'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s'),
         ]);
     }

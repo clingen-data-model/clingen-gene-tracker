@@ -14,9 +14,9 @@ class GciStatusMap
         $this->map = CurationStatus::all()->keyBy(function ($item) {
             return strtolower($item->name);
         });
-        $this->map->put('created', $this->map['curation in progress']); // Confirm with Courtney
+        $this->map->put('created', $this->map['precuration complete']); // Confirm with Courtney
         $this->map->put('none', $this->map['uploaded']);
-        $this->map->put('in progress', $this->map['curation in progress']);
+        $this->map->put('in progress', $this->map['precuration complete']);
         $this->map->put('approved', $this->map['curation approved']);
         $this->map->put('provisional', $this->map['curation provisional']);
         $this->map->put('provisionally approved', $this->map['curation provisional']);
