@@ -76,7 +76,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
             ],
             'omim_phenotypes' => [
                 'included' => [$phs->first()->mim_number],
-                'excluded' => $phs->take(-2)->pluck('mim_number')->toArray()
+                'excluded' => $phs->take(-2)->sortBy('mim_number')->pluck('mim_number')->toArray()
             ]
         ]);
 

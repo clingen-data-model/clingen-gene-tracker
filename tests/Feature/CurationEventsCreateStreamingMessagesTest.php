@@ -7,12 +7,15 @@ use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\StreamMessage;
+use App\CurationStatus;
+use App\Jobs\Curations\AddStatus;
+use Illuminate\Support\Facades\Bus;
 use  App\DataExchange\Kafka\KafkaProducer;
-use App\DataExchange\Contracts\MessagePusher;
 use Illuminate\Foundation\Testing\WithFaker;
-use App\DataExchange\Exceptions\StreamingServiceException;
+use App\DataExchange\Contracts\MessagePusher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\DataExchange\Exceptions\StreamingServiceException;
 
 class CurationEventsCreateStreamingMessagesTest extends TestCase
 {
@@ -21,12 +24,12 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function creation_StreamMessage_created_when_curation_created()
+    public function creation_precuration_message_created_when_curation_created()
     {
         $curation = factory(Curation::class)->create();
         $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
-                                ->topic(config('dx.topics.incoming.gene-validity-events'))
+                                ->topic(config('dx.topics.outgoing.precuration-events'))
                                 ->where('message->data->id', $curation->id)
                                 ->where('message->event_type', 'created')
                                 ->get();
@@ -36,7 +39,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function updated_StreamMessage_created_when_curation_updated()
+    public function updated_precuration_message_created_when_curation_updated()
     {
         $curation = factory(Curation::class)->create();
         $curation->update(['notes' => 'test test test']);
@@ -44,14 +47,40 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
                                 ->where('message->event_type', 'updated')
                                 ->where('message->data->id', $curation->id)
                                 ->where('message->data->notes', 'test test test')
+                                ->where('topic', config('dx.topics.outgoing.precuration-events'))
                                 ->get();
         $this->assertEquals(1, $matchingMessages->count());
     }
+
+    /**
+     * @test
+     */
+    public function gt_gci_message_created_when_curation_updated_with_GDM_and_curation_complete_status()
+    {
+        $curation = factory(Curation::class)->create();
+        $curation->update(['gene_symbol' => 'TP53', 'hgnc_id'=>123, 'moi_id' => 1, 'mondo_id' => 'MONDO:1234566']);
+
+        $this->assertDatabaseMissing('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gt-gci-sync')
+        ]);
+
+        $job = new AddStatus($curation, CurationStatus::find(config('curations.statuses.precuration-complete')));
+        Bus::dispatch($job);
+
+        $matchingMessages = StreamMessage::query()
+                                ->where('topic', config('dx.topics.outgoing.gt-gci-sync'))
+                                ->where('message->event_type', 'precuration-completed')
+                                ->where('message->data->uuid', $curation->uuid)
+                                ->get();
+
+        $this->assertEquals(1, $matchingMessages->count());
+    }
+    
     
     /**
      * @test
      */
-    public function deleted_StreamMessage_created_when_curation_deleted()
+    public function deleted_precuration_message_created_when_curation_deleted()
     {
         $curation = factory(Curation::class)->create();
         $curation->delete();

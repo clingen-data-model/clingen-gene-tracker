@@ -20,7 +20,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\User\Created::class => [
             \App\Listeners\SendWelcomeEmail::class,
         ],
-        \App\Event\Curation\Saving::class => [
+        \App\Events\Curation\Saving::class => [
             \App\Listeners\Curations\AugmentWithHgncInfo::class,
         ],
         \App\Events\Curation\Saved::class => [
@@ -31,6 +31,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Curation\Updated::class => [
             \App\Listeners\Curations\MakeCurationUpdatedStreamMessage::class,
+            \App\Listeners\Curations\MakeGtGciSyncMessage::class
         ],
         \App\Events\Curation\Deleted::class => [
             \App\Listeners\Curations\MakeCurationDeletedStreamMessage::class,

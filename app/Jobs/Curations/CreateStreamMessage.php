@@ -4,30 +4,29 @@ namespace App\Jobs\Curations;
 
 use App\Curation;
 use App\StreamMessage;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 
-class CreatePrecurationStreamMessage implements ShouldQueue
+class CreateStreamMessage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $curation;
-
-    protected $eventType;
+    private string $topic;
+    private Curation $curation;
+    private string $eventType;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation, $eventType)
+    public function __construct(String $topic, Curation $curation, string $eventType)
     {
+        $this->topic = $topic;
         $this->curation = $curation;
         $this->eventType = $eventType;
     }
@@ -39,11 +38,9 @@ class CreatePrecurationStreamMessage implements ShouldQueue
      */
     public function handle(MessageFactoryInterface $factory)
     {
-        $job = new CreateStreamMessage(
-                    config('dx.topics.outgoing.precuration-events'), 
-                    $this->curation, 
-                    $this->eventType
-                );
-        Bus::dispatchNow($job);
+        $msg = StreamMessage::create([
+            'topic' => $this->topic,
+            'message' => $factory->make($this->curation, $this->eventType)
+        ]);
     }
 }
