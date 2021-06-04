@@ -9,7 +9,7 @@ use App\Events\Curation\Saved;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
-use App\Events\Curations\Saving;
+use App\Events\Curation\Saving;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;

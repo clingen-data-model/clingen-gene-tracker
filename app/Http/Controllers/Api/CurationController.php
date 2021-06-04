@@ -136,7 +136,7 @@ class CurationController extends Controller
                 $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
             }
 
-            if ($request->curation_status_id) {
+            if ($request->curation_status_id && $request->curation_status_id != $curation->curation_status_id) {
                 $status_date = ($request->curation_status_timestamp) ? Carbon::parse($request->curation_status_timestamp) : now();
                 $curation->curationStatuses()->attach([
                     $request->curation_status_id => [

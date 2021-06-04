@@ -4,7 +4,6 @@ namespace App\Listeners\Curations;
 
 use App\Events\Curation\Saved;
 use App\Exceptions\HttpNotFoundException;
-use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Jobs\Curations\AugmentWithMondoInfo as MondoJob;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -5,18 +5,14 @@ namespace App\Jobs\Curations;
 use App\Gene;
 use App\Curation;
 use OutOfBoundsException;
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\GeneSymbolUpdated;
 
-class AugmentWithHgncInfo implements ShouldQueue
+class AugmentWithHgncInfo
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
 
     protected $curation;
     protected $attempts = 0;
@@ -39,7 +35,11 @@ class AugmentWithHgncInfo implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->curation->isDirty('gene_symbol') || is_null($this->curation->hgnc_id) || is_null($this->curation->hgnc_name)) {
+        if (
+            $this->curation->isDirty('gene_symbol') 
+            || is_null($this->curation->hgnc_id) 
+            || is_null($this->curation->hgnc_name)
+        ) {
             try {
                 $this->updateCurationWithSymbol();
             } catch (HttpNotFoundException $e) {
