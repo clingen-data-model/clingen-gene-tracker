@@ -17,7 +17,7 @@ class KafkaConfig
         $this->setGroup($group);
 
         // Initial list of Kafka brokers
-        $this->conf->set('metadata.broker.list', config("streaming-service.broker"));
+        $this->conf->set('metadata.broker.list', config("dx.broker"));
         $this->conf->set('log_level', (string) LOG_DEBUG);
 
         // security config
