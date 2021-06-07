@@ -25,13 +25,13 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Curation\Saved::class => [
             \App\Listeners\Curations\AugmentWithMondoInfo::class,
+            \App\Listeners\Curations\MakeGtGciSyncMessage::class,
         ],
         \App\Events\Curation\Created::class => [
             \App\Listeners\Curations\MakeCurationCreatedStreamMessage::class,
         ],
         \App\Events\Curation\Updated::class => [
             \App\Listeners\Curations\MakeCurationUpdatedStreamMessage::class,
-            \App\Listeners\Curations\MakeGtGciSyncMessage::class
         ],
         \App\Events\Curation\Deleted::class => [
             \App\Listeners\Curations\MakeCurationDeletedStreamMessage::class,

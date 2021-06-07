@@ -3,7 +3,7 @@
 namespace App\Listeners\Curations;
 
 use App\Curation;
-use App\Events\Curation\Updated;
+use App\Events\Curation\CurationEvent;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\CreateStreamMessage;
@@ -29,25 +29,24 @@ class MakeGtGciSyncMessage
      * @param  Updated  $event
      * @return void
      */
-    public function handle(Updated $event)
+    public function handle(CurationEvent $event)
     {
         if (!$this->hasGeneDiseaseMoi($event->curation)) {
             return;
         }
-
+        
         if (!$this->precurationCompleted($event->curation)) {
             return;
         }
 
         if (
             $this->statusWasChanged($event->curation)
-            || $this->moiAdded($event->curation) 
+            || $this->moiAdded($event->curation)
             || $this->diseaseAdded($event->curation)
         ) {
             Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, 'precuration-completed'));
             return;
         }
-
     }
 
     private function hasGeneDiseaseMoi(Curation $curation)
@@ -79,17 +78,13 @@ class MakeGtGciSyncMessage
 
     private function moiAdded(Curation $curation)
     {
-        return $curation->isDirty('moi_id') 
+        return $curation->isDirty('moi_id')
                 && $curation->getOriginal('moi_Id') == null;
     }
 
     private function diseaseAdded(Curation $curation)
     {
-        return $curation->isDirty('mondo_id') 
+        return $curation->isDirty('mondo_id')
                 && $curation->getOriginal('mondo_id') == null;
     }
-    
-    
-    
-    
 }
