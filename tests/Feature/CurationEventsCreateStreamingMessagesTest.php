@@ -21,6 +21,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected $fakeCurationSavedEvent = false;
+
     /**
      * @test
      */

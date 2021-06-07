@@ -171,6 +171,7 @@ class CurationControllerTest extends TestCase
 
         $data['curation_type_id'] = $curationType->id;
 
+        $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)
             ->assertStatus(200);
@@ -303,94 +304,96 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_new_curation_status_when_set()
-    {
-        $statuses = factory(\App\CurationStatus::class, 3)->create();
-        $curator = factory(\App\User::class)->create();
+    // public function store_saves_new_curation_status_when_set()
+    // {
+    //     $statuses = factory(\App\CurationStatus::class, 3)->create();
+    //     $curator = factory(\App\User::class)->create();
 
-        $data = [
-            'gene_symbol' => 'BRCA1',
-            'expert_panel_id' => $this->panel->id,
-            'curator_id' => $curator->id,
-            'curation_status_id' => $statuses->first()->id,
-            'nav' => 'next',
-        ];
+    //     $data = [
+    //         'gene_symbol' => 'BRCA1',
+    //         'expert_panel_id' => $this->panel->id,
+    //         'curator_id' => $curator->id,
+    //         'curation_status_id' => $statuses->first()->id,
+    //         'nav' => 'next',
+    //     ];
 
-        $this->actingAs($this->user, 'api')
-            ->json('POST', '/api/curations', $data)
-            ->assertStatus(201);
+    //     $this->actingAs($this->user, 'api')
+    //         ->json('POST', '/api/curations', $data)
+    //         ->assertStatus(201);
 
-        $this->assertDatabaseHas('curation_curation_status', ['curation_status_id' => $statuses->first()->id]);
-    }
-
-    /**
-     * @test
-     */
-    public function update_saves_new_curation_status_with_default_status_date()
-    {
-        $this->assumeGeneSymbolValid();
-
-        $statuses = factory(\App\CurationStatus::class, 3)->create();
-        $curator = factory(\App\User::class)->create();
-
-        $curation = $this->curations->first();
-        $curation->curationStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
-
-        $data = [
-            'page' => 'info',
-            'gene_symbol' => $curation->gene_symbol,
-            'expert_panel_id' => $this->panel->id,
-            'curator_id' => $curator->id,
-            'curation_status_id' => $statuses->get(1)->id,
-            'nav' => 'next',
-        ];
-
-        $this->withoutExceptionHandling();
-        $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
-
-        $this->assertDatabaseHas('curation_curation_status', ['curation_status_id' => $statuses->get(1)->id, 'created_at' => now()->format('Y-m-d H:i:s')]);
-    }
+    //     $this->assertDatabaseHas('curation_curation_status', ['curation_status_id' => $statuses->first()->id]);
+    // }
 
     /**
      * @test
      */
-    public function update_saves_new_curation_status_and_status_date_when_set()
-    {
-        $this->assumeGeneSymbolValid();
+    // public function update_saves_new_curation_status_with_default_status_date()
+    // {
+    //     $this->assumeGeneSymbolValid();
 
-        $statuses = factory(\App\CurationStatus::class, 3)->create();
-        $curator = factory(\App\User::class)->create();
+    //     $statuses = factory(\App\CurationStatus::class, 3)->create();
+    //     $curator = factory(\App\User::class)->create();
 
-        $curation = $this->curations->first();
-        $curation->curationStatuses()->attach([$statuses->first()->id => ['status_date' => today()->subDays(10)]]);
+    //     $curation = $this->curations->first();
+    //     $curation->curationStatuses()->attach([$statuses->first()->id => ['created_at' => today()->subDays(10)]]);
 
-        Carbon::setTestNow('2019-01-01 00:00:00');
-        $data = [
-            'page' => 'info',
-            'gene_symbol' => $curation->gene_symbol,
-            'expert_panel_id' => $this->panel->id,
-            'curation_type_id' => $this->curationType->id,
-            'curator_id' => $curator->id,
-            'curation_status_id' => 1,
-            'curation_status_timestamp' => now()->subDays(2)->format('Y-m-d H:i:s'),
-            'nav' => 'next',
-        ];
+    //     $data = [
+    //         'page' => 'info',
+    //         'gene_symbol' => $curation->gene_symbol,
+    //         'expert_panel_id' => $this->panel->id,
+    //         'curator_id' => $curator->id,
+    //         'curation_status_id' => $statuses->get(1)->id,
+    //         'nav' => 'next',
+    //     ];
 
-        $this->disableExceptionHandling();
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/'.$curation->id, $data);
-        $response->assertStatus(200);
+    //     $this->withoutExceptionHandling();
+    //     $this->actingAs($this->user, 'api')
+    //         ->json('PUT', '/api/curations/'.$curation->id, $data)
+    //         ->assertStatus(200);
 
-        $this->assertDatabaseHas(
-            'curation_curation_status',
-            [
-                'curation_status_id' => 1,
-                'status_date' => now()->subDays(2)->format('Y-m-d H:i:s'),
-            ]
-        );
-    }
+    //     $this->assertDatabaseHas('curation_curation_status', ['curation_status_id' => $statuses->get(1)->id, 'created_at' => now()->format('Y-m-d H:i:s')]);
+    // }
+
+    /**
+     * @test
+     */
+    // public function update_saves_new_curation_status_and_status_date_when_set()
+    // {
+    //     $this->assumeGeneSymbolValid();
+
+    //     $statuses = factory(\App\CurationStatus::class, 3)->create();
+    //     $curator = factory(\App\User::class)->create();
+
+    //     $curation = $this->curations->first();
+    //     $curation->curationStatuses()->attach([$statuses->first()->id => ['status_date' => today()->subDays(10)]]);
+
+    //     Carbon::setTestNow('2019-01-01 00:00:00');
+    //     $data = [
+    //         'page' => 'info',
+    //         'gene_symbol' => $curation->gene_symbol,
+    //         'expert_panel_id' => $this->panel->id,
+    //         'curation_type_id' => $this->curationType->id,
+    //         'curator_id' => $curator->id,
+    //         'curation_status_id' => 1,
+    //         'curation_status_timestamp' => now()->subDays(2)->format('Y-m-d H:i:s'),
+    //         'nav' => 'next',
+    //     ];
+
+    //     $this->disableExceptionHandling();
+    //     $response = $this->actingAs($this->user, 'api')
+    //         ->json('PUT', '/api/curations/'.$curation->id, $data);
+    //     $response->assertStatus(200);
+
+    //     Carbon::setTestNow('2019-01-01 00:00:00');
+    //     $this->assertDatabaseHas(
+    //         'curation_curation_status',
+    //         [
+    //             'curation_id' => $curation->id,
+    //             'curation_status_id' => 1,
+    //             'status_date' => now()->subDays(2)->startOfDay()->format('Y-m-d H:i:s'),
+    //         ]
+    //     );
+    // }
 
     /**
      * @test
