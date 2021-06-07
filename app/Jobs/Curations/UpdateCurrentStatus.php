@@ -10,9 +10,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateCurrentStatus implements ShouldQueue
+class UpdateCurrentStatus
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
 
     private Curation $curation;
 
@@ -33,6 +33,7 @@ class UpdateCurrentStatus implements ShouldQueue
      */
     public function handle()
     {
+        \Log::debug('updating current status');
         $curationStatuses = $this->curation
                                 ->curationStatuses()
                                 ->orderBy('status_date')
