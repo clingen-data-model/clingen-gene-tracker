@@ -18,9 +18,30 @@ class AddStatusTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        Carbon::setTestNow('2020-01-01');
+        Carbon::setTestNow('2020-01-01 12:34:56');
         $this->curation = factory(Curation::class)->create();
     }
+
+
+    /**
+     * @test
+     */
+    public function adds_status_with_status_date_today_if_status_date_not_specified()
+    {
+        $job = new AddStatus(
+            $this->curation,
+            CurationStatus::find(config('curations.statuses.curation-provisional'))
+        );
+
+        $job->handle();
+
+        $this->assertDatabaseHas('curation_curation_status', [
+            'curation_id' => $this->curation->id,
+            'curation_status_id' => config('curations.statuses.curation-provisional'),
+            'status_date' => Carbon::now()->startOfDay()
+        ]);
+    }
+    
 
     /**
      * @test
@@ -30,7 +51,7 @@ class AddStatusTest extends TestCase
         $job = new AddStatus(
             $this->curation,
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
-            '2019-01-01'
+            '2019-02-01 12:32:12'
         );
 
         $job->handle();
@@ -38,7 +59,7 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional'),
-            'status_date' => '2019-01-01 00:00:00'
+            'status_date' => '2019-02-01 00:00:00'
         ]);
     }
 

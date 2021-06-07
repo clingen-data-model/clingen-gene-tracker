@@ -58,8 +58,9 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                                 ? $curation->curationType->toArray()
                                 : null,
             'omim_phenotypes' => $this->getOmimPhenotypes($curation),
-            'notes' => $curation->notes
-            
+            'notes' => $curation->notes,
+            'date_created' => $curation->created_at->toIsoString(),
+            'date_updated' => $curation->updated_at->toIsoString(),
         ]);
     }
 

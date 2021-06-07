@@ -6,6 +6,7 @@ use App\Curation;
 use App\CurationStatus;
 use Illuminate\Http\Request;
 use App\Jobs\Curations\AddStatus;
+use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\Curations\UpdateCurrentStatus;
 
@@ -39,7 +40,11 @@ class CurationCurationStatusController extends Controller
         $status = CurationStatus::find($request->curation_status_id);
         AddStatus::dispatchNow($curation, $status, $request->status_date);
         
-        return $curation->fresh()->currentStatus;
+        return $curation->curationStatuses()
+                ->where('curation_status_id', $curation->curation_status_id)
+                ->limit(1)
+                ->get()
+                ->last();
     }
 
     /**
@@ -95,6 +100,8 @@ class CurationCurationStatusController extends Controller
             ->firstWhere('pivot.id', $pivotId)
             ->pivot
             ->delete();
+
+        Bus::dispatchNow(new UpdateCurrentStatus($curation));
 
         return response()->json([], 204);
     }

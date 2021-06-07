@@ -94,10 +94,10 @@ class UpdateFromStreamMessageTest extends TestCase
     }
 
     /**
-     * If there's no gdm_uuid on the curation the event should 
+     * If there's no gdm_uuid on the curation the event should
      * not be matchable if the hgnc_id and mondo_id do not match.
      * If not matched it can't be updated.
-     * 
+     *
      * @test
      */
     public function does_not_update_mondo_id_when_curation_not_linked_to_gdm()
@@ -119,10 +119,10 @@ class UpdateFromStreamMessageTest extends TestCase
 
     /**
      * @test
-     * 
+     *
      * Assume a change in mondo id if curation has gdm_uuid
      * and event with gdm_uuid has different mondo than curation.
-     * 
+     *
      */
     public function updates_mondo_id_on_update_when_matched_by_gdm_uuid()
     {
@@ -142,7 +142,6 @@ class UpdateFromStreamMessageTest extends TestCase
             'hgnc_id' => 17098,
             'mondo_id' => 'MONDO:8888888',
         ]);
-        
     }
     
 
@@ -161,8 +160,8 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.curation-provisional'),
-            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
+            'curation_status_id' => config('curations.statuses.curation-provisional'),
+            'status_date' => Carbon::parse($payload->date)->startOfDay()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -172,7 +171,7 @@ class UpdateFromStreamMessageTest extends TestCase
     public function does_not_create_duplicate_status()
     {
         $curation = $this->createDICER1();
-        $curationStatus = CurationStatus::find(config('project.curation-statuses.approved'));
+        $curationStatus = CurationStatus::find(config('curations.statuses.approved'));
         AddStatus::dispatchNow($curation, $curationStatus, '2019-01-08 18:16:30');
 
         $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
@@ -183,8 +182,8 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $expected = [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.approved'),
-            'status_date' => '2019-01-08 18:16:30',
+            'curation_status_id' => config('curations.statuses.approved'),
+            'status_date' => '2019-01-08 00:00:00',
         ];
         $this->assertDatabaseHas('curation_curation_status', $expected);
 
@@ -199,6 +198,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $curation = $this->createDICER1();
 
         $payload = json_decode(file_get_contents($this->provisionalMsgPath));
+
         $payload->status = 'unpublished';
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
@@ -207,8 +207,8 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.published'),
-            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
+            'curation_status_id' => config('curations.statuses.published'),
+            'status_date' => Carbon::parse($payload->date)->startOfDay()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -253,8 +253,8 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
-            'curation_status_id' => config('project.curation-statuses.curation-approved'),
-            'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s'),
+            'curation_status_id' => config('curations.statuses.curation-approved'),
+            'status_date' => Carbon::parse($payload->status->date)->startOfDay()->format('Y-m-d H:i:s'),
         ]);
     }
 

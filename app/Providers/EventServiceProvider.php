@@ -20,11 +20,12 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\User\Created::class => [
             \App\Listeners\SendWelcomeEmail::class,
         ],
-        \App\Event\Curation\Saving::class => [
+        \App\Events\Curation\Saving::class => [
             \App\Listeners\Curations\AugmentWithHgncInfo::class,
         ],
         \App\Events\Curation\Saved::class => [
             \App\Listeners\Curations\AugmentWithMondoInfo::class,
+            \App\Listeners\Curations\MakeGtGciSyncMessage::class,
         ],
         \App\Events\Curation\Created::class => [
             \App\Listeners\Curations\MakeCurationCreatedStreamMessage::class,

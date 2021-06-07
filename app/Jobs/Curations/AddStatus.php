@@ -35,7 +35,7 @@ class AddStatus implements ShouldQueue
         $this->curation = $curation;
         $this->previousStatus = $this->curation->fresh()->currentStatus;
         $this->curationStatus = $curationStatus;
-        $this->date = Carbon::parse($date);
+        $this->date = Carbon::parse($date)->startOfDay();
     }
 
     /**
@@ -52,11 +52,11 @@ class AddStatus implements ShouldQueue
         DB::transaction(function () {
             $this->curation->statuses()->attach([
                 $this->curationStatus->id => [
-                    'status_date' => $this->date,
+                    'status_date' => $this->date->startOfDay(),
                 ],
             ]);
 
-            UpdateCurrentStatus::dispatch($this->curation);
+            UpdateCurrentStatus::dispatchNow($this->curation);
         });
     }
 

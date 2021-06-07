@@ -28,9 +28,13 @@ class AugmentWithHgncInfo
      */
     public function handle(Saving $event)
     {
-        if ($event->curation->isDirty('gene_symbol')) {
+        if (
+            $event->curation->isDirty('gene_symbol')
+            || is_null($event->curation->hgnc_id)
+            || is_null($event->curation->hgnc_name)
+        ) {
             try {
-                HgncInfoJob::dispatch($event->curation);
+                HgncInfoJob::dispatchNow($event->curation);
             } catch (HttpNotFoundException $e) {
                 \Log::warning($e->getMessage());
             }

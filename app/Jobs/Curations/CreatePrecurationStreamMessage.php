@@ -6,6 +6,7 @@ use App\Curation;
 use App\StreamMessage;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,9 +39,11 @@ class CreatePrecurationStreamMessage implements ShouldQueue
      */
     public function handle(MessageFactoryInterface $factory)
     {
-        $msg = StreamMessage::create([
-            'topic' => config('dx.gci-topic'),
-            'message' => $factory->make($this->curation, $this->eventType)
-        ]);
+        $job = new CreateStreamMessage(
+                    config('dx.topics.outgoing.precuration-events'), 
+                    $this->curation, 
+                    $this->eventType
+                );
+        Bus::dispatchNow($job);
     }
 }

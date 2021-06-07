@@ -3,15 +3,16 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
+use App\CurationStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateCurrentStatus implements ShouldQueue
+class UpdateCurrentStatus
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
 
     private Curation $curation;
 
@@ -32,7 +33,13 @@ class UpdateCurrentStatus implements ShouldQueue
      */
     public function handle()
     {
-        $curationStatuses = $this->curation->curationStatuses;
+        \Log::debug('updating current status');
+        $curationStatuses = $this->curation
+                                ->curationStatuses()
+                                ->orderBy('status_date')
+                                ->orderBy('curation_curation_status.curation_status_id')
+                                ->orderBy('curation_curation_status.created_at')
+                                ->get();
         $currentStatus = $curationStatuses->last();
 
         $this->curation->update([

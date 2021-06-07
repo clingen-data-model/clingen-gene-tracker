@@ -15,7 +15,7 @@ class Saving
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $curation;
+    public $curation;
 
     /**
      * Create a new event instance.
