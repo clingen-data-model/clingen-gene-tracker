@@ -97,7 +97,11 @@ const actions = {
     linkNewStatus({ commit }, { curation, data }) {
         return window.axios.post(baseUrl + '/' + curation.id + '/statuses', data)
             .then((response) => {
-                curation.curation_statuses.push(response.data);
+                const status = response.data;
+                if (curation.curation_statuses.find(st => st.pivot.id == status.pivot.id)) {
+                    return response;
+                }
+                curation.curation_statuses.push(status);
                 commit('addItem', curation);
                 return response
             })

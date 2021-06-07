@@ -103,6 +103,8 @@
     import getPageOfCurations from '../../resources/curations/get_page_of_curations'
     import uniqid from '../../helpers/uniqid'
     import { mapGetters } from 'vuex'
+    import filters from '../../filters'
+
 
     export default {
         components: {
@@ -179,6 +181,13 @@
                         thStyle: {
                             width: "8rem"
                         }
+                    },
+                    {
+                        key: 'created_at',
+                        label: 'created',
+                        sortable: true,
+                        formatter: (value) => this.$options.filters.formatDate(value, 'YYYY-MM-DD')
+
                     },
                     {
                         key: 'actions',
