@@ -109,43 +109,10 @@ class CurationController extends Controller
         // Ignore data that should not be manually updated.
         $data = $request->except(['curation_status_id', 'hgnc_id', 'hgnc_name']);
 
-        if (isset($data['pmids']) && is_string($data['pmids'])) {
-            $data['pmids'] = array_map(function ($i) {
-                return trim($i);
-            }, explode(',', $data['pmids']));
-        }
-
         try {
             $curation->update($data);
-
-            if ($request->phenotypes) {
-                SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
-            }
-
-            if ($request->isolated_phenotype) {
-                $pheno = $this->omim->getEntry($request->isolated_phenotype);
-                SyncPhenotypes::dispatchNow($curation, [
-                    [
-                        'mim_number' => $pheno->mimNumber,
-                        'name' => $pheno->titles->preferredTitle,
-                    ],
-                ]);
-            }
-
-            if ($request->rationales) {
-                $curation->rationales()->sync(collect($request->rationales)->pluck('id'));
-            }
-
-            if ($request->curation_status_id && $request->curation_status_id != $curation->curation_status_id) {
-                $status_date = ($request->curation_status_timestamp)
-                                ? Carbon::parse($request->curation_status_timestamp)
-                                : now();
-                $curation->curationStatuses()->attach([
-                    $request->curation_status_id => [
-                        'status_date' => $status_date,
-                    ],
-                ]);
-            }
+            $this->setPhenotypes($curation, $request);
+            $this->setRationales($curation, $request->rationales);
         } catch (ApiServerErrorException $e) {
             report($e);
         }
@@ -170,6 +137,31 @@ class CurationController extends Controller
 
         return response()->json(['message' => 'You successfully deleted curation with id '.$id]);
     }
+
+    private function setPhenotypes(Curation $curation, $request)
+    {
+        if ($request->phenotypes) {
+            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+        }
+
+        if ($request->isolated_phenotype) {
+            $pheno = $this->omim->getEntry($request->isolated_phenotype);
+            SyncPhenotypes::dispatchNow($curation, [
+                [
+                    'mim_number' => $pheno->mimNumber,
+                    'name' => $pheno->titles->preferredTitle,
+                ],
+            ]);
+        }
+    }
+
+    private function setRationales(Curation $curation, $rationales)
+    {
+        if ($rationales) {
+            $curation->rationales()->sync(collect($rationales)->pluck('id'));
+        }
+    }
+    
 
     private function loadRelations(&$curation)
     {

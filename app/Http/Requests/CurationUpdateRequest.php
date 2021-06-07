@@ -23,6 +23,17 @@ class CurationUpdateRequest extends CurationCreateRequest
         return $rules;
     }
 
+    public function all($keys = null)
+    {
+        $data = parent::all($keys);
+        if (isset($data['pmids']) && is_string($data['pmids'])) {
+            $data['pmids'] = array_map(function ($i) {
+                return trim($i);
+            }, explode(',', $data['pmids']));
+        }
+        return $data;
+    }
+
     public function messages()
     {
         $messages = [
