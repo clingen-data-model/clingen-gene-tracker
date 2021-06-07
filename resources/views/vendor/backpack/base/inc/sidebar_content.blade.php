@@ -20,6 +20,10 @@
     <li><a href="{{ url(config('backpack.base.route_prefix').'/rationale') }}"><i class="fa fa-file-o"></i> <span>Rationales</span></a></li>
 @endif
 
+@if(Auth::user()->hasPermissionTo('list mois'))
+    <li><a href="{{ url(config('backpack.base.route_prefix').'/moi') }}"><i class="fa fa-file-o"></i> <span>MOIs</span></a></li>
+@endif
+
 @if(Auth::user()->hasAnyRole(['programmer', 'admin'])) 
     <li><a href="{{ url(config('backpack.base.route_prefix').'/upload-category') }}"><i class="fa fa-file-o"></i> <span>Upload Categories</span></a></li>
 @endif

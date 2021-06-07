@@ -26,6 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('rationales');
         $this->createPermissionGroup('pages');
         $this->createPermissionGroup('curations');
+        $this->createPermissionGroup('mois');
         $managePanelCurations = Permission::firstOrcreate(['name' => 'manage panel curations']);
         $updateGdmUuid = Permission::firstOrcreate(['name' => 'update curation gdm_uuid']);
 
@@ -41,6 +42,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'rationales');
         $this->givePermissionsToRole($role, 'pages');
         $this->givePermissionsToRole($role, 'curations');
+        $this->givePermissionsToRole($role, 'mois');
         $this->giveRolePermissionTo($role, $updateGdmUuid);
 
         /**
@@ -54,6 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'rationales', ['list', 'update']);
         $this->givePermissionsToRole($role, 'pages', ['list', 'update']);
         $this->givePermissionsToRole($role, 'curations');
+        $this->givePermissionsToRole($role, 'mois', ['list', 'update']);
         $this->giveRolePermissionTo($role, $updateGdmUuid);
 
         // $role = Role::firstOrcreate(['name' => 'coordinator']);

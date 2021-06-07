@@ -32,6 +32,7 @@ Route::group([
     CRUD::resource('email', 'EmailCrudController');
     CRUD::resource('notification', 'NotificationCrudController');
     CRUD::resource('upload-category', 'UploadCategoryCrudController');
+    CRUD::resource('moi', 'MoiCrudController');
 }); // this should be the absolute last line of this file
 
 Route::get('admin/login', '\App\Http\Controllers\Auth\LoginController@showLoginForm');
