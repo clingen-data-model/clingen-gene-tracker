@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property Classification $currentClassificiation
@@ -29,6 +30,7 @@ class Curation extends Model
     use CrudTrait;
     use RevisionableTrait;
     use HasUuid;
+    use SoftDeletes;
 
     protected $revisionCreationsEnabled = true;
 
