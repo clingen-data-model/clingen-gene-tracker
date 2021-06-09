@@ -73,7 +73,7 @@ class KafkaConfig
         
         $this->conf->set('security.protocol', 'sasl_ssl');
         $this->conf->set('sasl.mechanism', 'PLAIN');
-        $this->conf->set('sasl.username', config('dx.dx_username'));
-        $this->conf->set('sasl.password', config('dx.dx_password'));
+        $this->conf->set('sasl.username', config('dx.username'));
+        $this->conf->set('sasl.password', config('dx.password'));
     }
 }

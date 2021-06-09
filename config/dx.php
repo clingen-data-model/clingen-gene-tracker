@@ -5,9 +5,9 @@ return [
     'driver' => env('DX_ENABLE_PUSH', false)
                     ? env('DX_DRIVER', 'kafka')
                     : 'log',
-    'dx_username' => env('DX_USERNAME'),
-    'dx_password' => env('DX_PASSWORD'),
-    'dx_group' => env('DX_GROUP'),
+    'username' => env('DX_USERNAME'),
+    'password' => env('DX_PASSWORD'),
+    'group' => env('DX_GROUP'),
     'push-enable' => env('DX_ENABLE_PUSH', false),
     'warn-disabled' => env('DX_WARN_DISABLED', true),
     'consume' => env('DX_CONSUME', true),
