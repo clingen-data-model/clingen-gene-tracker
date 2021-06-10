@@ -14,7 +14,9 @@ class AlterCurationsAddSoftDelete extends Migration
     public function up()
     {
         Schema::table('curations', function (Blueprint $table) {
-            $table->softDeletes();
+            if (!Schema::hasColumn('curations', 'deleted_at')) {                
+                $table->softDeletes();
+            }
         });
     }
 
