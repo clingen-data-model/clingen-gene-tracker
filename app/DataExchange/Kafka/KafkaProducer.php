@@ -2,10 +2,9 @@
 
 namespace App\DataExchange\Kafka;
 
-use  App\DataExchange\KafkaConfig;
 use App\DataExchange\Contracts\MessagePusher;
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Exceptions\StreamingServiceException;
+use Ramsey\Uuid\Uuid;
 
 class KafkaProducer implements MessagePusher
 {
@@ -22,7 +21,7 @@ class KafkaProducer implements MessagePusher
     private function produceOnTopic($message, \RdKafka\ProducerTopic $topic)
     {
         try {
-            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
+            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, Uuid::uuid4()->toString());
             $this->rdKafkaProducer->poll(0);
     
             while ($this->rdKafkaProducer->getOutQLen() > 0) {
