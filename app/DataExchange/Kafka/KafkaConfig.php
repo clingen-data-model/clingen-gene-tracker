@@ -41,7 +41,7 @@ class KafkaConfig
     }
     public function setGroup($group = null)
     {
-        $group = $group ? $group : config('dx.group', 'unc_demo');
+        $group = $group ? $group : config('dx.group', 'unc_staging');
         $this->conf->set('group.id', $group);
     }
 
