@@ -4,6 +4,7 @@ namespace App\DataExchange\Kafka;
 
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Exceptions\StreamingServiceException;
+use Ramsey\Uuid\Uuid;
 
 class KafkaProducer implements MessagePusher
 {
@@ -20,17 +21,12 @@ class KafkaProducer implements MessagePusher
     private function produceOnTopic($message, \RdKafka\ProducerTopic $topic)
     {
         try {
-            \Log::debug(__METHOD__);
-            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
-            \Log::debug('topic->produce ran');
+            $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, Uuid::uuid4()->toString());
             $this->rdKafkaProducer->poll(0);
-            \Log::debug('$this->rdKafkaProducer->poll(0); ran');
             
             while ($this->rdKafkaProducer->getOutQLen() > 0) {
                 $this->rdKafkaProducer->poll(50);
-                \Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
             }
-            \Log::debug('q len is 0.  finishing up.');
         } catch (\Throwable $e) {
             report($e);
         }

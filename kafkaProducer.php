@@ -1,5 +1,7 @@
 <?php
 
+use Ramsey\Uuid\Uuid;
+
 require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
@@ -68,7 +70,7 @@ while (true) {
         break;
     }
     echo "tried to produce message '$line'\n";
-    $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line));
+    $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line), Uuid::uuid4()->toString());
     $rk->poll(0);
 }
 

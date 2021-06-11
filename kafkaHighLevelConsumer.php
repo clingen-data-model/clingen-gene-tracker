@@ -22,10 +22,11 @@ foreach ($argv as $idx => $arg) {
     $arguments[] = $arg;
 }
 
-$topics = isset($arguments[0]) ? explode(',', $arguments[0]) : [];
-
-$offset = (int)(isset($arguments[1]) ? $arguments[1] : -1);
+$topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
+$offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
+
+// dd(compact('topics', 'offset', 'limit'));
 
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
@@ -212,9 +213,11 @@ while (true) {
 
             $a = json_decode($message->payload, true);
 
+            $filename = $message->key ?? 'null-key-'.$count;
+
             $filePath = $messageDir.'/'.$message->key.'.json';
 
-            file_put_contents($filePath, $message);
+            file_put_contents($filePath, $message->payload);
 
             echo(json_encode([
                 'len' => $message->len,
@@ -232,7 +235,7 @@ while (true) {
             $count++;
             if ($limit && $count > $limit) {
                 echo "Reached limit $limit";
-                break;
+                break 2;
             }
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
