@@ -26,7 +26,7 @@ class BuildGciCurations extends Command
      *
      * @var string
      */
-    protected $signature = 'gci:build-curations';
+    protected $signature = 'gci:build-curations {--include-snapshot : Include replaying from snapshot.}';
 
     /**
      * The console command description.
@@ -60,7 +60,9 @@ class BuildGciCurations extends Command
         $this->populateLookups();
         DB::table('gci_curations')->truncate();
 
-        $this->populateFromSnapshot();
+        if ($this->option('include-snapshot')) {
+            $this->populateFromSnapshot();
+        }
 
         $this->updateFromStreamMessages();
     }
@@ -113,7 +115,7 @@ class BuildGciCurations extends Command
                     $gciCuration->save();
                     $bar->advance();
                 } catch (InvalidArgumentException $e) {
-                    $errorsp[] = ($e->getMessage());
+                    $errors[] = ($e->getMessage());
                     $bar->advance();
                 }
             });
@@ -229,9 +231,11 @@ class BuildGciCurations extends Command
         if (empty($affiliationId)) {
             return null;
         }
+
         if (!$this->affiliations->get($affiliationId)) {
             throw new InvalidArgumentException($affiliationId.' not found in affiliations table');
         }
+        
         return $this->affiliations->get($affiliationId)->id;
     }
 
@@ -267,12 +271,12 @@ class BuildGciCurations extends Command
                             ->keyBy('name');
                             
         $this->statuses->put('none', $this->statuses['uploaded']);
-        $this->statuses->put('in progress', $this->statuses['precuration_complete']);
-        $this->statuses->put('created', $this->statuses['precuration_complete']);
+        $this->statuses->put('in progress', $this->statuses['precuration complete']);
+        $this->statuses->put('created', $this->statuses['precuration complete']);
         $this->statuses->put('approved', $this->statuses['curation approved']);
         $this->statuses->put('provisional', $this->statuses['curation provisional']);
         $this->statuses->put('provisionally approved', $this->statuses['curation provisional']);
-        $this->statuses->put('unpublished', $this->statuses['precuration_complete']);
+        $this->statuses->put('unpublished', $this->statuses['precuration complete']);
 
         $this->classifications = Classification::all()
                                     ->map(function ($cl) {
