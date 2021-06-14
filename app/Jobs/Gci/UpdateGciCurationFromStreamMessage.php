@@ -21,7 +21,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private $gciMessage;
+    public $gciMessage;
     private $affiliations;
     private $statuses;
     private $classifications;
