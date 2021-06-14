@@ -7,183 +7,191 @@
         
         </div>
         <transition name="fade">
-        <b-card
-            id="show-curation"
-            v-if="!loading"
-            key="curation-details"
-            style="max-heigh: 1000px"
-        >
-            <template slot="header">
-                <div class="d-float justify-content-between">
-                    <h3> {{ title }}</h3>
+            <b-card
+                id="show-curation"
+                v-if="!loading"
+                key="curation-details"
+                style="max-heigh: 1000px"
+            >
+                <template slot="header">
+                    <div class="d-float justify-content-between">
+                        <h3> {{ title }}</h3>
 
-                    <div class="d-flex space-x-1" v-if="!loading">
-                        <router-link
-                            v-if="user.canEditCuration(curation)"
-                            :id="'edit-curation-'+curation.id+'-btn'" 
-                            class="btn btn-secondary btn-sm" 
-                            :to="'/curations/'+curation.id+'/edit'"
-                        >
-                            Edit
-                        </router-link>
-                        <delete-button class="btn btn-sm" :curation="curation"></delete-button>
-                        <transfer-curation-control 
-                            :curation="curation" 
-                            v-if="$store.state.features.transferEnabled"
-                        ></transfer-curation-control>
-                    </div>                
-                </div>
-           </template>
-            <div v-if="this.curations">
-                <div id="info">
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Gene Symbol:</strong> 
-                        <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
+                        <div class="d-flex space-x-1" v-if="!loading">
+                            <router-link
+                                v-if="user.canEditCuration(curation)"
+                                :id="'edit-curation-'+curation.id+'-btn'" 
+                                class="btn btn-secondary btn-sm" 
+                                :to="'/curations/'+curation.id+'/edit'"
+                            >
+                                Edit
+                            </router-link>
+                            <delete-button class="btn btn-sm" :curation="curation"></delete-button>
+                            <transfer-curation-control 
+                                :curation="curation" 
+                                v-if="$store.state.features.transferEnabled"
+                            ></transfer-curation-control>
+                        </div>                
                     </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">
-                            Mode Of Inheritance:
-                        </strong>
-                        <div class="col-md">
-                            <div v-if="curation.mode_of_inheritance">
-                                {{curation.mode_of_inheritance.name}} - ({{curation.mode_of_inheritance.hp_id}})
-                            </div>
-                            <div v-else>--</div>
+                </template>
+                <div v-if="this.curations">
+                    <div id="info">
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Gene Symbol:</strong> 
+                            <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Disease Entity:</strong> 
-                        <div class="col-md">
-                            <div v-if="curation.mondo_id">
-                                <span v-if="curation.mondo_name">
-                                    {{ (curation.mondo_name ? curation.mondo_name : '')}} - 
-                                </span>
-                                <external-link :href="mondoUrl" target="mondo" class="external">
-                                    {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
-                                </external-link>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">
+                                Mode Of Inheritance:
+                            </strong>
+                            <div class="col-md">
+                                <div v-if="curation.mode_of_inheritance">
+                                    {{curation.mode_of_inheritance.name}} - ({{curation.mode_of_inheritance.hp_id}})
+                                </div>
+                                <div v-else>--</div>
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Expert Panel:</strong> 
-                        <div class="col-md">
-                            {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
-                            <div v-if="$store.state.features.transferEnabled">
-                                <toggle-button 
-                                    v-model="showOwnerHistory" 
-                                    show-label="Show history" 
-                                    hide-label="Hide history"
-                                ></toggle-button>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Disease Entity:</strong> 
+                            <div class="col-md">
+                                <div v-if="curation.mondo_id">
+                                    <span v-if="curation.mondo_name">
+                                        {{ (curation.mondo_name ? curation.mondo_name : '')}} - 
+                                    </span>
+                                    <external-link :href="mondoUrl" target="mondo" class="external">
+                                        {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
+                                    </external-link>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Expert Panel:</strong> 
+                            <div class="col-md">
+                                {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
+                                <div v-if="$store.state.features.transferEnabled">
+                                    <toggle-button 
+                                        v-model="showOwnerHistory" 
+                                        show-label="Show history" 
+                                        hide-label="Hide history"
+                                    ></toggle-button>
+                                    <transition name="fade">
+                                        <history-table 
+                                            :items="curation.expert_panels" 
+                                            item-label="Expert Panel" 
+                                            date-field="start_date" 
+                                            v-show="showOwnerHistory" 
+                                            index-attribute="id"
+                                        ></history-table>
+                                    </transition>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Curator:</strong> 
+                            <div class="col-md">{{ (curation.curator) ? curation.curator.name : '--'}}</div>
+                        </div>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Curation Type:</strong>
+                            <div class="col-md">
+                                {{curation.curation_type ? curation.curation_type.description : '--'}}
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <strong class="col-md-3">Phenotypes:</strong>
+                            <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" class="col-md"></phenotype-list>
+                        </div>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Rationale:</strong>
+                            <div class="col-md">
+                                <ul class="list-inline">
+                                    <li v-for="(rationale, idx) in curation.rationales" :key="rationale.id" class="list-inline-item">
+                                        {{rationale.name}}<span v-if="idx+1 < curation.rationales.length">,</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">PMIDS</strong>
+                            <div class="col-md" v-if="curation.pmids">
+                                <ul class="list-inline">
+                                    <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item" :key="idx">
+                                        {{pmid}}<span v-if="curation.pmids && curation.pmids.length > idx+1">,</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <strong class="col-md-3">Notes on Rationale</strong>
+                            <div class="col-md">
+                                {{curation.rationale_notes}}
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <strong class="col-md-3">Disease entity notes:</strong> 
+                            <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
+                        </div>
+                        <div class="row mt-3">
+                            <strong class="col-md-3">Current Status:</strong>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    {{ (curation.current_status) ? curation.current_status.name : 'No status set' }} 
+                                    <button class="btn btn-sm">
+                                        <small>
+                                            <small @click="showStatusHistory = !showStatusHistory">
+                                                {{statusHistoryButtonText}}
+                                            </small>
+                                        </small>
+                                    </button>
+                                </div>
                                 <transition name="fade">
                                     <history-table 
-                                        :items="curation.expert_panels" 
-                                        item-label="Expert Panel" 
-                                        date-field="start_date" 
-                                        v-show="showOwnerHistory" 
-                                        index-attribute="id"
+                                        :items="curation.curation_statuses" 
+                                        item-label="Status" 
+                                        date-field="status_date"
+                                        v-show="showStatusHistory"
                                     ></history-table>
                                 </transition>
                             </div>
                         </div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Curator:</strong> 
-                        <div class="col-md">{{ (curation.curator) ? curation.curator.name : '--'}}</div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Curation Type:</strong>
-                        <div class="col-md">
-                            {{curation.curation_type ? curation.curation_type.description : '--'}}
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <strong class="col-md-3">Phenotypes:</strong>
-                        <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" class="col-md"></phenotype-list>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Rationale:</strong>
-                        <div class="col-md">
-                            <ul class="list-inline">
-                                <li v-for="(rationale, idx) in curation.rationales" :key="rationale.id" class="list-inline-item">
-                                    {{rationale.name}}<span v-if="idx+1 < curation.rationales.length">,</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">PMIDS</strong>
-                        <div class="col-md" v-if="curation.pmids">
-                            <ul class="list-inline">
-                                <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item" :key="idx">
-                                    {{pmid}}<span v-if="curation.pmids && curation.pmids.length > idx+1">,</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <strong class="col-md-3">Notes on Rationale</strong>
-                        <div class="col-md">
-                            {{curation.rationale_notes}}
-                        </div>
-                    </div>
-                    <div class="row mt-1">
-                        <strong class="col-md-3">Disease entity notes:</strong> 
-                        <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
-                    </div>
-                    <div class="row mt-3">
-                        <strong class="col-md-3">Current Status:</strong>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                {{ (curation.current_status) ? curation.current_status.name : 'No status set' }} 
-                                <button class="btn btn-sm"><small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small></button>
+                        <div class="row mt-2" v-if="curation.gdm_uuid">
+                            <strong class="col-md-3">GCI ID:</strong> 
+                            <div class="col-md">
+                                <gci-link :curation="curation"></gci-link>
                             </div>
-                            <transition name="fade">
-                                <history-table 
-                                    :items="curation.curation_statuses" 
-                                    item-label="Status" 
-                                    date-field="status_date"
-                                     v-show="showStatusHistory"
-                                ></history-table>
-                            </transition>
                         </div>
-                    </div>
-                    <div class="row mt-2" v-if="curation.gdm_uuid">
-                        <strong class="col-md-3">GCI ID:</strong> 
-                        <div class="col-md">
-                            <gci-link :curation="curation"></gci-link>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <strong class="col-md-3">Current Classification:</strong>
-                        <div class="col-md-6">
-                            <div class="mb-2">
-                                {{ (curation.current_classification) ? curation.current_classification.name : 'No status set' }} 
-                                <button class="btn btn-sm"><small><small @click="showClassificationHistory = !showClassificationHistory">{{classificationButtonText}}</small></small></button>
+                        <div class="row mt-3">
+                            <strong class="col-md-3">Current Classification:</strong>
+                            <div class="col-md-6">
+                                <div class="mb-2">
+                                    {{ (curation.current_classification) ? curation.current_classification.name : 'Not yet classified' }} 
+                                    <button class="btn btn-sm" v-if="curation.current_classification">
+                                        <small>
+                                            <small @click="showClassificationHistory = !showClassificationHistory">
+                                                {{classificationButtonText}}
+                                            </small>
+                                        </small>
+                                    </button>
+                                </div>
+                                <transition name="fade">
+                                    <div>
+                                        <classification-history :curation="curation" v-show="showClassificationHistory"></classification-history>
+                                    </div>
+                                </transition>
                             </div>
-                            <transition name="fade">
-                                <history-table 
-                                    :items="curation.classifications" 
-                                    item-label="Classification" 
-                                    date-field="classification_date"
-                                     v-show="showClassificationHistory"
-                                ></history-table>
-                                <classification-history :curation="curation" v-show="showClassificationHistory"></classification-history>
-                            </transition>
+                        </div>
+                        <div class="row mt-1">
+                            <strong class="col-md-3">Notes:</strong> 
+                            <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
                         </div>
                     </div>
-                    <div class="row mt-1">
-                        <strong class="col-md-3">Notes:</strong> 
-                        <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
-                    </div>
+                    <hr>
+                    <documents-card :curation="curation"></documents-card>
                 </div>
-                <hr>
-                <documents-card :curation="curation"></documents-card>
+            </b-card>
+            <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
+                Loading...
             </div>
-        </b-card>
-        <div v-else class="alert alert-secondary lead text-center mt-4" key="loading">
-            Loading...
-        </div>
         </transition>
     </div>
 </template>

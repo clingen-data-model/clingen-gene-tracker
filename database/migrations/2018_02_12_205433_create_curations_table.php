@@ -24,6 +24,7 @@ class CreateCurationsTable extends Migration
             $table->json('pmids')->nullable();
             $table->text('rationale_other')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('expert_panel_id')->references('id')->on('expert_panels');
             $table->foreign('curator_id')->references('id')->on('users');

@@ -5,21 +5,20 @@ namespace App\DataExchange;
 use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\DataExchange\MessagePushers\MessageLogger;
-use App\DataExchange\Contracts\MessagePusher;
-use App\DataExchange\MessagePushers\DisabledPusher;
-use App\DataExchange\Contracts\MessageConsumer;
+use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
-use Illuminate\Support\Facades\Artisan;
+use App\DataExchange\Kafka\KafkaConfig;
 use App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Kafka\KafkaProducer;
+use App\DataExchange\Contracts\MessagePusher;
+use App\DataExchange\Contracts\MessageConsumer;
 use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\MessagePushers\MessageLogger;
+use App\DataExchange\MessagePushers\DisabledPusher;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
-use App\Jobs\UpdateCurationFromGeneValidityMessage;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Console\Command;
-use League\CommonMark\Reference\Reference;
 
 class DataExchangeServiceProvider extends ServiceProvider
 {
@@ -31,16 +30,6 @@ class DataExchangeServiceProvider extends ServiceProvider
             \App\Listeners\Curations\UpdateFromStreamMessage::class,
         ],
     ];
-
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 
     /**
      * Bootstrap services.
@@ -64,10 +53,15 @@ class DataExchangeServiceProvider extends ServiceProvider
             if (!config('dx.push-enable')) {
                 return new DisabledPusher();
             }
+            if (config('dx.driver') == 'kafka') {
+                return $this->app->make(KafkaProducer::class);
+            }
             if (config('dx.driver') == 'log') {
                 return new MessageLogger();
             }
-            return $this->app->make(KafkaProducer::class);
+            
+            \Log::warning('No DataExchange driver set.  Defaulting to log driver');
+            return new MessageLogger();
         });
 
         $this->app->bind(\RdKafka\Producer::class, function () {

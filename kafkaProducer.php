@@ -1,13 +1,10 @@
 <?php
+
+use Ramsey\Uuid\Uuid;
+
 require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
-
-$sslCertLocation = env('KAFKA_CERT', '/etc/pki/tls/certs/kafka.web3demo.signed.crt');
-$sslKeyLocation =  env('KAFKA_KEY_LOCATION', '/etc/pki/tls/private/kafka.apache.key');
-$sslCaLocation =   env('KAFKA_CA_LOCATION', '/etc/pki/ca-trust/extracted/openssl/ca-kafka-cert');
-$sslKeyPassword = env('KAFKA_KEY_PASSWORD', null);
-$group = env('KAFKA_GROUP', 'unc_demo');
 
 $conf = new RdKafka\Conf();
 
@@ -50,21 +47,19 @@ $conf->setDrMsgCb(function ($kafka, $message) {
 // $conf->set('group.id', $group);
 
 // Initial list of Kafka brokers
-$conf->set('security.protocol', 'ssl');
-$conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
-$conf->set('ssl.certificate.location', $sslCertLocation);
-$conf->set('ssl.key.location', $sslKeyLocation);
-$conf->set('ssl.ca.location', $sslCaLocation);
-if ($sslKeyPassword) {
-    $conf->set('ssl.key.password', $sslKeyPassword);
-}
+$conf->set('security.protocol', 'sasl_ssl');
+$conf->set('sasl.mechanism', 'PLAIN');
+$conf->set('sasl.username', env('DX_USERNAME'));
+$conf->set('sasl.password', env('DX_PASSWORD'));
+$conf->set('group.id', env('DX_GROUP'));
+// $conf->set('metadata.broker.list', env('DX_BROKER'));
 
 
 $rk = new RdKafka\Producer($conf);
 $rk->setLogLevel(LOG_DEBUG);
-// $rk->addBrokers("127.0.0.1");
+$rk->addBrokers(env('DX_BROKER'));
 
-$topic = $rk->newTopic("test");
+$topic = $rk->newTopic("gt-precuration-events-test");
 
 $stdin = fopen("php://stdin", "r");
 
@@ -74,7 +69,8 @@ while (true) {
     if (in_array($line, ['quit', 'exit'])) {
         break;
     }
-    $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line));
+    echo "tried to produce message '$line'\n";
+    $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line), Uuid::uuid4()->toString());
     $rk->poll(0);
 }
 

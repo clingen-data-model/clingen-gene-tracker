@@ -22,15 +22,18 @@ foreach ($argv as $idx => $arg) {
     $arguments[] = $arg;
 }
 
-$topics = isset($arguments[0]) ? explode(',', $arguments[0]) : ['test'];
-$offset = (int)(isset($arguments[1]) ? $arguments[1] : -1);
+$topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
+$offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
+
+// dd(compact('topics', 'offset', 'limit'));
 
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 
 
-function rSortByKeys ($array) {
+function rSortByKeys($array)
+{
     $obj = false;
     if (is_object($array)) {
         $array = (array)$array;
@@ -51,7 +54,6 @@ function rSortByKeys ($array) {
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
-    
     if ($offset >= 0) {
         echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
     } else {
@@ -65,7 +67,6 @@ function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 
 function configure($offset)
 {
-    
     $conf = new RdKafka\Conf();
 
     // Configure the group.id. All consumer with the same group.id will consume
@@ -88,7 +89,7 @@ function configure($offset)
     // offset store or the desired offset is out of range.
     // 'smallest': start from the beginning
     
-    // $topicConf = new RdKafka\TopicConf();    
+    // $topicConf = new RdKafka\TopicConf();
     // $topicConf->set('auto.offset.reset', 'beginning');
     // Set the configuration to use for subscribed/assigned topics
     // $conf->setDefaultTopicConf($topicConf);
@@ -119,22 +120,21 @@ function configure($offset)
     });
 
     return $conf;
-
 }
 
 function configureForConfluent($offset)
 {
-    
     $conf = configure($offset);
 
-    echo "setting group to ".env('KAFKA_GROUP', 'unc_staging')." for ".env('STREAMING_SERVICE_BROKER')."...\n";
-    $conf->set('group.id', env('KAFKA_GROUP', 'unc_staging'));
+    echo "setting group to ".env('DX_GROUP', 'unc_staging')." for ".env('DX_BROKER')."...\n";
+    $conf->set('group.id', env('DX_GROUP', 'unc_staging'));
     
     $conf->set('security.protocol', 'sasl_ssl');
-    $conf->set('metadata.broker.list', env('STREAMING_SERVICE_BROKER'));
+    $conf->set('metadata.broker.list', env('DX_BROKER'));
     $conf->set('sasl.mechanism', 'PLAIN');
-    $conf->set('sasl.username', env('KAFKA_USERNAME'));
-    $conf->set('sasl.password', env('KAFKA_PASSWORD'));    
+    echo "Authenticating with DX_USERNAME (".env('DX_USERNAME').") and DX_PASSWORD (see .env)";
+    $conf->set('sasl.username', env('DX_USERNAME'));
+    $conf->set('sasl.password', env('DX_PASSWORD'));
 
     return $conf;
 }
@@ -162,7 +162,12 @@ function configureForExchange($offset)
     }
 
     return $conf;
+}
 
+$messageDir = __DIR__.'/consumed_messages';
+if (!file_exists($messageDir)) {
+    mkdir($messageDir);
+    echo "made ".$messageDir.' directory';
 }
 
 
@@ -198,6 +203,7 @@ echo "\nWaiting for partition assignment...\n";
 
 $count = 0;
 $keys = [];
+
 while (true) {
     $message = $consumer->consume(10000);
     // dump($message);
@@ -207,30 +213,36 @@ while (true) {
 
             $a = json_decode($message->payload, true);
 
-            $filePath = __DIR__.'/gene_validity_raw/'.$message->key.'.json';
+            $filename = $message->key ?? 'null-key-'.$count;
+
+            $filePath = $messageDir.'/'.$message->key.'.json';
+
             file_put_contents($filePath, $message->payload);
-            // echo (json_encode([
-            //     'len' => $message->len,
-            //     'topic_name' => $message->topic_name,
-            //     'timestamp' => $message->timestamp,
-            //     'partition' => $message->partition,
-            //     'payload' => json_encode($payload),
-            //     'key' => $message->key,
-            //     'offset' => $message->offset,
-            // ], JSON_PRETTY_PRINT));
+
+            echo(json_encode([
+                'len' => $message->len,
+                'topic_name' => $message->topic_name,
+                'timestamp' => $message->timestamp,
+                'partition' => $message->partition,
+                'payload' => json_encode($payload),
+                'key' => $message->key,
+                'offset' => $message->offset,
+            ], JSON_PRETTY_PRINT));
             if (!isset($keys[$message->key])) {
                 $keys[$message->key] = [];
             }
             // $keys[$message->key][] = json_encode($payload, JSON_PRETTY_PRINT);
             $count++;
             if ($limit && $count > $limit) {
+                echo "Reached limit $limit";
                 break 2;
             }
             break;
         case RD_KAFKA_RESP_ERR__PARTITION_EOF:
             echo "\n\n**No more messages; will wait for more...\n\n";
+            break;
             // echo "\n\nFound all messages. Closing for now.\n\n";
-            break 2;
+            // break 2;
         case RD_KAFKA_RESP_ERR__TIMED_OUT:
             echo "**Timed out\n";
             // echo "Timed out\n";
@@ -261,15 +273,15 @@ while (true) {
 }
 
 echo count($keys)." keys that have the multple messages\n";
-foreach($keys as $key => $payloads) {
+foreach ($keys as $key => $payloads) {
     if (count($payloads) > 1) {
         echo $key." has ".count($payloads)." messages.\n";
-        for ($i=0; $i < count($payloads); $i++) { 
+        for ($i=0; $i < count($payloads); $i++) {
             if ($i == 0) {
                 continue;
             }
             $diff = xdiff_string_diff($payloads[($i-1)], $payloads[$i]);
-            echo (($diff) ? $diff : 'NO DIFFERENCE')."\n";
+            echo(($diff) ? $diff : 'NO DIFFERENCE')."\n";
         }
         echo "-------\n";
     }

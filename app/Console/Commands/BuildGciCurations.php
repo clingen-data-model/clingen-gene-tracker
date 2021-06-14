@@ -173,7 +173,7 @@ class BuildGciCurations extends Command
     {
         $snapshotPath = base_path('files/gci_snapshot.csv');
         if (!file_exists($snapshotPath)) {
-            throw new Exception('Snapshot file not found at $snapshotPath');
+            throw new Exception('Snapshot file not found at '.$snapshotPath);
         }
 
         $fh = fopen($snapshotPath, 'r');

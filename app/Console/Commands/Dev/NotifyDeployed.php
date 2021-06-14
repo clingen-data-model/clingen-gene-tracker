@@ -40,6 +40,9 @@ class NotifyDeployed extends Command
      */
     public function handle()
     {
-        User::find(1)->notify(new Deployed());
+        $user = User::find(1);
+        if ($user) {
+            $user->notify(new Deployed());
+        }
     }
 }

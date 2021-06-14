@@ -25,7 +25,7 @@ class CurationStatusesTableSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'name' => 'Curation In Progress',
+                'name' => 'Precuration Complete',
                 'description' => 'Curation is taking place on the GCI (currently by human, from data ex in future)'
             ],
             [

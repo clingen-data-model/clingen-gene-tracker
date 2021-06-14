@@ -35,6 +35,21 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    public function curations_is_softDeletable()
+    {
+        $this->curation->delete();
+
+        Carbon::setTestNow('2021-06-01');
+        $this->assertDatabaseHas('curations', [
+            'id' => $this->curation->id,
+        ]);
+        $this->assertNotNull($this->curation->deleted_at);
+    }
+    
+
+    /**
+     * @test
+     */
     public function curation_has_fillable_gene_symbol()
     {
         $curation = new Curation();

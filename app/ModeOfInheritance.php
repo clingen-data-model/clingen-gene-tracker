@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Backpack\CRUD\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class ModeOfInheritance extends Model
 {
+    use CrudTrait;
+
     public $fillable = [
         'name',
         'abbreviation',
@@ -13,6 +16,16 @@ class ModeOfInheritance extends Model
         'hp_uri',
         'curatable',
     ];
+
+    /**
+     * Get the parent that owns the ModeOfInheritance
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(ModeOfInheritance::class, 'parent_id', 'id');
+    }
 
     public function scopeCuratable($query)
     {

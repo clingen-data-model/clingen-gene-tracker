@@ -1,0 +1,47 @@
+kind: CronJob
+apiVersion: batch/v1beta1
+metadata:
+  name: db-backup
+  namespace: dept-gpm
+spec:
+  schedule: 5 */12 * * *
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            run: db-backup
+        spec:
+          containers:
+            - name: db-backup
+              image: 'image-registry.openshift-image-registry.svc:5000/openshift/cron'
+              args:
+                - cron
+                - >-
+                  mysqldump -u root --all-databases | gzip >
+                  "$BACKUP_PATH/$(date +"%Y-%m-%d-%H:%M:%S.sql.gz")"
+              env:
+                - name: PROJECT
+                  value: dept-communitycuration
+                - name: DEPLOYMENT
+                  value: os-mysql
+                - name: OPENSHIFT_TOKEN
+                  value: {{TOKEN}}
+              resources: {}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              imagePullPolicy: Always
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+          schedulerName: default-scheduler
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+status:
+  lastScheduleTime: '2021-05-24T12:05:00Z'
