@@ -17,8 +17,8 @@ $factory->define(IncomingStreamMessage::class, function (Faker $faker) {
         'payload' => [
             'date' => Carbon::now()->toIsoString(),
             'status' => [
-                'name' => DB::table('curation_statuses')->select('name')->get()->random()->name,
-                'id' => DB::table('curation_statuses')->select('id')->get()->random()->id,
+                'name' => DB::table('curation_statuses')->select('name', 'id')->get()->random()->name,
+                'date' => $faker->dateTimeBetween('-10 minutes', 'now'),
             ],
             'report_id' => $faker->uuid,
             "contributors" => [

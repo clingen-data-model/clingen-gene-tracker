@@ -92,4 +92,9 @@ class GciCuration extends Model
     {
         return $this->hasMany(IncomingStreamMessage::class, 'gdm_uuid', 'gdm_uuid');
     }
+
+    public static function findByUuid($uuid)
+    {
+        return static::where('gdm_uuid', $uuid)->first();
+    }
 }

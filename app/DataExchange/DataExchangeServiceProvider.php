@@ -14,6 +14,7 @@ use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\MessagePushers\MessageLogger;
+use App\Listeners\UpdateGciCurationFromGveMessage;
 use App\DataExchange\MessagePushers\DisabledPusher;
 use App\Jobs\UpdateCurationFromGeneValidityMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
@@ -28,6 +29,7 @@ class DataExchangeServiceProvider extends ServiceProvider
         ],
         \App\DataExchange\Events\Received::class => [
             \App\Listeners\Curations\UpdateFromStreamMessage::class,
+            UpdateGciCurationFromGveMessage::class
         ],
     ];
 
