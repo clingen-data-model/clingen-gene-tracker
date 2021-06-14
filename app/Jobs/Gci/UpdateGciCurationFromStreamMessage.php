@@ -21,7 +21,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private $ism;
+    private $gciMessage;
     private $affiliations;
     private $statuses;
     private $classifications;
@@ -32,9 +32,9 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(IncomingStreamMessage $ism)
+    public function __construct(GciMessage $gciMessage)
     {
-        $this->ism = $ism;
+        $this->gciMessage = $gciMessage;
         $this->statuses = collect();
         $this->classifications = collect();
         $this->mois = collect();
@@ -48,35 +48,35 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->ism->gdm_uuid) {
+        if (!$this->messageHasUuid()) {
             return;
         }
 
         $this->populateLookups();
 
-        $gciMessage = new GciMessage($this->ism->payload);
-        $gciCuration = GciCuration::findByUuid($gciMessage->getUuid());
+        $gciCuration = GciCuration::findByUuid($this->gciMessage->getUuid());
         $newData = [
-            'mondo_id' => $gciMessage->mondoId,
-            'moi_id' => $this->mois->get($gciMessage->getMoi())->id,
-            'classification_id' => $this->getClassificationId($gciMessage->getClassification()),
-            'status_id' => $this->getStatusId($gciMessage->getStatus()),
-            'affiliation_id' => $this->getAffiliationId($gciMessage->getAffiliation()->id),
-            'updated_at' => $gciMessage->getMessageDate(),
+            'mondo_id' => $this->gciMessage->mondoId,
+            'moi_id' => $this->mois->get($this->gciMessage->getMoi())->id,
+            'classification_id' => $this->getClassificationId($this->gciMessage->getClassification()),
+            'status_id' => $this->getStatusId($this->gciMessage->getStatus()),
+            'affiliation_id' => $this->getAffiliationId($this->gciMessage->getAffiliation()->id),
+            'updated_at' => $this->gciMessage->getMessageDate(),
         ];
 
-        if (!$gciCuration || $gciMessage->getStatus() == 'created') {
-            $newData['hgnc_id'] = substr($gciMessage->getHgncId(), 5);
-            $newData['creator_uuid'] = $gciMessage->getCreator()->id;
-            $newData['creator_email'] = $gciMessage->getCreator()->email;
-            $newData['created_at'] = $gciMessage->getMessageDate();
-            $newData['gdm_uuid'] = $gciMessage->getUuid();
-            $gciCuration = GciCuration::firstOrCreate(['gdm_uuid' => $gciMessage->getUuid()], $newData);
+
+        if (!$gciCuration || $this->gciMessage->getStatus() == 'created') {
+            $newData['hgnc_id'] = substr($this->gciMessage->getHgncId(), 5);
+            $newData['creator_uuid'] = $this->gciMessage->getCreator()->id;
+            $newData['creator_email'] = $this->gciMessage->getCreator()->email;
+            $newData['created_at'] = $this->gciMessage->getMessageDate();
+            $newData['gdm_uuid'] = $this->gciMessage->getUuid();
+            $gciCuration = GciCuration::firstOrCreate(['gdm_uuid' => $this->gciMessage->getUuid()], $newData);
             return;
         }
 
         if (!$gciCuration) {
-            throw new \Exception('GciCuration for gdm_uuid '.$this->ism->gdm_uuid.' not found. Status: '.$gciMessage->getStatus());
+            throw new \Exception('GciCuration for gdm_uuid '.$this->gciMessage->gdm_uuid.' not found. Status: '.$this->gciMessage->getStatus());
             return;
         }
 
@@ -164,5 +164,10 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         $this->classifications->put('no reported evidence', $this->classifications['no known disease relationship']);
 
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');
+    }
+
+    private function messageHasUuid()
+    {
+        return (boolean)$this->gciMessage->getUuid();
     }
 }

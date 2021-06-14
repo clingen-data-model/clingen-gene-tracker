@@ -6,6 +6,7 @@ use App\Gene;
 use Tests\TestCase;
 use App\GciCuration;
 use Ramsey\Uuid\Uuid;
+use App\Gci\GciMessage;
 use App\IncomingStreamMessage;
 use Illuminate\Support\Facades\Bus;
 use App\Jobs\Gci\UpdateGciCurationFromStreamMessage;
@@ -36,9 +37,8 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     public function updates_existing_gci_curation()
     {
         $ism = $this->setupIsm();
-        $ism->save();
-
-        Bus::dispatch(new UpdateGciCurationFromStreamMessage($ism));
+        $gciMessage = new GciMessage($ism->payload);
+        Bus::dispatch(new UpdateGciCurationFromStreamMessage($gciMessage));
 
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
@@ -57,9 +57,8 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
         $payload = $ism->payload;
         $payload->status = 'created';
         $ism->payload = $payload;
-        $ism->save();
-
-        Bus::dispatch(new UpdateGciCurationFromStreamMessage($ism));
+        $gciMessage = new GciMessage($ism->payload);
+        Bus::dispatch(new UpdateGciCurationFromStreamMessage($gciMessage));
 
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
@@ -75,9 +74,8 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     {
         $this->gciCuration->forceDelete();
         $ism = $this->setupIsm();
-        $ism->save();
-
-        Bus::dispatch(new UpdateGciCurationFromStreamMessage($ism));
+        $gciMessage = new GciMessage($ism->payload);
+        Bus::dispatch(new UpdateGciCurationFromStreamMessage($gciMessage));
 
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
