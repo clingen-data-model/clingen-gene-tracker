@@ -66,16 +66,16 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'topic' => config('dx.topics.outgoing.gt-gci-sync')
         ]);
 
+        dump($curation->curation_status_id);
+
         $job = new AddStatus($curation, CurationStatus::find(config('curations.statuses.precuration-complete')));
         Bus::dispatch($job);
 
-        $matchingMessages = StreamMessage::query()
-                                ->where('topic', config('dx.topics.outgoing.gt-gci-sync'))
-                                ->where('message->event_type', 'precuration-completed')
-                                ->where('message->data->uuid', $curation->uuid)
-                                ->get();
-
-        $this->assertEquals(1, $matchingMessages->count());
+        $this->assertDatabaseHas('stream_messages', [
+            'topic' => config('dx.topics.outgoing.gt-gci-sync'),
+            'message->event_type' => 'precuration-completed',
+            'message->data->uuid' => $curation->uuid,
+        ]);
     }
     
     

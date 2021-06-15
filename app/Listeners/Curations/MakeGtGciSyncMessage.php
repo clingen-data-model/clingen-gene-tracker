@@ -31,23 +31,43 @@ class MakeGtGciSyncMessage
      */
     public function handle(CurationEvent $event)
     {
+        // \Log::debug(__METHOD__);
+        if ($this->linkedToGciRecord($event->curation)) {
+            // \Log::debug('alread linked to gci record');
+            return;
+        }
+
         if (!$this->hasGeneDiseaseMoi($event->curation)) {
+            // \Log::debug('does not yet have gene, disease, or moi');
             return;
         }
         
         if (!$this->precurationCompleted($event->curation)) {
+            // \Log::debug('status not correct');
             return;
         }
 
         if (
             $this->statusWasChanged($event->curation)
-            || $this->moiAdded($event->curation)
-            || $this->diseaseAdded($event->curation)
+            || $this->moiChanged($event->curation)
+            || $this->diseaseChanged($event->curation)
         ) {
-            Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, 'precuration-completed'));
+            // \Log::debug('meets criteria');
+            $eventType = 'precuration-completed';
+            if ($this->moiUpdated($event->curation) || $this->diseaseUpdated($event->curation)) {
+                \Log::debug('moi or mondo updated.');
+                $eventType = 'gdm-updated';
+            }
+            Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, $eventType));
             return;
         }
     }
+
+    private function linkedToGciRecord(Curation $curation)
+    {
+        return !is_null($curation->gdm_uuid);
+    }
+    
 
     private function hasGeneDiseaseMoi(Curation $curation)
     {
@@ -73,18 +93,29 @@ class MakeGtGciSyncMessage
 
     private function statusWasChanged(Curation $curation)
     {
+        \Log::debug("status changed");
         return $curation->isDirty('curation_status_id');
     }
 
-    private function moiAdded(Curation $curation)
+    private function moiChanged(Curation $curation)
     {
-        return $curation->isDirty('moi_id')
-                && $curation->getOriginal('moi_Id') == null;
+        \Log::debug("moi changed");
+        return $curation->isDirty('moi');
     }
 
-    private function diseaseAdded(Curation $curation)
+    private function diseaseChanged(Curation $curation)
     {
-        return $curation->isDirty('mondo_id')
-                && $curation->getOriginal('mondo_id') == null;
+        \Log::debug("disease changed");
+        return $curation->isDirty('mondo_id');
+    }
+
+    private function moiUpdated(Curation $curation)
+    {
+        return ($curation->getOriginal('moi_id') !== $curation->moi_id);
+    }
+    
+    private function diseaseUpdated(Curation $curation)
+    {
+        return ($curation->getOriginal('mondo_id') !== $curation->mondo_id);
     }
 }
