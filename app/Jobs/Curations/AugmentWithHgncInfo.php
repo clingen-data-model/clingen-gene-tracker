@@ -36,8 +36,8 @@ class AugmentWithHgncInfo
     public function handle()
     {
         if (
-            $this->curation->isDirty('gene_symbol') 
-            || is_null($this->curation->hgnc_id) 
+            $this->curation->isDirty('gene_symbol')
+            || is_null($this->curation->hgnc_id)
             || is_null($this->curation->hgnc_name)
         ) {
             try {
@@ -56,7 +56,7 @@ class AugmentWithHgncInfo
     {
         $gene = Gene::findBySymbol($this->curation->gene_symbol);
         if (!$gene) {
-            throw new HttpNotFoundException();
+            throw new HttpNotFoundException('unable to add hgnc_id and hgnc_name to curation '.$this->curation->id.' with gene_symbol '.$this->curation->gene_symbol.'.');
         }
         $this->curation->hgnc_name = $gene->hgnc_name;
         $this->curation->hgnc_id = $gene->hgnc_id;
@@ -68,7 +68,7 @@ class AugmentWithHgncInfo
         // $prevSymbolRecord = $hgncClient->fetchPreviousSymbol($this->curation->gene_symbol);
         $prevSymbolRecord = Gene::findByPreviousSymbol($this->curation->gene_symbol);
         if (!$prevSymbolRecord) {
-            throw new HttpNotFoundException();
+            throw new HttpNotFoundException('No previous symbol found for un-resolvable gene symbol '.$this->curation->gene_symbol.' on curation '.$this->curation->id.'.');
         }
 
         $this->curation->fill([
