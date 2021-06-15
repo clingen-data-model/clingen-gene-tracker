@@ -140,7 +140,6 @@ class KafkaConsumer implements MessageConsumer
         $handlerChain = $this->getMessageHandlerChain();
 
         $count = 0;
-        dump('NumberOfMessages == '.$numberOfMessages);
         while (true) {
             if ($count >= $numberOfMessages) {
                 break;
@@ -149,7 +148,6 @@ class KafkaConsumer implements MessageConsumer
             try {
                 $handlerChain->handle($message);
                 $count++;
-                dump($count);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {

@@ -8,12 +8,17 @@ use Tests\TestCase;
 use App\ExpertPanel;
 use App\MondoRecord;
 use App\Contracts\MondoClient;
+use App\Events\Curation\Saved;
+use App\Events\Curation\Updated;
+use Illuminate\Support\Facades\Event;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithMondoInfo;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Curations\MondoIdNotFound;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
@@ -23,6 +28,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class AugmentWithMondoInfoTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected $fakeCurationSavedEvent = false;
+
 
     public function setUp():void
     {
@@ -58,7 +66,7 @@ class AugmentWithMondoInfoTest extends TestCase
         app()->instance(MondoClient::class, $this->mondoClient);
 
         $job = new AugmentWithMondoInfo($this->curation);
-
+        Event::fake(Saved::class);
         $job->handle($this->mondoClient);
         $this->assertTrue(true);
     }
@@ -76,6 +84,7 @@ class AugmentWithMondoInfoTest extends TestCase
 
         app()->instance(MondoClient::class, $this->mondoClient);
 
+        Event::fake(Saved::class);
         $job = new AugmentWithMondoInfo($this->curation);
 
         Notification::fake();
@@ -96,8 +105,22 @@ class AugmentWithMondoInfoTest extends TestCase
     {
         $job = new AugmentWithMondoInfo($this->curation);
 
+        Event::fake(Saved::class);
         $job->handle($this->mondoClient);
 
         $this->assertDatabaseHas('curations', ['gene_symbol' => 'TH', 'mondo_name' => 'arteritis']);
-    }    
+    }
+
+    /**
+     * @test
+     */
+    public function updated_event_not_fired_when_mondo_name_added()
+    {
+        $job = new AugmentWithMondoInfo($this->curation);
+
+        \Bus::fake();
+        $eventDispatcher = app()->make(Dispatcher::class);
+        $job->handle($this->mondoClient, $eventDispatcher);
+        \Bus::assertNotDispatched(CreatePrecurationStreamMessage::class);
+    }
 }

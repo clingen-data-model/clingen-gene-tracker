@@ -29,5 +29,6 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="DB_CONNECTION" value="testing"/>
         <env name="LOG_CHANNEL" value="test"/>
+        <env name="DX_ENABLE_PUSH" value="false"/>
     </php>
 </phpunit>

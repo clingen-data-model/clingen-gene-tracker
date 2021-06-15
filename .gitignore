@@ -21,3 +21,4 @@ psysh/psysh_history
 certs/*
 gene_validity_raw*
 tests/files/omim_api/full_genemap2.txt
+consumed_messages/*
