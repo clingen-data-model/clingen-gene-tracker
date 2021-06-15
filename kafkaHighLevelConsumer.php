@@ -177,17 +177,22 @@ $conf = configureForConfluent($offset);
 $consumer = new RdKafka\KafkaConsumer($conf);
 
 if (count($topics) == 0 || array_key_exists('list-topics', $options)) {
-    dump('should list topics');
     $availableTopics = $consumer->getMetadata(true, null, 60e3)->getTopics();
     echo "Available Topics: \n";
     foreach ($availableTopics as $idx => $avlTopic) {
-        echo $avlTopic->getTopic()."\n";
+        echo $idx.': '.$avlTopic->getTopic()."\n";
     }
 
-    echo "Which topic(s) do you want to join? (comma-delimit for > 1)";
+    echo "Enter the number of the topic(s) do you want to join? (comma-delimit for > 1):\n";
     $stdin = fopen('php://stdin', 'r');
     $line = fgets($stdin);
-    $topics = explode(',', trim($line));
+    $topicIndexes = explode(',', trim($line));
+    $topics = [];
+    foreach ($availableTopics as $idx => $avlTopic) {
+        if (in_array($idx, $topicIndexes)) {
+            $topics[] = $avlTopic->getTopic();
+        }
+    }
     fclose($stdin);
 }
 
@@ -198,7 +203,7 @@ if (array_key_exists('dont-listen', $options)) {
 // Subscribe to topic 'test'
 echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
 $consumer->subscribe($topics);
-var_dump($consumer->getAssignment());
+// var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
 
 $count = 0;
@@ -206,7 +211,6 @@ $keys = [];
 
 while (true) {
     $message = $consumer->consume(10000);
-    // dump($message);
     switch ($message->err) {
         case RD_KAFKA_RESP_ERR_NO_ERROR:
             $payload = rSortByKeys(json_decode($message->payload));
