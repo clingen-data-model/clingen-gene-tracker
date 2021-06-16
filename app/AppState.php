@@ -25,9 +25,16 @@ class AppState extends Model
         return $this->castValue($this->attributes['value'], $this->type);
     }
 
-    public function setValueAttribue($value)
+    public function setValueAttribute($value)
     {
         $this->attributes['value'] = $this->stringifyValue($value, $this->type);
+    }
+
+    public function set($value)
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     private function castValue($value, $type)
