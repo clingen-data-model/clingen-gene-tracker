@@ -35,6 +35,8 @@ class Kernel extends ConsoleKernel
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
             });
+        $schedule->command('mondo:update-data')
+            ->dailyAt("O4:00:00");
         
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
