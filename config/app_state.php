@@ -11,4 +11,9 @@ return [
         'description' => 'The last time OMIM api was searched for moved and removed phenotypes',
         'type' => 'date'
     ],
+    'last_mondo_update' => [
+        'name' => 'last_mondo_update',
+        'description' => 'Date of the last update of MonDO data.',
+        'type' => 'date'
+    ]
 ];
