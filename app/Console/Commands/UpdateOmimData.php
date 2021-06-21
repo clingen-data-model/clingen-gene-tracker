@@ -207,7 +207,7 @@ class UpdateOmimData extends Command
             $matches = [];
             preg_match('/^(.*), (\d{6}) \(\d\)(, (.*))?$/', $part, $matches);
             if (count($matches) < 2) {
-                Log::debug('Phenotype string '.$string.' without mim number found', $matches);
+                Log::debug('Phenotype string "'.$part.'" without mim number found in phenotype string "'.$string.'"', $matches);
                 continue;
             }
             $phenotypes[] = [
