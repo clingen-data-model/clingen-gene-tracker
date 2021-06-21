@@ -2,16 +2,17 @@
 
 namespace Tests\Unit\Listeners\Curations;
 
-use App\Affiliation;
+use App\Gene;
 use App\Curation;
-use App\CurationStatus;
-use App\DataExchange\Events\Received;
-use App\Jobs\Curations\AddStatus;
-use App\ModeOfInheritance;
-use App\StreamError;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\Affiliation;
+use App\StreamError;
+use App\CurationStatus;
+use App\ModeOfInheritance;
+use App\Jobs\Curations\AddStatus;
+use App\DataExchange\Events\Received;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group gci
@@ -28,6 +29,11 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->provisionalMsgPath = base_path('tests/files/gci_messages/provisionally_approved.json');
         $this->approvedMsgPath = base_path('tests/files/gci_messages/approved.json');
         $this->approvedWithStatusDateMsgPath = base_path('tests/files/gci_messages/approved_with_status_date.json');
+
+        factory(Gene::class)->create([
+            'gene_symbol' => 'DICER1',
+            'hgnc_id' => 17098,
+        ]);
     }
 
     /**
