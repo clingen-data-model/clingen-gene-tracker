@@ -45,8 +45,8 @@ class UpdateOmimDataTest extends TestCase
     public function downloads_omim_geneamp2_file_and_stores_phenotypes()
     {
         $this->artisan('omim:update-data');
-        $this->assertEquals(19, Phenotype::count());
-        $this->assertEquals(10, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
+        $this->assertEquals(22, Phenotype::count());
+        $this->assertEquals(11, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
 
     /**
@@ -69,7 +69,7 @@ class UpdateOmimDataTest extends TestCase
     {
         AppState::findByName('last_genemap_download')->update(['value'=>Carbon::parse('2021-03-28')]);
         $this->artisan('omim:update-data');
-        $this->assertEquals(19, Phenotype::count());
+        $this->assertEquals(22, Phenotype::count());
         $this->assertEquals(10, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
 

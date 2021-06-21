@@ -82,6 +82,14 @@ trait SeedsGenes
                 'hgnc_name' => 'hephaestin like 1',
                 'hgnc_status' => 'Approved'
             ],
+            [
+                'hgnc_id' => 30478,
+                'gene_symbol' => 'ITGB3',
+                'omim_id' => '618458',
+                'hgnc_name' => 'blah',
+                'hgnc_status' => 'Approved'
+            ],
+            
         ];
 
         $genes = collect();
