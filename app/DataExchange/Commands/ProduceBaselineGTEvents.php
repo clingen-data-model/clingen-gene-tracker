@@ -79,7 +79,7 @@ class ProduceBaselineGTEvents extends Command
     private function printPayload($payload)
     {
         if ($this->option('print')) {
-            dump($payload);
+            echo json_encode($payload, JSON_PRETTY_PRINT)."\n";
         }
     }
 
