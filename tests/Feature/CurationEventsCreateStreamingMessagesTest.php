@@ -66,8 +66,6 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'topic' => config('dx.topics.outgoing.gt-gci-sync')
         ]);
 
-        dump($curation->curation_status_id);
-
         $job = new AddStatus($curation, CurationStatus::find(config('curations.statuses.precuration-complete')));
         Bus::dispatch($job);
 
