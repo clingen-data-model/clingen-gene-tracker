@@ -24,7 +24,6 @@ class KafkaProducer implements MessagePusher
             $uuid = $uuid ?? Uuid::uuid4()->toString();
             $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, $uuid);
             $this->rdKafkaProducer->poll(0);
-            \Log::debug('$this->rdKafkaProducer->poll(0); ran');
             
             while ($this->rdKafkaProducer->getOutQLen() > 0) {
                 $this->rdKafkaProducer->poll(50);
