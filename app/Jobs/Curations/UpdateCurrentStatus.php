@@ -33,7 +33,7 @@ class UpdateCurrentStatus
      */
     public function handle()
     {
-        \Log::debug('updating current status');
+        // \Log::debug('updating current status');
         $curationStatuses = $this->curation
                                 ->curationStatuses()
                                 ->orderBy('status_date')
