@@ -12,8 +12,9 @@ class MessageLogger implements MessagePusher
         return $this;
     }
 
-    public function push(string $message)
+    public function push(string $message, $uuid = null)
     {
-        \Log::info('Message Pushed', ['topic' => $this->topic, 'message' => $message]);
+        $uuid = $uuid ?? Uuid::uuid4()->toString();
+        \Log::info('Message Pushed', ['topic' => $this->topic, 'message' => $message, 'key' => $uuid]);
     }
 }

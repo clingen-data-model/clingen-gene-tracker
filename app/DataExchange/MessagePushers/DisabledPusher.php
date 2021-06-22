@@ -14,7 +14,7 @@ class DisabledPusher implements MessagePusher
         return $this;
     }
 
-    public function push(string $message)
+    public function push(string $message, $uuid = null)
     {
         $shortMessage = strlen($message) > 50 ? substr($message, 0, 50)."..." : $message;
         throw new StreamingServiceDisabledException('Pushing to the streaming service is disabled.  The message "'.$shortMessage.'"for topic "'.$this->topic.'" has been stored but has not been sent.');

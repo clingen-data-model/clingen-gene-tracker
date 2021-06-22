@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use  App\DataExchange\KafkaConfig;
+use Ramsey\Uuid\Uuid;
+
 /**
  * @group streaming-service
  * @group kafka
@@ -42,9 +44,10 @@ class KafkaProducerTest extends TestCase
 
         $producer = app()->make(KafkaProducer::class);
         $topic = Mockery::mock(\RdKafka\ProducerTopic::class);
-        $topic->shouldReceive('produce')->with(RD_KAFKA_PARTITION_UA, 0, $message)->once();
+        $uuid = Uuid::uuid4()->toString();
+        $topic->shouldReceive('produce')->with(RD_KAFKA_PARTITION_UA, 0, $message, $uuid)->once();
 
-        $this->invokeMethod($producer, 'produceOnTopic', [$message, $topic]);
+        $this->invokeMethod($producer, 'produceOnTopic', [$message, $topic, $uuid]);
         // $producer->produceOnTopic($message, $topic);
     }
 
