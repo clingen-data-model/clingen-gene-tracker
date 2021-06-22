@@ -45,8 +45,6 @@ class AugmentWithMondoInfo implements ShouldQueue
                 return;
             }
             $mondoRecord = $mondoClient->fetchRecord($this->curation->numericMondoId);
-            Event::forget(Saved::class);
-            Event::forget(Updated::class);
             $this->curation->update(['mondo_name' => $mondoRecord->label]);
         } catch (\Throwable $th) {
             NotifyCoordinatorsAboutCuration::dispatch($this->curation, MondoIdNotFound::class);
