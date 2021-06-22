@@ -31,32 +31,35 @@ class MakeGtGciSyncMessage
      */
     public function handle(CurationEvent $event)
     {
-        // \Log::debug(__METHOD__);
+        // \Log::debug('  '.__METHOD__);
         if ($this->linkedToGciRecord($event->curation)) {
-            // \Log::debug('alread linked to gci record');
+            // \Log::debug('  already linked to gci record');
             return;
         }
 
         if (!$this->hasGeneDiseaseMoi($event->curation)) {
-            // \Log::debug('does not yet have gene, disease, or moi');
+            // \Log::debug('  does not yet have gene, disease, or moi: ', $event->curation->only('gene_symbol', 'moi_id', 'mondo_id'));
             return;
         }
         
         if (!$this->precurationCompleted($event->curation)) {
-            // \Log::debug('status not correct');
+            $currentStatusName = ($event->curation->currentStatus) ? $event->curation->currentStatus->name : 'null';
+            // \Log::debug('  status not precuration-complete; has status '.$currentStatusName);
             return;
         }
+        \Log::info(' has precuration-complete status');
 
         if (
             $this->statusWasChanged($event->curation)
             || $this->moiChanged($event->curation)
             || $this->diseaseChanged($event->curation)
         ) {
-            // \Log::debug('meets criteria');
-            $eventType = 'precuration-completed';
+            // \Log::debug('  meets criteria');
+            $eventType = 'precuration_completed';
+            // \Log::debug('  $this->moiUpdated($event->curation)', [$this->moiUpdated($event->curation)]);
             if ($this->moiUpdated($event->curation) || $this->diseaseUpdated($event->curation)) {
-                \Log::debug('moi or mondo updated.');
-                $eventType = 'gdm-updated';
+                // \Log::debug('  moi or mondo updated.');
+                $eventType = 'gdm_updated';
             }
             Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, $eventType));
             return;
@@ -72,7 +75,7 @@ class MakeGtGciSyncMessage
     private function hasGeneDiseaseMoi(Curation $curation)
     {
         if (!$curation->hgnc_id) {
-            return false;
+            return false; 
         }
 
         if (!$curation->mondo_id) {
@@ -88,34 +91,50 @@ class MakeGtGciSyncMessage
 
     private function precurationCompleted(Curation $curation)
     {
+        // \Log::debug('  $curation->curation_status_id: '.$curation->curation_status_id);
         return $curation->curation_status_id == config('curations.statuses.precuration-complete');
     }
 
     private function statusWasChanged(Curation $curation)
     {
-        \Log::debug("status changed");
         return $curation->isDirty('curation_status_id');
     }
 
     private function moiChanged(Curation $curation)
     {
-        \Log::debug("moi changed");
-        return $curation->isDirty('moi');
+        // \Log::debug('  $curation->isDirty(moi_id)', [$curation->isDirty('moi_id')]);
+        return $curation->isDirty('moi_id');
     }
 
     private function diseaseChanged(Curation $curation)
     {
-        \Log::debug("disease changed");
         return $curation->isDirty('mondo_id');
     }
 
     private function moiUpdated(Curation $curation)
     {
-        return ($curation->getOriginal('moi_id') !== $curation->moi_id);
+        // \Log::debug('  moiUpdated?: ', ['new' => $curation->moi_id, 'original' => $curation->getOriginal('moi_id')]);
+        if (is_null($curation->getOriginal('moi_id'))) {
+            return false;
+        }
+
+        if ($curation->getOriginal('moi_id') == $curation->moi_id) {
+            return false;
+        }
+        
+        return true;
     }
     
     private function diseaseUpdated(Curation $curation)
     {
-        return ($curation->getOriginal('mondo_id') !== $curation->mondo_id);
+        // \Log::debug('  new mondo_id, ', ['new' => $curation->mondo_id, 'original' => $curation->getOriginal('mondo_id')]);
+        if (is_null($curation->getOriginal('mondo_id'))) {
+            return false;
+        }
+        if ($curation->getOriginal('mondo_id') == $curation->mondo_id) {
+            return false;
+        }
+
+        return true;
     }
 }
