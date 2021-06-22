@@ -188,8 +188,7 @@ class UpdateOmimData extends Command
 
     private function recordHasGeneSymbol($data)
     {
-        $geneSymbol = $data['approved_symbol'];
-        if (!$geneSymbol) {
+        if (!isset($data['approved_symbol']) || !$data['approved_symbol']) {
             return false;
         }
         return true;
