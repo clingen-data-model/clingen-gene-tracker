@@ -43,7 +43,6 @@ class KafkaProducer implements MessagePusher
 
     public function push(string $message)
     {
-        dump("pushsing $message on ".$this->topic->getName());
         if (!$this->topic) {
             throw new StreamingServiceException('You must set a topic on the Producer before you can use KafkaProducer::produce');
         }
