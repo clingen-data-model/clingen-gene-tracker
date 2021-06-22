@@ -71,7 +71,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gt-gci-sync'),
-            'message->event_type' => 'precuration-completed',
+            'message->event_type' => 'precuration_completed',
             'message->data->uuid' => $curation->uuid,
         ]);
     }

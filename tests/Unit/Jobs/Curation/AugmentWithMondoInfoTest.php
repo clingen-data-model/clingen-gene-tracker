@@ -111,16 +111,4 @@ class AugmentWithMondoInfoTest extends TestCase
         $this->assertDatabaseHas('curations', ['gene_symbol' => 'TH', 'mondo_name' => 'arteritis']);
     }
 
-    /**
-     * @test
-     */
-    public function updated_event_not_fired_when_mondo_name_added()
-    {
-        $job = new AugmentWithMondoInfo($this->curation);
-
-        \Bus::fake();
-        $eventDispatcher = app()->make(Dispatcher::class);
-        $job->handle($this->mondoClient, $eventDispatcher);
-        \Bus::assertNotDispatched(CreatePrecurationStreamMessage::class);
-    }
 }
