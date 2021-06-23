@@ -27,13 +27,9 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Curations\AugmentWithMondoInfo::class,
             \App\Listeners\Curations\MakeGtGciSyncMessage::class,
         ],
-        // Listeners forgotten when executing App\Jobs\AugmentWithMondoId::class
-        // to prevent apparent duplicate stream messages
         \App\Events\Curation\Created::class => [
             \App\Listeners\Curations\MakeCurationCreatedStreamMessage::class,
         ],
-        // Listeners forgotten when executing App\Jobs\AugmentWithMondoId::class
-        // to prevent apparent duplicate stream messages
         \App\Events\Curation\Updated::class => [
             \App\Listeners\Curations\MakeCurationUpdatedStreamMessage::class,
         ],
