@@ -19,7 +19,7 @@ class UpdateMondoData extends Command
      *
      * @var string
      */
-    protected $signature = 'mondo:update-data';
+    protected $signature = 'mondo:update-data {--file= : Path to mondo.obo (will prevent fresh download)}';
 
     /**
      * The console command description.
@@ -45,9 +45,12 @@ class UpdateMondoData extends Command
      */
     public function handle(ClientInterface $guzzleClient, OboParser $parser)
     {
-        $this->info('downloading latest obo...');
-        $tmpFilePath = $this->downloadOboFile($guzzleClient);
-        $this->info('donwload complete.');
+        $tmpFilePath = $this->option('file');
+        if (!$this->option('file')) {
+            $this->info('downloading latest obo...');
+            $tmpFilePath = $this->downloadOboFile($guzzleClient);
+            $this->info('donwload complete.');
+        }
         
         $this->info('Parsing obo file and updating diseases.');
         $parser->setOboPath($tmpFilePath);

@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\Disease\DiseaseNameChanged;
+use App\Events\Disease\MondoTermObsoleted;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,6 +20,22 @@ class Disease extends Model
     protected $casts = [
         'is_obsolete' => 'bool'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($disease) {
+            if ($disease->isDirty('name')) {
+                event(new DiseaseNameChanged($disease, $disease->getOriginal('name')));
+            }
+            if ($disease->isDirty('is_obsolete')) {
+                if ($disease->is_obsolete) {
+                    event(new MondoTermObsoleted($disease));
+                }
+            }
+        });
+    }
 
     /**
      * Get the replacedBy that owns the Disease
@@ -47,11 +65,16 @@ class Disease extends Model
         return $query->where('is_obsolete', 1);
     }
 
-    /**
-     * MUTATORS
-     */
-    public function setIsObsoleteAttribute($value)
+    public function scopeMondoId($query, $mondoId)
     {
-        $this->attributes['is_obsolete'] = (bool)$value;
+        return $query->where('mondo_id', $mondoId);
     }
+
+    
+    static public function findByMondoId($mondoId)
+    {
+        return static::mondoId($mondoId)->first();
+    }
+    
+
 }

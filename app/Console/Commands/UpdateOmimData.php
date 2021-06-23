@@ -188,6 +188,10 @@ class UpdateOmimData extends Command
 
     private function recordHasGeneSymbol($data)
     {
+        if (!isset($data['approved_symbol'])) {
+            \Log::warning("OMIM record does not have approved_symbol", $data);
+        }
+        
         if (!isset($data['approved_symbol']) || !$data['approved_symbol']) {
             return false;
         }
