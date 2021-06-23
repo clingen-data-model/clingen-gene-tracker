@@ -66,6 +66,7 @@ class Curation extends Model
 
     protected $with = [
         // 'currentStatus'
+        'disease'
     ];
 
     protected $dispatchesEvents = [
@@ -179,6 +180,12 @@ class Curation extends Model
         return $this->belongsTo(GciCuration::class, 'gdm_uuid', 'gdm_uuid');
     }
 
+    public function disease()
+    {
+        return $this->belongsTo(Disease::class, 'mondo_id', 'mondo_id');
+    }
+    
+
     /**
      * Get all of the incomingStreamMessages for the GciCuration
      *
@@ -228,6 +235,11 @@ class Curation extends Model
             return $lastStatus->pivot->status_date;
         }
         return null;
+    }
+
+    public function getMondoNameAttribute()
+    {
+        return ($this->disease) ? $this->disease->name : null;
     }
     
     
