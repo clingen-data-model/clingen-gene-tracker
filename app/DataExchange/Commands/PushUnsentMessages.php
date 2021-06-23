@@ -13,7 +13,7 @@ class PushUnsentMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'streaming-service:push-pending';
+    protected $signature = 'dx:push-pending';
 
     /**
      * The console command description.
@@ -39,16 +39,19 @@ class PushUnsentMessages extends Command
      */
     public function handle()
     {
-        $messages = StreamMessage::unsent()
-            ->get();
-
-        $progress = $this->output->createProgressBar($messages->count());
-
-        $messages->each(function ($msg) use ($progress) {
-            PushMessage::dispatchNow($msg);
-            $progress->advance();
-        });
+        $query = StreamMessage::unsent();
         
+        $progress = $this->output->createProgressBar($query->count());
+
+        $query->chunk(1000, function ($chunk) use ($progress) {
+                $chunk->each(function ($messages)  use ($progress) {
+                    $messages->each(function ($msg) use ($progress) {
+                        PushMessage::dispatchNow($msg);
+                        $progress->advance();
+                    });
+                });
+            });
+
         $progress->finish();
         echo "\n";
     }

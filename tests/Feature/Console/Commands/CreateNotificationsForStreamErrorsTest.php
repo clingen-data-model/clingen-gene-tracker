@@ -41,7 +41,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     public function creates_notification_for_admin_if_no_expert_panel_for_affiliation()
     {
         Notification::fake();
-        $this->artisan('streaming-service:notify-errors');
+        $this->artisan('dx:notify-errors');
 
         Notification::assertSentTo($this->admin, StreamErrorNotification::class);
     }
@@ -54,7 +54,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
         Notification::fake();
         $this->ep2->update(['affiliation_id' => $this->streamError1->affilaition_id]);
 
-        $this->artisan('streaming-service:notify-errors');
+        $this->artisan('dx:notify-errors');
 
         Notification::assertSentTo($this->admin, StreamErrorNotification::class);
     }
@@ -69,7 +69,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
         $this->ep1->update(['affiliation_id' => $affiliation->id]);
         $affiliation = Affiliation::findByClingenId($this->streamError1->affiliation_id);
 
-        $this->artisan('streaming-service:notify-errors');
+        $this->artisan('dx:notify-errors');
 
         Notification::assertNotSentTo($this->admin, StreamErrorNotification::class);
         Notification::assertSentTo($this->coordinator, StreamErrorNotification::class);
@@ -81,7 +81,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     public function marks_pending_stream_errors_sent()
     {
         Carbon::setTestNow('2020-06-01 00:00:00');
-        $this->artisan('streaming-service:notify-errors');
+        $this->artisan('dx:notify-errors');
         $this->assertDatabaseHas('stream_errors', [
             'id' => $this->streamError1->id,
             'notification_sent_at' => '2020-06-01 00:00:00',
