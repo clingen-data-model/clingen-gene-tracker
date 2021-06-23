@@ -60,6 +60,9 @@ class OboParser
         if (is_null($term['mondo_id'])) {
             return false;
         }
+        if (is_null($term['is_obsolete'])) {
+            $term['is_obsolete'] = 0;
+        }
         return $term;
     }
 
