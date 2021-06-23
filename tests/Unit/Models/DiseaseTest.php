@@ -7,9 +7,12 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 use App\Events\Disease\DiseaseNameChanged;
 use App\Events\Disease\MondoTermObsoleted;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class DiseaseTest extends TestCase
 {
+    use DatabaseTransactions;
+    
     public function setup():void
     {
         parent::setup();

@@ -36,6 +36,11 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\Curation\Deleted::class => [
             \App\Listeners\Curations\MakeCurationDeletedStreamMessage::class,
         ],
+
+        \App\Events\Disease\DiseaseNameChanged::class => [
+            \App\Listeners\Disease\NotifyDiseaseNameChanged::class
+        ],
+
         \App\Events\Genes\GeneSymbolChanged::class => [
             \App\Listeners\Genes\UpdateCurations::class,
             \App\Listeners\Genes\NotifyGeneSymbolChanged::class
