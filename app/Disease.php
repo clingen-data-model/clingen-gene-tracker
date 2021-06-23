@@ -65,12 +65,16 @@ class Disease extends Model
         return $query->where('is_obsolete', 1);
     }
 
-    // /**
-    //  * MUTATORS
-    //  */
-    // public function setIsObsoleteAttribute($value)
-    // {
-    //     $this->attributes['is_obsolete'] = (bool)$value;
-    // }
+    public function scopeMondoId($query, $mondoId)
+    {
+        return $query->where('mondo_id', $mondoId);
+    }
+
+    
+    static public function findByMondoId($mondoId)
+    {
+        return static::mondoId($mondoId)->first();
+    }
+    
 
 }
