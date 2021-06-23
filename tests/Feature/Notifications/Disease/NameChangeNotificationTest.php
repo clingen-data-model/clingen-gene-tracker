@@ -7,6 +7,8 @@ use App\Disease;
 use App\Curation;
 use Tests\TestCase;
 use App\Events\Disease\DiseaseNameChanged;
+use App\Notifications\DigestibleNotificationInterface;
+use Tests\Traits\SetsUpDiseaseWithCuration;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,18 +17,17 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group mondo
+ * @group mondo-notifications
  */
 class NameChangeNotificationTest extends TestCase
 {
     use DatabaseTransactions;
+    use SetsUpDiseaseWithCuration;
 
     public function setup():void
     {
         parent::setup();
-        $this->disease = factory(Disease::class)->create(['name' => 'bob', 'is_obsolete' => 0]);
-        $this->curation = factory(Curation::class)->create(['mondo_id'=>$this->disease->mondo_id]);
-        $this->user1 = factory(User::class)->create();
-        $this->curation->expertPanel->addCoordinator($this->user1);
+        $this->setupDiseaseWithCuration(['name' => 'bob', 'is_obsolete' => false]);
     }
 
     /**
@@ -37,7 +38,10 @@ class NameChangeNotificationTest extends TestCase
         Notification::fake();
         $this->disease->update(['name' => 'New Name!!']);
         Notification::assertSentTo($this->user1, NameChangedNotification::class, function ($notification) {
-            return $notification->curation->id == $this->curation->id && $notification->oldName == 'bob';
+            return $notification->curation->id == $this->curation->id 
+                && $notification->oldName == 'bob'
+                && $notification->via($this->user1) == ['database']
+                && $notification instanceof DigestibleNotificationInterface;
         });
     }
 

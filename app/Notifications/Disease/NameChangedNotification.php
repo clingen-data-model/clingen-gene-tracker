@@ -36,7 +36,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -60,7 +60,9 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
     public function toArray($notifiable)
     {
         return [
-            //
+            'curation' => $this->curation,
+            'oldName' => $this->oldName,
+            'template' => 'email.curations.disease_name_changed'
         ];
     }
 

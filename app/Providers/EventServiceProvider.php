@@ -40,6 +40,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\Disease\DiseaseNameChanged::class => [
             \App\Listeners\Disease\NotifyDiseaseNameChanged::class
         ],
+        \App\Events\Disease\MondoTermObsoleted::class => [
+            \App\Listeners\Disease\NotifyMondoObsoleted::class
+        ],
 
         \App\Events\Genes\GeneSymbolChanged::class => [
             \App\Listeners\Genes\UpdateCurations::class,
