@@ -2,6 +2,12 @@
 
 return [
     'broker' => env('DX_BROKER', 'pkc-4yyd6.us-east1.gcp.confluent.cloud:9092'),
+    /**
+     * Driver determines the message pusher used:
+     *   * MessageLogger - pushes message to logs
+     *   * KafkaProducer - pushes messge to configured Kafka broker & topic
+     *   * DisabledPusher - does not push messages
+     */
     'driver' => env('DX_ENABLE_PUSH', false)
                     ? env('DX_DRIVER', 'kafka')
                     : 'log',

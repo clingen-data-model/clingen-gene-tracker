@@ -41,7 +41,7 @@ class SendNotificationDigest extends Command
     public function handle()
     {
         // Make sure notifications have been created for all unsent streaming service errors
-        $this->call('streaming-service:notify-errors');
+        $this->call('dx:notify-errors');
 
         $users = User::has('unreadNotifications')
                     ->with('unreadNotifications')

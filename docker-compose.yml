@@ -63,6 +63,9 @@ services:
             - app
         volumes:
             - .:/srv/app
+        links:
+            - database:database
+            - redis:redis
         environment:
             CONTAINER_ROLE: scheduler
             CONTAINER_ENV: local
@@ -76,6 +79,9 @@ services:
             - app
         volumes:
             - .:/srv/app
+        links:
+            - database:database
+            - redis:redis
         environment:
             CONTAINER_ROLE: queue
             CONTAINER_ENV: local        

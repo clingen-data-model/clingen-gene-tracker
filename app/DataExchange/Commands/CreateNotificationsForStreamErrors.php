@@ -16,7 +16,7 @@ class CreateNotificationsForStreamErrors extends Command
      *
      * @var string
      */
-    protected $signature = 'streaming-service:notify-errors';
+    protected $signature = 'dx:notify-errors';
 
     /**
      * The console command description.

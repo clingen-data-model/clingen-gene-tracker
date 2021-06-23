@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\MessagePushers;
 
+use Ramsey\Uuid\Uuid;
 use App\DataExchange\Contracts\MessagePusher;
 
 class MessageLogger implements MessagePusher
