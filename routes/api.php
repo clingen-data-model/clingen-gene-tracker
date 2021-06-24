@@ -52,6 +52,10 @@ Route::group([
     Route::get('/omim/search', 'OmimController@search');
     Route::get('/omim/gene/{geneSymbol}', 'OmimController@gene');
 
+    // Diseases
+    Route::get('/diseases/search', 'DiseaseLookupController@search');
+    Route::get('/diseases/{mondoId}', 'DiseaseLookupController@show');
+
     /*
     * Catch-all route for generic API read exposure
     **/

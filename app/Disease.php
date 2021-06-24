@@ -76,5 +76,15 @@ class Disease extends Model
         return static::mondoId($mondoId)->first();
     }
     
+    static public function findByMondoIdOrFail($mondoId)
+    {
+        return static::mondoId($mondoId)->firstOrFail();
+    }
+
+    public function scopeSearch($query, $string) {
+        return $query->where('name', 'like', '%'.$string.'%')
+            ->orWhere('mondo_id', 'like', '%'.$string.'%');
+    }
+    
 
 }
