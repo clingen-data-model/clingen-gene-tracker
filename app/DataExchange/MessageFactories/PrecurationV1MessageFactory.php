@@ -10,7 +10,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     public function make(Curation $curation, $eventType): array
     {
         $message = [
-            'key' => $this->makeMessageKey(),
+            // 'key' => $this->makeMessageKey(),
             'event_type' => $eventType,
             'schema_version' => $this->getSchemaVersion(),
         ];
