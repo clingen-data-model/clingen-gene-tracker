@@ -4,6 +4,7 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Gene;
 use App\AppState;
+use App\Console\Commands\UpdateOmimData;
 use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -97,4 +98,16 @@ class UpdateOmimDataTest extends TestCase
         $this->assertEquals(0, Phenotype::count());
         $this->assertEquals(0, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
+
+    /**
+     * @test
+     */
+    public function gets_gene_symbol_from_approved_symbol_or_approved_gene_symbol_index()
+    {
+        $command = new UpdateOmimData();
+
+        $this->assertEquals('BOB', $this->invokeMethod($command, 'getGeneSymbol', [['approved_symbol' => 'BOB']]));
+        $this->assertEquals('BOB', $this->invokeMethod($command, 'getGeneSymbol', [['approved_gene_symbol' => 'BOB']]));
+    }
+    
 }
