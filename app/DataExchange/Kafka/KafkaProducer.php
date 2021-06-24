@@ -29,8 +29,6 @@ class KafkaProducer implements MessagePusher
                 $this->rdKafkaProducer->poll(50);
             }
         } catch (\Throwable $e) {
-            dd($e);
-
             report($e);
         }
     }
