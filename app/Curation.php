@@ -45,7 +45,6 @@ class Curation extends Model
         'curator_id',
         'notes',
         'mondo_id',
-        'mondo_name',
         'curation_date',
         'disease_entity_notes',
         'curation_type_id',
