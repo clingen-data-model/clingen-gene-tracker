@@ -1,12 +1,14 @@
 <?php
 
-namespace App\DataExchange\Commands;
+namespace App\DataExchange\Commands\Gci;
 
 use App\Curation;
 use Ramsey\Uuid\Uuid;
 use App\StreamMessage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\Curations\CreateStreamMessage;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProduceBaselineGTEvents extends Command
@@ -42,74 +44,34 @@ class ProduceBaselineGTEvents extends Command
      */
     public function handle()
     {
-        $this->truncateStreamMessags();
+        $this->truncateStreamMessages();
 
         $curations = $this->getCurations();
 
         $this->info('Create messages...');
         $bar = $this->output->createProgressBar($curations->count());
-        $messages = $curations->map(function ($curation) use ($bar) {
+        $curations->map(function ($curation) use ($bar) {
             $bar->advance();
             if (!$curation->currentStatus) {
                 return;
             }
 
-            $payload = $this->buildPayload($curation);
-
-            $this->printPayload($payload);
-
-            $message = new StreamMessage([
-                        'topic' => $this->option('topic'),
-                        'message' => $payload
-                    ]);
-            $message->save();
-            return $message;
+            Bus::dispatchNow(
+                new CreateStreamMessage(
+                    config('dx.topics.outgoing.gt-gci-sync'), 
+                    $curation, 
+                    'precuration_completed'
+                )
+            );
         });
     }
 
-    private function truncateStreamMessags()
+    private function truncateStreamMessages()
     {
         if ($this->option('truncate')) {
             $this->info('Truncating stream_messages table...');
             DB::table('stream_messages')->truncate();
         }
-    }
-    
-
-    private function printPayload($payload)
-    {
-        if ($this->option('print')) {
-            echo json_encode($payload, JSON_PRETTY_PRINT)."\n";
-        }
-    }
-
-    private function buildPayload($curation)
-    {
-        return [
-            'key' => Uuid::uuid4()->toString(),
-            'event_type' => 'baseline_state',
-            'schema_version' => 1,
-            'data' => [
-                'id' => $curation->id,
-                'uuid' => $curation->uuid,
-                'gene_symbol' => $curation->gene_symbol,
-                'hgnc_id' => 'HGNC:'.$curation->hgnc_id,
-                'mondo_id' => $curation->mondo_id,
-                'mode_of_inheritance' => $curation->modeOfInheritance->hp_id,
-                'group' => [
-                    'name' => $curation->expertPanel->name,
-                    'id' => $curation->expertPanel->id,
-                    'affiliation_id' => ($curation->expertPanel->affiliation)
-                                            ? $curation->expertPanel->affiliation->clingen_id
-                                            : null
-                ],
-                'curation_status' => [
-                    'name' => $curation->currentStatus->name,
-                    'id' => $curation->currentStatus->id
-                ],
-                'gdm_uuid' => $curation->gdm_uuid
-            ]
-        ];
     }
     
 
@@ -124,7 +86,8 @@ class ProduceBaselineGTEvents extends Command
         }
 
         $query->whereNotNull('mondo_id')
-            ->whereNotNull('moi_id');
+            ->whereNotNull('moi_id')
+            ->whereIn('curation_status_id', [4,5,6,7,9]);
 
         return $query->get();
     }
