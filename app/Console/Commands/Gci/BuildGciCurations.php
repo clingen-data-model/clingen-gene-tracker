@@ -58,6 +58,7 @@ class BuildGciCurations extends Command
     public function handle()
     {
         $this->populateLookups();
+        $this->info('Truncating gci_curations...');
         DB::table('gci_curations')->truncate();
 
         if ($this->option('include-snapshot')) {
