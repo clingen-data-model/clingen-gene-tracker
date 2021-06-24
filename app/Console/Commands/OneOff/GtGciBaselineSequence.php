@@ -42,7 +42,7 @@ class GtGciBaselineSequence extends Command
         $this->call('migrate');
 
         $this->info('Building gci curation records.');
-        $this->call('gci:build-curations');
+        $this->call('gci:build-curations', ['--include-snapshot'=>true]);
         
         $this->info('link precurations to gci curations');
         $this->call('curations:link-gci');
@@ -53,6 +53,6 @@ class GtGciBaselineSequence extends Command
         }
 
         $this->info('produce baseline gt-gci integration records');
-        $this->call('gci:produce-baseline', ['--truncate'=>true, '--topic'=>'gt-gci-test']);
+        $this->call('gci:produce-baseline', ['--truncate'=>true, '--topic'=>config('dx.topics.outgoing.gt-gci-sync')]);
     }
 }
