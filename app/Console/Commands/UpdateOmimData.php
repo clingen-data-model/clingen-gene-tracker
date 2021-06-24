@@ -179,24 +179,36 @@ class UpdateOmimData extends Command
             return null;
         }
 
+        // First try to get the gene by the mim_number
         $gene = Gene::findByOmimId($data['mim_number']);
         if (!$gene) {
-            $gene = Gene::findBySymbol($data['approved_symbol']);
+            // Next try to find it by the hgnc symbol
+            $gene = Gene::findBySymbol($this->getGeneSymbol($data));
         }
         return $gene;
     }
 
     private function recordHasGeneSymbol($data)
     {
-        if (!isset($data['approved_symbol'])) {
-            \Log::warning("OMIM record does not have approved_symbol", $data);
-        }
-        
-        if (!isset($data['approved_symbol']) || !$data['approved_symbol']) {
+        if (!$this->getGeneSymbol($data)) {
             return false;
         }
         return true;
     }
+
+    private function getGeneSymbol($data)
+    {
+        if (isset($data['approved_symbol'])) {
+            return $data['approved_symbol'];
+        }
+
+        if (isset($data['approved_gene_symbol'])) {
+            return $data['approved_gene_symbol'];
+        }
+        \Log::warning("OMIM record does not have approved_symbol", $data);
+        return null;
+    }
+    
     
 
     private function parsePhenotypes($string)

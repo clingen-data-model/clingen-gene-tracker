@@ -68,6 +68,7 @@ class UpdateMondoData extends Command
 
         $this->info('Deleting mondo temp file');
         unlink($tmpFilePath);
+        \Log::info('Finished updating MonDO data.');
     }
 
     private function downloadOboFile(ClientInterface $guzzleClient)

@@ -13,6 +13,9 @@ class CreateDiseasesTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('diseases')) {
+            return;
+        }
         Schema::create('diseases', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('mondo_id', 13)->unique();
