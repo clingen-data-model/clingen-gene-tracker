@@ -16,7 +16,7 @@ class DiseaseTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->disease = factory(Disease::class)->create();
+        $this->disease = factory(Disease::class)->create(['is_obsolete' => 0]);
     }
     
 
