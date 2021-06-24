@@ -20,8 +20,6 @@ trait HasUuid
 
     public static function findByUuid($uuid)
     {
-        dd($uuid);
-
         return static::where('uuid', $uuid)->first();
     }
 
