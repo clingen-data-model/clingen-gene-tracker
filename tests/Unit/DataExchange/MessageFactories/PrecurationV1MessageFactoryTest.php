@@ -30,7 +30,6 @@ class PrecurationV1MessageFactoryTest extends TestCase
     public function makesCreatedMessage()
     {
         $message = $this->factory->make($this->curation->fresh(), 'created');
-        $this->assertNotNull($message['key']);
         $data = $this->getBaseData();
         $this->assertMessageEquals('created', $data, $message);
     }
