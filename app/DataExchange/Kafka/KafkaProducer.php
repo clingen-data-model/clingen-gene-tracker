@@ -24,10 +24,12 @@ class KafkaProducer implements MessagePusher
             $uuid = $uuid ?? Uuid::uuid4()->toString();
             $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, $uuid);
             $this->rdKafkaProducer->poll(0);
-    
+            
             while ($this->rdKafkaProducer->getOutQLen() > 0) {
                 $this->rdKafkaProducer->poll(50);
+                \Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
             }
+            \Log::debug('q len is 0.  finishing up.');
         } catch (\Throwable $e) {
             report($e);
         }
