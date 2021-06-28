@@ -108,6 +108,7 @@ class CurationController extends Controller
 
         // Ignore data that should not be manually updated.
         $data = $request->except(['curation_status_id', 'hgnc_id', 'hgnc_name']);
+        $data = $this->normalizeMondoId($data);
 
         try {
             $curation->update($data);
@@ -162,9 +163,17 @@ class CurationController extends Controller
         }
     }
     
+    private function normalizeMondoId($data)
+    {
+        if (is_array($data['mondo_id'])) {
+            $data['mondo_id'] = $data['mondo_id']['mondo_id'];
+        }
+        return $data;
+    }
+    
 
     private function loadRelations(&$curation)
     {
-        $curation->load(['phenotypes', 'expertPanel', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance']);
+        $curation->load(['phenotypes', 'expertPanel', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance', 'disease']);
     }
 }
