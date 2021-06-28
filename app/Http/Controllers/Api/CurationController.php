@@ -108,7 +108,7 @@ class CurationController extends Controller
 
         // Ignore data that should not be manually updated.
         $data = $request->except(['curation_status_id', 'hgnc_id', 'hgnc_name']);
-        $data = $this->normalizeMondoId($data);
+        $data = $this->setMondoId($data);
 
         try {
             $curation->update($data);
@@ -163,10 +163,10 @@ class CurationController extends Controller
         }
     }
     
-    private function normalizeMondoId($data)
+    private function setMondoId($data)
     {
-        if (is_array($data['mondo_id'])) {
-            $data['mondo_id'] = $data['mondo_id']['mondo_id'];
+        if (is_array($data['disease'])) {
+            $data['mondo_id'] = $data['disease']['mondo_id'];
         }
         return $data;
     }

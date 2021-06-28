@@ -1,15 +1,29 @@
 <style></style>
 <template>
     <div>
-        <b-form-group horizontal label="MonDO ID" label-for="mondo-id"
+        <b-form-group horizontal label="MonDO ID" label-for="mondo-id" class="position-relative"
             :class="{'error': errors.mondo_id}"
         >
-            <input 
-                type="text" 
-                v-model="updatedCuration.mondo_id" 
-                class="form-control"
-                placeholder="MONDO:0001158"
+            <search-select 
+                v-model="updatedCuration.disease" 
+                :search-function="searchMondo"
+                style="z-index: 2"
             >
+                <template v-slot:selection-label="{selection}">
+                    <div v-if="typeof selection == 'object'">
+                        {{selection.mondo_id}} - {{selection.name}}
+                    </div>
+                    <div v-else>{{selection}}</div>
+                </template>
+                <template v-slot:option="{option}">
+                    <div v-if="typeof option == 'object'">
+                        {{option.mondo_id}} - {{option.name}}
+                    </div>
+                    <div v-else>
+                        {{option}}
+                    </div>
+                </template>
+            </search-select>
             <validation-error :messages="errors.mondo_id"></validation-error>
             <small class="text-muted">Refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID</small>
             <mondo-alert :curation="updatedCuration"></mondo-alert>
@@ -27,6 +41,7 @@
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import MondoAlert from './ExistingCurationMondoAlert'
     import ValidationError from '../../ValidationError'
+    import SearchSelect from '../../forms/SearchSelect'
 
     export default {
         mixins: [
@@ -35,11 +50,20 @@
         components: {
             MondoAlert,
             ValidationError,
+            SearchSelect
         },
         data: function () {
             return {
                 page: 'mondo',
-                updatedCuration: {}
+                updatedCuration: {},
+                selection: 'eat',
+                searchMondo: async (searchText) => {
+                    return await window.axios.get('/api/diseases/search?query_string='+searchText)
+                        .then(response => {
+                            console.info('mondo options', response.data);
+                            return response.data;
+                        });
+                }
             }
         },
         watch: {

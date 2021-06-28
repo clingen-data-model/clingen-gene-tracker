@@ -57,7 +57,7 @@
                         <hr>
                     <div class="row">
                         <div class="col-md-4">
-                            <delete-button :curation="curation"></delete-button>
+                            <!-- <delete-button :curation="curation"></delete-button> -->
                             <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
                         </div>
                         <div class="col-md-8 text-right">
@@ -118,11 +118,11 @@
                         next: 'classification',
                         back: 'phenotypes' 
                     },
-                    classification: {
-                        title: 'Classification',
-                        next: 'documents',
-                        back: 'mondo' 
-                    },
+                    // classification: {
+                    //     title: 'Classification',
+                    //     next: 'documents',
+                    //     back: 'mondo' 
+                    // },
                     documents: {
                         title: 'Documents',
                         next: null,

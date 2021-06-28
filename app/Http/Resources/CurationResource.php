@@ -17,7 +17,7 @@ class CurationResource extends JsonResource
     {
         $data = parent::toArray($request);
         $data['curator'] = new UserResource($this->curator) ?? null;
-        $data['mondo_id'] = $this->disease ?? null;
+        // $data['mondo_id'] = $this->disease ?? null;
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
         $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
