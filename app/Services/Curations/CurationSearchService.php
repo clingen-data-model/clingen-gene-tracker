@@ -38,6 +38,7 @@ class CurationSearchService implements SearchService
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
                     ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
                     ->leftJoin('mode_of_inheritances', 'mode_of_inheritances.id', '=', 'curations.moi_id')
+                    ->leftJoin('diseases', 'diseases.mondo_id', '=', 'curations.mondo_id')
                     ;
 
         foreach ($params as $key => $value) {
@@ -108,8 +109,8 @@ class CurationSearchService implements SearchService
                         });
                         break;
                     case 'mondo_id':
-                        $query->where('mondo_id', 'like', '%'.$params['filter'].'%')
-                            ->orWhere('mondo_name', 'like', '%'.$params['filter'].'%');
+                        $query->where('curations.mondo_id', 'like', '%'.$params['filter'].'%')
+                            ->orWhere('diseases.name', 'like', '%'.$params['filter'].'%');
                         break;
                     default:
                         throw new Exception('Unkown filter_field '.$params['filter_field']);
@@ -122,8 +123,8 @@ class CurationSearchService implements SearchService
                 ->orWhere('users.name', 'like', '%'.$params['filter'].'%')
                 ->orWhere('hgnc_id', $params['filter'])
                 ->orWhere('hgnc_name', 'like', '%'.$params['filter'].'%')
-                ->orWhere('mondo_id', 'like', '%'.$params['filter'].'%')
-                ->orWhere('mondo_name', 'like', '%'.$params['filter'].'%')
+                ->orWhere('curations.mondo_id', 'like', '%'.$params['filter'].'%')
+                ->orWhere('diseases.name', 'like', '%'.$params['filter'].'%')
                 ->orWhereHas('phenotypes', function ($q) use ($params) {
                     $q->where('mim_number', $params['filter']);
                 })
