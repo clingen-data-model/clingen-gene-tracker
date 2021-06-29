@@ -8,6 +8,7 @@
                 v-model="updatedCuration.disease" 
                 :search-function="searchMondo"
                 style="z-index: 2"
+                placeholder="MonDO ID or name"
             >
                 <template v-slot:selection-label="{selection}">
                     <div v-if="typeof selection == 'object'">
@@ -25,7 +26,7 @@
                 </template>
             </search-select>
             <validation-error :messages="errors.mondo_id"></validation-error>
-            <small class="text-muted">Refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID</small>
+            <small class="text-muted">Alternatively, refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID</small>
             <mondo-alert :curation="updatedCuration"></mondo-alert>
         </b-form-group>
         or

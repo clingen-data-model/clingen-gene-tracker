@@ -105,6 +105,7 @@
                 v-show="showInput" 
                 @keydown="startKeydownTimer"
                 @keyup="handleKeyEvent"
+                :placeholder="placeholder"
             >
         </div>
         <div v-show="hasOptions" class="result-container">
@@ -169,6 +170,11 @@ export default {
             required: false,
             type: Number,
             default: 200
+        },
+        placeholder: {
+            required: false,
+            type: String,
+            default: ''
         }
     },
     emits: [
