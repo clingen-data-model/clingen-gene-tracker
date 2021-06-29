@@ -7,12 +7,12 @@
 
     .search-select-container {
         /* @apply border leading-6 px-2 flex flex-wrap py-1; */
-        border: 1px;
+        border: 1px solid;
         line-height: 1.5rem;
         padding: .5rem;
         display: flex;
         flex-wrap: wrap;
-        padding: .25rem auto;
+        padding: .25rem .5rem;
         border-radius: 10px;
     }
 
@@ -22,7 +22,7 @@
     
     .search-select-container > .selection {
         /* @apply bg-gray-500 text-white flex mr-1 mb-1 rounded-sm;*/
-        margin: 0 .25rem .25rem 0;
+        margin: .15rem;
         border-radius: 5px;
         display: flex;
         background: #666;
