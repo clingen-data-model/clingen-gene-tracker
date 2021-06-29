@@ -223,7 +223,6 @@
         methods: {
             curationProvider(ctx, callback) {
                 if (ctx == this.ctx) {
-                    // console.log("don't call again b/c context hasn't really changed");
                     return;
                 }
 
@@ -231,7 +230,6 @@
                 if (this.filterField) {
                     context.filter_field = this.filterField;
                 }
-                console.info('context', context);
                 getPageOfCurations(context)
                     .then(response => {
                         this.totalRows = response.data.meta.total
@@ -242,7 +240,7 @@
                 this.currentPage = 1;
             },
             getDiseaseEntityColumn (item) {
-                if (item.mondo_id) {
+                if (item.mondo_id && item.disease) {
                     return item.mondo_id + ' ('+item.disease.name+')'
                 }
 
