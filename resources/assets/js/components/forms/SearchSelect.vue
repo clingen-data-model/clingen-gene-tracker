@@ -29,6 +29,10 @@
         color: white;
     }
 
+    .search-select-container > .selection.disabled {
+        background: #aaa;
+    }
+
     .search-select-container > .selection > * {
         /* @apply px-2 leading-6; */
         padding-left: .5rem;
@@ -89,13 +93,13 @@
 <template>
     <div class="search-select-component">
         <div class="search-select-container border">
-            <div class="selection" v-if="hasSelection">
+            <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
                 <label>
                     <slot name="selection-label" :selection="value">
                         {{value}}
                     </slot>
                 </label>  
-                <button @click="removeSelection()">x</button>
+                <button @click="removeSelection()" :disabled="disabled">x</button>
             </div>
             <input 
                 type="text" 
@@ -106,6 +110,7 @@
                 @keydown="startKeydownTimer"
                 @keyup="handleKeyEvent"
                 :placeholder="placeholder"
+                :disabled="disabled"
             >
         </div>
         <div v-show="hasOptions" class="result-container">
@@ -147,7 +152,7 @@ function inView(elem)
 }
 
 export default {
-    name: 'ComponentName',
+    name: 'SearchSelect',
     props: {
         throttle: {
             required: false,
@@ -175,6 +180,11 @@ export default {
             required: false,
             type: String,
             default: ''
+        },
+        disabled: {
+            required: false,
+            type: Boolean,
+            default: false
         }
     },
     emits: [

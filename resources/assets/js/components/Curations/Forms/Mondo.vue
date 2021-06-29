@@ -9,6 +9,7 @@
                 :search-function="searchMondo"
                 style="z-index: 2"
                 placeholder="MonDO ID or name"
+                :disabled="(updatedCuration.gdm_uuid !== null)"
             >
                 <template v-slot:selection-label="{selection}">
                     <div v-if="typeof selection == 'object'">
@@ -26,8 +27,16 @@
                 </template>
             </search-select>
             <validation-error :messages="errors.mondo_id"></validation-error>
-            <small class="text-muted">Alternatively, refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID</small>
+            <gci-linked-message :curation="updatedCuration" attribute-label="MonDO ID">
+                <small class="text-muted">
+                    Alternatively, refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID
+                </small>
+            </gci-linked-message>
+            <!-- <small class="text-muted" v-else>
+                This precuration is linked to a <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">GCI record</a>.  Please update the MonDO ID <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">there</a>.
+            </small> -->
             <mondo-alert :curation="updatedCuration"></mondo-alert>
+
         </b-form-group>
         or
         <b-form-group horizontal label="Disease Entity"

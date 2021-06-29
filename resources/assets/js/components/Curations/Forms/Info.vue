@@ -24,8 +24,10 @@
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
+                :disabled="updatedCuration.gdm_uuid !== null"
             >
             </b-form-input>
+            <gci-linked-message :curation="updatedCuration" attribute-label="the gene"></gci-linked-message>
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
         </b-form-group>
@@ -37,6 +39,7 @@
         >
             <b-form-select v-model="updatedCuration.moi_id"
                 id="moi_input"
+                :disabled="updatedCuration.gdm_uuid !== null"
             >
                 <option :value="null">Select...</option>
                 <option v-for="moi in mois" :key="moi.id"
@@ -46,6 +49,8 @@
                 </option>
             </b-form-select>
             <validation-error :messages="errors.moi_id"></validation-error>
+            <gci-linked-message :curation="updatedCuration" attribute-label="the mode of inheritance"></gci-linked-message>
+
         </b-form-group>
         
         <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select"
@@ -64,7 +69,7 @@
                     {{panel.name}}
                 </option>
             </b-form-select>
-            <small class="text-muted" v-if="!canUpdateExpertPanel">
+            <small class="text-muted" v-if="!canUpdateExpertPanel && $store.state.features.transferEnabled">
                 To change the expert panel use click the "Transfer Curation" button.
             </small>
             <validation-error :messages="errors.expert_panel_id"></validation-error>

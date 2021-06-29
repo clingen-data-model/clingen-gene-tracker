@@ -21,6 +21,11 @@ window.Vue.use(BootstrapVue)
 import ExternalLink from './components/ExternalLink'
 window.Vue.component('external-link', ExternalLink)
 
+import GciLink from './components/Curations/GciLink';
+window.Vue.component('gci-link', GciLink)
+import GciLinkedMessage from './components/Curations/GciLinkedMessage';
+window.Vue.component('gci-linked-message', GciLinkedMessage)
+
 if (user) {
     user = new User(user);
 }
