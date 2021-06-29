@@ -28,15 +28,13 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('hgnc:update-data')
             ->dailyAt("01:00:00");
-        $schedule->command('curations:check-mondo-updates')
-            ->dailyAt("02:00:00");
+        $schedule->command('mondo:update-data')
+            ->dailyAt("O2:00:00");
         $schedule->command('omim:update-data')
             ->dailyAt("03:00:00")
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
             });
-        $schedule->command('mondo:update-data')
-            ->dailyAt("O4:00:00");
         
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
