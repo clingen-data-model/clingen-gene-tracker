@@ -1,3 +1,12 @@
+<style scoped>
+    .phenotype {
+        color: #666;
+        margin-bottom: .5rem;
+    }
+    .phenotype.curated {
+        color: #000;
+    }
+</style>
 <template>
     <div class="card">
         <div class="card-header">
@@ -35,6 +44,21 @@
                     <div slot="table-busy" class="text-center">
                         Looking for curations...
                     </div>
+                    <template v-slot:head(available_phenotypes)="data">
+                        {{data.label}}
+                        <small class="font-weight-normal">(* phenotype is in curation)</small>
+                    </template>  
+                    <template v-slot:cell(available_phenotypes)="{item, value}">
+                        <ul class="list-unstyled" style="overflow-x: scroll; word-">
+                            <li v-for="ph in value" 
+                                :key="ph.mim_number" 
+                                class="phenotype" 
+                                :class="{curated: phenotypeIsInCuration(ph, item)}"
+                            >
+                                <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
+                            </li>
+                        </ul>
+                    </template>
                 </b-table>
             </div>
         </div>
@@ -116,7 +140,14 @@ export default {
                     label: 'Updated',
                     sortable: true,
                     formatter: value => value ? moment(value).format('MM/DD/YY') : null,
-                }
+                },
+
+                // {
+                //     key: 'available_phenotypes',
+                //     label: 'Phenotypes',
+                //     sortable: false
+                // }
+                
             ],
             loadingResults: false,
             filters: {
@@ -250,6 +281,9 @@ export default {
                     console.log(flattenedErrors);
                     this.formErrors = flattenedErrors;
                 })
+        },
+        phenotypeIsInCuration (ph, curation) {
+            return curation.phenotypes.map(i => i.mim_number).indexOf(ph.mim_number) > -1;
         }
     }
 }

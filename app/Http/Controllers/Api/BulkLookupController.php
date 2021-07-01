@@ -20,7 +20,12 @@ class BulkLookupController extends Controller
 
     public function data(BulkLookupRequest $request)
     {
-        $results = $this->search->search($request->all());
+        $results = $this->search->search($request->all())
+                    ->map(function ($curation) {
+                        $curation->available_phenotypes = $curation->gene->phenotypes;
+                        return $curation;
+                    });
+        // dd($results->pluck('phenotypes'));
         return CurationResource::collection($results);
     }
     
@@ -41,11 +46,25 @@ class BulkLookupController extends Controller
                             'MonDO ID' => $curation->mondo_id,
                             'Disease entity' => $curation->mondo_name,
                             'Expert panel' => $curation->expertPanel->name,
-                            'Classificaton' => ($curation->currentClassification) ? $curation->currentClassification->name : null,
-                            'Classificaton date' => ($curation->currentClassification && $curation->currentClassification->pivot) ? $curation->currentClassification->pivot->classification_date : null,
-                            'Status' => ($curation->currentStatus) ? $curation->currentStatus->name : null,
-                            'Status date' => ($curation->currentStatus && $curation->currentStatus->pivot) ? $curation->currentStatus->pivot->status_date : null,
-                            'Last updated' => $curation->updated_at->format('Y-m-d H:i:s')
+                            'Classificaton' => ($curation->currentClassification) 
+                                                    ? $curation->currentClassification->name 
+                                                    : null,
+                            'Classificaton date' => ($curation->currentClassification && $curation->currentClassification->pivot) 
+                                ? $curation->currentClassification->pivot->classification_date 
+                                : null,
+                            'Status' => ($curation->currentStatus) 
+                                            ? $curation->currentStatus->name 
+                                            : null,
+                            'Status date' => ($curation->currentStatus && $curation->currentStatus->pivot) 
+                                                ? $curation->currentStatus->pivot->status_date 
+                                                : null,
+                            'Last updated' => $curation->updated_at->format('Y-m-d H:i:s'),
+                            // 'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
+                            //     return $ph->name.' ('.$ph->mim_number.')';
+                            // })->join("\n"),
+                            // 'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
+                            //     return $ph->name.' ('.$ph->mim_number.')';
+                            })->join("; "  )
                         ];
                     });
         $columns = array_keys($results->first());
