@@ -58,26 +58,35 @@
                 if (this.curation.gene_symbol) {
                     this.checkCurations();
                 }
-            }
-            ,
+            },
             'curation.mondo_id': function() {
                 if (this.curation && this.curation.mondo_id) {
+                    this.checkCurations();
+                }
+            },
+            'curation.disease': function(to) {
+                if (this.curation && this.curation.disease) {
                     this.checkCurations();
                 }
             }
         },
         methods: {
             checkCurations: _.debounce(function() {
-                if (this.curation && this.curation.gene_symbol && this.curation.mondo_id) {
-                    window.axios.get('/api/curations?gene_symbol='+this.curation.gene_symbol+'&mondo_id='+this.curation.mondo_id)
+                if ((this.curation && this.curation.gene_symbol) 
+                    && this.curation.disease && this.curation.disease.mondo_id
+                ) {
+                    window.axios.get('/api/curations?gene_symbol='+this.curation.gene_symbol+'&mondo_id='+this.curation.disease.mondo_id)
                         .then((response) => {
                             this.matchedCurations = Object.values(response.data.data).filter((t) => (t.id != this.curation.id));
                         })
                         .catch((error) => {
-                            alert('there was a problem retreiving curations that matched gene_symbol and mondo_id')
+                            console.error('there was a problem retreiving curations that matched gene_symbol and mondo_id')
                         })
+                    return;
                 }
-            }, 500)      
+
+                this.matchedCurations = [];
+            }, 250)      
         }
     
 }
