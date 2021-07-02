@@ -104,7 +104,7 @@ class BulkCurationProcessor
 
         $genes = $genes->groupBy('gene_symbol');
 
-        $duplicates = Curation::select('id', 'gene_symbol', 'hgnc_id', 'expert_panel_id', 'mondo_id', 'mondo_name', 'created_at', 'updated_at')
+        $duplicates = Curation::select('id', 'gene_symbol', 'hgnc_id', 'expert_panel_id', 'mondo_id', 'created_at', 'updated_at')
                                 ->with('expertPanel', 'phenotypes', 'curationStatuses')
                                 ->whereIn('gene_symbol', $genes->keys())
                                 ->get();

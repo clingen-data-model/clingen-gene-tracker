@@ -28,7 +28,7 @@ class DiseaseLookupController extends Controller
         if (strlen($queryString) < 3) {
             return [];
         }
-        $results = Disease::search($queryString)->get();
+        $results = Disease::search($queryString)->limit(250)->get();
         // dd($results);
         return $results->toArray();
     }

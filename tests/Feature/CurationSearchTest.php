@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\User;
+use App\Disease;
 use App\Curation;
 use App\Phenotype;
 use Tests\TestCase;
@@ -58,6 +59,8 @@ class CurationSearchTest extends TestCase
      */
     public function can_filter_results_by_mondo_id()
     {
+        factory(Disease::class)->create(['mondo_id' => 'MONDO:12345']);
+        factory(Disease::class)->create(['mondo_id' => 'MONDO:98765']);
         $curation1 = $this->curations->shift();
         $curation1->update([
             'mondo_id' => 'MONDO:12345'

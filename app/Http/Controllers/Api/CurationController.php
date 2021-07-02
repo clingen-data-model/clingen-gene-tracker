@@ -165,7 +165,7 @@ class CurationController extends Controller
     
     private function setMondoId($data)
     {
-        if (is_array($data['disease'])) {
+        if (isset($data['disease']) && is_array($data['disease'])) {
             $data['mondo_id'] = $data['disease']['mondo_id'];
         }
         return $data;

@@ -15,6 +15,8 @@ class CurationSearchService implements SearchService
         'curator_id',
         'phenotype',
         'mondo_id',
+        'curation.mondo_id',
+        'diseases.mondo_id',
         'mondo_name',
         'hgnc_id',
         'hgnc_name',
@@ -33,6 +35,7 @@ class CurationSearchService implements SearchService
 
     public function buildQuery($params)
     {
+        \Log::debug(json_encode($params));
         $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel', 'modeOfInheritance')
                     ->select('curations.*')
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
@@ -45,7 +48,15 @@ class CurationSearchService implements SearchService
             if ($key == 'with') {
                 $query->with($value);
             }
+
             if (in_array($key, $this->validFilters)) {
+                if ($key == 'mondo_id') {
+                    $key = 'curations.mondo_id';
+                }
+                if ($key == 'mondo_name') {
+                    $key = 'diseases.mondo_name';
+                }
+    
                 $values = array_map(function ($item) {
                     return trim($item);
                 }, preg_split("/,|\n| /", $value));
@@ -87,12 +98,12 @@ class CurationSearchService implements SearchService
         }
         $query->orderBy($sortField, $sortDir);
 
+        // \Log::debug(renderQuery($query));
         return $query;
     }
 
     private function applyFilter($query, $params)
     {
-        
         if (isset($params['filter'])) {
             if (isset($params['filter_field'])) {
                 switch ($params['filter_field']) {
