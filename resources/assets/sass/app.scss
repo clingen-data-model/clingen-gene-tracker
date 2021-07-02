@@ -88,6 +88,10 @@ input[type=file].form-control {
     opacity: .5;
 }
 
+.flex {
+    display: flex;
+}
+
 .space-x-0>*+* {
     margin-right: calc(0px * var(0));
     margin-left: calc(0px);

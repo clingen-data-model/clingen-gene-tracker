@@ -4,9 +4,11 @@
     <div>
         <transition name="fade">
             <div class="alert alert-warning">
-                <div class="clearfix">
+                <div class="justify-content-between d-flex">
                     <slot name="summary"></slot>
-                    <button type="button" class="btn btn-sm btn-warning float-right" v-b-toggle.matching-curations-details>Details</button>
+                    <button type="button" class="btn btn-sm btn-warning" v-b-toggle.matching-curations-details>
+                        Details
+                    </button>
                 </div>
                 <b-collapse id="matching-curations-details" class="mt-2">
                     <slot name="details"></slot>
