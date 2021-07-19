@@ -19,6 +19,7 @@
 //     });
 // });
 
+
 Route::group([
     'middleware' => ['auth:api'],
     'namespace' => 'Api',
@@ -56,6 +57,10 @@ Route::group([
     Route::get('/diseases/search', 'DiseaseLookupController@search');
     Route::get('/diseases/{mondoId}', 'DiseaseLookupController@show');
 
+    // Genes
+    Route::post('/genes', 'GeneController@index');
+    Route::post('/genes/csv', 'GeneController@download');
+
     /*
     * Catch-all route for generic API read exposure
     **/
@@ -66,3 +71,4 @@ Route::group([
     // show
     Route::get('{model}/{id}', 'DefaultApiController@show');
 });
+

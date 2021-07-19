@@ -10,9 +10,12 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h3 class="mb-0">Bulk Lookup</h3>
+            <h3 class="mb-0">Bulk Curation Lookup</h3>
         </div>
         <div class="card-body">
+            <p class="text-grey">
+                Look up gene precurations and curations by gene symbol.
+            </p>
             <div class="alert alert-danger" v-if="formErrors.length > 0">
                 <ul class="mb-0">
                     <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
@@ -65,9 +68,7 @@
     </div>
 </template>
 <script>
-import getCurations from '../../resources/curations/get_curations';
 import moment from 'moment';
-import testGeneSymbols from '../../../../../tests/files/med_gene_symbols';
 import LookupForm from './BulkLookup/LookupForm'
 import FilterControl from './BulkLookup/FilterControl'
 

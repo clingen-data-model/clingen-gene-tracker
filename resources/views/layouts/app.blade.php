@@ -59,16 +59,24 @@
                         <li>
                             <a class="nav-link" href="/#/curations">Curations</a>
                         </li>
-                        {{-- @if (Auth::user()->can('list working-groups')) --}}
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
-                        {{-- @endif --}}
                         <li>
-                            <a class="nav-link" href="/#/bulk-lookup">Bulk Lookup</a>
+                        </li>
+                        <li>
                         </li>
                         <li>
                             <a class="nav-link" href="/#/curations/export">Curation Export</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Bulk Lookup <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="nvabarDropdown">
+                                <a class="dropdown-item" href="/#/bulk-lookup/curations">Curation Lookup</a>
+                                <a class="dropdown-item" href="/#/bulk-lookup/genes">Gene/Phenotype Lookup</a>    
+                            </div>
                         </li>
                     </ul>
                     @endif

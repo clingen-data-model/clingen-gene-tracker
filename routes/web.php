@@ -32,6 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('curations/export/form', 'CurationExportController@getForm')->name('curations.export');
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
+    Route::get('bulk-omim-lookup', 'BulkOmimLookupController@index')->name('bulk-omim-lookup');
+
     Route::impersonate();
 });
 

@@ -73,6 +73,12 @@ class Gene extends Model
             ->withTimestamps();
     }
 
+    public function curations()
+    {
+        return $this->hasMany(Curation::class, 'hgnc_id', 'hgnc_id');
+    }
+    
+
     // Access methods
 
     public static function findBySymbol(String $symbol)

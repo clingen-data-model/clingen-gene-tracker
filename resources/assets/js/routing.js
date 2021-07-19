@@ -26,6 +26,8 @@ const CurationExportForm = () =>
     import ( /* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm')
 const BulkLookup = () =>
     import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup')
+const GeneBulkLookup = () =>
+    import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup')
 
 Vue.use(VueRouter)
 
@@ -111,8 +113,19 @@ const routes = [{
         ]
     },
     {
-        path: '/bulk-lookup',
+        name: 'GeneBulkLookup',
+        path: '/bulk-lookup/genes',
+        component: GeneBulkLookup
+    },
+    {
+        name: 'BulkCurationLookup',
+        path: '/bulk-lookup/curations',
         component: BulkLookup,
+    },
+    {
+        name: 'BulkLookup',
+        path: '/bulk-lookup',
+        redirect: {name: 'BulkCurationLookup'},
     }
 ]
 
