@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-tabs vertical pills card class="border"
-            v-model="currentTab"
+            v-model="numericCurrentTab"
         >
             <b-tab title="Manual entry">
                 <label for="gene-symbol-input">Gene Symbols:</label>
@@ -50,6 +50,16 @@ export default {
         return {
             currentTab: 0,
             hasHeader: false,
+        }
+    },
+    computed: {
+        numericCurrentTab: {
+            get: function() {
+                return parseInt(this.currentTab);
+            },
+            set: function (value) {
+                this.currentTab = value;
+            }
         }
     },
     watch: {

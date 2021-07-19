@@ -59,12 +59,12 @@ class BulkLookupController extends Controller
                                                 ? $curation->currentStatus->pivot->status_date 
                                                 : null,
                             'Last updated' => $curation->updated_at->format('Y-m-d H:i:s'),
-                            // 'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
-                            //     return $ph->name.' ('.$ph->mim_number.')';
-                            // })->join("\n"),
-                            // 'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
-                            //     return $ph->name.' ('.$ph->mim_number.')';
-                            })->join("; "  )
+                            'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
+                                return $ph->name.' ('.$ph->mim_number.')';
+                            })->join("\n"),
+                            'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
+                                return $ph->name.' ('.$ph->mim_number.')';
+                            })->join("; ")
                         ];
                     });
         $columns = array_keys($results->first());

@@ -94,6 +94,9 @@ export default {
                     label: 'Disease Entity',
                     formatter: (value, key, item) => value ? `${item.mondo_name} (${item.mondo_id})` : null,
                     sortable: true,
+                    thStyle: {
+                        width: '12rem'
+                    }
                 },
                 {
                     key: 'expert_panel.name',
@@ -104,35 +107,30 @@ export default {
                     key: 'current_classification.name',
                     label: 'Classification',
                     sortable: true,
+                    formatter: function (value, key, item) {
+                        let disp = value 
+                        if (item.current_classification) {
+                            disp += ` - ${moment(item.current_classification.pivot.classification_date).format('MM/DD/YY')}`
+                        }
+                        return disp
+                    },
                     thStyle: {
-                        widht: "8rem"
-                    }
-                },
-                {
-                    key: 'current_classification.pivot.classification_date',
-                    label: 'Class. Date',
-                    sortable: true,
-                    formatter: value => value ? moment(value).format('MM/DD/YY') : null,
-                    thStyle: {
-                        widht: "8rem"
+                        width: "10rem"
                     }
                 },
                 {
                     key: 'current_status.name',
                     label: 'Status',
                     sortable: true,
-                    formatter: value => value ? value.replace(/Curation /, '') : null,
+                    formatter: function (value, key, item) {
+                        let disp = value 
+                        if (item.current_status_date) {
+                            disp += ` - ${moment(item.current_status_date).format('MM/DD/YY')}`
+                        }
+                        return disp
+                    },
                     thStyle: {
-                        width: "8rem"
-                    }
-                },
-                {
-                    key: 'current_status.pivot.status_date',
-                    label: 'Status Date',
-                    sortable: true,
-                    formatter: value => value ? moment(value).format('MM/DD/YY') : null,
-                    thStyle: {
-                        width: "8rem"
+                        width: "10rem"
                     }
                 },
                 {
@@ -141,12 +139,11 @@ export default {
                     sortable: true,
                     formatter: value => value ? moment(value).format('MM/DD/YY') : null,
                 },
-
-                // {
-                //     key: 'available_phenotypes',
-                //     label: 'Phenotypes',
-                //     sortable: false
-                // }
+                {
+                    key: 'available_phenotypes',
+                    label: 'Phenotypes',
+                    sortable: false
+                }
                 
             ],
             loadingResults: false,

@@ -24,6 +24,7 @@ class CurationResource extends JsonResource
         $data['mode_of_inheritance'] = $this->whenLoaded('modeOfInheritance');
         $data['classifications'] = $this->whenLoaded('classifications');
         $data['current_status'] = ($this->currentStatus && $this->currentStatus->id) ? $this->currentStatus : null;
+        $data['current_status_date'] = ($this->currentStatus && $this->currentStatus->id) ? $this->currentStatusDate : null;
         $data['current_classification'] = $this->currentClassification->id ? $this->currentClassification : null;
         $data['curation_type'] = $this->whenLoaded('curationType');
         $data['curation_type'] = $this->whenLoaded('curationType');
