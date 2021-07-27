@@ -10,7 +10,6 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     public function make(Curation $curation, $eventType): array
     {
         $message = [
-            // 'key' => $this->makeMessageKey(),
             'event_type' => $eventType,
             'schema_version' => $this->getSchemaVersion(),
         ];
@@ -50,6 +49,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
             'gene' => $this->getGene($curation),
             'disease_entity' => $this->getDiseaseEntity($curation),
             'mode_of_inheritance' => $this->getMoi($curation),
+            'gdm_uuid' => $curation->gdm_uuid,
             'group' => $this->getGroup($curation),
             'curation' => $this->getCurator($curation),
             'status' => $this->getStatus($curation),
