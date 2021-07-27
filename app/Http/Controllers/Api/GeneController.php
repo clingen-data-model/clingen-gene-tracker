@@ -28,15 +28,23 @@ class GeneController extends Controller
     
         $results = $this->search($request)
                     ->transform(function ($gene) {
-                        return [
-                            'Gene' => $gene->gene_symbol,
-                            'Phenotypes' => $gene->phenotypes->map(function ($ph) {
-                                return $ph->name.' ('.$ph->mim_number.')';
-                            })->join("; ")
-                        ];
-                    });
-        
-        $columns = array_keys($results->first());
+                        if ($gene->phenotypes->count() == 0) {
+                            return collect([[
+                                'Gene' => $gene->gene_symbol,
+                                'Phenotype' => null,
+                                'MOI' => null
+                            ]]);
+                        }
+                        return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
+                            return [
+                                'Gene' => $gene->gene_symbol,
+                                'Phenotype' => $pheno->name.' ('.$pheno->mim_number.')',
+                                'MOI' => $pheno->moi
+                            ];
+                        });
+                    })->flatten(1);
+
+        $columns = ['Gene', 'Phenotype', 'MOI'];
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
