@@ -6,6 +6,16 @@
     .phenotype.curated {
         color: #000;
     }
+    .phenotypes-table {
+        width: 100%;
+        table-layout: fixed;
+    }
+    .phenotypes-table th {
+        width: calc(50% - 3rem);
+    }
+    .phenotypes-table th:first-child {
+        width: 6rem;
+    }
 </style>
 <template>
     <div class="card">
@@ -48,11 +58,14 @@
                         Looking for curations...
                     </div>
                     <template v-slot:cell(phenotypes)="{value}">
-                        <table class="table">
+                        <strong v-if="value.length == 0" class="mb-3 d-block">
+                            No OMIM phenotypes were found for this gene.
+                        </strong>
+                        <table class="table phenotypes-table w-100" v-else>
                             <thead>
                                 <tr>
-                                    <th class="w-25">OMIM ID</th>
-                                    <th>Name</th>
+                                    <th width="10%">OMIM ID</th>
+                                    <th width="45%">Name</th>
                                     <th>MOI</th>
                                 </tr>
                             </thead>
