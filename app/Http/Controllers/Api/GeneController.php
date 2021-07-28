@@ -38,13 +38,14 @@ class GeneController extends Controller
                         return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
                             return [
                                 'Gene' => $gene->gene_symbol,
-                                'Phenotype' => $pheno->name.' ('.$pheno->mim_number.')',
+                                'Phenotype' => $pheno->name,
+                                'Phenotype MIM Number' => $pheno->mim_number,
                                 'MOI' => $pheno->moi
                             ];
                         });
                     })->flatten(1);
 
-        $columns = ['Gene', 'Phenotype', 'MOI'];
+        $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number','MOI'];
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
