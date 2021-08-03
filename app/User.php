@@ -108,6 +108,7 @@ class User extends Authenticatable
             }
         );
     }
+    
 
     public function deactivateUser($crud = false)
     {
@@ -129,6 +130,7 @@ class User extends Authenticatable
             $this->attributes['password'] = $value;
         }
     }
+    
 
     public function inExpertPanel($panel)
     {
@@ -219,5 +221,19 @@ class User extends Authenticatable
     public function routeNotificationForSlack()
     {
         return config('logging.channels.slack.url');
+    }
+
+    /**
+     * SCOPES
+     */
+
+    public function scopeActive($query)
+    {
+        return $query->whereNull('deactivated_at');
+    }
+
+    public function scopeDeactivated($query)
+    {
+        return $query->whereNotNull('deactivate_at');
     }
 }
