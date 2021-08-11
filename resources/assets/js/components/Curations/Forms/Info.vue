@@ -24,7 +24,7 @@
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
-                :disabled="updatedCuration.gdm_uuid !== null"
+                :disabled="hasGdmUuid()"
             >
             </b-form-input>
             <gci-linked-message :curation="updatedCuration" attribute-label="the gene"></gci-linked-message>
@@ -39,7 +39,7 @@
         >
             <b-form-select v-model="updatedCuration.moi_id"
                 id="moi_input"
-                :disabled="updatedCuration.gdm_uuid !== null"
+                :disabled="hasGdmUuid()"
             >
                 <option :value="null">Select...</option>
                 <option v-for="moi in mois" :key="moi.id"
@@ -241,6 +241,9 @@
             }),
             fieldError (field) {
                 return (this.errors && this.errors[field] && this.errors[field].length > 0);
+            },
+            hasGdmUuid() {
+                return this.updatedCuration.gdm_uuid !== null && typeof this.updatedCuration.gdm_uuid !== 'undefined';
             }
         },
         mounted: function () {

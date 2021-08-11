@@ -44,7 +44,8 @@
         data: function () {
             return {
                 updatedCuration: {
-                    gene_symbol: null
+                    gene_symbol: null,
+                    gdm_uuid: null
                 },
                 errors: {},
             }
