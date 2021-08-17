@@ -55,10 +55,10 @@
                             <strong class="col-md-3">Disease Entity:</strong> 
                             <div class="col-md">
                                 <div v-if="curation.mondo_id">
-                                    <span v-if="curation.mondo_name">
-                                        {{ (curation.mondo_name ? curation.mondo_name : '')}} - 
-                                    </span>
                                     <external-link :href="mondoUrl" target="mondo" class="external">
+                                        <span v-if="curation.disease && curation.disease.name">
+                                            {{ (curation.disease.name ? curation.disease.name : '')}} - 
+                                        </span>
                                         {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
                                     </external-link>
                                 </div>
