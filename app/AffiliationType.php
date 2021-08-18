@@ -21,4 +21,10 @@ class AffiliationType extends Model
         return $this->hasMany(Affiliation::class);
     }
 
+        public function getFartsAttribute()
+        {
+            return $this->attributes['name'];
+        }
+    
+
 }

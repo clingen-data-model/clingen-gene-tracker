@@ -24,6 +24,7 @@ Route::group([
         ->name('user-reactivate');
 
     CRUD::resource('user', 'UserCrudController');
+    CRUD::resource('aff', 'AffiliationCrudController');
     CRUD::resource('expert-panel', 'ExpertPanelCrudController');
     CRUD::resource('curation-status', 'CurationStatusCrudController');
     CRUD::resource('working-group', 'WorkingGroupCrudController');

@@ -6,6 +6,7 @@
 
 @if(Auth::user()->hasPermissionTo('list expert-panels'))
     <li><a href="{{ backpack_url('expert-panel') }}"><i class="fa fa-users"></i> <span>Expert Panels</span></a></li>
+    <li><a href="{{ backpack_url('aff') }}"><i class="fa fa-users"></i> <span>Affiliations</span></a></li>
 @endif
 
 @if(Auth::user()->hasPermissionTo('list working-groups'))
