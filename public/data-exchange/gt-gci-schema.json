@@ -1,18 +1,18 @@
 {
     "$schema": "http://json-schema.org/schema#",
-    "$id": "https://gene-tracker.clinicalgenome.org/gene-tracker-curation-stream-schema.json",
+    "$id": "https://gene-tracker.clinicalgenome.org/gene-tracker-precuration-snapshot-events-schema.json",
     "title": "GeneTracker Event",
     "description": "A message published to the GeneTracker curation stream.",
     "type": "object",
     "properties": {
         "key": {
             "type": "string",
-            "pattern": "^\\w{8}(-\\w{4}){3}-\\w{12}$"
+            "pattern": "^\\w{6}(-\\w{4}){3}-\\w{12}$"
         },
         "event_type": {
             "type": "string",
             "title": "Type of curation event",
-            "enum": ["created", "updated", "deleted"]
+            "enum": ["precuration_completed", "updated"]
         },
         "schema_version": { "type": "integer" },
         "data": {
@@ -43,9 +43,17 @@
                     },
                     "required": ["hgnc_id", "symbol"]
                 },
-                "mondo_id": {
-                    "type": "string",
-                    "pattern": "^MONDO:[0-9]{7}"
+                "disease_entity": {
+                    "type": "object",
+                    "properties": {
+                        "mondo_id": {
+                            "type": "string",
+                            "pattern": "^MONDO:[0-9]{7}"
+                        },
+                        "notes": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "mode_of_inheritance": {
                     "type": "object",
@@ -104,13 +112,11 @@
                                 "uploaded",
                                 "precuration",
                                 "disease entity assigned",
-                                "precuration completed",
                                 "precuration complete",
-                                "provisional",
-                                "approved",
-                                "published",
-                                "unpublished",
-                                "retired assignment"
+                                "curation provisional",
+                                "curation approved",
+                                "retired assignment",
+                                "published"
                             ],
                             "uniqueItems": false
                         },
@@ -182,9 +188,13 @@
                             }
                         }
                     }
+                },
+                "notes": {
+                    "type": "string"
                 }
-            }
+            },
+            "required": ["id", "uuid", "gene", "group"]
         }
     },
-    "required": ["id", "gene"]
+    "required": ["key", "event_type", "schema_version", "data"]
 }
