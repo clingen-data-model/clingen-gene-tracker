@@ -217,9 +217,9 @@ while (true) {
 
             $a = json_decode($message->payload, true);
 
-            $filename = $message->key ?? 'null-key-'.$count;
+            $filename = $message->key ?? 'null-key-'.$message->offset;
 
-            $filePath = $messageDir.'/'.$message->key.'.json';
+            $filePath = $messageDir.'/'.$filename.'.json';
 
             file_put_contents($filePath, $message->payload);
 
@@ -228,7 +228,7 @@ while (true) {
                 'topic_name' => $message->topic_name,
                 'timestamp' => $message->timestamp,
                 'partition' => $message->partition,
-                'payload' => json_encode($payload),
+                'payload' => $payload,
                 'key' => $message->key,
                 'offset' => $message->offset,
             ], JSON_PRETTY_PRINT));

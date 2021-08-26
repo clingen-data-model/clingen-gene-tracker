@@ -23,7 +23,7 @@ return [
         ],
         'outgoing' => [
             'precuration-events' => env('DX_OUTGOING_PRECURATION', 'gt-precuration-events'),
-            'gt-gci-sync' => env('DX_OUTGOING_GT_GCI_SYNC', 'gt-gci-test'),
+            'gt-gci-sync' => env('DX_OUTGOING_GT_GCI_SYNC', 'gt-gci'),
         ]
     ],
     // Only used for legacy kafka server. Should no longer be necessary
