@@ -25,6 +25,7 @@ foreach ($argv as $idx => $arg) {
 $topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
 $offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
+$writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
 
 // dd(compact('topics', 'offset', 'limit'));
 
