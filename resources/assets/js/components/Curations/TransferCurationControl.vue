@@ -8,11 +8,13 @@
         </button>
         <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true">
             <div v-if="inGci" class="alert alert-secondary">
-                <p>This pre-curation is linked to a record in the GCI you must transfer onwership there.</p>
-                <p>Contact GCI support if you have questions at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
+                <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
                 <gci-link :curation="curation">Go to the GCI record.</gci-link>
             </div>
             <div v-else>
+                <div class="alert alert-info">
+                    Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
+                </div>
                 <input-row label="Transfer to:" :errors="errors.expert_panel_id">
                     <b-form-select 
                         id="expert-panel-select" 
