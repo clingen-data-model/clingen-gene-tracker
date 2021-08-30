@@ -31,6 +31,10 @@ return [
     */
 
     'channels' => [
+        'dev-stack' => [
+            'driver' => 'stack',
+            'channels' => ['single', 'syslog'],
+        ],
         'stack' => [
             'driver' => 'stack',
             'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack', 'syslog'] : ['daily', 'syslog'],
