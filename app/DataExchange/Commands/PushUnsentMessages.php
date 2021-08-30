@@ -43,15 +43,10 @@ class PushUnsentMessages extends Command
         
         $progress = $this->output->createProgressBar($query->count());
 
-        $query->chunk(1000, function ($chunk) use ($progress) {
-                $chunk->each(function ($messages)  use ($progress) {
-                    $messages->each(function ($msg) use ($progress) {
-                        PushMessage::dispatchNow($msg);
-                        $progress->advance();
-                    });
-                });
-            });
-
+        $query->get()->each(function ($message) use ($progress) {
+            PushMessage::dispatchNow($message);
+            $progress->advance();
+        });
         $progress->finish();
         echo "\n";
     }
