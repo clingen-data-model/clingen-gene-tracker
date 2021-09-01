@@ -14,7 +14,7 @@ $factory->define(Curation::class, function (Faker $faker) use ($expertPanels) {
                                 ? $expertPanels->random()->id
                                 : factory(ExpertPanel::class)->create()->id,
         'curator_id' => null,
-        'notes' => null,
+        'curation_notes' => null,
         'uuid' => Uuid::uuid4()->toString(),
     ];
 });

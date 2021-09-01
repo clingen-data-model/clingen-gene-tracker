@@ -96,8 +96,8 @@
         <b-form-group horizontal label="Notes" label-for="notes-field"
             :class="{'error': fieldError('notes')}"
         >
-            <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedCuration.notes"></textarea>
-            <validation-error :messages="errors.notes"></validation-error>
+            <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedCuration.curation_notes"></textarea>
+            <validation-error :messages="errors.curation_notes"></validation-error>
         </b-form-group>
 
         <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">

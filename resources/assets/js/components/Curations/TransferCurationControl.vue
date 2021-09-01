@@ -6,7 +6,7 @@
         >
             Transfer Curation
         </button>
-        <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true">
+        <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true" size="lg">
                 <div v-if="inGci" class="alert alert-secondary">
                     <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
                     <gci-link :curation="curation">Go to the GCI record.</gci-link>
@@ -19,10 +19,10 @@
                         <select 
                             id="expert-panel-select" 
                             v-model="newExpertPanel"
-                            class="form-control-sm w-75"
+                            class="form-control form-control-sm w-75"
                         >
                             <option :value="null">Select...</option>
-                            <option v-for="panel in panels" 
+                            <option v-for="panel in filteredPanels" 
                                 :value="panel"
                                 :key="panel.id"
                             >
@@ -31,6 +31,9 @@
                         </select>
                     </input-row>
                     <input-row v-model="startDate" :errors="errors.start_date" label="Transfer date" type="date"></input-row>
+                    <input-row :errors="errors.notes" label="Notes">
+                        <textarea class="form-control" cols="60" rows="5" v-model="notes" placeholder="Reason for transfer ... or maybe a poem."></textarea>
+                    </input-row>
                     <!-- <input-row label="">
                         <label>
                             <input type="checkbox" v-model="isHistorical">&nbsp;This is a historical entry
@@ -92,6 +95,7 @@ export default {
                 coordinators: []
             },
             startDate: null,
+            notes: null,
             isHistorical: null,
             endDate: null,
             errors: {},
@@ -125,7 +129,8 @@ export default {
                 await this.updateOwner({
                     curation: this.curation,
                     expertPanelId: this.newExpertPanel.id,
-                    startDate: this.startDate
+                    startDate: this.startDate,
+                    notes: this.notes
                 });
                 this.showTransferForm = false;
                 this.showConfirmation = false;
@@ -154,7 +159,7 @@ export default {
         },
     },
     mounted() {
-        this.getAllPanels({with:['coordinators']});
+        this.getAllPanels({with:['coordinators'], sort: {field: 'name', dir: 'asc'}});
     }
 }
 </script>

@@ -4,7 +4,11 @@ namespace App\Jobs\Curations;
 
 use App\Curation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Mail\Curations\TransferNotification;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
 
 class SetOwner
 {
@@ -35,21 +39,45 @@ class SetOwner
             || $this->curation->isDirty('expert_panel_id')
         ) {
             \DB::transaction(function () {
-                $this->curation->expertPanels()
-                    ->updateExistingPivot($this->curation->expert_panel_id, ['end_date'=>$this->endDate]);
-
-                $this->curation->expertPanels()
-                    ->attach([
-                        $this->expertPanelId => [
-                            'start_date'=> $this->startDate,
-                            'end_date' => null
-                        ]
-                    ]);
+                $originalOwner = $this->curation->expertPanel;
                 
-                if ($this->curation->expert_panel_id != $this->expertPanelId) {
-                    $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
+                $this->setEndOfOwnership();
+                $this->addNewOwner();
+
+                $this->curation->refresh();
+                if ($this->curation->expertPanel->hasCoordinators()) {
+                    $mail = Mail::to($this->curation->expertPanel->coordinators)
+                            ->cc($originalOwner->coordinators)
+                            ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
                 }
+
             });
+
         }
     }
+
+    private function setEndOfOwnerShip()
+    {
+        $this->curation->expertPanels()
+            ->updateExistingPivot(
+                $this->curation->expert_panel_id, 
+                ['end_date'=>$this->endDate]
+            );
+    }
+    
+    private function addNewOwner()
+    {
+        $this->curation->expertPanels()
+        ->attach([
+            $this->expertPanelId => [
+                'start_date'=> $this->startDate,
+                'end_date' => null
+            ]
+        ]);
+    
+        if ($this->curation->expert_panel_id != $this->expertPanelId) {
+            $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
+        }
+    }
+    
 }

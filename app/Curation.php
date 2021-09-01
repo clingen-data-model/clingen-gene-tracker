@@ -4,20 +4,22 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Traits\HasUuid;
+use App\Traits\HasNotes;
+use App\Contracts\Notable;
 use Backpack\CRUD\CrudTrait;
-use App\Events\Curation\Created;
-use App\Events\Curation\Deleted;
 use App\Events\Curation\Saved;
 use App\Events\Curation\Saving;
+use App\Events\Curation\Created;
+use App\Events\Curation\Deleted;
 use App\Events\Curation\Updated;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property Classification $currentClassificiation
@@ -25,12 +27,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string numericMondoId
  *
  **/
-class Curation extends Model
+class Curation extends Model implements Notable
 {
     use CrudTrait;
     use RevisionableTrait;
     use HasUuid;
     use SoftDeletes;
+    use HasNotes;
 
     protected $revisionCreationsEnabled = true;
 
@@ -43,7 +46,7 @@ class Curation extends Model
         'expert_panel_id',
         'curation_status_id',
         'curator_id',
-        'notes',
+        'curation_notes',
         'mondo_id',
         'curation_date',
         'disease_entity_notes',

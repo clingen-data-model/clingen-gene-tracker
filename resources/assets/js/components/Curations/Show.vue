@@ -70,6 +70,7 @@
                             <div class="col-md">
                                 {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
                                 <div v-if="$store.state.features.transferEnabled">
+                                        <!-- <pre>{{curation.expert_panels}}</pre> -->
                                     <toggle-button 
                                         v-model="showOwnerHistory" 
                                         show-label="Show history" 
@@ -182,11 +183,16 @@
                         </div>
                         <div class="row mt-1">
                             <strong class="col-md-3">Notes:</strong> 
-                            <div class="col-md">{{ (curation.notes) ? curation.notes : '--' }}</div>
+                            <div class="col-md">{{ (curation.curation_notes) ? curation.curation_notes : '--' }}</div>
                         </div>
                     </div>
                     <hr>
                     <documents-card :curation="curation"></documents-card>
+                    
+                    <hr>
+                    <notes-list :notes="curation.notes">
+                        <div slot="title">Administrative Notes</div>
+                    </notes-list>
                 </div>
             </b-card>
             <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
@@ -198,6 +204,7 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import PhenotypeList from './Phenotypes/List'
+    import NotesList from '../NotesList'
     import HistoryTable from './HistoryTable'
     import CurationStatusHistory from './StatusHistory'
     import ClassificationHistory from './ClassificationHistory'
@@ -218,7 +225,8 @@
             TransferCurationControl,
             GciLink,
             HistoryTable,
-            ToggleButton
+            ToggleButton,
+            NotesList
         },
         data() {
             return {

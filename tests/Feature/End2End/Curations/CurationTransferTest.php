@@ -7,9 +7,11 @@ use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\ExpertPanel;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Curations\TransferNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group curation-transfer
@@ -98,5 +100,78 @@ class CurationTransferTest extends TestCase
         ]);
     }
     
+    /**
+     * @test
+     */
+    public function receiving_ep_coordinators_are_emailed_on_transfer()
+    {
+        $this->withoutExceptionHandling();
+
+        $ep3User = factory(User::class)->create();
+        $this->ep2->addCoordinator($ep3User);
+
+        Mail::fake();
+        
+        $this->actingAs($this->ep1User, 'api')
+            ->json('POST', $this->url, ['expert_panel_id' => $this->ep2->id, 'start_date'=>Carbon::now()->format('Y-m-d')])
+            ->assertStatus(200);
+
+        Mail::assertSent(
+            TransferNotification::class,
+            function ($mail) use ($ep3User) {
+                return $mail->curation->id == $this->curation->id
+                    && $mail->previousEp->id == $this->ep1->id
+                    && $mail->hasTo($this->ep2User->email)
+                    && $mail->hasTo($ep3User->email);
+            }
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function adds_a_note_if_notes_field_not_null()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->ep1User, 'api')
+            ->json(
+                'POST', 
+                $this->url, 
+                [
+                    'expert_panel_id' => $this->ep2->id, 
+                    'start_date'=>Carbon::now()->format('Y-m-d'),
+                    'notes' => 'They fuck you up your mum and dad; They do not mean to, but they do.'
+                ]
+            )
+            ->assertStatus(200)
+            ;
+                
+        $this->assertDatabaseHas('notes', [
+            'subject_type' => get_class($this->curation),
+            'subject_id' => $this->curation->id,
+            'content' => 'They fuck you up your mum and dad; They do not mean to, but they do.',
+            'topic' => 'curation transfer'
+        ]);
+    
+    }
+
+    /**
+     * @test
+     */
+    public function does_not_create_a_test_if_notes_field_is_null()
+    {
+        $this->actingAs($this->ep1User, 'api')
+            ->json('POST', $this->url, ['expert_panel_id' => $this->ep2->id, 'start_date'=>Carbon::now()->format('Y-m-d')])
+            ->assertStatus(200);
+        
+        $this->assertDatabaseMissing('notes', [
+            'subject_type' => get_class($this->curation),
+            'subject_id' => $this->curation->id
+        ]);
+
+
+    }
+    
+
     
 }

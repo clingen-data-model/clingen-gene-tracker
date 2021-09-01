@@ -58,7 +58,8 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                                 ? $curation->curationType->toArray()
                                 : null,
             'omim_phenotypes' => $this->getOmimPhenotypes($curation),
-            'notes' => $curation->notes,
+            // Keep using notes instead of renamed 'curation_notes' to prevent bumping schema version
+            'notes' => $curation->curation_notes,
             'date_created' => $curation->created_at->toIsoString(),
             'date_updated' => $curation->updated_at->toIsoString(),
         ]);
@@ -137,7 +138,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
             'rationales' => $curation->rationales->count() > 0
                             ? $curation->rationales->pluck('name')->toArray()
                             : null,
-            'notes' => $curation->notes
+            'notes' => $curation->rationale_notes
         ];
     }
 
