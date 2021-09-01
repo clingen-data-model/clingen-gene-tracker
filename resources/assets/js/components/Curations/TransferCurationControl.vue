@@ -32,7 +32,7 @@
                     </input-row>
                     <input-row v-model="startDate" :errors="errors.start_date" label="Transfer date" type="date"></input-row>
                     <input-row :errors="errors.notes" label="Notes">
-                        <textarea class="form-control" cols="60" rows="5" v-model="notes" placeholder="Reason for transfer ... or maybe a poem."></textarea>
+                        <textarea class="form-control" cols="60" rows="5" v-model="notes"></textarea>
                     </input-row>
                     <!-- <input-row label="">
                         <label>
@@ -132,6 +132,7 @@ export default {
                     startDate: this.startDate,
                     notes: this.notes
                 });
+                console.log('got here.')
                 this.showTransferForm = false;
                 this.showConfirmation = false;
             } catch (error) {
