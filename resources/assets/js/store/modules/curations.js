@@ -167,7 +167,7 @@ const actions = {
                 return Promise.reject(errors.response)
             });
     },
-    updateOwner({ commit }, { curation, expertPanelId, startDate, notes }) {
+    updateOwner({ dispatch, commit }, { curation, expertPanelId, startDate, notes }) {
         return window.axios.post(baseUrl + '/' + curation.id + '/owner', {
                 expert_panel_id: expertPanelId,
                 start_date: startDate,
@@ -175,11 +175,7 @@ const actions = {
             })
             .then(response => {
                 const { curation_id, expert_panels } = response.data
-                curation.expert_panels = expert_panels;
-                curation.expert_panel_id = expertPanelId;
-                curation.expert_panel = expert_panels.find(ep => ep.id == expertPanelId);
-                console.log(curation.expert_panels);
-                commit('addItem', curation);
+                dispatch('fetchItem', curation_id);
                 return response;
             });
     }
