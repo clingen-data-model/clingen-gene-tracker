@@ -75,8 +75,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'message->data->uuid' => $curation->uuid,
         ]);
     }
-    
-    
+     
     /**
      * @test
      */
@@ -124,19 +123,22 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'sent_at' => now()->format("Y-m-d H:i:s")
         ]);
     }
-    
 
     /**
      * @test
      */
     public function sent_at_should_not_be_updated_when_message_send_fails()
     {
-        \DB::table('stream_messages')->truncate();
         Carbon::setTestNow('2019-01-01');
-        $mock = Mockery::mock(MessagePusher::class);
-        $mock->shouldReceive('topic')->andThrow(new StreamingServiceException());
-
-        $this->instance(MessagePusher::class, $mock);
+        $this->instance(MessagePusher::class, new class implements MessagePusher {
+            public function topic($topic) {
+                throw new StreamingServiceException('bad bad bad');
+            }
+            public function push(string $message, $uuid = null)
+            {
+                
+            }
+        });
 
         $message = factory(StreamMessage::class)->create(['sent_at' => null]);
 

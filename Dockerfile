@@ -1,4 +1,4 @@
-FROM jward3/php:7.4-apache
+FROM jward3/php:8.0-apache
 
 LABEL maintainer="TJ Ward" \
     io.openshift.tags="gene-tracker:v1" \
@@ -26,7 +26,7 @@ RUN composer install \
         --prefer-dist
 
 RUN apt-get install -yqq librdkafka-dev \
-    && pecl install rdkafka-3.1.3 \
+    && pecl install rdkafka-5.0.0 \
     && apt-get install -y --no-install-recommends openssl \
     && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
     && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf\
