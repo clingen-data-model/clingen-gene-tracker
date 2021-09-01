@@ -112,7 +112,6 @@ class BuildGciCurations extends Command
                     }
     
                     $gciCuration->fill($newData);
-                    // dd($gciCuration->getDirty());
                     $gciCuration->save();
                     $bar->advance();
                 } catch (InvalidArgumentException $e) {
