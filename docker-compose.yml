@@ -41,18 +41,6 @@ services:
             - "6379:6379"
         environment:
             - REDIS_PASSWORD=beans
-    artisan:
-        image: gt-app
-        container_name: gt-artisan
-        volumes:
-            - .:/srv/app
-        entrypoint: [
-            "php",
-            "/srv/app/artisan"
-        ]
-        environment:
-            CONTAINER_ROLE: artisan
-            CONTAINER_ENV: local
 
     scheduler:
         image: gt-app
