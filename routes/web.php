@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,3 +45,5 @@ Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showRes
 
 Route::get('{page}/{subs?}', ['uses' => 'PageController@index'])
     ->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);
+
+Route::get('/admin/login', 'Auth\LoginController@showLoginForm');

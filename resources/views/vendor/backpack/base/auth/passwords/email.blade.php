@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-envelope"></i> {{ trans('backpack::base.send_reset_link') }}
+                                    <i class="la la-btn fa-envelope"></i> {{ trans('backpack::base.send_reset_link') }}
                                 </button>
                             </div>
                         </div>

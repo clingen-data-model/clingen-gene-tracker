@@ -53,22 +53,5 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
-if (file_exists(__DIR__.'/../.env')) {
-    Dotenv::create(__DIR__.'/..')->load();
-}
-
-if (env('APP_STORAGE_PATH')) {
-    // get the current working directory b/c it could be frigging anywhere
-    $cwd = getcwd();
-    // change to the base path so we can handle paths relative to the location of .env
-    chdir(base_path());
-    // Get the real path in the .env
-    $storagePath = realpath(base_path(env('APP_STORAGE_PATH', 'storage')));
-    // change back to original working directory
-    chdir($cwd);
-
-    $app->useStoragePath($storagePath);
-}
-
 
 return $app;

@@ -32,7 +32,7 @@
 
 
 
-    @include('google_analytics')
+    {{-- @include('google_analytics') --}}
 
 </head>
 <body>

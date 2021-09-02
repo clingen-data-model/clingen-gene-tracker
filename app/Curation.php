@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Traits\HasUuid;
 use App\Traits\HasNotes;
 use App\Contracts\Notable;
-use Backpack\CRUD\CrudTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Events\Curation\Saved;
 use App\Events\Curation\Saving;
 use App\Events\Curation\Created;
