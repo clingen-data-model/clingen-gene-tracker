@@ -15,7 +15,15 @@ use Backpack\CRUD\CrudPanel;
  * @property-read CrudPanel $crud
  */
 class EmailCrudController extends CrudController
-{
+{    
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation {
+        show as parentShow;
+    }
+
     public function setup()
     {
         /*
@@ -48,7 +56,7 @@ class EmailCrudController extends CrudController
 
     public function show($id)
     {
-        $content = parent::show($id);
+        $content = $this->parentShow($id);
         foreach ($content->entry->getAttributes() as $key => $value) {
             if (is_null($content->entry->{$key})) {
                 $this->crud->removeColumn($key);

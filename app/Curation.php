@@ -4,7 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Traits\HasUuid;
-use Backpack\CRUD\CrudTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
 use App\Events\Curation\Saved;

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Backpack\CRUD\CrudTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class ModeOfInheritance extends Model

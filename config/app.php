@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
 return [
     'name' => env('APP_NAME', 'ClinGen Tracker'),
     'env' => env('APP_ENV', 'production'),
@@ -55,12 +58,11 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\HorizonServiceProvider::class,
+        // App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ClientServiceProvider::class,
 
         App\DataExchange\DataExchangeServiceProvider::class,
-
         Lab404\Impersonate\ImpersonateServiceProvider::class,
     ],
 
@@ -98,6 +100,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        // For Backpack
+        'Arr' => Arr::class,
+        'Str' => Str::class,
     ],
 
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', null),
