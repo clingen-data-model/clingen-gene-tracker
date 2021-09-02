@@ -28,8 +28,8 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $user = new User();
-        if ($this->user) {
-            $user = User::findOrFail($this->user);
+        if ($this->route('id')) {
+            $user = User::findOrFail($this->route('id'));
         }
 
         return [

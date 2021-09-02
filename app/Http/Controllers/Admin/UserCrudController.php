@@ -106,16 +106,6 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         }
     }
 
-    protected function setupCreateOperation()
-    {
-        $this->crud->setValidation(StoreRequest::class);
-    }
-
-    protected function setupUpdateOperation()
-    {
-        $this->crud->setValidation(UpdateRequest::class);
-    }
-
     public function store(StoreRequest $request)
     {
         // your additional operations before save here
@@ -176,9 +166,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
                 if (!isset($panel->id)) {
                     continue;
                 }
+                unset($panel->pivot->created_at);
+                unset($panel->pivot->updated_at);
                 $expertPanels[$panel->id] = (array) $panel->pivot;
             }
             $this->crud->entry->expertPanels()->sync($expertPanels);
+            // dd($this->crud->entry->expertPanels->pluck('pivot')->map(fn ($i) => $i->toArray()));
         }
     }
 }
