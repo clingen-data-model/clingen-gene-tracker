@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 
 use App\ExpertPanel;
 use Illuminate\Database\Seeder;

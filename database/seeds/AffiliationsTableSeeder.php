@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Affiliation;
 use Illuminate\Database\Seeder;
 
