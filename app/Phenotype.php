@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use App\Events\Phenotypes\OmimMovedPhenotype;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\Phenotypes\OmimRemovedPhenotype;

@@ -2,17 +2,19 @@
 
 namespace Tests\Unit;
 
-use App\Clients\OmimClient;
-use App\Contracts\OmimClient as OmimClientContract;
-use App\Curation;
-use App\Exceptions\BulkUploads\InvalidFileException;
-use App\ExpertPanel;
-use App\Services\BulkCurationProcessor;
+use Mockery;
 use App\User;
+use App\Curation;
+use Tests\TestCase;
+use App\ExpertPanel;
+use App\Clients\OmimClient;
+use App\Clients\Omim\OmimEntry;
+use App\Clients\Omim\OmimEntryContract;
+use App\Services\BulkCurationProcessor;
+use App\Contracts\OmimClient as OmimClientContract;
+use App\Exceptions\BulkUploads\InvalidFileException;
 use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Mockery;
-use Tests\TestCase;
 
 /**
  * @group bulk-curations
@@ -29,11 +31,21 @@ class BulkCurationProcessorTest extends TestCase
             $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
         }
         $this->ep = factory(ExpertPanel::class)->create([]);
-        $omimClientMock = $this->createMock(OmimClient::class);
-        $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
-        $omimClientMock->method('getEntry')->willReturn(true);
 
-        app()->instance(OmimClient::class, $omimClientMock);
+        // $omimClientMock = $this->createMock(OmimClient::class);
+        // $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
+        // $omimClientMock->method('getEntry')->willReturn(true);
+
+        app()->instance(OmimClient::class, new class extends OmimClient {
+            public function geneSymbolisValid($symbol) 
+            {
+                return true;
+            }
+            public function getEntry($id): OmimEntryContract 
+            {
+                return new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);;
+            }
+        });
         $this->data = [
             'gene_symbol' => 'BRCA1',
             'curator_email' => 'sirs@unc.edu',

@@ -13,7 +13,7 @@ class CreateGciCurationsTable extends Migration
      */
     public function up()
     {
-        DB::transaction(function () {
+        // DB::transaction(function () {
             Schema::create('gci_curations', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->uuid('gdm_uuid');
@@ -34,7 +34,7 @@ class CreateGciCurationsTable extends Migration
                 $table->foreign('affiliation_id')->references('id')->on('affiliations');
                 $table->index('gdm_uuid');
             });
-        });
+        // });
     }
 
     /**

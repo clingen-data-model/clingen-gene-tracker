@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Backpack\CRUD\CrudTrait;
-use Illuminate\Database\Eloquent\Model;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use App\Model;
 use Illuminate\Notifications\DatabaseNotification;
 
 class Notification extends DatabaseNotification

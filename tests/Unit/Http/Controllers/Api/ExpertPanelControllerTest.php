@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group expert-panels
@@ -44,6 +45,6 @@ class ExpertPanelControllerTest extends TestCase
         $response = $this->actingAs($this->user, 'api')
                         ->call('GET', '/api/expert-panels?with=users')
                         ->assertStatus(200)
-                        ->assertSee('"users":');
+                        ->assertSee('users');
     }
 }

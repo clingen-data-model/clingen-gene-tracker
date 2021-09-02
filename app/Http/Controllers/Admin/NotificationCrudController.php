@@ -15,7 +15,13 @@ use Backpack\CRUD\app\Http\Controllers\CrudController;
  * @property-read CrudPanel $crud
  */
 class NotificationCrudController extends CrudController
-{
+{    
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+
     public function setup()
     {
         /*
@@ -85,23 +91,5 @@ class NotificationCrudController extends CrudController
             'visibleInShow' => true,
             'priority' => 1000000000
         ]);
-    }
-
-    public function store(Request $request)
-    {
-        // your additional operations before save here
-        $redirect_location = parent::storeCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
-    }
-
-    public function update(Request $request)
-    {
-        // your additional operations before save here
-        $redirect_location = parent::updateCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
     }
 }

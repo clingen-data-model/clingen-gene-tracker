@@ -46,7 +46,7 @@ class CurationControllerTest extends TestCase
         ]);
 
         $curationResource = new CurationResource($this->curations);
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations')
              ->assertStatus(200);
@@ -151,7 +151,7 @@ class CurationControllerTest extends TestCase
      */
     public function index_does_not_include_phenotypes_when_not_requested()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
             $t->phenotypes()->sync($phenotypes->pluck('id'));
@@ -183,7 +183,7 @@ class CurationControllerTest extends TestCase
      */
     public function index_includes_status_by_default()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $status = factory(\App\CurationStatus::class)->create();
         $this->curations->each(function ($t) use ($status) {
             $t->curationStatuses()->attach($status->id);
@@ -219,7 +219,7 @@ class CurationControllerTest extends TestCase
         $this->curations->first()->rationales()->attach($this->rationale->id);
         $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations/'.$this->curations->first()->id)
-            ->assertSee('"rationales":[');
+            ->assertSee('rationales');
     }
 
     /**
@@ -231,7 +231,7 @@ class CurationControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations/'.$this->curations->first()->id)
-            ->assertSee('"curation_type":');
+            ->assertSee('curation_type');
     }
 
     /**
@@ -265,9 +265,10 @@ class CurationControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->json('POST', '/api/curations', $data)
-            ->assertSee('"mim_number":'.$phenotype->mim_number)
-            ->assertSee('"mim_number":12345')
-            ->assertSee('"mim_number":67890');
+            ->assertJsonFragment(['mim_number'=>$phenotype->mim_number])
+            ->assertJsonFragment(['mim_number'=>12345])
+            ->assertJsonFragment(['mim_number'=>67890])
+            ;
     }
 
     /**
@@ -348,7 +349,7 @@ class CurationControllerTest extends TestCase
     //         'nav' => 'next',
     //     ];
 
-    //     $this->disableExceptionHandling();
+    //     $this->withoutExceptionHandling();
     //     $response = $this->actingAs($this->user, 'api')
     //         ->json('PUT', '/api/curations/'.$curation->id, $data);
     //     $response->assertStatus(200);

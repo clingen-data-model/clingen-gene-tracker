@@ -26,11 +26,10 @@ class DiseaseEndpointTest extends TestCase
      */
     public function gets_disease_data()
     {
-        $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->json('GET', $this->baseUrl.$this->disease->mondo_id)
             ->assertStatus(200)
-            ->assertJson($this->disease->toArray());
+            ->assertJsonFragment($this->disease->toArray());
     }
     
     /**
@@ -63,9 +62,9 @@ class DiseaseEndpointTest extends TestCase
         $response = $this->actingAs($this->user, 'api')
             ->json('GET', $this->baseUrl.'search?query_string=123');
         $response->assertStatus(200);
-        $this->assertContains($d3->toArray(), $response->original);
-        $this->assertContains($d4->toArray(), $response->original);
-        $this->assertNotContains($d2->toArray(), $response->original);
+        $response->assertJsonFragment($d3->toArray());
+        $response->assertJsonFragment($d4->toArray());
+        $response->assertJsonMissingExact($d2->toArray());
     }
     
     /**
@@ -90,9 +89,9 @@ class DiseaseEndpointTest extends TestCase
         $response = $this->actingAs($this->user, 'api')
             ->json('GET', $this->baseUrl.'search?query_string=myo');
         $response->assertStatus(200);
-        $this->assertContains($d2->toArray(), $response->original);
-        $this->assertContains($d3->toArray(), $response->original);
-        $this->assertNotContains($d4->toArray(), $response->original);
+        $response->assertJsonFragment($d2->toArray());
+        $response->assertJsonFragment($d3->toArray());
+        $response->assertJsonMissingExact($d4->toArray());
     }
     
     

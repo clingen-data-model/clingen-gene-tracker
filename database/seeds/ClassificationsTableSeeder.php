@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Classification;
 use Illuminate\Database\Seeder;
 

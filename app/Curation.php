@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Traits\HasUuid;
 use App\Traits\HasNotes;
 use App\Contracts\Notable;
-use Backpack\CRUD\CrudTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Events\Curation\Saved;
 use App\Events\Curation\Saving;
 use App\Events\Curation\Created;
@@ -15,10 +15,10 @@ use App\Events\Curation\Updated;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**

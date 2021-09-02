@@ -1,39 +1,40 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.4",
-        "backpack/crud": "^3.6.0",
-        "backpack/pagemanager": "^1.1",
+        "php": "^8.0",
+        "backpack/crud": "^4.1.0",
+        "backpack/revise-operation": "^1.0",
         "box/spout": "^3.0",
+        "doctrine/dbal": "^3.1",
+        "facade/ignition": "^2.3.6",
         "fideloper/proxy": "~4.0",
-        "lab404/laravel-impersonate": "^1.2",
-        "laravel/framework": "^6.0",
+        "lab404/laravel-impersonate": "^1.3",
+        "laravel/framework": "^8.0",
         "laravel/helpers": "^1.2",
-        "laravel/horizon": "^3.4",
-        "laravel/passport": "^9.3.3",
+        "laravel/legacy-factories": "^1.1",
+        "laravel/passport": "^10.0",
         "laravel/slack-notification-channel": "^2.0",
-        "laravel/tinker": "~1.0",
+        "laravel/tinker": "^2.0",
+        "laravel/ui": "^3.0",
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
-        "spatie/laravel-permission": "^4.0"
+        "spatie/laravel-permission": "^4.0",
+        "venturecraft/revisionable": "^1.38"
     },
     "require-dev": {
-        "backpack/generators": "^1.2",
+        "backpack/generators": "^3.0",
         "barryvdh/laravel-debugbar": "^3.2",
-        "brainmaestro/composer-git-hooks": "^2.8",
-        "filp/whoops": "~2.0",
-        "friendsofphp/php-cs-fixer": "^2.15",
         "fakerphp/faker": "^1.9.1",
-        "laracasts/generators": "~1.2",
         "mockery/mockery": "~1.0",
-        "nunomaduro/collision": "^3.0",
-        "phpmd/phpmd": "^2.7",
-        "phpunit/php-invoker": "^3.1",
-        "phpunit/phpunit": "~7.5"
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "classmap": [
@@ -42,7 +43,9 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Profiling\\": "Profiling/"
+            "Profiling\\": "Profiling/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "app/helpers.php"

@@ -32,7 +32,7 @@ class WorkingGroupControllerTest extends TestCase
      */
     public function index_returns_all_working_groups()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/');
         $this->assertEquals($this->groups->toArray(), $response->original->toArray());

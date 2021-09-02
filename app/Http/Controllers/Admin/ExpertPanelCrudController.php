@@ -12,7 +12,13 @@ use App\Http\Requests\ExpertPanelRequest as StoreRequest;
 use App\Http\Requests\ExpertPanelRequest as UpdateRequest;
 
 class ExpertPanelCrudController extends CrudController
-{
+{    
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\ReviseOperation\ReviseOperation;
+
     protected $user = null;
 
     public function setUp(): void
@@ -36,7 +42,7 @@ class ExpertPanelCrudController extends CrudController
 
         $this->crud->setFromDb();
 
-        $this->crud->addField([
+        $this->crud->modifyField('working_group_id', [
             'name' => 'working_group_id',
             'label' => 'Working Group',
             'entity' => 'workingGroup',
@@ -45,7 +51,7 @@ class ExpertPanelCrudController extends CrudController
             'attribute' => 'name',
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('affiliation_id', [
             'name' => 'affiliation_id',
             'label' => 'Affiliation',
             'entity' => 'affiliation',
@@ -93,26 +99,16 @@ class ExpertPanelCrudController extends CrudController
         if ($this->user->hasPermissionTo('delete expert-panels')) {
             $this->crud->allowAccess(['delete']);
         }
-
-        // ------ REVISIONS
-        $this->crud->allowAccess('revisions');
     }
 
-    public function store(StoreRequest $request)
+    protected function setupCreateOperation()
     {
-        // your additional operations before save here
-        $redirect_location = parent::storeCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
+        $this->crud->setValidation(StoreRequest::class);
     }
 
-    public function update(UpdateRequest $request)
+    protected function setupUpdateOperation()
     {
-        // your additional operations before save here
-        $redirect_location = parent::updateCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
+        $this->crud->setValidation(UpdateRequest::class);
     }
+
 }

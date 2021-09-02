@@ -16,7 +16,17 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserCrudController extends CrudController
-{
+{    
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
+        store as parentStore;
+    }
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation {
+        update as parentUpdate;
+    }
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\ReviseOperation\ReviseOperation;
+
     protected $user = null;
 
     public function setUp(): void
@@ -50,7 +60,7 @@ class UserCrudController extends CrudController
             'attribute' => 'name',
             'model' => ExpertPanel::class,
             'pivot' => true,
-        ], 'both');
+        ]);
 
         $this->crud->addField([
             'label' => 'Roles',
@@ -60,7 +70,7 @@ class UserCrudController extends CrudController
             'attribute' => 'name',
             'model' => Role::class,
             'pivot' => true,
-        ], 'both');
+        ]);
 
         $this->crud->addField([
             'label' => 'Extra Permissions',
@@ -70,18 +80,7 @@ class UserCrudController extends CrudController
             'attribute' => 'name',
             'model' => Permission::class,
             'pivot' => true,
-        ], 'both');
-
-        // COmmented out b/c punt for now and focus on getting snapshot imported.
-        // $this->crud->addField([
-        //     'label' => 'Affiliations',
-        //     'type' => 'expert_panel_field',
-        //     'name' => 'affiliations',
-        //     'entity' => 'affiliations',
-        //     'attribute' => 'descriptiveShortName',
-        //     'model' => Affiliation::class,
-        //     'pivot' => true
-        // ], 'both');
+        ]);
 
         $this->crud->removeField('deactivated_at');
         $this->crud->removeField('password');
@@ -105,13 +104,12 @@ class UserCrudController extends CrudController
         if ($this->user->hasPermissionTo('delete users')) {
             $this->crud->allowAccess(['delete']);
         }
-        $this->crud->allowAccess('revisions');
     }
 
     public function store(StoreRequest $request)
     {
         // your additional operations before save here
-        $redirect_location = parent::storeCrud($request);
+        $redirect_location = $this->parentStore($request);
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
 
@@ -126,10 +124,7 @@ class UserCrudController extends CrudController
         if ($request['password'] === null) {
             unset($request['password']);
         }
-        // your additional operations before save here
-        $redirect_location = parent::updateCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
+        $redirect_location = $this->parentUpdate($request);
         $this->processExpertPanels($request);
 
         return $redirect_location;
@@ -171,9 +166,12 @@ class UserCrudController extends CrudController
                 if (!isset($panel->id)) {
                     continue;
                 }
+                unset($panel->pivot->created_at);
+                unset($panel->pivot->updated_at);
                 $expertPanels[$panel->id] = (array) $panel->pivot;
             }
             $this->crud->entry->expertPanels()->sync($expertPanels);
+            // dd($this->crud->entry->expertPanels->pluck('pivot')->map(fn ($i) => $i->toArray()));
         }
     }
 }

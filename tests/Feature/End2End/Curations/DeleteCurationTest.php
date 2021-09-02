@@ -17,26 +17,18 @@ class DeleteCurationTest extends TestCase
         $this->curation = factory(\App\Curation::class)->create(['curator_id' => $this->user->id]);
     }
 
+
     /**
      * @test
      * @group authorization
      */
     public function must_have_delete_permissions_to_delete_curation()
     {
-        $this->curation
-            ->expertPanel
-            ->users()
-            ->attach(
-                $this->user->id, 
-                [
-                    'is_coordinator' => 0, 
-                    'can_edit_curations' => 1, 
-                    'is_curator' => 1
-                ]
-            );
+        $curation = $this->curation;
+        $curation->expertPanel->users()->attach($this->user->id, ['is_coordinator' => 0, 'can_edit_curations' => 1, 'is_curator' => 1]);
 
         $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/curations/'.$this->curation->id)
+            ->json('DELETE', '/api/curations/'.$curation->id)
             ->assertStatus(403);
     }
 
@@ -47,9 +39,10 @@ class DeleteCurationTest extends TestCase
     public function user_can_delete_a_curation_if_they_are_the_curator_of_curation_and_has_delete_permission()
     {
         $this->user->givePermissionTo('delete curations');
+        $curation = $this->curation;
 
         $this->actingAs($this->user, 'api')
-            ->json('DELETE', '/api/curations/'.$this->curation->id)
+            ->json('DELETE', '/api/curations/'.$curation->id)
             ->assertStatus(200);
     }
 
@@ -64,10 +57,11 @@ class DeleteCurationTest extends TestCase
 
         // Get a curation and make the coordinator a coordinator on the
         // associated expert panel
-        $this->curation->expertPanel->addCoordinator($coordinator);
+        $curation = $this->curation;
+        $curation->expertPanel->addCoordinator($coordinator);
 
         $this->actingAs($coordinator, 'api')
-            ->json('DELETE', '/api/curations/'.$this->curation->id)
+            ->json('DELETE', '/api/curations/'.$curation->id)
             ->assertStatus(200);
     }
 
@@ -83,9 +77,12 @@ class DeleteCurationTest extends TestCase
 
         // Get a curation and make the user a user on the
         // associated expert panel
-        $this->curation->expertPanel->users()->attach($user->id, ['can_edit_curations' => 1]);
+        $curation = $this->curation;
+        $curation->expertPanel->users()->attach($user->id, ['can_edit_curations' => 1]);
 
         $this->actingAs($user, 'api')
-            ->json('DELETE', '/api/curations/'.$this->curation->id)
+            ->json('DELETE', '/api/curations/'.$curation->id)
             ->assertStatus(200);
-    }}
+    }
+
+}

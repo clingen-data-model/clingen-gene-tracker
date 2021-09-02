@@ -91,7 +91,7 @@ class CurationSearchTest extends TestCase
         $curation2->update(['hgnc_id' => '98765']);
 
         $results = $this->search->search(['filter' => '12345']);
-        $this->assertContains($curation1->hgnc_id, $results->pluck('hgnc_id'));
+        $this->assertContains((int)$curation1->hgnc_id, $results->pluck('hgnc_id')->toArray());
         $this->assertNotContains($curation2->hgnc_id, $results->pluck('hgnc_id'));
     }
 

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use App\Events\Disease\DiseaseNameChanged;
 use App\Events\Disease\MondoTermObsoleted;
 use Illuminate\Database\Eloquent\Relations\HasMany;

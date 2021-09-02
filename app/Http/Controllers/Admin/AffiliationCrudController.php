@@ -11,7 +11,13 @@ use App\Http\Requests\Admin\AffiliationRequest as StoreRequest;
 use App\Http\Requests\Admin\AffiliationRequest as UpdateRequest;
 
 class AffiliationCrudController extends CrudController
-{
+{    
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\ReviseOperation\ReviseOperation;
+
     protected $user = null;
 
     public function setUp(): void
@@ -36,50 +42,47 @@ class AffiliationCrudController extends CrudController
         $this->crud->setFromDb();
 
         // ------ FIELDS
-        $this->crud->addField([
+        $this->crud->modifyField('affiliation_type_id', [
             'label' => 'Type',
             'type' => 'select2',
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'modle' => AffiliationType::class
+            'model' => AffiliationType::class
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('parent_id', [
             'label' => 'Parent',
             'type' => 'select2',
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'modle' => Affiliation::class
+            'model' => Affiliation::class
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('clingen_id', [
             'name' => 'clingen_id',
             'label' => 'Affiliation ID'
         ]);
 
-        $this->crud->addField([
-            'name' => 'id',
-            'type' => 'hidden'
-        ], 'uupdate');
-
         // // ------ COLUMNS
-        $this->crud->addColumns([
+        $this->crud->modifyColumn('affiliation_type_id', [
             'label' => 'Type',
             'type' => 'select',
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'modle' => AffiliationType::class
-        ],[
+            'model' => AffiliationType::class
+        ]);
+        $this->crud->modifyColumn('parent_id', [
             'label' => 'Parent',
             'type' => 'select',
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'modle' => Affiliation::class
-        ],[
+            'model' => Affiliation::class
+        ]);
+        $this->crud->modifyColumn('clingen_id',[
             'name' => 'clingen_id',
             'label' => 'Affiliation ID'
         ]);
@@ -98,26 +101,19 @@ class AffiliationCrudController extends CrudController
         if ($this->user->hasPermissionTo('delete expert-panels')) {
             $this->crud->allowAccess(['delete']);
         }
-
-        // ------ REVISIONS
-        $this->crud->allowAccess('revisions');
     }
 
-    public function store(StoreRequest $request)
+    protected function setupCreateOperation()
     {
-        // your additional operations before save here
-        $redirect_location = parent::storeCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
+        $this->crud->setValidation(StoreRequest::class);
     }
 
-    public function update(UpdateRequest $request)
+    protected function setupUpdateOperation()
     {
-        // your additional operations before save here
-        $redirect_location = parent::updateCrud($request);
-        // your additional operations after save here
-        // use $this->data['entry'] or $this->crud->entry
-        return $redirect_location;
+        $this->crud->setValidation(UpdateRequest::class);
+        $this->crud->addField([
+            'name' => 'id',
+            'type' => 'hidden'
+        ], 'update');
     }
 }

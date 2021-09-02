@@ -1,6 +1,21 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Database\Seeders\TestGeneSeeder;
+use Database\Seeders\MOIsTableSeeder;
+use Database\Seeders\UsersTableSeeder;
+use Database\Seeders\AppStatesTableSeeder;
+use Database\Seeders\CurationsTableSeeder;
+use Database\Seeders\AffiliationsTableSeeder;
+use Database\Seeders\ExpertPanelsTableSeeder;
+use Database\Seeders\WorkingGroupsTableSeeder;
+use Database\Seeders\App\RationalesTableSeeder;
+use Database\Seeders\RolesAndPermissionsSeeder;
+use Database\Seeders\AffiliationTypesTableSeeder;
+use Database\Seeders\App\CurationTypesTableSeeder;
+use Database\Seeders\App\CurationStatusesTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {

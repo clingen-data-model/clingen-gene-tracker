@@ -3,11 +3,12 @@
 namespace Tests\Feature\End2End\Curations;
 
 use Tests\TestCase;
-use App\Clients\OmimClient;
+use App\Contracts\OmimClient;
 use App\Clients\Omim\OmimEntry;
 use App\Rules\ValidHgncGeneSymbol;
 use App\Clients\Omim\OmimEntryContract;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Clients\OmimClient as ConcreteOmimClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CurationUpdateTest extends TestCase
@@ -22,38 +23,7 @@ class CurationUpdateTest extends TestCase
         $this->curationType = factory(\App\CurationType::class)->create();
     }
 
-    /**
-     * @test
-     */
-    public function requires_existing_curation_type_id_on_update()
-    {
-        $data = [
-            'gene_symbol' => 'BRCA1',
-            'expert_panel_id' => $this->panel->id,
-            'page' => 'curation-types',
-            'nav' => 'next',
-            'curation_type_id' => '',
-        ];
-
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertStatus(422)
-            ->assertJson([
-                'errors' => [
-                    'curation_type_id' => [
-                        'A curation type is required to continue',
-                    ],
-                ],
-            ]);
-
-        $data['curation_type_id'] = $this->curationType->id;
-
-        $this->withoutExceptionHandling();
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertStatus(200);
-    }
-
+ 
     /**
      * @test
      */
@@ -88,9 +58,9 @@ class CurationUpdateTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
             ->assertStatus(200)
-            ->assertSee('"mim_number":'.$phenotype->mim_number)
-            ->assertSee('"mim_number":12345')
-            ->assertSee('"mim_number":67890');
+            ->assertJsonFragment(['mim_number'=>$phenotype->mim_number])
+            ->assertJsonFragment(['mim_number'=>12345])
+            ->assertJsonFragment(['mim_number'=>67890]);
     }
 
     /**
@@ -104,18 +74,17 @@ class CurationUpdateTest extends TestCase
             'page' => 'info',
             'pmids' => 'test,beans,monkeys',
         ]);
-        $this->actingAs($this->user, 'api')
+        $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertSee('"pmids":["test","beans","monkeys"]');
+            ->assertJsonFragment(['pmids'=>["test","beans","monkeys"]]);
 
         $data = array_merge($this->curation->toArray(), [
             'page' => 'info',
             'pmids' => ['test', 'beans', 'monkeys'],
         ]);
-
-        $this->actingAs($this->user, 'api')
+        $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertSee('"pmids":["test","beans","monkeys"]');
+            ->assertJsonFragment(['pmids'=>["test","beans","monkeys"]]);
     }
 
     /**
@@ -124,9 +93,10 @@ class CurationUpdateTest extends TestCase
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
         $this->assumeGeneSymbolValid();
-        app()->bind('App\Contracts\OmimClient', function ($app) {
-            return new class extends OmimClient {
-                public function getEntry($omimId): OmimEntryContract {
+        app()->bind(OmimClient::class, function ($app) {
+            return new class extends ConcreteOmimClient {
+                public function getEntry($mimNumber): OmimEntryContract
+                {
                     return new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);
                 }
             };
@@ -145,9 +115,8 @@ class CurationUpdateTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data);
-        $response->assertStatus(200);
 
-        $response->assertSee('"mim_number":100100');
+        $response->assertJsonFragment(['mim_number'=>100100]);
     }
 
     /**
@@ -231,33 +200,27 @@ class CurationUpdateTest extends TestCase
         $curation = $this->curation;
         $curation->update([
             'curation_type_id' => 1,
-            'gene_symbol' => 'PDSS1',
+            'gene_symbol' => 'myl2',
         ]);
 
         app()->bind('App\Contracts\OmimClient', function ($app) {
-            return new class extends OmimClient {
-                public function getGenePhenotypes($geneSymbol) {
-                    return collect([1]);
-                }
-            };
-        });
-        app()->bind('App\Rules\ValidGeneSymbolRule', function ($app) {
-            return new class extends ValidHgncGeneSymbol {
-                public function passes($attribute, $value) {
-                    return true;
-                }
-            };
+            $stub = $this->createMock(OmimClient::class);
+            $stub->method('geneSymbolIsValid')
+                ->willReturn(true);
+            $stub->method('getGenePhenotypes')
+                ->willReturn(collect([1]));
+
+            return $stub;
         });
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
         $data['nav'] = 'next';
-        
-        $response = $this->actingAs($this->user, 'api')
-            ->json('put', '/api/curations/'.$curation->id, $data);
-        $response->assertStatus(200);
 
+        $response = $this->actingAs($this->user, 'api')
+            ->json('put', '/api/curations/'.$curation->id, $data)
+            ->assertStatus(200);
     }
 
     /**
@@ -402,8 +365,8 @@ class CurationUpdateTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)
             // ->assertStatus(200)
-            ->assertSee('"hgnc_id":'.$curation->hgnc_id)
-            ->assertSee('"hgnc_name":"'. $curation->hgnc_name.'"');
+            ->assertJsonFragment(['hgnc_id' => $curation->hgnc_id])
+            ->assertJsonFragment(['hgnc_name' => $curation->hgnc_name]);
     }
 
 }

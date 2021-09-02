@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class CheckIfAdmin
 {
@@ -22,8 +23,7 @@ class CheckIfAdmin
      */
     private function checkIfUserIsAdmin($user)
     {
-        // return ($user->is_admin == 1);
-        return true;
+        return ($user->hasAnyRole('admin', 'programmer'));
     }
 
     /**
@@ -52,11 +52,11 @@ class CheckIfAdmin
      */
     public function handle($request, Closure $next)
     {
-        if (backpack_auth()->guest()) {
+        if (Auth::guest()) {
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (!$this->checkIfUserIsAdmin(backpack_user())) {
+        if (!$this->checkIfUserIsAdmin(Auth::user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
 
