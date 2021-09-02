@@ -37,8 +37,8 @@
                     <input type="checkbox" v-model="panel.pivot.can_create_curations">
                 </td> -->
                 <td>
-                    <button type="button" class="btn btn-xs btn-danger" @click="removePanel(idx)">
-                        <span class="fa fa-close"></span>
+                    <button type="button" class="btn btn-sm btn-danger" @click="removePanel(idx)">
+                        <span class="la la-times"></span>
                     </button>
                 </td>
             </tr>
