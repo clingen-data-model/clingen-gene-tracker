@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Support\Facades\Event;
 use App\Events\Genes\GeneSymbolChanged;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;

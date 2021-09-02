@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use Illuminate\Support\Str;
 
 if (!function_exists('site_title')) {

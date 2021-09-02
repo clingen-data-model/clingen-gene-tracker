@@ -3,7 +3,7 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 
 class ModeOfInheritance extends Model
 {
