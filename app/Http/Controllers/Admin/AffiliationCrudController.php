@@ -42,50 +42,47 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setFromDb();
 
         // ------ FIELDS
-        $this->crud->addField([
+        $this->crud->modifyField('affiliation_type_id', [
             'label' => 'Type',
             'type' => 'select2',
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'modle' => AffiliationType::class
+            'model' => AffiliationType::class
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('parent_id', [
             'label' => 'Parent',
             'type' => 'select2',
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'modle' => Affiliation::class
+            'model' => Affiliation::class
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('clingen_id', [
             'name' => 'clingen_id',
             'label' => 'Affiliation ID'
         ]);
 
-        $this->crud->addField([
-            'name' => 'id',
-            'type' => 'hidden'
-        ], 'uupdate');
-
         // // ------ COLUMNS
-        $this->crud->addColumns([
+        $this->crud->modifyColumn('affiliation_type_id', [
             'label' => 'Type',
             'type' => 'select',
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'modle' => AffiliationType::class
-        ],[
+            'model' => AffiliationType::class
+        ]);
+        $this->crud->modifyColumn('parent_id', [
             'label' => 'Parent',
             'type' => 'select',
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'modle' => Affiliation::class
-        ],[
+            'model' => Affiliation::class
+        ]);
+        $this->crud->modifyColumn('clingen_id',[
             'name' => 'clingen_id',
             'label' => 'Affiliation ID'
         ]);
@@ -114,5 +111,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     protected function setupUpdateOperation()
     {
         $this->crud->setValidation(UpdateRequest::class);
+        $this->crud->addField([
+            'name' => 'id',
+            'type' => 'hidden'
+        ], 'update');
     }
 }
