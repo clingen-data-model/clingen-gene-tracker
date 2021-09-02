@@ -67,6 +67,7 @@
 
 {{-- @if(Auth::user()->hasPermissionTo('view email')) --}}
     <li class="nav-item">
+        <hr>
         <a class="nav-link" href="{{ url(config('backpack.base.route_prefix').'/email') }}">
             <i class="nav-icon la la-file-o"></i> <span>Emails</span>
         </a>
@@ -81,6 +82,7 @@
 {{-- @endif --}}
 {{-- @if(Auth::user()->hasPermissionTo('view logs')) --}}
 <li class="nav-item">
+    <hr>
     <a class="nav-link" href="/logs" target="logs">
         <i class="nav-icon la la-file-o"></i> <span>Logs</span>
     </a>
