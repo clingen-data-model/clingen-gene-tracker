@@ -35,24 +35,6 @@ abstract class TestCase extends BaseTestCase
             ->call($method, $uri, $parameters = [], $cookies = [], $files = [], $server = [], $content = null);
     }
 
-    protected function disableExceptionHandling()
-    {
-        $this->app->instance(ExceptionHandler::class, new class() extends Handler {
-            public function __construct()
-            {
-            }
-
-            public function report(\Exception $e)
-            {
-            }
-
-            public function render($request, \Exception $e)
-            {
-                throw $e;
-            }
-        });
-    }
-
     public function invokeMethod(&$object, $methodName, array $parameters = [])
     {
         $reflection = new \ReflectionClass(get_class($object));

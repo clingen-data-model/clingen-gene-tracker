@@ -2,8 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @group api
@@ -27,7 +28,7 @@ class UsersControllerTest extends TestCase
      */
     public function index_returns_200()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/users')
             ->assertStatus(200);
@@ -67,7 +68,7 @@ class UsersControllerTest extends TestCase
      */
     public function index_can_return_users_with_role()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $curators = factory(\App\User::class, 2)->create()
                         ->each(function ($user) {
                             $user->assignRole('admin');
@@ -75,7 +76,7 @@ class UsersControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?with=roles')
-            ->assertSee('"name":"admin"');
+            ->assertJsonFragment(['name' => 'admin']);
     }
 
     /**
@@ -83,11 +84,11 @@ class UsersControllerTest extends TestCase
      */
     public function index_can_return_users_with_expert_panels()
     {
-        $this->disableExceptionHandling();
+        $this->withoutExceptionHandling();
         $curators = factory(\App\User::class, 2)->create();
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?with=roles,expertPanels')
-            ->assertSee('"expert_panels":');
+            ->assertSee('expert_panels');
     }
 }
