@@ -13,7 +13,7 @@ use App\Events\Curation\Updated;
 use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

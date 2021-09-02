@@ -5,7 +5,7 @@ namespace App;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 

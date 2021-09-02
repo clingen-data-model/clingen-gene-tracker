@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use InvalidArgumentException;
 use Venturecraft\Revisionable\RevisionableTrait;
 

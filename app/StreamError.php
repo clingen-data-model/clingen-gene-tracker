@@ -3,7 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use App\Model;
 use InvalidArgumentException;
 
 class StreamError extends Model
