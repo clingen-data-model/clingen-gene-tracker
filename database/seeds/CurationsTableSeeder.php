@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\ExpertPanel;
 use App\Curation;
 use App\User;
