@@ -42,7 +42,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 
         $this->crud->setFromDb();
 
-        $this->crud->addField([
+        $this->crud->modifyField('working_group_id', [
             'name' => 'working_group_id',
             'label' => 'Working Group',
             'entity' => 'workingGroup',
@@ -51,7 +51,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'attribute' => 'name',
         ]);
 
-        $this->crud->addField([
+        $this->crud->modifyField('affiliation_id', [
             'name' => 'affiliation_id',
             'label' => 'Affiliation',
             'entity' => 'affiliation',
