@@ -88,9 +88,9 @@ class CurationUpdateTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
             ->assertStatus(200)
-            ->assertSee('"mim_number":'.$phenotype->mim_number)
-            ->assertSee('"mim_number":12345')
-            ->assertSee('"mim_number":67890');
+            ->assertJsonFragment(['mim_number' => $phenotype->mim_number])
+            ->assertJsonFragment(['mim_number' => 12345])
+            ->assertJsonFragment(['mim_number' => 67890]);
     }
 
     /**
@@ -106,7 +106,7 @@ class CurationUpdateTest extends TestCase
         ]);
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertSee('"pmids":["test","beans","monkeys"]');
+            ->assertJsonFragment(['pmids' => ["test","beans","monkeys"]]);
 
         $data = array_merge($this->curation->toArray(), [
             'page' => 'info',
@@ -115,7 +115,7 @@ class CurationUpdateTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertSee('"pmids":["test","beans","monkeys"]');
+            ->assertJsonFragment(['pmids' => ["test","beans","monkeys"]]);
     }
 
     /**
@@ -147,7 +147,7 @@ class CurationUpdateTest extends TestCase
             ->json('PUT', '/api/curations/'.$curation->id, $data);
         $response->assertStatus(200);
 
-        $response->assertSee('"mim_number":100100');
+        $response->assertJsonFragment(['mim_number' => 100100]);
     }
 
     /**
@@ -402,8 +402,8 @@ class CurationUpdateTest extends TestCase
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)
             // ->assertStatus(200)
-            ->assertSee('"hgnc_id":'.$curation->hgnc_id)
-            ->assertSee('"hgnc_name":"'. $curation->hgnc_name.'"');
+            ->assertJsonFragment(['hgnc_id' => $curation->hgnc_id])
+            ->assertJsonFragment(['hgnc_name' => $curation->hgnc_name]);
     }
 
 }

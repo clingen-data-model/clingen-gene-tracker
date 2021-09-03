@@ -97,6 +97,6 @@ class WorkingGroupControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/'.$this->group->id)
-            ->assertSee($expertPanels->first()->name);
+            ->assertJsonFragment(['name' => $expertPanels->first()->name]);
     }
 }
