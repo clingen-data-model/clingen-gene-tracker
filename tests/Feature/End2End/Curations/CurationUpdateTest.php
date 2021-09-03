@@ -7,6 +7,7 @@ use App\Clients\OmimClient;
 use App\Clients\Omim\OmimEntry;
 use App\Rules\ValidHgncGeneSymbol;
 use App\Clients\Omim\OmimEntryContract;
+use App\Contracts\OmimClient as ContractsOmimClient;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -194,7 +195,18 @@ class CurationUpdateTest extends TestCase
      */
     public function rationales_not_required_when_curation_type_not_single_and_1_phenotype()
     {
-        $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
+        // $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
+        app()->bind(ContractsOmimClient::class, function () {
+            return new class extends OmimClient {
+                public function getGenePhenotypes($arg) {
+                    return collect([1]);
+                }
+                public function geneSymbolIsValid($geneSymbol)
+                {
+                    return true;
+                }
+            };
+        });
         $curation = $this->curation;
         $curation->update([
             'curation_type_id' => 1,
