@@ -53,7 +53,7 @@ class AdminNavigationTest extends TestCase
         $this->markTestSkipped();
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
-            ->assertStatus(403);
+            ->assertRedirect('/admin/login');
     }
 
 

@@ -26,11 +26,11 @@ class SendWelcomeEmailTest extends TestCase
     {
         $this->markTestSkipped('Unable to get to pass but works in real life.');
         Notification::fake();
-        \Event::fake();
-        $u = factory(\App\User::class)->create();
-        $listener = new SendWelcomeEmail();
-        $event = new Created($u);
-        $listener->handle($event);
+            \Event::fake();
+            $u = factory(\App\User::class)->create();
+            $listener = new SendWelcomeEmail();
+            $event = new Created($u);
+            $listener->handle($event);
 
         Notification::assertSentTo($u, Welcome::class);
     }

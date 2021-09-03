@@ -137,15 +137,4 @@ class CurationSearchTest extends TestCase
         
         $this->assertEquals(1, $results->count());
     }
-
-    /**
-     * @test
-     */
-    public function can_filter_by_current_status()
-    {
-        // dd($this->curations->pluck('currentSatus')->toArray());
-    }
-    
-    
-    
 }
