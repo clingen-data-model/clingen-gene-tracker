@@ -29,7 +29,7 @@ Route::group([
 
     Route::post('/curations/{id}/owner', 'CurationTransferController@store');
     Route::resource('/curations/{id}/classifications', 'CurationClassificationController')
-        ->only(['index', 'store', 'update', 'destroy']);
+        ->only(['index', 'store', 'update', 'destroy'])->name('index', 'curations.classifications.index');
     Route::resource('/curations/{id}/statuses', 'CurationCurationStatusController');
 
     Route::get('curations/{curation_id}/uploads/{upload_id}/file', 'CurationUploadController@getFile')->name('curation-upload-file');

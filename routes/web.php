@@ -27,7 +27,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/omim/search', 'Api\OmimController@search');
     Route::get('/omim/gene', 'Api\OmimController@gene');
 
-    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
     Route::get('bulk-uploads', 'BulkUploadController@show')->name('bulk-uploads.show');
     Route::post('bulk-uploads', 'BulkUploadController@upload')->name('bulk-uploads.upload');
 
