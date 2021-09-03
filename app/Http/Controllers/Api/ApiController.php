@@ -13,7 +13,16 @@ class ApiController extends Controller
     {
         $query = $this->getBaseQuery();
         if ($request->with) {
-            $query->with(explode(',', $request->with));
+            $with = $request->with;
+            if (is_string($request->with)) {
+                $with = explode(',', $request->with);
+            }
+            $query->with($with);
+        }
+        if ($request->has('sort')) {
+            $field = isset($request->sort['field']) ? $request->sort['field'] : 'id';
+            $dir = isset($request->sort['dir']) ? $request->sort['dir'] : 'asc';
+            $query->orderBy($field, $dir);
         }
 
         return $query->get();

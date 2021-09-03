@@ -167,17 +167,15 @@ const actions = {
                 return Promise.reject(errors.response)
             });
     },
-    updateOwner({ commit }, { curation, expertPanelId, startDate }) {
+    updateOwner({ dispatch, commit }, { curation, expertPanelId, startDate, notes }) {
         return window.axios.post(baseUrl + '/' + curation.id + '/owner', {
                 expert_panel_id: expertPanelId,
-                start_date: startDate
+                start_date: startDate,
+                notes: notes
             })
             .then(response => {
                 const { curation_id, expert_panels } = response.data
-                curation.expert_panels = expert_panels;
-                curation.expert_panel_id = expertPanelId;
-                curation.expert_panel = expert_panels.find(ep => ep.id == expertPanelId);
-                commit('addItem', curation);
+                dispatch('fetchItem', curation_id);
                 return response;
             });
     }

@@ -44,14 +44,14 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     public function updated_precuration_message_created_when_curation_updated()
     {
         $curation = factory(Curation::class)->create();
-        $curation->update(['notes' => 'test test test']);
-        $matchingMessages = StreamMessage::query()
-                                ->where('message->event_type', 'updated')
-                                ->where('message->data->id', $curation->id)
-                                ->where('message->data->notes', 'test test test')
-                                ->where('topic', config('dx.topics.outgoing.precuration-events'))
-                                ->get();
-        $this->assertEquals(1, $matchingMessages->count());
+        $curation->update(['curation_notes' => 'test test test']);
+        $this->assertDatabaseHas('stream_messages', [
+            'message->event_type' => 'updated',
+            'message->data->id' => $curation->id,
+            'message->data->notes' => 'test test test',
+            'topic' => config('dx.topics.outgoing.precuration-events'),
+
+        ]);
     }
 
     /**

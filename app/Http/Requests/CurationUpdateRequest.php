@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Clients\OmimClient;
 use App\Rules\ValidOmimId;
+use App\Contracts\OmimClient;
 
 /**
 * Request for a curation update request
@@ -71,7 +71,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
-            $omim = resolve(OmimClient::class);
+            $omim = app()->make(OmimClient::class);
 
             $genePhenos = $omim->getGenePhenotypes($input->gene_symbol);
             if ($input->page == 'phenotypes') {
@@ -82,6 +82,7 @@ class CurationUpdateRequest extends CurationCreateRequest
                     return true;
                 }
             }
+
             return false;
         });
 

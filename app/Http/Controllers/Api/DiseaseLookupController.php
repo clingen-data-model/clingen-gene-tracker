@@ -29,7 +29,7 @@ class DiseaseLookupController extends Controller
             return [];
         }
         $results = Disease::search($queryString)->limit(250)->get();
-        // dd($results);
+
         return $results->toArray();
     }
     

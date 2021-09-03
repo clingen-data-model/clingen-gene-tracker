@@ -50,7 +50,7 @@ class EmailCrudController extends CrudController
     {
         $content = parent::show($id);
         foreach ($content->entry->getAttributes() as $key => $value) {
-            if (is_null($content->entry->{$key})) {
+            if (is_null($value)) {
                 $this->crud->removeColumn($key);
             }
         }

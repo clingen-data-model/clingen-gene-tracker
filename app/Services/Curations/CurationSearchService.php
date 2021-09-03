@@ -148,7 +148,7 @@ class CurationSearchService implements SearchService
                 ;
             if (preg_match('/hgnc:/i', $params['filter'])) {
                 $hgncId = substr($params['filter'], 5);
-                // dd($hgncId);
+
                 $query->orWhere('hgnc_id', $hgncId);
             }
         }

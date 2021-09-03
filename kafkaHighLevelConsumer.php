@@ -27,8 +27,6 @@ $offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
 $writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
 
-// dd(compact('topics', 'offset', 'limit'));
-
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 

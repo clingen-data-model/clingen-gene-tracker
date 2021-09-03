@@ -12,7 +12,7 @@
             </tr>
             <tr 
                 v-for="(item, idx) in orderedItems" 
-                :key="(indexAttribute) ? item[keyAttribute] : idx"
+                :key="(indexAttribute) ? item[indexAttribute] : idx"
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{item.name}}</td>

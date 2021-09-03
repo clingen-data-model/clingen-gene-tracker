@@ -8,6 +8,7 @@ use App\Traits\HasAffiliationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class ExpertPanel extends Model implements HasAffiliation
 {
@@ -71,4 +72,10 @@ class ExpertPanel extends Model implements HasAffiliation
     {
         return $this->id;
     }
+
+    public function hasCoordinators(): bool
+    {
+        return $this->coordinators->count() > 0;
+    }
+    
 }

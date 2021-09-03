@@ -97,8 +97,6 @@ class ImportGciSnapshot extends Command
         //         });
         //     });
 
-        // dd($dupUuid);
-
         $bar = $this->output->createProgressBar(count($rows));
         $errors = [];
         

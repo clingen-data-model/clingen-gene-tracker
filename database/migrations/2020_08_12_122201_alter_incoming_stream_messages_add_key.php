@@ -84,7 +84,6 @@ class AlterIncomingStreamMessagesAddKey extends Migration
 
     public function restoreDeletedDuplicates()
     {
-        // dd(__METHOD__);
         $fh = fopen(storage_path('database/migrated_data/duplicate_incoming_stream_messages.csv'), 'r');
         $keys = [];
         $records = [];

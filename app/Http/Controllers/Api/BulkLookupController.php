@@ -25,7 +25,7 @@ class BulkLookupController extends Controller
                         $curation->available_phenotypes = $curation->gene->phenotypes;
                         return $curation;
                     });
-        // dd($results->pluck('phenotypes'));
+
         return CurationResource::collection($results);
     }
     
