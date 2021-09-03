@@ -50,10 +50,9 @@ class AdminNavigationTest extends TestCase
      */
     public function others_can_not_see_dashboard()
     {
-        $this->markTestSkipped();
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
-            ->assertStatus(403);
+            ->assertRedirect('/admin/login');
     }
 
 
