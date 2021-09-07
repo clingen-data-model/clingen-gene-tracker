@@ -41,8 +41,8 @@ class UsersControllerTest extends TestCase
     {
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users')
-            ->assertSee($this->users->first()->name)
-            ->assertSee($this->users->last()->name);
+            ->assertJsonFragment(['name' => $this->users->first()->name])
+            ->assertJsonFragment(['name' => $this->users->last()->name]);
     }
 
     /**
@@ -57,10 +57,10 @@ class UsersControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?role=admin')
-            ->assertSee($curators->first()->name)
-            ->assertSee($curators->last()->name)
-            ->assertDontSee($this->users->first()->name)
-            ->assertDontSee($this->users->last()->name);
+            ->assertJsonFragment(['name' => $curators->first()->name])
+            ->assertJsonFragment(['name' => $curators->last()->name])
+            ->assertJsonMissing(['name' => $this->users->first()->name])
+            ->assertJsonMissing(['name' => $this->users->last()->name]);
     }
 
     /**

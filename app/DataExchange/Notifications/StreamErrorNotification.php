@@ -45,9 +45,8 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
     {
         $uniqueErrors = $this->streamErrors
                             ->unique(function ($error) {
-                                return $error->gene.'-'.$error->condition.'-'.$error->moi;
+                                return $error->gene->gene.'-'.$error->condition.'-'.$error->moi;
                             });
-
         return [
             'stream_errors' => $uniqueErrors,
             'template' => 'email.stream_error_notification'

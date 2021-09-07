@@ -19,9 +19,16 @@ We have received data from the GCI about a gene-disease relationship that may be
             <ul>
                 @foreach ($errors as $streamError)
                 <li>
-                    {{-- @php dump($streamError) @endphp --}}
                     <a href="https://curation.clinicalgenome.org/curation-central/{{$streamError['message_payload']['report_id']}}/">
-                        {{$streamError['gene']}} / {{$streamError['condition']}} / {{$streamError['moi']}}
+                        {{ isset($streamError['gene_model'])
+                                ? $streamError['gene_model']['gene_symbol'] 
+                                : $streamError['gene'] }} 
+                        / {{ isset($streamError['disease_model'])
+                                ? $streamError['disease_model']['name'] 
+                                : $streamError['condition'] }} 
+                        / {{ isset($streamError['moi_model']) 
+                            ? $streamError['moi_model']['name']
+                            : $streamError['moi'] }}
                     </a>
                     on {{\Carbon\Carbon::parse($streamError['created_at'])->format('Y-m-d')}}
                 </li>
