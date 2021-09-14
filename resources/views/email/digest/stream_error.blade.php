@@ -1,5 +1,13 @@
 <h4>Unmatchable GCI Records</h4>
-We have received data from the GCI about a gene-disease relationship that may be of interest or associated with one or more of your groups, however the data does not match our current records. Please review the following records and if they to belong to your group, please consider updating the information (e.g. Affiliation, MonDO ID, etc) to optimize automation of future updates. If you have any questions, please contact us at clingentrackerhelp@unc.edu
+
+<p>
+    Our records indicate that one of your expert panels has started the curations below in the GCI, but they have not been entered into the Gene Tracker.  Please document this information in the Gene Tracker so that we can accurately track GCEP activity and precuration/disease-naming decisions.
+</p>
+
+<p>
+    If you have any questions, please contact us at 
+    <a href="mailto:clingentrackerhelp@unc.edu">clingentrackerhelp@unc.edu</a>.
+</p>
 
 @php
     $groupedErrors = $notifications->map(function ($item) {
