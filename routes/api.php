@@ -11,19 +11,11 @@
 |
 */
 
-// Route::group(['namespace' => 'Api'], function () {
-//     Route::get('timeout-test', 'TimeoutTestController@index');
-
-//     Route::group(['middleware' => ['auth:api']], function () {
-//         Route::get('auth/timeout-test', 'TimeoutTestController@index');
-//     });
-// });
-
-
 Route::group([
     'middleware' => ['auth:api'],
     'namespace' => 'Api',
 ], function () {
+    Route::get('/features', 'FeaturesController@index');
     // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
 
@@ -60,6 +52,7 @@ Route::group([
     // Genes
     Route::post('/genes', 'GeneController@index');
     Route::post('/genes/csv', 'GeneController@download');
+
 
     /*
     * Catch-all route for generic API read exposure
