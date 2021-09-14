@@ -107,4 +107,5 @@ return [
     ],
 
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', null),
+    'transfers_enabled' => env('TRANSFERS_ENABLED', false),
 ];
