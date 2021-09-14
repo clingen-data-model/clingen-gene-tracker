@@ -83,7 +83,7 @@
 {{-- @if(Auth::user()->hasPermissionTo('view logs')) --}}
 <li class="nav-item">
     <hr>
-    <a class="nav-link" href="/logs" target="logs">
+    <a class="nav-link" href="/admin/logs" target="logs">
         <i class="nav-icon la la-file-o"></i> <span>Logs</span>
     </a>
 </li>

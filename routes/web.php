@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('curations/export/form', 'CurationExportController@getForm')->name('curations.export');
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
-    // Route::get('bulk-omim-lookup', 'BulkOmimLookupController@index')->name('bulk-omim-lookup');
+    Route::redirect('logs', 'admin/logs');
 
     Route::impersonate();
 });
@@ -41,8 +41,5 @@ Route::group(['middleware' => 'auth'], function () {
 Auth::routes();
 
 Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
-
-Route::get('{page}/{subs?}', ['uses' => 'PageController@index'])
-    ->where(['page' => '^((?!admin).)*$', 'subs' => '.*']);
 
 Route::get('/admin/login', 'Auth\LoginController@showLoginForm');
