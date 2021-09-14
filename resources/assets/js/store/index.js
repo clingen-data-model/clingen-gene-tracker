@@ -79,6 +79,9 @@ const mutations = {
             throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
         }
         state.apiRequestCounts[apiKey]--
+    },
+    setFeatures(state, features) {
+        state.features = features;
     }
 }
 
@@ -88,6 +91,15 @@ const actions = {
         if (user) {
             commit('setUser', user);
         }
+    },
+    async getFeatures({ commit }) {
+        const features = await window.axios.get('api/features')
+                            .then(response => response.data)
+                            .catch(error => {
+                                console.error(error.response);
+                            });
+        console.info('features', features);
+        commit('setFeatures', features);
     }
 }
 

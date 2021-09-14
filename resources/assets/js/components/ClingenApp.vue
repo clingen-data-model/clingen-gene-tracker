@@ -14,12 +14,18 @@
             }),
             ...mapActions('rationales', {
                 getAllRationales: 'getAllItems'
+            }),
+            ...mapActions({
+                getFeatures: 'getFeatures'
             })
         },
         mounted: function () {
             if (this.$store.state.curations.items.length == 0) {
                 this.getAllCurationStatuses();
                 this.getAllRationales();
+            }
+            if (!this.$store.state.features.transferEnabled) {
+                this.getFeatures();
             }
         }
     }
