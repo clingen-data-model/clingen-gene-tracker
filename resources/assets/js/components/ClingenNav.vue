@@ -14,7 +14,7 @@
                     <b-navbar-nav class="ml-auto">
                         <b-nav-item-dropdown text="User" right>
                             <b-dropdown-item href="/admin">Admin</b-dropdown-item>
-                            <b-dropdown-item href="/logs" v-show="true">Logs</b-dropdown-item>
+                            <b-dropdown-item href="/admin/logs" v-show="true">Logs</b-dropdown-item>
                             <b-dropdown-divider></b-dropdown-divider>
                             <b-dropdown-item href="/#logout" @click="logout()">Logout</b-dropdown-item>
                         </b-nav-item-dropdown>
