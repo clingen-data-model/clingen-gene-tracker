@@ -42,7 +42,10 @@ class CreateNotificationsForStreamErrors extends Command
      */
     public function handle()
     {
-        $groupedErrors = StreamError::unsent()->get()->groupBy('affiliation_id');
+        $groupedErrors = StreamError::unsent()
+                            ->with('geneModel', 'diseaseModel', 'moiModel')
+                            ->get()
+                            ->groupBy('affiliation_id');
         $affiliations = Affiliation::with('expertPanel')->get()->keyBy('clingen_id');
         $groupedErrors->each(function ($errors, $affiliation_id) use ($affiliations) {
             $affiliation = $affiliations->get($affiliation_id);

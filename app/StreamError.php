@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use App\Model;
 use InvalidArgumentException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StreamError extends Model
 {
@@ -33,6 +34,27 @@ class StreamError extends Model
     {
         return $this->belongsTo(Affiliation::class, 'message_payload->performed_by->on_behalf_of->id');
     }
+
+    /**
+     * Get the gene that owns the StreamError
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function geneModel(): BelongsTo
+    {
+        return $this->belongsTo(Gene::class, 'hgnc_id', 'hgnc_id');
+    }
+
+    public function diseaseModel(): BelongsTo
+    {
+        return $this->belongsTo(Disease::class, 'mondo_id', 'mondo_id');
+    }
+    
+    public function moiModel(): BelongsTo
+    {
+        return $this->belongsTo(ModeOfInheritance::class, 'moi', 'hp_id');
+    }
+    
 
     public function scopeUnsent($query)
     {
@@ -64,7 +86,12 @@ class StreamError extends Model
 
     public function getGeneAttribute()
     {
-        return $this->message_payload->gene_validity_evidence_level->genetic_condition->gene;
+        return $this->message_payload->gene_validity_evidence_level->genetic_condition;
+    }
+    
+    public function getHgncIdAttribute()
+    {
+        return substr($this->message_payload->gene_validity_evidence_level->genetic_condition->gene, 5);
     }
 
     public function getConditionAttribute()
@@ -76,4 +103,10 @@ class StreamError extends Model
     {
         return $this->message_payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance;
     }
+
+    public function getMondoIdAttribute()
+    {
+        return $this->message_payload->gene_validity_evidence_level->genetic_condition->condition;
+    }
+    
 }
