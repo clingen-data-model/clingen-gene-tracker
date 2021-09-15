@@ -1,8 +1,11 @@
 <template>
     <div>
+        <!-- <pre>{{curation.expert_panel}}</pre> -->
+        <!-- <pre>{{user}}</pre> -->
         <button 
             class="btn btn-sm bg-white border" 
             @click="showTransferForm = true"
+            v-if="user.canEditPanelCurations(curation.expert_panel)"
         >
             Transfer Curation
         </button>
@@ -103,6 +106,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters({user: 'getUser'}),
         ...mapGetters('panels', {
             panels: 'Items',
         }),
