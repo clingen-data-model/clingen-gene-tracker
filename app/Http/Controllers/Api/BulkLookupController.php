@@ -8,6 +8,7 @@ use App\Http\Requests\BulkLookupRequest;
 use App\Http\Resources\CurationResource;
 use Illuminate\Support\Facades\Response;
 use App\Services\Curations\CurationSearchService;
+use Illuminate\Validation\ValidationException;
 
 class BulkLookupController extends Controller
 {
@@ -25,7 +26,10 @@ class BulkLookupController extends Controller
                         $curation->available_phenotypes = $curation->gene->phenotypes;
                         return $curation;
                     });
-
+        if ($results->count() == 0) {
+            throw ValidationException::withMessages(['gene_symbols' => ['There were no results for your search.  Are you sure you\'re using valid HGNC gene symbols? Could the gene symbol(s) you searched be aliases or previously used symbols?']]);
+        }
+            
         return CurationResource::collection($results);
     }
     
@@ -67,6 +71,9 @@ class BulkLookupController extends Controller
                             })->join("; ")
                         ];
                     });
+        if ($results->count() == 0) {
+            throw ValidationException::withMessages(['gene_symbols' => ['There were no results for your search.  Are you sure you\'re using valid HGNC gene symbols?']]);
+        }
         $columns = array_keys($results->first());
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');

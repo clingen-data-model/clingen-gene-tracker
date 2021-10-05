@@ -16,20 +16,21 @@
             <p class="text-grey">
                 Look up gene precurations and curations by gene symbol.
             </p>
-            <div class="alert alert-danger" v-if="formErrors.length > 0">
-                <ul class="mb-0">
-                    <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
-                </ul>
-            </div>
 
             <lookup-form 
                 v-model="geneSymbols"
                 @lookup="search" 
                 @getCsv="downloadCsv"
+                :errors="formErrors"
                 class="mb-3"
             ></lookup-form>
 
 
+            <div class="alert alert-danger" v-if="formErrors.length > 0">
+                <ul class="mb-0">
+                    <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
+                </ul>
+            </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
                 <b-table 
@@ -218,8 +219,12 @@ export default {
         }
     },
     methods: {
+        clearResults () {
+            this.results = []
+        },
         search() {
             this.formErrors = [];
+            this.clearResults();
             this.loadingResults = true;
             axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {

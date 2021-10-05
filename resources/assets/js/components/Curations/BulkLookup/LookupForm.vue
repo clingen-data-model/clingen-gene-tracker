@@ -40,12 +40,16 @@
     </div>
 </template>
 <script>
+    import ValidationError from '../../ValidationError'
 
 export default {
     props: [
         'value',
         'errors'
     ],
+    components: {
+        ValidationError
+    },
     data() {
         return {
             currentTab: 0,
