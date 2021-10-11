@@ -10,6 +10,7 @@
             "pattern": "^\\w{6}(-\\w{4}){3}-\\w{12}$"
         },
         "event_type": {
+            "description": "The type of event described this message.",
             "type": "string",
             "title": "Type of curation event",
             "enum": ["created", "updated", "deleted"]
@@ -19,18 +20,22 @@
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "An unique, numeric identifier for the pre-curation assigned by the GeneTracker.  Numeric IDs are assigned sequentially as pre-curation records are created.",
                     "type": "integer",
                     "minimum": 1
                 },
                 "uuid": {
+                    "description": "An unique, arbitrary identifier for the pre-curation assigned by the GeneTracker.",
                     "type": "string",
                     "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
                 },
                 "gdm_uuid": {
+                    "description": "An unique, arbitrary identifier for the GDM (curation) assigned by the GCI.",
                     "type": "string",
                     "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
                 },
                 "gene": {
+                    "description": "The gene being (pre)curated.",
                     "type": "object",
                     "properties": {
                         "hgnc_id": {
@@ -44,6 +49,7 @@
                     "required": ["hgnc_id", "symbol"]
                 },
                 "disease_entity": {
+                    "description": "Disease identified in the (pre)curation.",
                     "type": "object",
                     "properties": {
                         "mondo_id": {
@@ -56,6 +62,7 @@
                     }
                 },
                 "mode_of_inheritance": {
+                    "description": "Mode of inheritance identified in the (pre)curation.",
                     "type": "object",
                     "properties": {
                         "name": {
@@ -68,6 +75,7 @@
                     }
                 },
                 "group": {
+                    "description": "The ClinGen group who currently owns the (pre)curation record.",
                     "type": "object",
                     "properties": {
                         "id": {
@@ -90,6 +98,7 @@
                     }
                 },
                 "curator": {
+                    "description": "The GT user who is primarily responsible for carrying out the curation.",
                     "type": "object",
                     "properties": {
                         "clingen_id": {
@@ -104,6 +113,7 @@
                     }
                 },
                 "status": {
+                    "description": "The current status of the gene-diease (pre)curation.",
                     "type": "object",
                     "properties": {
                         "name": {
@@ -128,9 +138,11 @@
                     "required": ["name", "effective_date"]
                 },
                 "rationale": {
+                    "description": "The rationale applied to justify disease lumping/splitting decisions related to this (pre)curation.",
                     "type": "object",
                     "properties": {
                         "pmids": {
+                            "descriptions": "PubMed identifiers for sources supporting the lumping/splitting rationale. ",
                             "type": "array",
                             "items": {
                                 "type": "integer",
@@ -140,6 +152,7 @@
                         "rationales": {
                             "type": "array",
                             "items": {
+                                "descriptions": "Categories of rationale defined Gene Curation Working Group",                                
                                 "type": "string",
                                 "enum": [
                                     "Assertion",
@@ -156,6 +169,7 @@
                     }
                 },
                 "curation_type": {
+                    "description": "Category to indicate the kind of curation in terms of lumping/splitting of disease entities.",
                     "type": "object",
                     "properties": {
                         "name": {
@@ -171,6 +185,7 @@
                     }
                 },
                 "omim_phenotypes": {
+                    "description": "The list of OMIM phenotypes that describe the disease entity for this curation.",
                     "type": "object",
                     "properties": {
                         "included": {
