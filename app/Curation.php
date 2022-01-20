@@ -314,7 +314,7 @@ class Curation extends Model implements Notable
         ]);
     }
 
-    public function scopeNoUuid($query)
+    public function scopeNoGdmUuid($query)
     {
         return $query->whereNull('gdm_uuid');
     }
@@ -375,6 +375,11 @@ class Curation extends Model implements Notable
     public static function findByUuid($uuid)
     {
         return static::where('uuid', $uuid)->orWhere('gdm_uuid', $uuid)->first();
+    }
+
+    public static function findByGdmUuid($uuid)
+    {
+        return static::where('gdm_uuid', $uuid)->first();
     }
 
     public static function findByHgncAndMondo($hgncId, $mondoId)
