@@ -70,7 +70,6 @@
                 searchMondo: async (searchText) => {
                     return await window.axios.get('/api/diseases/search?query_string='+searchText)
                         .then(response => {
-                            console.info('mondo options', response.data);
                             return response.data;
                         });
                 }
