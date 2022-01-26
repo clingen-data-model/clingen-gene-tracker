@@ -314,7 +314,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_scope_where_curation_does_not_have_uuid()
+    public function can_scope_where_curation_does_not_have_gdm_uuid()
     {
         $curationWithUuid = factory(Curation::class)->create([
             'hgnc_id' => 17098,
@@ -322,7 +322,7 @@ class CurationTest extends TestCase
             'gdm_uuid' => '1234',
         ]);
 
-        $this->assertContains($this->curation->id, Curation::noUuid()->get()->pluck('id')->toArray());
+        $this->assertContains($this->curation->id, Curation::noGdmUuid()->get()->pluck('id')->toArray());
     }
 
     /**
@@ -415,6 +415,19 @@ class CurationTest extends TestCase
         $uuid = Uuid::uuid4()->toString();
         $curations = factory(Curation::class, 5)->create();
         $curation = factory(Curation::class)->create(['uuid' => $uuid]);
+
+        $this->assertNotNull(Curation::findByUuid($uuid));
+    }
+
+    /**
+     * @test
+     * @group uuid
+     */
+    public function can_find_a_curation_by_gdm_uuid()
+    {
+        $uuid = Uuid::uuid4()->toString();
+        $curations = factory(Curation::class, 5)->create();
+        $curation = factory(Curation::class)->create(['gdm_uuid' => $uuid]);
 
         $this->assertNotNull(Curation::findByUuid($uuid));
     }

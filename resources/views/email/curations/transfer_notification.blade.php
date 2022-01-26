@@ -1,7 +1,7 @@
 <h2>A curation has been transferred to one of your expert panels.</h2>
 
 <p>
-    {{$previousEp->name}} has transfered the GeneTracker record for 
+    {{$previousEp->name}} has transferred the GeneTracker record for 
     <a href="{{url('/#/curations/'.$curation->id)}}">{{$curation->gene_symbol}}</a>
     to
     {{$curation->expertPanel->name}}.

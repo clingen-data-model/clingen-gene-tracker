@@ -99,7 +99,7 @@ class UpdateOmimData extends Command
                 $gene = $this->getGene($data);
 
                 if (!$gene) {
-                    Log::warning('Gene with approved_symbol '.$data['approved_symbol'].' and omim id '.$data['mim_number'].' not found.');
+                    Log::warning('Gene with approved_symbol '.$this->getGeneSymbol($data).' and omim id '.$data['mim_number'].' not found.');
                     continue;
                 }
 

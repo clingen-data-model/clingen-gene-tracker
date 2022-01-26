@@ -10,11 +10,12 @@
             Transfer Curation
         </button>
         <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true" size="lg">
-                <div v-if="inGci" class="alert alert-secondary">
+                <!-- <div v-if="inGci" class="alert alert-secondary">
                     <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
                     <gci-link :curation="curation">Go to the GCI record.</gci-link>
                 </div>
-                <div v-else>
+                <div v-else> -->
+                <div>
                     <div class="alert alert-info">
                         Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
                     </div>
@@ -136,9 +137,9 @@ export default {
                     startDate: this.startDate,
                     notes: this.notes
                 });
-                console.log('got here.')
                 this.showTransferForm = false;
                 this.showConfirmation = false;
+                this.initFormData()
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
@@ -158,6 +159,7 @@ export default {
             this.endDate = null;
             this.errors = {};
             this.showConfirmation = false;
+            this.notes = null;
         },
         fieldError (field) {
             return (this.errors && this.errors[field] && this.errors[field].length > 0);

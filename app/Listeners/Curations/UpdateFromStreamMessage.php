@@ -68,10 +68,10 @@ class UpdateFromStreamMessage
 
     private function matchCuration(GciMessage $message)
     {
-        $curation = Curation::findByUuid($message->uuid);
+        $curation = Curation::findByGdmUuid($message->uuid);
         if (!$curation) {
             $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
-                            ->noUuid()
+                            ->noGdmUuid()
                             // ->whereHas('expertPanel', function ($q) use ($message) {
                             //     $q->where('affiliation_id', $message->affiliation->id);
                             // })

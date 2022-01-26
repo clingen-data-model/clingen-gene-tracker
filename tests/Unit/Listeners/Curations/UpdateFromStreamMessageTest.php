@@ -13,6 +13,7 @@ use App\ModeOfInheritance;
 use App\Jobs\Curations\AddStatus;
 use App\DataExchange\Events\Received;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @group gci
@@ -33,6 +34,49 @@ class UpdateFromStreamMessageTest extends TestCase
         factory(Gene::class)->create([
             'gene_symbol' => 'DICER1',
             'hgnc_id' => 17098,
+        ]);
+
+    }
+
+    /**
+     * @test
+     */
+    public function updates_curation_with_gdm_uuid_if_found()
+    {
+        $gdmTrio = [
+            'hgnc_id' => 17098,
+            'mondo_id' => 'MONDO:0011111',
+            'moi_id' => 2
+        ];
+        
+        $curationOther = factory(Curation::class)
+                            ->create(
+                                array_merge(['uuid' => '0c861e10-78a7-4ebc-ac57-853fb16f94c9', 'gene_symbol' => 'FRTS'], $gdmTrio)
+                            );
+        
+        $curationOther2 = factory(Curation::class)
+                            ->create(
+                                array_merge(['gene_symbol' => 'FRTY'], $gdmTrio)
+                            );
+
+        $gdmTrio['gdm_uuid'] = '0c861e10-78a7-4ebc-ac57-853fb16f94c9';
+
+        $curationTarget = factory(Curation::class)->create($gdmTrio);
+        $payload = $this->fireTestEvent($this->approvedWithStatusDateMsgPath);
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $curationOther->id,
+            'gdm_uuid' => null
+        ]);
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $curationOther2->id,
+            'gdm_uuid' => null
+        ]);
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $curationTarget->id,
+            'gdm_uuid' => $gdmTrio['gdm_uuid']
         ]);
     }
 
@@ -245,11 +289,7 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         $curation = $this->createDICER1();
 
-        $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
-        $kafkaMessage = $this->makeMessage(json_encode($payload));
-        $event = new Received($kafkaMessage);
-
-        event($event);
+        $payload = $this->fireTestEvent($this->approvedWithStatusDateMsgPath);
 
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
@@ -264,6 +304,17 @@ class UpdateFromStreamMessageTest extends TestCase
         ]);
     }
 
+    private function fireTestEvent($messagePath)
+    {
+        $message = $this->makeMessage(file_get_contents($messagePath));
+        $event = new Received($message);
+
+        event($event);
+
+        return json_decode($message->payload);
+    }
+    
+
     private function createDICER1()
     {
         return factory(Curation::class)->create([
@@ -275,7 +326,17 @@ class UpdateFromStreamMessageTest extends TestCase
 
     private function makeMessage($payload)
     {
-        $kafkaMessage = new \RdKafka\Message();
+        $kafkaMessage = new class {
+            public $payload;
+
+            public function errstr() {
+                return 'error string!';
+            }
+            public function headers () {
+                return 'headers!';
+            }
+        };
+
         $kafkaMessage->payload = $payload;
 
         return $kafkaMessage;
