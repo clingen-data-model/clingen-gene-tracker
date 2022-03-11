@@ -16,6 +16,7 @@ return [
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
     'omim_key' => env('OMIM_API_KEY'),
+    'gci_api_key' => env('GCI_API_KEY'),
     'omim_cache_life' => 20 * 60,
     'url_scheme' => env('URL_SCHEME', null),
     'log_debug' => env('LOG_DEBUG', false),

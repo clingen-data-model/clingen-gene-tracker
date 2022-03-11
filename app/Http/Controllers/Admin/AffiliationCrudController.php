@@ -66,6 +66,10 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         ]);
 
         // // ------ COLUMNS
+        $this->crud->addColumn('affiliation_id', [
+            'name' => 'affiliation_id',
+            'label' => 'Affiliation ID',
+        ])->makeFirstColumn();
         $this->crud->modifyColumn('affiliation_type_id', [
             'label' => 'Type',
             'type' => 'select',

@@ -43,6 +43,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('send-notifications')
             ->weekly()->mondays()->at('6:00');
+
+        $schedule->command('gci:affiliations-update')
+            ->everySixHours();
     }
 
     /**
