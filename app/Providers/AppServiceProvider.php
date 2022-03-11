@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
+use Lorisleiva\Actions\Facades\Actions;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ClientInterface::class, function () {
             return new Client();
         });
+
+        $this->registerActionsAsCommands();
     }
 
     /**
@@ -55,4 +58,15 @@ class AppServiceProvider extends ServiceProvider
             // $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
     }
+
+    private function registerActionsAsCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            Actions::registerCommands([
+                'app/DataExchange/Actions',
+                'app/Gci/Actions',
+            ]);
+        }
+    }
+    
 }
