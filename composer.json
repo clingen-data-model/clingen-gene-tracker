@@ -23,6 +23,7 @@
         "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
+        "lorisleiva/laravel-actions": "^2.4",
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "spatie/laravel-permission": "^4.0",
