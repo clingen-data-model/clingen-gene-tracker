@@ -58,6 +58,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'model' => Affiliation::class,
             'type' => 'select2',
             'attribute' => 'name',
+            'options' => (function ($query) {
+                return $query->whereIn('affiliation_type_id', [3,4])
+                    ->orderBy('affiliation_type_id')
+                    ->orderBy('name')
+                    ->get();
+            })
         ]);
 
         // ------ COLUMNS
