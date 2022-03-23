@@ -1,7 +1,7 @@
 We received info from the GCI about gene-disease in <strong>{{$stream_errors[0]['affiliation']['name']}}</strong> records we cannot match against the GeneTracker for :
 
 <p>
-    Our records indicate that a curation you started in the GCI (Human readable Gene/Disease/MOI) has not been entered into the Gene Tracker.  Please document this information in the Gene Tracker so that we can accurately track GCEP activity and precuration/disease-naming decisions.
+    Our records indicate that one of your expert panels has started the curations below in the GCI, but they have not been entered into the Gene Tracker.  Please document this information in the Gene Tracker so that we can accurately track GCEP activity and precuration/disease-naming decisions.
 </p>
 
 <p>
