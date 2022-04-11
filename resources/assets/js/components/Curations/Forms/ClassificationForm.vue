@@ -85,7 +85,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import ClassificationHistory from '../ClassificationHistory'
+    import ClassificationHistory from '../ClassificationHistory.vue'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
 

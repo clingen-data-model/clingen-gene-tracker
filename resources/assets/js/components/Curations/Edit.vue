@@ -76,14 +76,14 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import CurationType from './Forms/CurationType'
-    import Phenotypes from './Forms/Phenotypes'
-    import DeleteButton from './DeleteButton'
-    import Info from './Forms/Info'
-    import Mondo from './Forms/Mondo'
-    import Classification from './Forms/Classification'
-    import Documents from './Forms/Documents'
-    import TransferCurationControl from './TransferCurationControl'
+    import CurationType from './Forms/CurationType.vue'
+    import Phenotypes from './Forms/Phenotypes.vue'
+    import DeleteButton from './DeleteButton.vue'
+    import Info from './Forms/Info.vue'
+    import Mondo from './Forms/Mondo.vue'
+    import Classification from './Forms/Classification.vue'
+    import Documents from './Forms/Documents.vue'
+    import TransferCurationControl from './TransferCurationControl.vue'
 
     export default {
         props: ['id'],

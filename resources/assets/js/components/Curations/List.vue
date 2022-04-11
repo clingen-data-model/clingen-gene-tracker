@@ -15,7 +15,7 @@
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import CurationsTable from './Table'
+    import CurationsTable from './Table.vue'
 
     export default {
         components: {

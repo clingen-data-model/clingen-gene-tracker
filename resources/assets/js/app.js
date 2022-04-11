@@ -8,9 +8,9 @@ require('./bootstrap');
 import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
-import CriteriaTable from './components/Curations/CriteriaTable'
+import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import User from './User'
-import ExpertPanelField from './components/admin/ExpertPanelField'
+import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
@@ -18,29 +18,17 @@ import ExpertPanelField from './components/admin/ExpertPanelField'
 window.Vue = require('vue')
 window.Vue.use(BootstrapVue)
 
-import ExternalLink from './components/ExternalLink'
+import ExternalLink from './components/ExternalLink.vue'
 window.Vue.component('external-link', ExternalLink)
 
-import GciLink from './components/Curations/GciLink';
+import GciLink from './components/Curations/GciLink.vue';
 window.Vue.component('gci-link', GciLink)
-import GciLinkedMessage from './components/Curations/GciLinkedMessage';
+import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 window.Vue.component('gci-linked-message', GciLinkedMessage)
 
 if (user) {
     user = new User(user);
 }
-
-// import 'autotrack';
-
-// ga('create', configs.appGoogleAnalyticsId, 'auto');
-// ga('require', 'urlChangeTracker');
-// ga('send', 'pageview');
-
-// router.afterEach(( to, from ) => {
-//     ga('set', 'page', to.path);
-//     ga('send', 'pageview');
-//     console.log('set & send to ga');
-//   });
 
 axios.interceptors.request.use(function(config) {
     store.commit('addRequest');

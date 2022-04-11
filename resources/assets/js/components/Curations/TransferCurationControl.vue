@@ -71,10 +71,10 @@
 </template>
 <script>
 import {mapGetters, mapActions} from 'vuex';
-import ValidationError from '../ValidationError'
-import InputRow from '../forms/InputRow'
 import is_validation_error from '../../http/is_validation_error'
-import GciLink from '../Curations/GciLink'
+import ValidationError from '../ValidationError.vue'
+import InputRow from '../forms/InputRow.vue'
+import GciLink from '../Curations/GciLink.vue'
 
 export default {
     components: {

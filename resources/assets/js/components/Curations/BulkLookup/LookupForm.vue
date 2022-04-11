@@ -40,7 +40,7 @@
     </div>
 </template>
 <script>
-    import ValidationError from '../../ValidationError'
+    import ValidationError from '../../ValidationError.vue'
 
 export default {
     props: [

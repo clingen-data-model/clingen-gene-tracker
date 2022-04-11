@@ -27,8 +27,8 @@
     </div>
 </template>
 <script>
-import InputErrors from './InputErrors'
-import DateInput from './DateInput'
+import InputErrors from './InputErrors.vue'
+import DateInput from './DateInput.vue'
 
 export default {
     components: {

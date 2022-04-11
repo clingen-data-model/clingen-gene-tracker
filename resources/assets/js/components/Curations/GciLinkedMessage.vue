@@ -15,7 +15,7 @@
 </template>
 <script>
 export default {
-    name: 'ComponentName',
+    name: 'GciLinkedMessage',
     props: {
         curation: {
             required: true,

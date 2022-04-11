@@ -5,7 +5,7 @@
 </template>
 <script>
 import curationFormMixin from '../../../mixins/curation_form_mixin'
-import DocumentsCard from '../Documents/DocumentsCard'
+import DocumentsCard from '../Documents/DocumentsCard.vue'
 
 export default {
     components: {

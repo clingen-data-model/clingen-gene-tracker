@@ -15,6 +15,7 @@
 </template>
 <script>
     require('../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css')
+    
     var moment = require('moment'),
         datepicker = require('bootstrap-datepicker');
 

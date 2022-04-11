@@ -12,11 +12,11 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import CurationNotifications from './ExistingCurationNotification'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import DateField from '../../DateField'
-    import ValidationError from '../../ValidationError'
-    import ClassificationHistory from '../ClassificationHistory'
+    import CurationNotifications from './ExistingCurationNotification.vue'
+    import DateField from '../../DateField.vue'
+    import ValidationError from '../../ValidationError.vue'
+    import ClassificationHistory from '../ClassificationHistory.vue'
 
     export default {
         components: {

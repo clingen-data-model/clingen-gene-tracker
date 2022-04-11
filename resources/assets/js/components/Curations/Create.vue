@@ -36,7 +36,7 @@
 </template>
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import Info from './Forms/Info'
+    import Info from './Forms/Info.vue'
     export default {
         components: {
             Info

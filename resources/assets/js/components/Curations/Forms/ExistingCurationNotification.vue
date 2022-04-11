@@ -51,8 +51,8 @@
     </div>
 </template>
 <script>
-import queryStringFromParams from '../../../http/query_string_from_params';
-    import WarningAlert from '../../WarningAlert'
+    import queryStringFromParams from '../../../http/query_string_from_params';
+    import WarningAlert from '../../WarningAlert.vue'
 
     export default {
         components: {

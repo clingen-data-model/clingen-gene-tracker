@@ -59,7 +59,7 @@
 </template>
 
 <script>
-    import UserPanelFieldset from './UserPanelFieldset'
+    import UserPanelFieldset from './UserPanelFieldset.vue'
 
     export default {
         components: {

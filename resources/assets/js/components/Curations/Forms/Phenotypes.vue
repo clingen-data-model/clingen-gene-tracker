@@ -82,11 +82,11 @@
 <script>
     import { mapGetters } from 'vuex'
     import OmimRepo from './../../../repositories/OmimRepository';
-    import CriteriaTable from './../CriteriaTable';
-    import CurationNotifications from './ExistingCurationNotification'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
-    import ValidationError from '../../ValidationError'
+    import CriteriaTable from './../CriteriaTable.vue';
+    import CurationNotifications from './ExistingCurationNotification.vue'
+    import ValidationError from '../../ValidationError.vue'
 
     export default {
         components: {
