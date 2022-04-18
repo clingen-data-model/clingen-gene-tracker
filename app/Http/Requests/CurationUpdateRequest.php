@@ -15,7 +15,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         $rules = parent::rules();
         $rules['page'] = 'required';
         $rules['curation_type_id'] = 'sometimes';
-        $rules['rationales'] = 'sometimes';
+        $rules['rationales'] = 'required';
         $rules['rationale_other'] = 'sometimes';
         $rules['isolated_phenotype'] = 'sometimes';
         $rules['mondo_id'] = 'sometimes';
@@ -64,26 +64,6 @@ class CurationUpdateRequest extends CurationCreateRequest
                 return false;
             }
             return $input->rationale_id == 100;
-        });
-
-        // Rationales
-        $validator->sometimes('rationales', 'required', function ($input) {
-            if (! $this->shouldValidate($input)) {
-                return false;
-            }
-            $omim = app()->make(OmimClient::class);
-
-            $genePhenos = $omim->getGenePhenotypes($input->gene_symbol);
-            if ($input->page == 'phenotypes') {
-                if ($genePhenos->count() > 1) {
-                    return true;
-                }
-                if ($genePhenos->count() == 1 && $input->curation_type_id != 1) {
-                    return true;
-                }
-            }
-
-            return false;
         });
 
         // Isolated Phenotype

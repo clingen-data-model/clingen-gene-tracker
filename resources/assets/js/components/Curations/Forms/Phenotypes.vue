@@ -40,10 +40,14 @@
             <div class="col-lg-8">
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
-                    <select v-model="updatedCuration.rationales" multiple class="form-control" style="height: 8.5em">
+                    <pre>{{updatedCuration.rationales}}</pre>
+                    <pre>{{rationales}}</pre>
+                    <select v-model="updatedCuration.rationales" 
+                        multiple class="form-control" 
+                        style="height: 8.5em"
+                    >
                         <option v-for="rationale in rationales" :key="rationale.id"
-                            :value="rationale" 
-                            :selected="updatedCuration.rationales.map(item => item.id).indexOf(rationale.id) > -1"
+                            :value="rationale"
                         >
                             {{ rationale.name }}
                         </option>
@@ -81,7 +85,6 @@
 </template>
 <script>
     import { mapGetters } from 'vuex'
-    import OmimRepo from './../../../repositories/OmimRepository';
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
     import CriteriaTable from './../CriteriaTable.vue';
@@ -163,14 +166,6 @@
                 return (this.updatedCuration.curation_type_id != 2 && this.updatedCuration.curation_type_id != 3 && this.phenotypes.length > 0)
             },
             showRationale: function () {
-                if (this.updatedCuration.curation_type) {
-                    if (this.updatedCuration.curation_type.id == 1 && this.phenotypes.length == 1) {
-                        return false
-                    }
-                }
-                if (this.phenotypes.length == 0) {
-                    return false
-                }
                 return true;
             }
         }
