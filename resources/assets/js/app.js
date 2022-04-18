@@ -11,6 +11,7 @@ import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
+import './filters.js';
 // import configs from './configs.json';
 
 // console.log(configs);
