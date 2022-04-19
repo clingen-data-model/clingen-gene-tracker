@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\DataExchange\Notifications\StreamErrorNotification;
+use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 use App\Notifications\Disease\NameChangedNotification;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -37,7 +38,8 @@ class CurationNotificationsDigest extends Notification
             PhenotypeNomenclatureUpdated::class => 'email.digest.pheno_name_updated',
             MondoIdNotFound::class => 'email.digest.mondoid_not_found',
             StreamErrorNotification::class => 'email.digest.stream_error',
-            NameChangedNotification::class => 'email.digest.disease_name_changed'
+            NameChangedNotification::class => 'email.digest.disease_name_changed',
+            PhenotypeAddedForCurationNotification::class => 'email.digest.phenotype_added'
         ];
     }
 

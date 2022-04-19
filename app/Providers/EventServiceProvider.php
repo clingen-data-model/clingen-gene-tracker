@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use App\Events\Curation\Created;
+use App\Actions\NotifyPhenotypeAdded;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -58,6 +59,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\Phenotypes\PhenotypeNameChanged::class => [
             \App\Listeners\SendPhenotypeNameChangedNotification::class
+        ],
+        \App\Events\Phenotypes\PhenotypeAddedForGene::class => [
+            NotifyPhenotypeAdded::class
         ],
         \Illuminate\Mail\Events\MessageSent::class => [
             \App\Listeners\Mail\StoreMailInDatabase::class

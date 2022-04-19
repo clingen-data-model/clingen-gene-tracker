@@ -3,9 +3,11 @@
 namespace Tests;
 
 use Mockery;
+use App\User;
+use App\Curation;
 use JsonSerializable;
-use App\DataExchange\Contracts\MessagePusher;
 use App\Rules\ValidGeneSymbolRule;
+use App\DataExchange\Contracts\MessagePusher;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -69,5 +71,15 @@ abstract class TestCase extends BaseTestCase
 
             return $stub;
         });
+    }
+
+    protected function setupUser($data = [])
+    {
+        return factory(User::class)->create($data);
+    }
+
+    protected function setupCuration($data = [])
+    {
+        return factory(Curation::class)->create($data);
     }
 }

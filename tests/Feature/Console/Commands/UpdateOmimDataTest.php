@@ -4,10 +4,10 @@ namespace Tests\Feature\Console\Commands;
 
 use App\Gene;
 use App\AppState;
-use App\Console\Commands\UpdateOmimData;
 use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\ExpertPanel;
 use Tests\SeedsGenes;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -15,9 +15,14 @@ use GuzzleHttp\Psr7\Response;
 use Tests\MocksGuzzleRequests;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Handler\MockHandler;
+use Illuminate\Support\Facades\Event;
+use App\Console\Commands\UpdateOmimData;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Notification;
+use App\Events\Phenotypes\PhenotypeAddedForGene;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 
 /**
  * @group omim
@@ -109,5 +114,46 @@ class UpdateOmimDataTest extends TestCase
         $this->assertEquals('BOB', $this->invokeMethod($command, 'getGeneSymbol', [['approved_symbol' => 'BOB']]));
         $this->assertEquals('BOB', $this->invokeMethod($command, 'getGeneSymbol', [['approved_gene_symbol' => 'BOB']]));
     }
+
+    /**
+     * @test
+     */
+    public function fires_PhenotypeAddedForGene_if_new_phenotype_added_to_gene()
+    {
+        Event::fake();
+        $this->artisan('omim:update-data');
+        Event::assertDispatched(PhenotypeAddedForGene::class);
+    }
+    
+    /**
+     * @test
+     */
+    public function notification_staged_for_coordinator_when_phenotype_added_to_curated_gene()
+    {
+        $user = $this->setupUser();
+        $curation = $this->setupCuration(['hgnc_id' => 30478]);
+        $curation->expertPanel->addCoordinator($user);
+
+        Notification::fake();
+        $this->artisan('omim:update-data');
+        Notification::assertSentTo($user, PhenotypeAddedForCurationNotification::class, function ($notification) use ($user, $curation) {
+            return $notification->toArray($user)['template'] == 'email.curations.phenotype_added';
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function phenotype_added_template_renders()
+    {
+        $curation = $this->setupCuration(['hgnc_id' => 30478]);
+        $phenotype = factory(Phenotype::class)->create();
+
+        $view = view('email.curations.phenotype_added', compact('curation', 'phenotype'));
+        $html = $view->render();
+        $expected = 'OMIM has added a new phenotype, '.$phenotype->name.', for '.$curation->gene_symbol.'. You may want to review your <a href="'.url('/#/curations/'.$curation->id).'">curation for '.$curation->gene_symbol.'</a>.';
+        $this->assertEquals($expected, $html);
+    }
+    
     
 }

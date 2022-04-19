@@ -13,6 +13,7 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
+use App\Events\Phenotypes\PhenotypeAddedForGene;
 
 class UpdateOmimData extends Command
 {
@@ -109,17 +110,28 @@ class UpdateOmimData extends Command
                 }
 
                 $phenotypes = collect($phenotypes)
-                                ->map(function ($pheno) {
+                                ->map(function ($pheno) use ($gene) {
                                     try {
-                                        return Phenotype::updateOrCreate(
-                                            ['mim_number' => $pheno['mim_number']],
-                                            [
+                                        $phenotype = Phenotype::findByMimNumber($pheno['mim_number']);
+                                        if ($phenotype) {
+                                            $phenotype->update([
                                                 'name' => trim($pheno['name']),
                                                 'moi' => $pheno['moi']
-                                            ]
-                                        );
+                                            ]);
+                                            return $phenotype;
+                                        }
+                                        
+                                        $phenotype = Phenotype::create([
+                                            'mim_number' => $pheno['mim_number'],
+                                            'name' => trim($pheno['name']),
+                                            'moi' => $pheno['moi']
+                                        ]);
+                                        event(new PhenotypeAddedForGene($phenotype, $gene));
+
+                                        return $phenotype;
                                     } catch (\Throwable $th) {
                                         Log::warning($th->getMessage());
+                                        throw $th;
                                         return null;
                                     }
                                 });
