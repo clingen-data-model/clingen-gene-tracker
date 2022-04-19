@@ -40,8 +40,6 @@
             <div class="col-lg-8">
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
-                    <pre>{{updatedCuration.rationales}}</pre>
-                    <pre>{{rationales}}</pre>
                     <select v-model="updatedCuration.rationales" 
                         multiple class="form-control" 
                         style="height: 8.5em"
