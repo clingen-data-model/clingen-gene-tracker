@@ -24,14 +24,14 @@ interface MessageConsumer
      *
      * @return MessageConsumer
      */
-    public function consume(): MessageConsumer;
+    public function consume(?callable $callback = null): MessageConsumer;
 
     /**
      * Starts listening for incoming messages
      *
      * @return MessageConsumer
      */
-    public function consumeSomeMessages($number): MessageConsumer;
+    public function consumeSomeMessages($number, ?callable $callback = null): MessageConsumer;
 
 
     /**

@@ -137,7 +137,7 @@ class UpdateOmimDataTest extends TestCase
         Notification::fake();
         $this->artisan('omim:update-data');
         Notification::assertSentTo($user, PhenotypeAddedForCurationNotification::class, function ($notification) use ($user, $curation) {
-            return $notification->toArray($user)['template'] == 'email.curations.phenotype_added';
+            return $notification->toArray($user)['template'] == 'email.digest.phenotype_added';
         });
     }
 

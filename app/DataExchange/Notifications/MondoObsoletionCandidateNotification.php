@@ -2,26 +2,25 @@
 
 namespace App\DataExchange\Notifications;
 
+use App\Curation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
 
-class StreamErrorNotification extends Notification implements DigestibleNotificationInterface
+class MondoObsoletionCandidateNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
-
-    protected $streamErrors;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($streamErrors)
+    public function __construct(public Curation $curation, public $messageData)
     {
-        //
-        $this->streamErrors = $streamErrors;
     }
 
     /**
@@ -35,27 +34,20 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
         return ['database'];
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toArray($notifiable)
     {
-        $uniqueErrors = $this->streamErrors
-                            ->unique(function ($error) {
-                                return $error->gene->gene.'-'.$error->condition.'-'.$error->moi;
-                            });
         return [
-            'stream_errors' => $uniqueErrors,
-            'template' => 'email.digest.stream_error'
+            'curation' => $this->curation,
+            'message_data' => $this->messageData,
+            'template' => 'email.digest.mondo_obsoletion_candidate',
         ];
     }
 
     public static function getUnique(Collection $collection):Collection
     {
-        return $collection;
+        return $collection->unique(function ($item) {
+            return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+        });
     }
     public static function filterInvalid(Collection $collection):Collection
     {

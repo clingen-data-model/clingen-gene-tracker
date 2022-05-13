@@ -2,19 +2,20 @@
 
 namespace App\Notifications;
 
-use App\Notifications\Curations\GeneSymbolUpdated;
-use App\Notifications\Curations\HgncIdNotFoundNotification;
-use App\Notifications\Curations\MondoIdNotFound;
-use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\DataExchange\Notifications\StreamErrorNotification;
-use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
-use App\Notifications\Disease\NameChangedNotification;
+use App\Notifications\Curations\MondoIdNotFound;
+use App\Notifications\Curations\GeneSymbolUpdated;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\Disease\NameChangedNotification;
+use App\DataExchange\Notifications\StreamErrorNotification;
+use App\Notifications\Curations\HgncIdNotFoundNotification;
+use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
+use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
+use App\DataExchange\Notifications\MondoObsoletionCandidateNotification;
 
 class CurationNotificationsDigest extends Notification
 {
@@ -39,7 +40,8 @@ class CurationNotificationsDigest extends Notification
             MondoIdNotFound::class => 'email.digest.mondoid_not_found',
             StreamErrorNotification::class => 'email.digest.stream_error',
             NameChangedNotification::class => 'email.digest.disease_name_changed',
-            PhenotypeAddedForCurationNotification::class => 'email.digest.phenotype_added'
+            PhenotypeAddedForCurationNotification::class => 'email.digest.phenotype_added',
+            MondoObsoletionCandidateNotification::class => 'email.digest.mondo_obsoletion_candidate'
         ];
     }
 

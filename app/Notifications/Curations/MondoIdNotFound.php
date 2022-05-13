@@ -64,7 +64,7 @@ class MondoIdNotFound extends Notification
     {
         return [
             'curation' => $this->curation,
-            'template' => 'email.curations.mondo_id_not_found'
+            'template' => 'email.digest.mondoid_not_found'
         ];
     }
 

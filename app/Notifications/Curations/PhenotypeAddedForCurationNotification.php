@@ -57,7 +57,7 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
         return [
             'curation' => $this->curation,
             'phenotype' => $this->phenotype,
-            'template' => 'email.curations.phenotype_added'
+            'template' => 'email.digest.phenotype_added'
         ];
     }
 

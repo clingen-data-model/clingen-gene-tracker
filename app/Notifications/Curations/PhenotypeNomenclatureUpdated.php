@@ -72,7 +72,7 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
             'curation' => $this->curation,
             'oldName' => $this->oldName,
             'phenotype' => $this->phenotype,
-            'template' => 'email.curations.omim_phenotype_updated'
+            'template' => 'email.digest.pheno_name_updated'
         ];
     }
     

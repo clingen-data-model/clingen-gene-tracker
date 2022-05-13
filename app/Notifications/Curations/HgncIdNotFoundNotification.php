@@ -51,7 +51,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     {
         return (new MailMessage)
             ->subject('There\'s an issue with one of your curations')
-            ->view('email.curations.hgnc_id_not_found', ['curation' => $this->curation]);
+            ->view('email.digest.hgncid_not_found', ['curation' => $this->curation]);
     }
 
     /**

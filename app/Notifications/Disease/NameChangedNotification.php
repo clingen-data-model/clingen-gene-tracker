@@ -62,7 +62,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
         return [
             'curation' => $this->curation,
             'oldName' => $this->oldName,
-            'template' => 'email.curations.disease_name_changed'
+            'template' => 'email.digest.disease_name_changed'
         ];
     }
 

@@ -63,7 +63,7 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
         return [
             'curation' => $this->curation,
             'oldGeneSymbol' => $this->oldGeneSymbol,
-            'template' => 'email.curations.gene_symbol_updated'
+            'template' => 'email.digest.gene_symbol_updated'
         ];
     }
 
