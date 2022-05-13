@@ -5,9 +5,7 @@ namespace App\DataExchange\Actions;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use App\DataExchange\Contracts\MessageConsumer;
-use App\DataExchange\Kafka\KafkaConfig;
-use App\DataExchange\Kafka\KafkaConsumer;
-use Illuminate\Events\Dispatcher;
+use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 
 class ConsumeMondoNotifications
 {
@@ -28,6 +26,15 @@ class ConsumeMondoNotifications
     {
         $this->consumeMessages(function ($message) {
             $payload = json_decode($message->payload);
+
+            if ($message->err == RD_KAFKA_RESP_ERR__PARTITION_EOF) {
+                throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
+            }
+
+            if (!$message->payload) {
+                return;
+            }
+            
             if ($payload->event_type == 'obsoletion_candidate') {
                 $this->notifyCandidateAction->handle($payload);
             }
@@ -42,7 +49,6 @@ class ConsumeMondoNotifications
 
     private function consumeMessages(callable $callback, $limit = null): void
     {
-        // $consumer = $this->getConsumer();
         $this->consumer->addTopic(config('dx.topics.incoming.mondo-notifications'));
 
         if ($limit) {
@@ -52,43 +58,4 @@ class ConsumeMondoNotifications
 
         $this->consumer->consume($callback);
     }
-    
-
-    private function getConsumer()
-    {
-        $kafkaConfig = app()->make(KafkaConfig::class);
-
-        $kafkaConfig->setRebalanceCallback(
-            function (\RdKafka\KafkaConsumer $consumer, $err, array $topicPartitions = null) {
-                switch ($err) {
-                    case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-                        $consumer->assign($topicPartitions);
-                        
-                        foreach ($topicPartitions as $tp) {
-                            $tp->setOffset(0);
-                            $consumer->commit([$tp]);
-                        }
-            
-                    break;
-            
-                     case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-                        $assignments = $consumer->getAssignment();
-                         $consumer->assign(null);
-                         break;
-            
-                     default:
-                        throw new \Exception($err);
-                }        
-            });
-
-        $kafkaConsumer = new \RdKafka\KafkaConsumer($kafkaConfig->getConfig());
-        $consumer = new KafkaConsumer($kafkaConsumer, app()->make(Dispatcher::class));
-
-        $consumer->addTopic(config('dx.topics.incoming.mondo-notifications'));
-
-        return $consumer;
-    }
-    
-    
-    
 }

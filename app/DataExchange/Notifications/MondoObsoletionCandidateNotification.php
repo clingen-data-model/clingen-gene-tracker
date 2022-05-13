@@ -55,6 +55,6 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
     }
     public static function getValidUnique(Collection $collection):Collection
     {
-        return $collection;
+        return static::getUnique(static::filterInvalid($collection));
     }
 }

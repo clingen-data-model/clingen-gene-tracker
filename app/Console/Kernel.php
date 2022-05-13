@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
                 ->hourly();
+            $schedule->command('dx:consume-mondo')
+                ->hourly();
         }
 
         $schedule->command('send-notifications')
