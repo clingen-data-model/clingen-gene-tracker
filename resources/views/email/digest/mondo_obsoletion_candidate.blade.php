@@ -20,7 +20,7 @@ A MonDO term used in one or more of your curations has been marked by MONDO for 
                 </a> 
             </td>
             <td>
-                <a href="/curations/{{$curation['id']}}">
+                <a href="#/curations/{{$curation['id']}}">
                     Curation for {{$curation['gene_symbol']}} in {{$curation['expert_panel']['name']}}
                 </a>
             </td>
@@ -28,7 +28,10 @@ A MonDO term used in one or more of your curations has been marked by MONDO for 
             <td>
                 {{$messageData['content']['comment']}}
                 <br>
-                <a href="{{$messageData['content']['issue']}}">More Details</a>
+                More Info:
+                @foreach (explode('|', $messageData['content']['issue']) as $githubUrl)
+                    <div><a href="{{$githubUrl}}">{{$githubUrl}}</a></div>
+                @endforeach
             </td>
         </li>
     @endforeach

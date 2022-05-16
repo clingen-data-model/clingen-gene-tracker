@@ -41,7 +41,7 @@ class MondoObsoletionCandidateTest extends TestCase
                 "mondo_id" => self::MONDO_ID,
                 "label" =>"Antipyrine metabolism",
                 "comment" =>"Reason: out of scope. This is a trait or legacy term from OMIM and not suitabale for Mondo Term to consider: none",
-                "issue" =>"https://github.com/monarch-initiative/mondo/issues/3637",
+                "issue" =>"https://github.com/monarch-initiative/mondo/issues/3637|https://github.com/farts",
                 "obsoletion_date" =>"2022-04-01",
             ]
         ];
@@ -54,8 +54,8 @@ class MondoObsoletionCandidateTest extends TestCase
     {
         app()->bind(MessageConsumer::class, function () {
             return new TestConsumer([
-                (object)['payload' => json_encode($this->obMsg)],
-                (object)['payload' => json_encode([
+                (object)['err' => 0, 'payload' => json_encode($this->obMsg)],
+                (object)['err' => 0, 'payload' => json_encode([
                     "release_name" =>"v2022-02-04",
                     "release_tag" =>"1.4",
                     "release_date" =>"2022-02-22T16:25:04Z",
@@ -65,7 +65,7 @@ class MondoObsoletionCandidateTest extends TestCase
                         "mondo_id" => self::MONDO_ID,
                         "label" =>"Antipyrine metabolism",
                         "comment" =>"Reason: out of scope. This is a trait or legacy term from OMIM and not suitabale for Mondo Term to consider: none",
-                        "issue" =>"https://github.com/monarch-initiative/mondo/issues/3637",
+                        "issue" =>"https://github.com/monarch-initiative/mondo/issues/3637|https://github.com/farts",
                         "obsoletion_date" =>"2022-04-01",
                     ]
                 ])]
@@ -116,9 +116,10 @@ class MondoObsoletionCandidateTest extends TestCase
         $this->assertStringContainsString($this->obMsg->content->mondo_id, $html);
         $this->assertStringContainsString($this->obMsg->content->label, $html);
         $this->assertStringContainsString($this->obMsg->content->comment, $html);
-        $this->assertStringContainsString($this->obMsg->content->issue, $html);
         $this->assertStringContainsString($this->curation->expertPanel->name, $html);
         $this->assertStringContainsString($this->curation->gene_symbol, $html);
+        $this->assertStringContainsString('https://github.com/monarch-initiative/mondo/issues/3637</a>', $html);
+        $this->assertStringContainsString('https://github.com/farts</a>', $html);
     }
     
     private function runAction($msg = null)
