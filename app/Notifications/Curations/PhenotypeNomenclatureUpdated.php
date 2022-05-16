@@ -88,4 +88,8 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
     {
         return $collection;
     }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.pheno_name_updated';
+    }
 }

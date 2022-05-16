@@ -75,4 +75,8 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
     {
         return $collection;
     }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.phenotype_added';
+    }
 }

@@ -64,7 +64,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     {
         return [
             'curation' => $this->curation,
-            'template' => 'email.curations.hgnc_id_not_found'
+            'template' => 'email.digest.hgnc_id_not_found'
         ];
     }
 
@@ -101,5 +101,10 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     public static function getValidUnique($collection):Collection
     {
         return static::filterInvalid(static::getUnique($collection));
+    }
+
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.hgnc_id_not_found';
     }
 }

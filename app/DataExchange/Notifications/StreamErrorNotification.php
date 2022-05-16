@@ -65,4 +65,10 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
     {
         return $collection;
     }
+
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.stream_error';
+    }
+
 }

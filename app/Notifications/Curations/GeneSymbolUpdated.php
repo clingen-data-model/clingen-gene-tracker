@@ -83,4 +83,9 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
     {
         return $collection;
     }
+
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.gene_symbol_updated';
+    }
 }

@@ -82,5 +82,9 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
     {
         return $collection;
     }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.disease_name_changed';
+    }
 
 }

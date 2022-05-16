@@ -57,4 +57,8 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
     {
         return static::getUnique(static::filterInvalid($collection));
     }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.mondo_obsoletion_candidate';
+    }
 }
