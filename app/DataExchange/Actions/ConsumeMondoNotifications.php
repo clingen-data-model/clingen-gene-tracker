@@ -57,5 +57,6 @@ class ConsumeMondoNotifications
         }
 
         $this->consumer->consume($callback);
+        \Log::debug('consumed mondo_notifications topic');
     }
 }
