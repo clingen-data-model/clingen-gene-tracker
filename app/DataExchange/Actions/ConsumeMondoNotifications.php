@@ -5,6 +5,7 @@ namespace App\DataExchange\Actions;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use App\DataExchange\Contracts\MessageConsumer;
+use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 
 class ConsumeMondoNotifications
@@ -26,12 +27,24 @@ class ConsumeMondoNotifications
     {
         $this->consumeMessages(function ($message) {
             $payload = json_decode($message->payload);
+            
 
+            /**
+             *  TODO: Come up with another way to break out of the consuming loop 
+             *        b/c we shouldn't use exceptions for control flow.
+             */ 
             if ($message->err == RD_KAFKA_RESP_ERR__PARTITION_EOF) {
                 throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
             }
 
+            if ($message->err == \RD_KAFKA_RESP_ERR__TIMED_OUT) {
+                throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
+            }
+
             if (!$message->payload) {
+                if ($message->err) {
+                    throw new StreamingServiceException($message->errstr());
+                }
                 return;
             }
             
