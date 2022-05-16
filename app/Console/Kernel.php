@@ -48,6 +48,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('gci:affiliations-update')
             ->everySixHours();
+
+        $schedule->command('notifications:clean -f -q')
+            ->monthly();
     }
 
     /**

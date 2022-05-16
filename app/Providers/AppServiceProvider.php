@@ -63,6 +63,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $actionsDirs = [
+                'app/Actions',
                 'app/DataExchange/Actions',
                 'app/Gci/Actions',
             ];
