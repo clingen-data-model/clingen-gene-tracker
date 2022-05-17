@@ -9,6 +9,11 @@ LABEL maintainer="TJ Ward" \
 
 ENV XDG_CONFIG_HOME=/srv/app
 
+# These need to be set so the artisan storage link can run.
+ENV DX_USERNAME=dummy
+ENV DX_PASSWORD=dummy
+ENV DX_GROUP=dummy
+
 USER root
 
 WORKDIR /srv/app
