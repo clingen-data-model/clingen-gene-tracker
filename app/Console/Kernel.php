@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
             $schedule->command('gci:consume')
                 ->hourly();
             $schedule->command('dx:consume-mondo')
-                ->hourly();
+                ->weekly()->mondays()->at('5:10');
         }
 
         $schedule->command('send-notifications')
