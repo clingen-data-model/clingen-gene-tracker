@@ -72,7 +72,7 @@ class Phenotype extends Model
         return $query->where('mim_number', $mimNumber);
     }
 
-    public static function findByMimNumber($mimNumber): self
+    public static function findByMimNumber($mimNumber): ?self
     {
         return static::mimNumber($mimNumber)->first();
     }
@@ -81,7 +81,6 @@ class Phenotype extends Model
     {
         static::mimNumber($mimNumber)->sole();
     }
-    
 
     public function getMovedToPhenotypesAttribute(): Collection
     {
