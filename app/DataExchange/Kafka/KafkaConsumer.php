@@ -171,6 +171,38 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
+
+    /**
+     * Begin listening for messages on topics in topic list.  
+     * When receive timeout or partition eof message stop consuming.
+     * 
+     * Call the provided callback if provided or use handlerChain for backwards compatibility.
+     *
+     * @param Callable|null $callback callable to called on each message with err == 0.
+     * @return MessageConsumer
+     */
+    public function consumePresentMessages(?callable $callback = null): MessageConsumer
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+        
+        $handleMessage = $this->getMessageHandler($callback);
+
+        while (true) {
+            $message = $this->kafkaConsumer->consume(10000);
+            if (in_array($message->err, [RD_KAFKA_RESP_ERR__PARTITION_EOF, RD_KAFKA_RESP_ERR__TIMED_OUT])) {
+                break;
+            }
+
+            try {
+                $handleMessage($message);
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
+        }
+
+        return $this;
+    }
+
     private function getMessageHandler(?callable $callable = null): callable
     {
         if (!$callable) {

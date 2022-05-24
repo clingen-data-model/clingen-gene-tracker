@@ -68,16 +68,18 @@ class DataExchangeServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(\RdKafka\Producer::class, function () {
-            $config = $this->app->make(KafkaConfig::class)->getConfig();
+            $kafkaConfig = $this->app->make(KafkaConfig::class);
+            $kafkaConfig->setDeliveryReportCallback();
 
-            return new \RdKafka\Producer($config);
+            return new \RdKafka\Producer($kafkaConfig->getConfig());
         });
 
         $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
-            $conf = $this->app->make(KafkaConfig::class)->getConfig();
-            $conf->set('auto.offset.reset', 'smallest');
+            $kafkaConfig = $this->app->make(KafkaConfig::class);
+            $kafkaConfig->set('auto.offset.reset', 'smallest');
+            $kafkaConfig->setGroup();
 
-            return new \RdKafka\KafkaConsumer($conf);
+            return new \RdKafka\KafkaConsumer($kafkaConfig->getConfig());
         });
 
         $this->app->bind(MessageConsumer::class, function () {

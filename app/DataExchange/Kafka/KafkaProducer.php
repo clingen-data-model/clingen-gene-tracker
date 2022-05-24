@@ -20,7 +20,7 @@ class KafkaProducer implements MessagePusher
 
     private function produceOnTopic($message, \RdKafka\ProducerTopic $topic, $uuid = null)
     {
-        try {
+        // try {
             $uuid = $uuid ?? Uuid::uuid4()->toString();
             $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message, $uuid);
             $this->rdKafkaProducer->poll(0);
@@ -30,9 +30,9 @@ class KafkaProducer implements MessagePusher
                 \Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
             }
             \Log::debug('q len is 0.  finishing up.');
-        } catch (\Throwable $e) {
-            report($e);
-        }
+        // } catch (\Throwable $e) {
+        //     report($e);
+        // }
     }
 
     public function topic(string $topic)
