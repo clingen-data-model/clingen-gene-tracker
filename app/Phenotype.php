@@ -72,10 +72,16 @@ class Phenotype extends Model
         return $query->where('mim_number', $mimNumber);
     }
 
-    public static function findByMimNumber($mimNumber)
+    public static function findByMimNumber($mimNumber): self
     {
         return static::mimNumber($mimNumber)->first();
     }
+
+    public static function findSoleByMimNumber($mimNumber)
+    {
+        static::mimNumber($mimNumber)->sole();
+    }
+    
 
     public function getMovedToPhenotypesAttribute(): Collection
     {

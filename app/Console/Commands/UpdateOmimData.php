@@ -14,6 +14,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use App\Events\Phenotypes\PhenotypeAddedForGene;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\MultipleRecordsFoundException;
 
 class UpdateOmimData extends Command
 {
@@ -96,7 +98,6 @@ class UpdateOmimData extends Command
                 if (!$this->recordHasGeneSymbol($data)) {
                     continue;
                 }
-
                 $gene = $this->getGene($data);
 
                 if (!$gene) {
@@ -109,10 +110,23 @@ class UpdateOmimData extends Command
                     continue;
                 }
 
+
                 $phenotypes = collect($phenotypes)
                                 ->map(function ($pheno) use ($gene) {
                                     try {
-                                        $phenotype = Phenotype::findByMimNumber($pheno['mim_number']);
+                                        // A mim_number can refer to many differently named phenotypes
+                                        // If this is the case try to get the phenotype record by mim_number 
+                                        // and name to prevent constraint failures.
+                                        $phenotype = null;
+                                        try {
+                                            $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
+                                        } catch (MultipleRecordsFoundException $e) {
+                                            $phenotype = Phenotype::mimNumber($pheno['mim_number'])
+                                                            ->where('name', $pheno['name'])
+                                                            ->first();
+                                        } catch (ModelNotFoundException $e) {
+                                        }
+
                                         if ($phenotype) {
                                             $phenotype->update([
                                                 'name' => trim($pheno['name']),
@@ -238,7 +252,7 @@ class UpdateOmimData extends Command
                 continue;
             }
             $phenotypes[] = [
-                'name' => $matches[1],
+                'name' => trim($matches[1]),
                 'mim_number' => $matches[2],
                 'moi' => isset($matches[4]) ? trim($matches[4]) : null
             ];

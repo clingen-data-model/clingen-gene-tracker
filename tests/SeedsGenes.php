@@ -89,6 +89,13 @@ trait SeedsGenes
                 'hgnc_name' => 'blah',
                 'hgnc_status' => 'Approved'
             ],
+            [
+                'hgnc_id' => 30479,
+                'gene_symbol' => 'TARDBP',
+                'omim_id' => '618459',
+                'hgnc_name' => 'blah',
+                'hgnc_status' => 'Approved'
+            ],
             
         ];
 
