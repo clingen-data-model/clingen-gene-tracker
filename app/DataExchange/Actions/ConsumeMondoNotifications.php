@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Exceptions\StreamingServiceException;
-use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
+use App\DataExchange\Exceptions\StreamingServiceEndOfFileException;
 
 class ConsumeMondoNotifications
 {
@@ -14,9 +14,11 @@ class ConsumeMondoNotifications
 
     public $commandSignature = 'dx:consume-mondo {--reset-offset : Set topic offset to 0 } {--limit= : Limit the number of messages to read from the topic at one time.} {--dry-run : Consume the messages but do not send notifications; reset to 0 when finished.}';
 
+    private MessageConsumer $consumer;
+
+
     public function __construct(
         private NotifyMondoObsoletionCandidate $notifyCandidateAction,
-        private MessageConsumer $consumer
     )
     {
         
@@ -25,22 +27,10 @@ class ConsumeMondoNotifications
 
     public function handle($limit = null): void
     {
+        $this->consumer = app()->make(MessageConsumer::class);
         $this->consumeMessages(function ($message) {
             $payload = json_decode($message->payload);
             
-
-            /**
-             *  TODO: Come up with another way to break out of the consuming loop 
-             *        b/c we shouldn't use exceptions for control flow.
-             */ 
-            if ($message->err == RD_KAFKA_RESP_ERR__PARTITION_EOF) {
-                throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
-            }
-
-            if ($message->err == \RD_KAFKA_RESP_ERR__TIMED_OUT) {
-                throw new StreamingServiceEndOfFIleException('No new messages in partition', $message->err);
-            }
-
             if (!$message->payload) {
                 if ($message->err) {
                     throw new StreamingServiceException($message->errstr());
@@ -69,7 +59,7 @@ class ConsumeMondoNotifications
             return;
         }
 
-        $this->consumer->consume($callback);
+        $this->consumer->consumePresentMessages($callback);
         \Log::debug('consumed mondo_notifications topic');
     }
 }
