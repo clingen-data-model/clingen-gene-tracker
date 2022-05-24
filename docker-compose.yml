@@ -42,35 +42,35 @@ services:
         environment:
             - REDIS_PASSWORD=beans
 
-    scheduler:
-        image: gt-app
-        container_name: gt-scheduler
-        sysctls: 
-            - net.ipv4.ip_unprivileged_port_start=0
-        depends_on: 
-            - app
-        volumes:
-            - .:/srv/app
-        links:
-            - database:database
-            - redis:redis
-        environment:
-            CONTAINER_ROLE: scheduler
-            CONTAINER_ENV: local
+    # scheduler:
+    #     image: gt-app
+    #     container_name: gt-scheduler
+    #     sysctls: 
+    #         - net.ipv4.ip_unprivileged_port_start=0
+    #     depends_on: 
+    #         - app
+    #     volumes:
+    #         - .:/srv/app
+    #     links:
+    #         - database:database
+    #         - redis:redis
+    #     environment:
+    #         CONTAINER_ROLE: scheduler
+    #         CONTAINER_ENV: local
 
-    queue:
-        image: gt-app
-        container_name: gt-queue
-        sysctls: 
-            - net.ipv4.ip_unprivileged_port_start=0
-        depends_on: 
-            - app
-        volumes:
-            - .:/srv/app
-        links:
-            - database:database
-            - redis:redis
-        environment:
-            CONTAINER_ROLE: queue
-            CONTAINER_ENV: local        
+    # queue:
+    #     image: gt-app
+    #     container_name: gt-queue
+    #     sysctls: 
+    #         - net.ipv4.ip_unprivileged_port_start=0
+    #     depends_on: 
+    #         - app
+    #     volumes:
+    #         - .:/srv/app
+    #     links:
+    #         - database:database
+    #         - redis:redis
+    #     environment:
+    #         CONTAINER_ROLE: queue
+    #         CONTAINER_ENV: local        
         
