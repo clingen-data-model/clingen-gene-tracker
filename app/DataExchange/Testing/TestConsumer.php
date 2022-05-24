@@ -46,6 +46,15 @@ class TestConsumer implements MessageConsumer
         return $this;
     }
 
+    public function consumePresentMessages(?callable $callable = null): MessageConsumer
+    {
+        while (count($this->messages) > 0) {
+            $message = array_shift($this->messages);
+            $callable($message);
+        }
+        return $this;
+    }
+
     public function listTopics(): array
     {
         return [];

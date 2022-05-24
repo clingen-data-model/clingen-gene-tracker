@@ -27,7 +27,14 @@ interface MessageConsumer
     public function consume(?callable $callback = null): MessageConsumer;
 
     /**
-     * Starts listening for incoming messages
+     * Consumes messages and runs callback until EOF of timeout.
+     *
+     * @return MessageConsumer
+     */
+    public function consumePresentMessages(?callable $callback = null): MessageConsumer;
+
+    /**
+     * Consumes $number of messages and runs callbacka.
      *
      * @return MessageConsumer
      */
