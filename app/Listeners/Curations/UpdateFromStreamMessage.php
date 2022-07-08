@@ -3,25 +3,15 @@
 namespace App\Listeners\Curations;
 
 use App\Curation;
-use App\Affiliation;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\StreamError;
 use App\Gci\GciMessage;
-use App\ModeOfInheritance;
-use App\DataExchange\Maps\GciStatusMap;
-use App\Gci\GciClassificationMap;
-use App\Jobs\Curations\AddStatus;
 use App\DataExchange\Events\Received;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Jobs\Curations\AddClassification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Exceptions\UnmatchableCurationException;
 use Illuminate\Contracts\Bus\Dispatcher;
 
 class UpdateFromStreamMessage
 {
-    private $statusMap;
-    private $classificationMap;
     private $dispatcher;
 
     /**
