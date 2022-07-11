@@ -145,6 +145,24 @@ class GciMessage
         return $this->getContent()->original_disease;
     }
     
+    public function hasContentNotes(): bool
+    {
+        return $this->hasContent() && isset($this->getContent()->notes);
+    }
+
+    public function getContentNotes(): ?string
+    {
+        if (!$this->hasContentNotes()) {
+            return null;
+        }
+
+        return $this->getContent()->notes;
+
+    }
+    
+    
+
+    // METHODS TO CHECK MESSAGE TYPE
     
     public function isCreate(): bool
     {

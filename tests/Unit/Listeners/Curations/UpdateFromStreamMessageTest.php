@@ -346,6 +346,34 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    public function stores_notes_on_curation_if_sent_in_transfer_message()
+    {
+        Carbon::setTestNow('2021-05-04');
+
+        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
+        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
+        
+        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
+        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
+        
+        $curation = $this->createDICER1();
+        SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
+        Carbon::setTestNow('2022-07-08');
+
+        $this->fireTestEvent($this->gdmTransfered);
+
+        $this->assertDatabaseHas('notes', [
+            'subject_type' => 'App\Curation',
+            'subject_id' => $curation->id,
+            'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
+            'topic' => 'curation transfer (via GCI)'
+        ]);
+    }
+    
+
+    /**
+     * @test
+     */
     public function updates_mondo_id_if_disease_change_message()
     {
         $newDisease = factory(Disease::class)->create(['mondo_id' => 'MONDO:0012377']);
