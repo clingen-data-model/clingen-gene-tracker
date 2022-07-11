@@ -4,14 +4,18 @@ namespace App\Jobs;
 
 use App\Curation;
 use App\Affiliation;
+use App\ExpertPanel;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
-use App\DataExchange\Maps\GciStatusMap;
+use Illuminate\Support\Carbon;
+use App\Jobs\Curations\SetOwner;
 use App\Gci\GciClassificationMap;
 use App\Jobs\Curations\AddStatus;
+use Illuminate\Support\Facades\Bus;
 use App\Exceptions\GciSyncException;
 use Illuminate\Queue\SerializesModels;
+use App\DataExchange\Maps\GciStatusMap;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\AddClassification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,8 +51,8 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
      */
     public function handle()
     {
-        $affiliation = Affiliation::findByClingenId($this->gciMessage->affiliation->id);
-        $moi = ModeOfInheritance::findByHpId($this->gciMessage->moi);
+        $affiliation = $this->findAffiliation();
+        $moi = $this->findMoi();
 
         $this->curation->update([
             'gdm_uuid' => $this->gciMessage->uuid,
@@ -57,7 +61,37 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             'mondo_id' => $this->gciMessage->mondoId
         ]);
 
-        if ($this->gciMessage->status == 'created') {
+        if ($this->gciMessage->isCreate()) {
+            return;
+        }
+
+        if ($this->gciMessage->isGdmTransfer()) {
+            $this->transferRecord();
+        }
+
+        if ($this->gciMessage->isDiseaseChange()) {
+            $this->updateDisease();
+        }
+
+        if ($this->gciMessage->hasStatus()) {
+            $this->addStatus();
+            $this->addClassification();
+        }
+    }
+
+    private function findAffiliation(): Affiliation
+    {
+        return Affiliation::findByClingenId($this->gciMessage->affiliation->id);
+    }
+
+    private function findMoi(): ModeOfInheritance
+    {
+        return ModeOfInheritance::findByHpId($this->gciMessage->moi);
+    }
+
+    private function addStatus()
+    {
+        if ($this->shouldIgnoreStatus($this->gciMessage->getStatus())) {
             return;
         }
 
@@ -66,7 +100,33 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             $this->statusMap->get($this->gciMessage->status),
             $this->gciMessage->statusDate
         );
+    }
 
+    private function transferRecord()
+    {
+        $newExpertPanel = ExpertPanel::findByAffiliationId($this->gciMessage->content->transfer_to->gcep_id);
+        SetOwner::dispatch($this->curation, $newExpertPanel->id, Carbon::now());
+    }
+
+    private function updateDisease()
+    {
+
+    }
+    
+
+    /**
+     * gene_validity_events message sets status to 'gdm_transfered' and 'disease_changed'
+     * for those two event types.  We don't have to set the curation status to either of those
+     * because they are really event types.
+     */
+    private function shouldIgnoreStatus(string $status): bool
+    {
+        return $status == 'gdm_transferred' || $status == 'disease_changed';
+    }
+    
+
+    private function addClassification()
+    {
         try {
             AddClassification::dispatch(
                 $this->curation,
@@ -76,5 +136,9 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         } catch (GciSyncException $e) {
             report($e);
         }
-    }
+     }
+    
+    
+    
+    
 }

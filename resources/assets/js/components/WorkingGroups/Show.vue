@@ -75,8 +75,8 @@
 </template>
 <script>
     import {mapGetters, mapActions} from 'vuex'
-    import CurationsTable from '../Curations/Table'
     import {startCase} from 'lodash'
+    import CurationsTable from '../Curations/Table.vue'
 
     export default {
         props: ['id'],

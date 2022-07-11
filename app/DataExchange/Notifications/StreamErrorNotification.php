@@ -49,7 +49,7 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
                             });
         return [
             'stream_errors' => $uniqueErrors,
-            'template' => 'email.stream_error_notification'
+            'template' => 'email.digest.stream_error'
         ];
     }
 
@@ -65,4 +65,10 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
     {
         return $collection;
     }
+
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.stream_error';
+    }
+
 }

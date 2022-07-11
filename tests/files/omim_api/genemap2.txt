@@ -2,6 +2,7 @@
 # Generated: 2021-03-29
 # See end of file for additional documentation on specific fields
 # Chromosome	Genomic Position Start	Genomic Position End	Cyto Location	Computed Cyto Location	MIM Number	Gene Symbols	Gene Name	Approved Symbol	Entrez Gene ID	Ensembl Gene ID	Comments	Phenotypes	Mouse Gene Symbol/ID
+chr1	11012653	11030527	1p36.2	1p36.22	605078	TARDBP, TDP43, ALS10	TAR DNA-binding protein	TARDBP	23435	ENSG00000120948	pseudogenes on 2, 6, 8, 13, 20	Frontotemporal lobar degeneration, TARDBP-related, 612069 (3), Autosomal dominant; Amyotrophic lateral sclerosis 10, with or without FTD, 612069 (3), Autosomal dominant	Tardbp (MGI:2387629)
 chr1	156054781	156058505	1q22	1q22	610389	LAMTOR2, MAPBPIP, p14,	Late endosomal/lysosomal adaptor, MAPK and MTOR activator 2	LAMTOR2	28956	ENSG00000116586	mutation identified in 1 family	:Immunodeficiency due to defect in MAPBP-interacting protein, 610798 (3), Autosomal recessive	Lamtor2 (MGI:1932697)
 chr1	171781659	171797715	1q24.3	1q24.3	617987	EEF1AKNMT, METTL13, FEAT, KIAA0859, DFNB26M	EEF1A lysine and N-terminal methyltransferase	EEF1AKNMT	51603	ENSG00000010165	mutation identified in 1 family	?{Deafness, autosomal recessive 26, modifier of}, 605429 (3), Autosomal dominant	Eef1aknmt (MGI:1918699)
 chr17	79776253	79787982	17q25	17q25.3	602770	CBX2, M33, SRXY5	Chromobox 2	CBX2	84733	ENSG00000173894	mutation identified in 1 SRXY5 patient	?46XY sex reversal 5, 613080 (3), Autosomal recessive	Cbx2 (MGI:88289)
@@ -12,7 +13,8 @@ chr20	35433346	35454748	20q11.2	20q11.22	601146	GDF5, CDMP1, SYNS2, OS5, BDA1C, 
 chr2	238244037	238290101	2q37.3	2q37.3	603426	PER2, FASPS1, KIAA0347	Period circadian regulator 2	PER2	8864	ENSG00000132326	mutation identified in 1 FASPS1 family	?Advanced sleep phase syndrome, familial, 1, 604348 (3), Autosomal dominant	Per2 (MGI:1195265)
 chr1	7784284	7845180	1p36.33-p36.21	1p36.23	603427	PER3, FASPS3	Period circadian regulator 3	PER3	8863	ENSG00000049246	mutation identified in 1 FASPS3 family	?Advanced sleep phase syndrome, familial, 3, 616882 (3), Autosomal dominant	Per3 (MGI:1277134)
 chr10	96189170	96271568	10q23.2	10q24.1	604515	BLNK, SLP65, AGM4	B-cell linker protein (SH2 domain-containing leukocyte protein, 65kD)	BLNK	29760	ENSG00000095585	mutation identified in 1 AGM4 family	?Agammaglobulinemia 4, 613502 (3), Autosomal recessive	Blnk (MGI:96878)
-chr17	47253826	47313742	17q21.32	17q21.32	173470	ITGB3, GP3A, GT2, BDPLT24	Integrin, beta-3 (platelet glycoprotein IIIa; antigen CD61)	ITGB3	3690	ENSG00000259207	in same 260kb fragment as GP2B; PL(A) platelet antigen	Purpura, posttransfusion (3); Thrombocytopenia, neonatal alloimmune (3); Glanzmann thrombasthenia 2, 619267 (3); {Myocardial infarction, susceptibility to}, 608446 (3); Bleeding disorder, platelet-type, 24, autosomal dominant, 619271 (3)	Itgb3 (MGI:96612)#
+chr17	47253826	47313742	17q21.32	17q21.32	173470	ITGB3, GP3A, GT2, BDPLT24	Integrin, beta-3 (platelet glycoprotein IIIa; antigen CD61)	ITGB3	3690	ENSG00000259207	in same 260kb fragment as GP2B; PL(A) platelet antigen	Purpura, posttransfusion (3); Thrombocytopenia, neonatal alloimmune (3); Glanzmann thrombasthenia 2, 619267 (3); {Myocardial infarction, susceptibility to}, 608446 (3); Bleeding disorder, platelet-type, 24, autosomal dominant, 619271 (3)	Itgb3 (MGI:96612)
+#
 #
 #
 #

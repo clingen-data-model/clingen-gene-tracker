@@ -3,31 +3,31 @@ import VueRouter from 'vue-router'
 import store from './store/index'
 
 const Curations = () =>
-    import ( /* webpackChunkName: "curations" */ './components/Curations/Curation')
+    import ( /* webpackChunkName: "curations" */ './components/Curations/Curation.vue')
 const CurationCreate = () =>
-    import ( /* webpackChunkName: "CurationCreate" */ './components/Curations/Create')
+    import ( /* webpackChunkName: "CurationCreate" */ './components/Curations/Create.vue')
 const CurationEdit = () =>
-    import ( /* webpackChunkName: "CurationEdit" */ './components/Curations/Edit')
+    import ( /* webpackChunkName: "CurationEdit" */ './components/Curations/Edit.vue')
 const CurationShow = () =>
-    import ( /* webpackChunkName: "CurationShow" */ './components/Curations/Show')
+    import ( /* webpackChunkName: "CurationShow" */ './components/Curations/Show.vue')
 const CurationList = () =>
-    import ( /* webpackChunkName: "CurationList" */ './components/Curations/List')
+    import ( /* webpackChunkName: "CurationList" */ './components/Curations/List.vue')
 const CriteriaOverview = () =>
-    import ( /* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview')
+    import ( /* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview.vue')
 const WorkingGroups = () =>
-    import ( /* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index')
+    import ( /* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index.vue')
 const GroupList = () =>
-    import ( /* webpackChunkName: "GroupList" */ './components/WorkingGroups/List')
+    import ( /* webpackChunkName: "GroupList" */ './components/WorkingGroups/List.vue')
 const GroupShow = () =>
-    import ( /* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show')
+    import ( /* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show.vue')
 const UserDashboard = () =>
-    import ( /* webpackChunkName: "UserDashboard" */ './components/UserDashboard')
+    import ( /* webpackChunkName: "UserDashboard" */ './components/UserDashboard.vue')
 const CurationExportForm = () =>
-    import ( /* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm')
+    import ( /* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm.vue')
 const BulkLookup = () =>
-    import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup')
+    import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup.vue')
 const GeneBulkLookup = () =>
-    import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup')
+    import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup.vue')
 
 Vue.use(VueRouter)
 

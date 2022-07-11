@@ -29,7 +29,7 @@
     </div>
 </template>
 <script>
-import InputRow from './forms/InputRow'
+import InputRow from './forms/InputRow.vue'
 export default {
     name: 'NotesList',
     components: {

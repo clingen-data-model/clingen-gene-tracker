@@ -24,7 +24,39 @@ class CurationUpdateTest extends TestCase
         $this->curationType = factory(\App\CurationType::class)->create();
     }
 
- 
+    /**
+     * @test
+     */
+    public function requires_existing_curation_type_id_on_update()
+    {
+        $data = [
+            'gene_symbol' => 'BRCA1',
+            'expert_panel_id' => $this->panel->id,
+            'page' => 'curation-types',
+            'nav' => 'next',
+            'curation_type_id' => '',
+            'rationales' => [['id' => 1]]
+        ];
+
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/curations/'.$this->curation->id, $data)
+            ->assertStatus(422)
+            ->assertJson([
+                'errors' => [
+                    'curation_type_id' => [
+                        'A curation type is required to continue',
+                    ],
+                ],
+            ]);
+
+        $data['curation_type_id'] = $this->curationType->id;
+
+        // $this->withoutExceptionHandling();
+        $response = $this->actingAs($this->user, 'api')
+            ->json('PUT', '/api/curations/'.$this->curation->id, $data)
+            ->assertStatus(200);
+    }
+
     /**
      * @test
      */
@@ -74,18 +106,12 @@ class CurationUpdateTest extends TestCase
         $data = array_merge($this->curation->toArray(), [
             'page' => 'info',
             'pmids' => 'test,beans,monkeys',
-        ]);
-        $response = $this->actingAs($this->user, 'api')
+        ]);        
+        
+        $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
             ->assertJsonFragment(['pmids' => ["test","beans","monkeys"]]);
 
-        $data = array_merge($this->curation->toArray(), [
-            'page' => 'info',
-            'pmids' => ['test', 'beans', 'monkeys'],
-        ]);
-        $response = $this->actingAs($this->user, 'api')
-            ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertJsonFragment(['pmids' => ["test","beans","monkeys"]]);
     }
 
     /**
@@ -144,7 +170,7 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
-    public function rationales_not_required_when_page_not_phenotypes()
+    public function rationales_even_required_when_page_not_phenotypes()
     {
         $curation = $this->curation;
         $curation->update(['gene_symbol' => 'BRCA1']);
@@ -155,14 +181,17 @@ class CurationUpdateTest extends TestCase
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'rationales' => ['The rationales field is required.'],
+            ]);
     }
 
     /**
      * @test
      * @group curation-validation
      */
-    public function rationales_not_required_when_curation_type_not_single_and_1_phenotype()
+    public function rationales_required_when_curation_type_not_single_and_1_phenotype()
     {
         // $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
         app()->bind(ContractsOmimClient::class, function () {
@@ -198,16 +227,17 @@ class CurationUpdateTest extends TestCase
         app()->instance('App\Contracts\OmimClient', $mock);
 
         $response = $this->actingAs($this->user, 'api')
-            ->json('put', '/api/curations/'.$curation->id, $data);
-
-        $response->assertStatus(200);
+            ->json('put', '/api/curations/'.$curation->id, $data)
+            ->assertJsonFragment([
+                'rationales' => ['The rationales field is required.'],
+            ]);
     }
 
     /**
      * @test
      * @group curation-validation
      */
-    public function rationales_not_required_if_1_phenotype_and_type_single_omim()
+    public function rationales_required_if_1_phenotype_and_type_single_omim()
     {
         $curation = $this->curation;
         $curation->update([
@@ -229,10 +259,12 @@ class CurationUpdateTest extends TestCase
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
         $data['nav'] = 'next';
-
+        
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/'.$curation->id, $data)
-            ->assertStatus(200);
+            ->assertJsonFragment([
+                'rationales' => ['The rationales field is required.'],
+            ]);
     }
 
     /**
@@ -318,7 +350,7 @@ class CurationUpdateTest extends TestCase
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
-        $data['rationales'] = [1, 2];
+        $data['rationales'] = [['id' => 1, 'id' => 2]];
         $data['isolated_phenotype'] = null;
         $data['nav'] = 'next';
 
@@ -372,7 +404,8 @@ class CurationUpdateTest extends TestCase
             'nav' => 'next',
             'hgnc_id' => 666666,
             'hgnc_name' => 'beelzabub',
-            'page' => 'info'
+            'page' => 'info',
+            'rationales' => [$this->rationale]
         ];
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)

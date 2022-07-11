@@ -78,4 +78,12 @@ class ExpertPanel extends Model implements HasAffiliation
         return $this->coordinators->count() > 0;
     }
     
+
+    public static function findByAffiliationId($affiliationId): ?ExpertPanel
+    {
+        return static::query()->whereHas('affiliation', function ($q) use ($affiliationId) {
+            $q->where('clingen_id', $affiliationId);
+        })->first();
+    }
+    
 }

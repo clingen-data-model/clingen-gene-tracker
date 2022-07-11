@@ -35,9 +35,9 @@
 <script>
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
-    import CriteriaTable from './../CriteriaTable';
-    import ValidationError from '../../ValidationError';
-    import OmimLoading from '../../OmimLoading'
+    import CriteriaTable from './../CriteriaTable.vue';
+    import ValidationError from '../../ValidationError.vue';
+    import OmimLoading from '../../OmimLoading.vue'
 
     export default {
         mixins: [

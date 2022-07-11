@@ -86,6 +86,12 @@ class KafkaConsumer implements MessageConsumer
     }
     
 
+    /**
+     * Listens to the specified topic and handles messages with handler chain
+     * NOTE: This is a vestigial method that only supports gene_validity_events topic.
+     *       This method is deprecated and will be removed in a future release.
+     * @deprecated
+     */
     public function listen(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
@@ -93,9 +99,6 @@ class KafkaConsumer implements MessageConsumer
         $handlerChain = $this->getMessageHandlerChain();
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
-            // if ($message->err == 0) {
-            //     \Log::debug(['offset'=> $message->offset, 'err_code' => $message->err, 'payload' => $message->payload]);
-            // }
             try {
                 $handlerChain->handle($message);
             } catch (StreamingServiceEndOfFIleException $e) {
@@ -109,20 +112,22 @@ class KafkaConsumer implements MessageConsumer
     }
 
     /**
-     * Begin listening for messages on topics in topic list
+     * Begin listening for messages on topics in topic list.
+     * Call the provided callback if provided or use handlerChain for backwards compatibility.
      *
+     * @param Callable|null $callback callable to called on each message.
      * @return MessageConsumer
      */
-    public function consume(): MessageConsumer
+    public function consume(?callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-    
-        $handlerChain = $this->getMessageHandlerChain();
+        
+        $handleMessage = $this->getMessageHandler($callback);
 
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $handlerChain->handle($message);
+                $handleMessage($message);
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
             } catch (StreamingServiceException $th) {
@@ -133,11 +138,18 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
-    public function consumeSomeMessages($numberOfMessages): MessageConsumer
+    /**
+     * Consume a limited number of messages.
+     * 
+     * @param Int $numberOfMessages - number of messages to consumed.
+     * @param Callable|null $callback callable to called on each message.
+     * @return MessageConsumer
+     */
+    public function consumeSomeMessages($numberOfMessages, ?callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 
-        $handlerChain = $this->getMessageHandlerChain();
+        $handleMessage = $this->getMessageHandler($callback);
 
         $count = 0;
         while (true) {
@@ -146,7 +158,7 @@ class KafkaConsumer implements MessageConsumer
             }
             $message = $this->kafkaConsumer->consume(10000);
             try {
-                $handlerChain->handle($message);
+                $handleMessage($message);
                 $count++;
             } catch (StreamingServiceEndOfFIleException $e) {
                 break;
@@ -158,6 +170,51 @@ class KafkaConsumer implements MessageConsumer
 
         return $this;
     }
+
+
+    /**
+     * Begin listening for messages on topics in topic list.  
+     * When receive timeout or partition eof message stop consuming.
+     * 
+     * Call the provided callback if provided or use handlerChain for backwards compatibility.
+     *
+     * @param Callable|null $callback callable to called on each message with err == 0.
+     * @return MessageConsumer
+     */
+    public function consumePresentMessages(?callable $callback = null): MessageConsumer
+    {
+        $this->kafkaConsumer->subscribe($this->topics);
+        
+        $handleMessage = $this->getMessageHandler($callback);
+
+        while (true) {
+            $message = $this->kafkaConsumer->consume(10000);
+            if (in_array($message->err, [RD_KAFKA_RESP_ERR__PARTITION_EOF, RD_KAFKA_RESP_ERR__TIMED_OUT])) {
+                break;
+            }
+
+            try {
+                $handleMessage($message);
+            } catch (StreamingServiceException $th) {
+                report($th);
+            }
+        }
+
+        return $this;
+    }
+
+    private function getMessageHandler(?callable $callable = null): callable
+    {
+        if (!$callable) {
+            $chain = $this->getMessageHandlerChain();
+            return function ($message) use ($chain) {
+                $chain->handle($message);
+            };
+        }
+
+        return $callable;
+    }
+    
 
     private function getMessageHandlerChain()
     {

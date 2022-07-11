@@ -24,8 +24,10 @@ foreach ($argv as $idx => $arg) {
 
 $topics = isset($options['topic']) ? explode(',', $options['topic']) : [];
 $offset = (int)(isset($options['offset']) ? $options['offset'] : -1);
+$onlyResetOffset = (int)(isset($options['offset-only']) ? true : false);
 $limit = isset($options['limit']) ? (int)$options['limit'] : false;
 $writeToDisk = isset($options['write-to-disk']) ? (int)$options['write-to-disk'] : false;
+$singleFile = isset($options['singleFile']) ? (int)$options['singleFile'] : false;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -53,15 +55,22 @@ function rSortByKeys($array)
 
 function commitOffset($consumer, $topicPartition, $offset, $attempt = 0)
 {
+    global $onlyResetOffset;
+
+    dump('Commit offset '.$offset);
     if ($offset >= 0) {
         echo "Committing offset set to $offset for topic ".$topicPartition->getTopic()." on partition ".$topicPartition->getPartition()."...\n";
     } else {
         echo "Don't update offset.\n";
         return;
     }
-    // $topicPartition = new RdKafka\TopicPartition($topic, 0, $offset);
     $topicPartition->setOffset($offset);
+    dump('tp offset: '.$topicPartition->getOffset());
     $consumer->commit([$topicPartition]);
+
+    if ($onlyResetOffset) {
+        dd('Offset reset to '.$offset.'!');
+    }    
 }
 
 function configure($offset)
@@ -138,31 +147,6 @@ function configureForConfluent($offset)
     return $conf;
 }
 
-function configureForExchange($offset)
-{
-    throw new Exception("configureForExchange doesn't work b/c certs an no longer valid for group");
-
-    $group = 'tjward_unc';
-    $cert = "./kafka-auth/sha/unc.crt";
-    $keyLocation = "./kafka-auth/sha/exchange.clinicalgenome.org.key";
-    $caLocation = "./kafka-auth/ca-kafka-cert";
-
-    $conf = configure($offset);
-    
-    $conf->set('group.id', $group);
-    $conf->set('security.protocol', 'ssl');
-    $conf->set('metadata.broker.list', 'exchange.clinicalgenome.org:9093');
-    $conf->set('ssl.certificate.location', $cert);
-    $conf->set('ssl.key.location', $keyLocation);
-    $conf->set('ssl.ca.location', $caLocation);
-
-    if ($sslKeyPassword) {
-        $conf->set('ssl.key.password', $sslKeyPassword);
-    }
-
-    return $conf;
-}
-
 $messageDir = __DIR__.'/consumed_messages';
 if (!file_exists($messageDir)) {
     mkdir($messageDir);
@@ -171,7 +155,6 @@ if (!file_exists($messageDir)) {
 
 
 $conf = configureForConfluent($offset);
-// $conf = configureForExchange($offset);
 
 $consumer = new RdKafka\KafkaConsumer($conf);
 
@@ -201,12 +184,18 @@ if (array_key_exists('dont-listen', $options)) {
 
 // Subscribe to topic 'test'
 echo "**Subscribing to the following topics:\n".implode("\n  ", $topics)."...\n";
+
 $consumer->subscribe($topics);
 // var_dump($consumer->getAssignment());
 echo "\nWaiting for partition assignment...\n";
 
 $count = 0;
 $keys = [];
+
+if ($writeToDisk && $singleFile) {
+    $singleFile = fopen(__DIR__.'/consumed_message/'.date('Y-m-d').'.json', 'w+');
+    fwrite($singlFile, '[');
+}
 
 while (true) {
     $message = $consumer->consume(10000);
@@ -220,7 +209,13 @@ while (true) {
 
             $filePath = $messageDir.'/'.$filename.'.json';
 
-            file_put_contents($filePath, $message->payload);
+            if ($writeToDisk) {
+                if ($singleFile) {
+                    fwrite($singleFile, $message->payload);
+                } else {
+                    file_put_contents($filePath, $message->payload);
+                }
+            }
 
             echo(json_encode([
                 'len' => $message->len,
@@ -273,6 +268,11 @@ while (true) {
             break;
 
     }
+}
+
+if ($writeToDisk && $singleFile) {
+    $singleFile = fopen(__DIR__.'/consumed_message/'.date('Y-m-d').'.json', 'w+');
+    fwrite($singlFile, ']');
 }
 
 echo count($keys)." keys that have the multple messages\n";

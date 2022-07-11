@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
                 ->hourly();
+            $schedule->command('dx:consume-mondo')
+                ->weekly()->mondays()->at('5:10');
         }
 
         $schedule->command('send-notifications')
@@ -46,6 +48,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('gci:affiliations-update')
             ->everySixHours();
+
+        $schedule->command('notifications:clean -f -q')
+            ->monthly();
     }
 
     /**

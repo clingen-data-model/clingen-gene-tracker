@@ -84,9 +84,9 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import CurationStatusHistory from '../StatusHistory'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
+    import CurationStatusHistory from '../StatusHistory.vue'
 
     export default {
         components: {

@@ -291,10 +291,10 @@ class Curation extends Model implements Notable
 
         $mondoId = trim($mondoId);
         if (is_numeric($mondoId)) {
-            $formattedId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
+            $mondoId = 'MONDO:'.str_pad($mondoId, 7, '0', STR_PAD_LEFT);
         }
 
-        return $query->where('mondo_id', $formattedId);
+        return $query->where('mondo_id', $mondoId);
     }
 
     public function loadForMessage()

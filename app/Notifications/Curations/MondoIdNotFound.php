@@ -5,6 +5,7 @@ namespace App\Notifications\Curations;
 use App\Contracts\MondoClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
+use App\Notifications\DigestibleNotificationInterface;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class MondoIdNotFound extends Notification
+class MondoIdNotFound extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
@@ -64,7 +65,7 @@ class MondoIdNotFound extends Notification
     {
         return [
             'curation' => $this->curation,
-            'template' => 'email.curations.mondo_id_not_found'
+            'template' => 'email.digest.mondoid_not_found'
         ];
     }
 
@@ -80,6 +81,9 @@ class MondoIdNotFound extends Notification
         return $collection->filter(function ($item) use ($mondoClient) {
             $cid = $item->data['curation']['id'];
             $curation = Curation::find($item->data['curation']['id']);
+            if (!$curation) {
+                return false;
+            }
             if ($curation->mondo_id == $item->data['curation']['mondo_id']) {
                 return true;
             }
@@ -99,4 +103,8 @@ class MondoIdNotFound extends Notification
         return static::filterInvalid(static::getUnique($collection));
     }
 
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.mondoid_not_found';
+    }
 }

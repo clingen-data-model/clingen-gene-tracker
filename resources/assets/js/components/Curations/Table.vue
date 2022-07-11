@@ -99,11 +99,10 @@
     </div>
 </template>
 <script>
-    import DeleteButton from './DeleteButton'
     import getPageOfCurations from '../../resources/curations/get_page_of_curations'
     import uniqid from '../../helpers/uniqid'
     import { mapGetters } from 'vuex'
-    import filters from '../../filters'
+    import DeleteButton from './DeleteButton.vue'
 
 
     export default {

@@ -85,8 +85,8 @@
 </template>
 <script>
 import moment from 'moment';
-import LookupForm from './Curations/BulkLookup/LookupForm'
-import FilterControl from './Curations/BulkLookup/FilterControl'
+import LookupForm from './Curations/BulkLookup/LookupForm.vue'
+import FilterControl from './Curations/BulkLookup/FilterControl.vue'
 
 export default {
     components: {

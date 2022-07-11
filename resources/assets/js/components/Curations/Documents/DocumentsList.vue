@@ -71,7 +71,7 @@
 </template>
 
 <script>
-    import DocumentUploader from './DocumentUploader'
+    import DocumentUploader from './DocumentUploader.vue'
     import getAllUploads from '../../../resources/uploads/get_all_uploads'
     import { mapGetters } from 'vuex';
 

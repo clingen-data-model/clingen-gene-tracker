@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import WarningAlert from '../../WarningAlert'
+    import WarningAlert from '../../WarningAlert.vue'
 
     export default {
         components: {

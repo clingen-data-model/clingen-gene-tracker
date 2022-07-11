@@ -66,8 +66,17 @@ class GciMessage
         return (object)$this->payload->performed_by->on_behalf_of;
     }
 
-    public function getStatus():string
+    public function hasStatus(): bool
     {
+        return (bool)$this->status;
+    }
+    
+    public function getStatus():?string
+    {
+        if (!isset($this->payload->status)) {
+            return null;
+        }
+
         if (is_object($this->payload->status) && isset($this->payload->status->name)) {
             return $this->payload->status->name;
         }
@@ -85,8 +94,11 @@ class GciMessage
         return Carbon::parse($this->payload->date);
     }
 
-    public function getStatusDate():Carbon
+    public function getStatusDate(): ?Carbon
     {
+        if (!$this->status) {
+            return null;
+        }
         if (is_object($this->payload->status) && isset($this->payload->status->date)) {
             return Carbon::parse($this->payload->status->date);
         }
@@ -100,4 +112,70 @@ class GciMessage
                 return in_array('creator', $c->roles);
             })->first();
     }
+
+    private function hasContent(): bool
+    {
+        return isset($this->payload->content);
+    }
+
+    private function hasContentEventType(): bool
+    {
+        return ($this->hasContent() && isset($this->payload->content->event_type));
+    }
+
+    public function getContent():stdClass
+    {
+        if (isset($this->payload->content)) {
+            return $this->payload->content;
+        }
+
+        return new stdClass();
+    }
+
+    public function getOriginalDisease(): ?string
+    {
+        if (!$this->hasContent()) {
+            return null;
+        }
+
+        if (!isset($this->getContent()->original_disease)) {
+            return null;
+        }
+
+        return $this->getContent()->original_disease;
+    }
+    
+    
+    public function isCreate(): bool
+    {
+        return $this->getStatus() == 'created';
+    }
+    
+
+    public function isGdmTransfer(): bool
+    {
+        if (!$this->hasContentEventType()) {
+            return false;
+        }
+
+        if ($this->payload->content->event_type == 'transfer') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isDiseaseChange(): bool
+    {
+        if (!$this->hasContent()) {
+            return false;
+        }
+
+        if ($this->getContent()->event_type == 'disease change') {
+            return true;
+        }
+
+        return false;
+    }
+
 }

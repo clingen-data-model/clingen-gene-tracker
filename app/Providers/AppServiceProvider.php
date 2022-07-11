@@ -62,10 +62,12 @@ class AppServiceProvider extends ServiceProvider
     private function registerActionsAsCommands()
     {
         if ($this->app->runningInConsole()) {
-            Actions::registerCommands([
+            $actionsDirs = [
+                'app/Actions',
                 'app/DataExchange/Actions',
                 'app/Gci/Actions',
-            ]);
+            ];
+            Actions::registerCommands($actionsDirs);
         }
     }
     

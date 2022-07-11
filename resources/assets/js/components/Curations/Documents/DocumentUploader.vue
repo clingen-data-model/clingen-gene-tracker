@@ -82,7 +82,7 @@
 </template>
 
 <script>
-    import ValidationError from '../../ValidationError'
+    import ValidationError from '../../ValidationError.vue'
     import {mapGetters} from 'vuex'
 
     export default {

@@ -87,4 +87,8 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
     {
         return $collection;
     }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.curations.omim_entry_moved';
+    }
 }

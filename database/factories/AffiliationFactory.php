@@ -7,7 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Affiliation::class, function (Faker $faker) {
     return [
-        'name' => $faker->unique()->words(2),
-        'short_name' => $faker->unique()->word
+        'name' => uniqid(),
+        'short_name' => $faker->unique()->word,
+        'affiliation_type_id' => config('affiliations.types.gcep'),
     ];
 });

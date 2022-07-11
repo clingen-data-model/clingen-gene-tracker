@@ -62,7 +62,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
         return [
             'curation' => $this->curation,
             'oldName' => $this->oldName,
-            'template' => 'email.curations.disease_name_changed'
+            'template' => 'email.digest.disease_name_changed'
         ];
     }
 
@@ -81,6 +81,10 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
     public static function getValidUnique(Collection $collection): Collection
     {
         return $collection;
+    }
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.disease_name_changed';
     }
 
 }

@@ -141,12 +141,12 @@
 <script>
     import { mapGetters, mapActions, mapMutations } from 'vuex'
     import _ from 'lodash'
-    import CurationNotifications from './ExistingCurationNotification'
+    import CurationNotifications from './ExistingCurationNotification.vue'
     import DateField from '../../DateField'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import ValidationError from '../../ValidationError'
-    import CurationStatusHistory from '../StatusHistory'
-    import StatusForm from './StatusForm'
+    import ValidationError from '../../ValidationError.vue'
+    import CurationStatusHistory from '../StatusHistory.vue'
+    import StatusForm from './StatusForm.vue'
     import moment from 'moment'
 
     export default {

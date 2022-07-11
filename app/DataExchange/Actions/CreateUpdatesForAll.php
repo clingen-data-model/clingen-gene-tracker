@@ -8,11 +8,17 @@ use Lorisleiva\Actions\Concerns\AsCommand;
 use App\Jobs\Curations\CreateStreamMessage;
 use Illuminate\Console\Command;
 
-class PushUpdatesForRationaleNotes
+class CreateUpdatesForAll
 {
     use AsCommand;
 
-    public $commandSignature = 'dx:push-rationale-updates {--limit= : limit the nummber of curations} {--where= : where conditions} {--onlyCount} {--showQuery}';
+    public string $commandSignature = 'dx:create-updates-for-all {--limit= : limit the nummber of curations} {--where= : where conditions} {--onlyCount} {--showQuery}';
+
+    public function getCommandDescription(): string
+    {
+        return 'Create update messages for all precurations.';
+    }
+    
 
     public function handle(Command $command)
     {
@@ -28,7 +34,6 @@ class PushUpdatesForRationaleNotes
         }
 
         if ($command->option('showQuery')) {
-            dump(renderQuery($curationQuery));
             return;
         }
 

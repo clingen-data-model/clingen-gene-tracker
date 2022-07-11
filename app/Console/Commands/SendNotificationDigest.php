@@ -48,7 +48,8 @@ class SendNotificationDigest extends Command
                     ->get();
         
         $users->each(function ($user) {
-            $groupedNotifications =  $user->unreadNotifications->groupBy('type')
+            $groupedNotifications =  $user->unreadNotifications
+                                        ->groupBy('type')
                                         ->map(function ($group, $class) {
                                             return $class::getValidUnique($group);
                                         })->filter(function ($group) {

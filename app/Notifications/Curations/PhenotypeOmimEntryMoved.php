@@ -78,7 +78,7 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
             'oldMimNumber' => $this->oldMimNumber,
             'phenotypes' => $this->phenotypes,
             'curation' => $this->curation,
-            'template' => 'email.curations.omim_entry_moved'
+            'template' => 'email.digest.omim_entry_moved'
         ];
     }
 
@@ -92,6 +92,11 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
     }
     public static function getValidUnique(Collection $collection):Collection
     {
-        return $collection;
+        return static::getUnique(static::filterInvalid($collection));
+    }
+    
+    public static function getDigestTemplate(): string
+    {
+        return 'email.digest.omim_entry_moved';
     }
 }

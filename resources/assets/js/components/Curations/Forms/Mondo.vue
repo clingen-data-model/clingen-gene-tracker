@@ -49,9 +49,9 @@
 </template>
 <script>
     import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import MondoAlert from './ExistingCurationMondoAlert'
-    import ValidationError from '../../ValidationError'
-    import SearchSelect from '../../forms/SearchSelect'
+    import MondoAlert from './ExistingCurationMondoAlert.vue'
+    import ValidationError from '../../ValidationError.vue'
+    import SearchSelect from '../../forms/SearchSelect.vue'
 
     export default {
         mixins: [

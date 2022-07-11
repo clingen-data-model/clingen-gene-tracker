@@ -203,16 +203,16 @@
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import PhenotypeList from './Phenotypes/List'
-    import NotesList from '../NotesList'
-    import HistoryTable from './HistoryTable'
-    import CurationStatusHistory from './StatusHistory'
-    import ClassificationHistory from './ClassificationHistory'
-    import DeleteButton from './DeleteButton'
-    import DocumentsCard from './Documents/DocumentsCard'
-    import TransferCurationControl from './TransferCurationControl'
-    import GciLink from '../Curations/GciLink'
-    import ToggleButton from '../buttons/ToggleButton'
+    import PhenotypeList from './Phenotypes/List.vue'
+    import NotesList from '../NotesList.vue'
+    import HistoryTable from './HistoryTable.vue'
+    import CurationStatusHistory from './StatusHistory.vue'
+    import ClassificationHistory from './ClassificationHistory.vue'
+    import DeleteButton from './DeleteButton.vue'
+    import DocumentsCard from './Documents/DocumentsCard.vue'
+    import TransferCurationControl from './TransferCurationControl.vue'
+    import GciLink from '../Curations/GciLink.vue'
+    import ToggleButton from '../buttons/ToggleButton.vue'
 
     export default {
         props: ['id'],
