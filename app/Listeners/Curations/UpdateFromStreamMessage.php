@@ -66,7 +66,11 @@ class UpdateFromStreamMessage
                             //     $q->where('affiliation_id', $message->affiliation->id);
                             // })
                             ->first();
-                
+            
+            if (!$curation) {
+                $curation = $this->findByHgncAndOriginalMondo($message);
+            }
+                            
             if (!$curation) {
                 throw new UnmatchableCurationException($message->payload);
             }
@@ -74,4 +78,14 @@ class UpdateFromStreamMessage
 
         return $curation;
     }
+
+    private function findByHgncAndOriginalMondo(GciMessage $message)
+    {
+        if (!$message->isDiseaseChange()) {
+            return null;
+        }
+
+        return Curation::findByHgncAndMondo($message->hgncId, $message->originalDisease);
+    }
+    
 }

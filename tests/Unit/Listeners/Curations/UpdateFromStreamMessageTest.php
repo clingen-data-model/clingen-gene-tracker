@@ -7,13 +7,16 @@ use App\Curation;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Affiliation;
+use App\ExpertPanel;
 use App\StreamError;
+use Ramsey\Uuid\Uuid;
 use App\CurationStatus;
 use App\ModeOfInheritance;
 use App\Jobs\Curations\AddStatus;
 use App\DataExchange\Events\Received;
+use App\Disease;
+use App\Jobs\Curations\SetOwner;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @group gci
@@ -30,6 +33,8 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->provisionalMsgPath = base_path('tests/files/gci_messages/provisionally_approved.json');
         $this->approvedMsgPath = base_path('tests/files/gci_messages/approved.json');
         $this->approvedWithStatusDateMsgPath = base_path('tests/files/gci_messages/approved_with_status_date.json');
+        $this->gdmTransfered = base_path('tests/files/gci_messages/gdm_transfered.json');
+        $this->diseaseChanged = base_path('tests/files/gci_messages/disease_change.json');
 
         factory(Gene::class)->create([
             'gene_symbol' => 'DICER1',
@@ -304,6 +309,58 @@ class UpdateFromStreamMessageTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
+    public function sets_new_owner_if_transfer_message()
+    {
+        Carbon::setTestNow('2021-05-04');
+
+        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
+        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
+        
+        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
+        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
+        
+        $curation = $this->createDICER1();
+        SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
+        Carbon::setTestNow('2022-07-08');
+
+        $this->fireTestEvent($this->gdmTransfered);
+
+        $this->assertDatabaseHas('curation_expert_panel', [
+            'curation_id' => $curation->id,
+            'expert_panel_id' => $expertPanel1->id,
+            'start_date' => Carbon::parse('2021-05-04'),
+            'end_date' => Carbon::now(),
+        ]);
+
+        $this->assertDatabaseHas('curation_expert_panel', [
+            'curation_id' => $curation->id,
+            'expert_panel_id' => $expertPanel2->id,
+            'start_date' => Carbon::now(),
+            'end_date' => null,
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function updates_mondo_id_if_disease_change_message()
+    {
+        $newDisease = factory(Disease::class)->create(['mondo_id' => 'MONDO:0012377']);
+        $curation = $this->createDICER1();
+        $curation->update(['mondo_id' => 'MONDO:0012399']);
+
+        $this->fireTestEvent($this->diseaseChanged);
+
+        $this->assertDatabaseHas('curations', [
+            'id' => $curation->id,
+            'mondo_id' => $newDisease->mondo_id
+        ]);
+    }
+    
+
     private function fireTestEvent($messagePath)
     {
         $message = $this->makeMessage(file_get_contents($messagePath));
@@ -314,7 +371,6 @@ class UpdateFromStreamMessageTest extends TestCase
         return json_decode($message->payload);
     }
     
-
     private function createDICER1()
     {
         return factory(Curation::class)->create([

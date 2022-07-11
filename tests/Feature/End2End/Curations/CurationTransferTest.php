@@ -70,7 +70,11 @@ class CurationTransferTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->ep1User, 'api')
-            ->json('POST', $this->url, ['expert_panel_id' => $this->ep2->id, 'start_date'=>Carbon::now()->format('Y-m-d')])
+            ->json(
+                'POST', 
+                $this->url, ['expert_panel_id' => $this->ep2->id, 
+                'start_date'=>Carbon::now()->format('Y-m-d')]
+            )
             ->assertStatus(200)
             ->assertJson([
                 'curation_id' => $this->curation->id,

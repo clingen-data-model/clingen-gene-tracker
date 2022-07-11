@@ -19,7 +19,7 @@ class SetOwner
      *
      * @return void
      */
-    public function __construct(Curation $curation, $expertPanelId, $startDate, $endDate = null)
+    public function __construct(Curation $curation, int $expertPanelId, $startDate, $endDate = null)
     {
         $this->curation = $curation;
         $this->expertPanelId = $expertPanelId;
@@ -61,7 +61,7 @@ class SetOwner
         $this->curation->expertPanels()
             ->updateExistingPivot(
                 $this->curation->expert_panel_id, 
-                ['end_date'=>$this->endDate]
+                ['end_date'=>($this->endDate)]
             );
     }
     

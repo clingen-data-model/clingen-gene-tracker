@@ -4,14 +4,14 @@ namespace App\DataExchange\Jobs;
 
 use App\Curation;
 use App\Affiliation;
-use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
-use App\DataExchange\Maps\GciStatusMap;
 use App\Gci\GciClassificationMap;
 use App\Exceptions\GciSyncException;
+use App\DataExchange\Maps\GciStatusMap;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 
 class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJob
 {

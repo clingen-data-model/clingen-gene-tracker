@@ -59,13 +59,19 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
             'mondo_id' => $this->gciMessage->mondoId,
             'moi_id' => $this->mois->get($this->gciMessage->getMoi())->id,
             'classification_id' => $this->getClassificationId($this->gciMessage->getClassification()),
-            'status_id' => $this->getStatusId($this->gciMessage->getStatus()),
             'affiliation_id' => $this->getAffiliationId($this->gciMessage->getAffiliation()->id),
             'updated_at' => $this->gciMessage->getMessageDate(),
         ];
 
+        if ($this->gciMessage->hasStatus()) {
+            $newData['status_id'] = $this->getStatusId($this->gciMessage->getStatus());
+        }
+
 
         if (!$gciCuration || $this->gciMessage->getStatus() == 'created') {
+            if (!isset($newData['status_id'])) {
+                $newData['status_id'] = config('curations.statuses.precuration-complete');
+            }
             $newData['hgnc_id'] = substr($this->gciMessage->getHgncId(), 5);
             $newData['creator_uuid'] = $this->gciMessage->getCreator()->id;
             $newData['creator_email'] = $this->gciMessage->getCreator()->email;
