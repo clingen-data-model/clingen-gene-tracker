@@ -106,6 +106,17 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
     {
         $newExpertPanel = ExpertPanel::findByAffiliationId($this->gciMessage->content->transfer_to->gcep_id);
         SetOwner::dispatch($this->curation, $newExpertPanel->id, Carbon::now());
+
+        if ($this->gciMessage->hasContentNotes()) {
+            $job = new AddNote(
+                subject: $this->curation, 
+                content: 'Transferred from Test GCEP 2 to Test GCEP 1.',
+                topic: 'curation transfer (via GCI)',
+                author: null
+            );
+
+            dispatch($job);
+        }
     }
 
     private function updateDisease()

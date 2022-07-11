@@ -45,8 +45,8 @@ class AddNote
             ->create([
                 'content' => $this->content,
                 'topic' => $this->topic,
-                'author_type' => get_class($this->author),
-                'author_id' => $this->author->id
+                'author_type' => $this->author ? get_class($this->author) : null,
+                'author_id' => $this->author ? $this->author->id : null
             ]);
     }
 }
