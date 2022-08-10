@@ -15,7 +15,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         $rules = parent::rules();
         $rules['page'] = 'required';
         $rules['curation_type_id'] = 'sometimes';
-        $rules['rationales'] = 'required';
+        $rules['rationales'] = 'sometimes';
         $rules['rationale_other'] = 'sometimes';
         $rules['isolated_phenotype'] = 'sometimes';
         $rules['mondo_id'] = 'sometimes';
@@ -56,6 +56,14 @@ class CurationUpdateRequest extends CurationCreateRequest
                 return false;
             }
             return $input->page == 'curation-types';
+        });
+
+        // Rationales
+        $validator->sometimes('rationales', 'required', function ($input) {
+            if (! $this->shouldValidate($input)) {
+                return false;
+            }
+            return $input->page == 'phenotypes';
         });
 
         // Rationale Other
