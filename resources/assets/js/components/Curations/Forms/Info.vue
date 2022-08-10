@@ -104,7 +104,7 @@
             <status-form v-model="updatedCuration" class="mt-1"></status-form>
         </b-form-group>
         <br>
-        <div class="alert alert-info mt-3" v-if="user.hasPermission('update curation gdm_uuid')">
+        <div class="alert alert-info mt-3" v-if="canEditGdmUuid">
             <h5>
                 Advanced Info
                 <small class="text-muted float-right"><small>
@@ -225,6 +225,11 @@
             },
             canUpdateExpertPanel() {
                 return !Boolean(this.updatedCuration && this.updatedCuration.expert_panel_id && this.updatedCuration.id);
+            },
+            canEditGdmUuid () {
+                return user.hasPermission('update curation gdm_uuid') 
+                    || user.isPanelCoordinator(this.updatedCuration.expert_panel)
+                    || user.canEditPanelCurations(this.updatedCuration.expert_panel)
             }
         },
         methods: {
