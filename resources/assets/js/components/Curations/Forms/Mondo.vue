@@ -39,11 +39,18 @@
 
         </b-form-group>
         or
-        <b-form-group horizontal label="Disease Entity"
+        <b-form-group horizontal
             :class="{'error': errors.disease_entity_notes}"
         >
-            <textarea v-model="updatedCuration.disease_entity_notes" class="form-control"></textarea>
-            <small>Use when no appropriate MonDO ID is available</small>
+            <template v-slot:label>
+                Disease Entity (<small>Use when no appropriate MonDO ID is available.</small>)
+            </template>
+            <textarea v-model="updatedCuration.disease_entity_notes" class="form-control" />
+            <transition name="fade">
+                <div v-if="updatedCuration.disease_entity_notes" class="alert alert-info mt-2">
+                    <a href="https://github.com/monarch-initiative/mondo/issues/new/choose" target="mondo">Request a new MonDO term</a> by submitting an issue on their <a href="https://github.com/monarch-initiative/mondo">GitHub project.</a> (GitHub account required)
+                </div>
+            </transition>
         </b-form-group>
     </div>
 </template>
