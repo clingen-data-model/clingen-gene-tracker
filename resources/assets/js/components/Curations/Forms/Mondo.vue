@@ -35,7 +35,9 @@
             <!-- <small class="text-muted" v-else>
                 This precuration is linked to a <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">GCI record</a>.  Please update the MonDO ID <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">there</a>.
             </small> -->
-            <mondo-alert :curation="updatedCuration"></mondo-alert>
+
+            <!-- <mondo-alert v-if="updatedCuration.disease" :curation="updatedCuration"></mondo-alert> -->
+            <curation-notification :curation="updatedCuration" :search-by-mondo="true"/>
 
         </b-form-group>
         or
@@ -56,7 +58,7 @@
 </template>
 <script>
     import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import MondoAlert from './ExistingCurationMondoAlert.vue'
+    import CurationNotification from './ExistingCurationNotification.vue'
     import ValidationError from '../../ValidationError.vue'
     import SearchSelect from '../../forms/SearchSelect.vue'
 
@@ -65,8 +67,8 @@
             curationFormMixin, // handles syncing of prop value to updatedCuration
         ],
         components: {
-            MondoAlert,
             ValidationError,
+            CurationNotification,
             SearchSelect
         },
         data: function () {
