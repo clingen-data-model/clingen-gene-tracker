@@ -28,8 +28,10 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('hgnc:update-data')
             ->dailyAt("01:00:00");
-        $schedule->command('mondo:update-data')
+        
+            $schedule->command('mondo:update-data')
             ->dailyAt("O2:00:00");
+
         $schedule->command('omim:update-data')
             ->dailyAt("03:00:00")
             ->after(function () {
@@ -50,6 +52,9 @@ class Kernel extends ConsoleKernel
             ->everySixHours();
 
         $schedule->command('notifications:clean -f -q')
+            ->monthly();
+
+        $schedule->command('dx:clean-incoming-errors -f -q')
             ->monthly();
     }
 
