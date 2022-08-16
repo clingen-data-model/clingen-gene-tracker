@@ -3,7 +3,6 @@
 namespace App\DataExchange\Actions;
 
 use Carbon\Carbon;
-use App\StreamError;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Query\Builder;
