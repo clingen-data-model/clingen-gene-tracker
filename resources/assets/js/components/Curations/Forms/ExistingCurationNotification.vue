@@ -35,8 +35,8 @@
                 }
             }
             ,
-            'curation.phenotypes': function() {
-                if (this.curation && this.curation.phenotypes && this.curation.phenotypes.length > 0) {
+            'curation.selected_phenotypes': function() {
+                if (this.curation && this.curation.selected_phenotypes && this.curation.selected_phenotypes.length > 0) {
                     this.checkForCurations();
                 }
             },
@@ -73,7 +73,7 @@
                     })
             }),
             hasMatchingPhenotypes: function (phenotype) {
-                return this.curation && this.curation.phenotypes && this.curation.phenotypes.map((ph) => ph.mim_number).indexOf(phenotype.mim_number) > -1
+                return this.curation && this.curation.selected_phenotypes && this.curation.selected_phenotypes.map((ph) => ph.mim_number).indexOf(phenotype.mim_number) > -1
             },
         }
         //component definition
@@ -128,8 +128,8 @@
                             </td>
                             <td>{{(match.current_status) ? match.current_status.name : 'no status'}}</td>
                             <td>
-                                <ul class="mb-0" v-if="match.phenotypes && match.phenotypes.length > 0">
-                                    <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
+                                <ul class="mb-0" v-if="match.selected_phenotypes && match.selected_phenotypes.length > 0">
+                                    <li v-for="(phenotype, idx) in match.selected_phenotypes" :key="phenotype.mim_number">
                                         <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
                                         <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>
                                     </li>

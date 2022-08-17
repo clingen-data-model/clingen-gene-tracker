@@ -14,7 +14,7 @@
                 style="max-heigh: 1000px"
             >
                 <template slot="header">
-                    <div class="d-float justify-content-between">
+                    <div class="d-flex justify-content-between align-items-start">
                         <h3> {{ title }}</h3>
 
                         <div class="d-flex space-x-1" v-if="!loading">
@@ -203,7 +203,7 @@
 </template>
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import PhenotypeList from './Phenotypes/List.vue'
+    import PhenotypeList from './PhenotypeList.vue'
     import NotesList from '../NotesList.vue'
     import HistoryTable from './HistoryTable.vue'
     import CurationStatusHistory from './StatusHistory.vue'
@@ -268,13 +268,6 @@
                 }
                 return title;
             },
-            // curation: function(){
-            //     if (this.curations.length == 0) {
-            //         return {
-            //         }
-            //     }
-            //     return this.getCuration(this.id)
-            // },
             mondoUrl: function () {
                 if (this.curation.mondo_id) {
                     return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`

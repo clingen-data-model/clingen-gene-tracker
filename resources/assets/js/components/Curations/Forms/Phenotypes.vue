@@ -24,7 +24,7 @@
                             <input 
                                 class="form-check-input form-check-input-lg"
                                 type="checkbox" 
-                                v-model="updatedCuration.phenotypes"
+                                v-model="updatedCuration.selected_phenotypes"
                                 :value="data.value"
                                 :disabled="disabled"
                             >
@@ -140,8 +140,19 @@
                 if (to.gene_symbol != from.gene_symbol) {
                     this.fetchPhenotypes(this.updatedCuration.gene_symbol)
                         .then((response) => {
-                            if (this.phenotypes && this.phenotypes.length == 1 && this.updatedCuration.curation_type_id == 1 && this.updatedCuration.phenotypes && this.updatedCuration.phenotypes.length == 0) {
-                                Vue.set( this.updatedCuration.phenotypes, 0, { 'mim_number': this.phenotypes[0].phenotypeMimNumber, 'name': this.phenotypes[0].phenotype });
+                            if (this.phenotypes && this.phenotypes.length == 1 
+                                && this.updatedCuration.curation_type_id == 1 
+                                && this.updatedCuration.selected_phenotypes 
+                                && this.updatedCuration.selected_phenotypes.length == 0
+                            ) {
+                                Vue.set( 
+                                    this.updatedCuration.selected_phenotypes, 
+                                    0, 
+                                    { 
+                                        'mim_number': this.phenotypes[0].phenotypeMimNumber, 
+                                        'name': this.phenotypes[0].phenotype 
+                                    }
+                                );
                                 this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedCuration.gene_symbol+' with this single disease entity';
                             }
 
