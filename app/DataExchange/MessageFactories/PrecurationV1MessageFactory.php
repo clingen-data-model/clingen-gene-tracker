@@ -144,9 +144,9 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
 
     private function getOmimPhenotypes($curation)
     {
-        if ($curation->selectedPhenotypes->count() > 0) {
+        if ($curation->includedPhenotypes->count() > 0) {
             return [
-                "included" => $curation->selectedPhenotypes->sortBy('mim_number')->pluck('mim_number')->toArray(),
+                "included" => $curation->includedPhenotypes->sortBy('mim_number')->pluck('mim_number')->toArray(),
                 "excluded" => $curation->excludedPhenotypes->sortBy('mim_number')->pluck('mim_number')->toArray()
             ];
         }

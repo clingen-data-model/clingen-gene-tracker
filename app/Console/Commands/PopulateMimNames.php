@@ -42,7 +42,7 @@ class PopulateMimNames extends Command
     {
         $curations = Curation::with('phenotypes');
         $curations->each(function ($curation) use ($omim) {
-            $curation->selectedPhenotypes->each(function ($pheno) use ($curation, $omim) {
+            $curation->includedPhenotypes->each(function ($pheno) use ($curation, $omim) {
                 if (empty($pheno->name)) {
                     $genePhenos = $omim->getGenePhenotypes($curation->gene_symbol);
                     $genePheno = $genePhenos->filter(function ($gp) use ($pheno) {

@@ -42,7 +42,7 @@ class SyncPhenotypesTest extends TestCase
 
         $curation = $this->curation->fresh();
 
-        $this->assertEquals(3, $curation->selectedPhenotypes()->count());
+        $this->assertEquals(3, $curation->includedPhenotypes()->count());
     }
 
     /**
@@ -64,7 +64,7 @@ class SyncPhenotypesTest extends TestCase
         $job = new SyncPhenotypes($this->curation, $phs);
         $job->handle();
 
-        $this->assertEquals(5, $this->curation->selectedPhenotypes()->count());
+        $this->assertEquals(5, $this->curation->includedPhenotypes()->count());
         $this->assertDatabaseHas('phenotypes', ['mim_number' => 123456, 'name' => 'transsubstantiation']);
         $this->assertDatabaseHas('phenotypes', ['mim_number' => 768910, 'name' => 'tetrisitis']);
     }
@@ -81,7 +81,7 @@ class SyncPhenotypesTest extends TestCase
         $job = new SyncPhenotypes($this->curation, $this->phs);
         $job->handle();
 
-        $this->assertEquals(2, $this->curation->selectedPhenotypes()->count());
+        $this->assertEquals(2, $this->curation->includedPhenotypes()->count());
     }
 
     /**
@@ -97,21 +97,21 @@ class SyncPhenotypesTest extends TestCase
         $job = new SyncPhenotypes($this->curation, $this->phs);
         $job->handle();
 
-        $this->assertEquals(4, $this->curation->selectedPhenotypes()->count());
+        $this->assertEquals(4, $this->curation->includedPhenotypes()->count());
     }
 
     /**
      * @test
      */
-    public function adds_unselected_phenotypes_with_selected_false()
+    public function adds_excluded_phenotypes_with_selected_false()
     {
-        $unselectedPheno = factory(Phenotype::class)->create();
-        $this->gene->addPhenotype($unselectedPheno);
+        $excludedPheno = factory(Phenotype::class)->create();
+        $this->gene->addPhenotype($excludedPheno);
 
         $job = new SyncPhenotypes($this->curation, $this->phs);
         $job->handle();
 
-        $this->assertEquals(3, $this->curation->selectedPhenotypes->count());
+        $this->assertEquals(3, $this->curation->includedPhenotypes->count());
         $this->assertEquals(1, $this->curation->excludedPhenotypes->count());
     }
     

@@ -139,7 +139,7 @@ class CurationControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
+            $t->includedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')
@@ -154,7 +154,7 @@ class CurationControllerTest extends TestCase
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
+            $t->includedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')
@@ -187,7 +187,7 @@ class CurationControllerTest extends TestCase
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
+            $t->includedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')
@@ -232,7 +232,7 @@ class CurationControllerTest extends TestCase
             'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
-            'phenotypes' => [
+            'included_phenotypes' => [
                 [
                     'mim_number' => 12345,
                     'name' => 'test pheno1',
@@ -253,8 +253,7 @@ class CurationControllerTest extends TestCase
             ->json('POST', '/api/curations', $data)
             ->assertJsonFragment(['mim_number'=>$phenotype->mim_number])
             ->assertJsonFragment(['mim_number'=>12345])
-            ->assertJsonFragment(['mim_number'=>67890])
-            ;
+            ->assertJsonFragment(['mim_number'=>67890]);
     }
 
     /**

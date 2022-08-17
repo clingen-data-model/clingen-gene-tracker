@@ -69,7 +69,7 @@
         },
         computed: {
             includedPhenotypes: function () {
-                return this.curation.selected_phenotypes;
+                return this.curation.included_phenotypes;
             },
             excludedPhenotypes: function () {
                 return this.curation.excluded_phenotypes;

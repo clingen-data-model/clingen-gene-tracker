@@ -24,7 +24,7 @@
                             <input 
                                 class="form-check-input form-check-input-lg"
                                 type="checkbox" 
-                                v-model="updatedCuration.selected_phenotypes"
+                                v-model="updatedCuration.included_phenotypes"
                                 :value="data.value"
                                 :disabled="disabled"
                             >
@@ -142,11 +142,11 @@
                         .then((response) => {
                             if (this.phenotypes && this.phenotypes.length == 1 
                                 && this.updatedCuration.curation_type_id == 1 
-                                && this.updatedCuration.selected_phenotypes 
-                                && this.updatedCuration.selected_phenotypes.length == 0
+                                && this.updatedCuration.included_phenotypes 
+                                && this.updatedCuration.included_phenotypes.length == 0
                             ) {
                                 Vue.set( 
-                                    this.updatedCuration.selected_phenotypes, 
+                                    this.updatedCuration.included_phenotypes, 
                                     0, 
                                     { 
                                         'mim_number': this.phenotypes[0].phenotypeMimNumber, 

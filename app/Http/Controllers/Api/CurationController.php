@@ -57,8 +57,8 @@ class CurationController extends Controller
         $data = $request->except('phenotypes', 'curation_status_id', 'page');
         try {
             $curation = Curation::create($data);
-            if ($request->selected_phenotypes) {
-                SyncPhenotypes::dispatchNow($curation, $request->selected_phenotypes);
+            if ($request->included_phenotypes) {
+                SyncPhenotypes::dispatchNow($curation, $request->included_phenotypes);
             }
             if ($request->curation_status_id) {
                 AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
@@ -118,7 +118,7 @@ class CurationController extends Controller
         } catch (ApiServerErrorException $e) {
             report($e);
         }
-
+        
         $this->loadRelations($curation);
 
         return new CurationResource($curation);
@@ -142,8 +142,8 @@ class CurationController extends Controller
 
     private function setPhenotypes(Curation $curation, $request)
     {
-        if ($request->selected_phenotypes) {
-            SyncPhenotypes::dispatchNow($curation, $request->selected_phenotypes);
+        if ($request->included_phenotypes) {
+            SyncPhenotypes::dispatchNow($curation, $request->included_phenotypes);
         }
 
         if ($request->isolated_phenotype) {
@@ -176,7 +176,7 @@ class CurationController extends Controller
     private function loadRelations(&$curation)
     {
         $curation->load([
-            'selectedPhenotypes',
+            'includedPhenotypes',
             'expertPanel',
             'expertPanels',
             'curator',

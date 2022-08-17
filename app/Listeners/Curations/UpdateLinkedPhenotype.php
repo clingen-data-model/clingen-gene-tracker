@@ -28,9 +28,9 @@ class UpdateLinkedPhenotype
     {
         $phenotype = $event->phenotype;
         $phenotype->curations->each(function ($curation) use ($phenotype) {
-            $curation->selectedPhenotypes()->detach($phenotype);
+            $curation->includedPhenotypes()->detach($phenotype);
             $movedToPhenotypes = $phenotype->fresh()->movedToPhenotypes->pluck('id');
-            $curation->selectedPhenotypes()->attach($movedToPhenotypes);
+            $curation->includedPhenotypes()->attach($movedToPhenotypes);
         });
     }
 }

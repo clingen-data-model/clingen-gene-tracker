@@ -157,9 +157,9 @@ class CurationTest extends TestCase
         $curation = factory(\App\Curation::class)->create();
         $phenotypes = factory(\App\Phenotype::class, 2)->create();
         $unselectedPh = factory(\App\Phenotype::class, 1)->create();
-        $curation->selectedPhenotypes()->attach($phenotypes->pluck('id'));
-        $this->assertInstanceOf(BelongsToMany::class, $curation->selectedPhenotypes());
-        $this->assertEquals(2, $curation->selectedPhenotypes()->count());
+        $curation->includedPhenotypes()->attach($phenotypes->pluck('id'));
+        $this->assertInstanceOf(BelongsToMany::class, $curation->includedPhenotypes());
+        $this->assertEquals(2, $curation->includedPhenotypes()->count());
     }
 
     /**

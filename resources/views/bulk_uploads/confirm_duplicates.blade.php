@@ -16,7 +16,7 @@
                     <td>{{$dup->currentStatus ? $dup->currentStatus->name : '??'}}</td>
                     <td>
                         <ul class="list-unstyled">
-                            @foreach ($dup->selectedPhenotypes as $pheno)
+                            @foreach ($dup->includedPhenotypes as $pheno)
                                 <li>{{$pheno->name}}</li> 
                             @endforeach
                         </ul>

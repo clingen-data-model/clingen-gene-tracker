@@ -27,7 +27,7 @@ class UnlinkRemovedPhenotype
     public function handle(OmimRemovedPhenotype $event)
     {
         $event->phenotype->curations->each(function ($curation) use ($event) {
-            $curation->selectedPhenotypes()->detach($event->phenotype);
+            $curation->includedPhenotypes()->detach($event->phenotype);
         });
     }
 }

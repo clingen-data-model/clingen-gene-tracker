@@ -120,7 +120,7 @@ class Curation extends Model implements Notable
             ->withPivot('selected');
     }
 
-    public function selectedPhenotypes()
+    public function includedPhenotypes()
     {
         return $this->belongsToMany(Phenotype::class)
             ->withPivot('selected')

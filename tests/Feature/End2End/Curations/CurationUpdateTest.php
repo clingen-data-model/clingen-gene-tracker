@@ -63,13 +63,13 @@ class CurationUpdateTest extends TestCase
     {
         $phenotype = factory(\App\Phenotype::class)->create();
         $phenotype2 = factory(\App\Phenotype::class)->create();
-        $this->curation->selectedPhenotypes()->attach($phenotype2->id);
+        $this->curation->includedPhenotypes()->attach($phenotype2->id);
 
         $data = [
             'page' => 'phenotypes',
             'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
-            'phenotypes' => [
+            'included_phenotypes' => [
                 [
                     'mim_number' => 12345,
                     'name' => 'test pheno1',
@@ -212,7 +212,7 @@ class CurationUpdateTest extends TestCase
             'gene_symbol' => 'BRCA2',
         ]);
 
-        $curation->selectedPhenotypes()->sync([]);
+        $curation->includedPhenotypes()->sync([]);
         $data = $curation->toArray();
         $data['curation_type_id'] = 1;
         $data['page'] = 'phenotypes';
