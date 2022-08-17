@@ -19,31 +19,34 @@
                         <td>✅</td>
                     </tr>
                 </tbody>
-                <transition name="fade">
-                    <tbody v-if="showExcluded" class="text-muted">
-                        <tr v-for="phenotype in excludedPhenotypes" 
-                            :key="phenotype.id" 
-                        >
-                            <td>{{ phenotype.mim_number }}</td>
-                            <td>{{ phenotype.name }}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <small>
-                                    NOTE: Excluded OMIM phenotypes represent those associated with {{curation.gene_symbol}} at the time of pre-curation. 
-                                    OMIM phenotypes associated with {{curation.gene_symbol}} may have changed.
-                                </small>
-                            </td>
-                        </tr>
-                    </tbody>
-                </transition>
+                <template v-if="excludedPhenotypes.length > 0">
+                    <transition name="fade">
+                        <tbody v-show="showExcluded" class="text-muted">
+                            <tr v-for="phenotype in excludedPhenotypes" 
+                                :key="phenotype.id" 
+                            >
+                                <td>{{ phenotype.mim_number }}</td>
+                                <td>{{ phenotype.name }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <small>
+                                        NOTE: Excluded OMIM phenotypes represent those associated with {{curation.gene_symbol}} at the time of pre-curation. 
+                                        OMIM phenotypes associated with {{curation.gene_symbol}} may have changed.
+                                    </small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </transition>
+                </template>
             </table>
-            <button 
+            <button v-if="excludedPhenotypes.length > 0"
                 class="text-primary btn btn-sm ml-0 pl-0"
                 @click="toggleExcluded">
                 {{showExcluded ? `Hide` : `Show`}} excluded phenotypes
             </button>
+            <div v-if="excludedPhenotypes.length == 0" class="text-muted"><small><small>All OMIM phenotypes associated with {{curation.gene_symbol}} are included in this curation.</small></small></div>
         </div>
         <div class="col" v-else>
             No phenotypes in this curation
