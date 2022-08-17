@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use App\Gene;
 use App\User;
 use App\AppState;
 use App\Curation;
@@ -15,6 +16,7 @@ use App\Contracts\OmimClient;
 use GuzzleHttp\Psr7\Response;
 use Tests\MocksGuzzleRequests;
 use Tests\Traits\GetsOmimClient;
+use App\Jobs\Curations\SyncPhenotypes;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -280,8 +282,11 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
 
     private function makeCurationWithPhenotype($phenotype, $curationAttr = [])
     {
+        $gene = factory(Gene::class)->create();
+        $curationAttr['hgnc_id'] = $gene->hgnc_id;
+        $gene->addPhenotype($phenotype);
         $curation = factory(Curation::class)->create($curationAttr);
-        $curation->addPhenotype($phenotype);
+        (new SyncPhenotypes($curation, [$phenotype]))->handle();
         return $curation;
     }
 }

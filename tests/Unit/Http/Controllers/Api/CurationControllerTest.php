@@ -52,21 +52,6 @@ class CurationControllerTest extends TestCase
              ->assertStatus(200);
     }
 
-    // /**
-    //  * @test
-    //  */
-    // public function index_lists_curations_filtered_by_gene_symbol()
-    // {
-    //     $this->withoutExceptionHandling();
-    //     $testGene = 'BRCA1';
-    //     $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
-
-    //     $response = $this->actingAs($this->user, 'api')
-    //         ->json('GET', '/api/curations?gene_symbol='.$testGene);
-
-    //     $this->assertEquals(16, $response->original->count());
-    // }
-
     /**
      * @test
      */
@@ -154,7 +139,7 @@ class CurationControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->phenotypes()->sync($phenotypes->pluck('id'));
+            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')
@@ -169,12 +154,13 @@ class CurationControllerTest extends TestCase
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->phenotypes()->sync($phenotypes->pluck('id'));
+            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations/?with=phenotypes')
             ->assertSee('mim_number')
+            ->assertSee('phenotypes')
             ->assertSee($phenotypes->first()->mim_number);
     }
 
@@ -201,7 +187,7 @@ class CurationControllerTest extends TestCase
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
-            $t->phenotypes()->sync($phenotypes->pluck('id'));
+            $t->selectedPhenotypes()->sync($phenotypes->pluck('id'));
         });
 
         $response = $this->actingAs($this->user, 'api')

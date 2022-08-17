@@ -116,7 +116,23 @@ class Curation extends Model implements Notable
 
     public function phenotypes()
     {
-        return $this->belongsToMany(Phenotype::class);
+        return $this->belongsToMany(Phenotype::class)
+            ->withPivot('selected');
+    }
+
+    public function selectedPhenotypes()
+    {
+        return $this->belongsToMany(Phenotype::class)
+            ->withPivot('selected')
+            ->where('selected', true);
+        }
+        
+    public function excludedPhenotypes()
+    {
+        return $this->belongsToMany(Phenotype::class)
+            ->withPivot('selected')
+            ->where('selected', false);
+
     }
 
     public function curationStatuses()
@@ -333,20 +349,6 @@ class Curation extends Model implements Notable
         return preg_replace('/mondo: ?(\d+)/i', '$1', $this->mondo_id);
     }
 
-    public function getExcludedPhenotypesAttribute()
-    {
-        if (!$this->gene) {
-            return collect();
-        }
-        $curationPhenos = $this->phenotypes()->get();
-        return $this->gene->phenotypes()
-                ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
-                ->select('mim_number')
-                ->orderBy('mim_number')
-                ->get();
-    }
-    
-
     /**
      * MUTATORS.
      */
@@ -400,10 +402,5 @@ class Curation extends Model implements Notable
     public function removeUpload(Upload $upload): void
     {
         $upload->delete();
-    }
-
-    public function addPhenotype(Phenotype $phenotype): void
-    {
-        $this->phenotypes()->save($phenotype);
     }
 }

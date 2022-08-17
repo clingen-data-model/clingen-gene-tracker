@@ -57,8 +57,8 @@ class CurationController extends Controller
         $data = $request->except('phenotypes', 'curation_status_id', 'page');
         try {
             $curation = Curation::create($data);
-            if ($request->phenotypes) {
-                SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+            if ($request->selected_phenotypes) {
+                SyncPhenotypes::dispatchNow($curation, $request->selected_phenotypes);
             }
             if ($request->curation_status_id) {
                 AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
@@ -84,6 +84,7 @@ class CurationController extends Controller
     {
         $curation = Curation::findOrFail($id);
         $this->loadRelations($curation);
+        $curation->load('excludedPhenotypes');
         $curation->rationals = $curation->rationales->transform(function ($item) {
             unset($item->pivot);
 
@@ -141,8 +142,8 @@ class CurationController extends Controller
 
     private function setPhenotypes(Curation $curation, $request)
     {
-        if ($request->phenotypes) {
-            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+        if ($request->selected_phenotypes) {
+            SyncPhenotypes::dispatchNow($curation, $request->selected_phenotypes);
         }
 
         if ($request->isolated_phenotype) {
@@ -174,6 +175,19 @@ class CurationController extends Controller
 
     private function loadRelations(&$curation)
     {
-        $curation->load(['phenotypes', 'expertPanel', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance', 'disease', 'notes', 'notes.author']);
+        $curation->load([
+            'selectedPhenotypes',
+            'expertPanel',
+            'expertPanels',
+            'curator',
+            'curationStatuses',
+            'rationales',
+            'curationType',
+            'classifications',
+            'modeOfInheritance',
+            'disease',
+            'notes',
+            'notes.author'
+        ]);
     }
 }

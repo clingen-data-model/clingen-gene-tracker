@@ -102,8 +102,8 @@ class CurationSearchTest extends TestCase
     {
         [$ph1, $ph2, $ph3] = factory(Phenotype::class, 3)->create([]);
         [$curation1, $curation2, $restOfCurations] = $this->curations;
-        $curation1->phenotypes()->sync([$ph1->id, $ph2->id]);
-        $curation2->phenotypes()->sync($ph3->id);
+        $curation1->selectedPhenotypes()->sync([$ph1->id, $ph2->id]);
+        $curation2->selectedPhenotypes()->sync($ph3->id);
 
         $results = $this->search->search(['filter' => $ph1->mim_number]);
         $this->assertContains($curation1->id, $results->pluck('id'));

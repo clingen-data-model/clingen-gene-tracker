@@ -9,6 +9,7 @@ use App\Rationale;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
+use App\Jobs\Curations\SyncPhenotypes;
 
 /**
  * @group data-exchange
@@ -55,7 +56,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
         ]);
         $rationale = Rationale::first();
         $this->curation->rationales()->attach($rationale);
-        $this->curation->addPhenotype($phs->first());
+        (new SyncPhenotypes($this->curation, [$phs->first()]))->handle();
 
         $message = $this->factory->make($this->curation->fresh(), 'updated');
 

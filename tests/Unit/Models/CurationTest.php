@@ -15,6 +15,7 @@ use App\Classification;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
 use App\Jobs\Curations\AddStatus;
+use App\Jobs\Curations\SyncPhenotypes;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -155,9 +156,10 @@ class CurationTest extends TestCase
     {
         $curation = factory(\App\Curation::class)->create();
         $phenotypes = factory(\App\Phenotype::class, 2)->create();
-        $curation->phenotypes()->attach($phenotypes->pluck('id'));
-        $this->assertInstanceOf(BelongsToMany::class, $curation->phenotypes());
-        $this->assertEquals(2, $curation->phenotypes()->count());
+        $unselectedPh = factory(\App\Phenotype::class, 1)->create();
+        $curation->selectedPhenotypes()->attach($phenotypes->pluck('id'));
+        $this->assertInstanceOf(BelongsToMany::class, $curation->selectedPhenotypes());
+        $this->assertEquals(2, $curation->selectedPhenotypes()->count());
     }
 
     /**
@@ -462,7 +464,7 @@ class CurationTest extends TestCase
             'gene_symbol' => 'LMNA',
             'hgnc_id' => 6636
         ]);
-        $curation->addPhenotype($ph1);
+        (new SyncPhenotypes($curation, [$ph1]))->handle();
 
         $this->assertEquals(collect($ph2->mim_number), $curation->fresh()->excludedPhenotypes->pluck('mim_number'));
     }

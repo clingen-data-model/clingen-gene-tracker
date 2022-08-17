@@ -20,6 +20,8 @@ class CurationResource extends JsonResource
         // $data['mondo_id'] = $this->disease ?? null;
         $data['expert_panel'] = new ExpertPanelResource($this->expertPanel) ?? null;
         $data['phenotypes'] = PhenotypeResource::collection($this->whenLoaded('phenotypes'));
+        $data['selected_phenotypes'] = PhenotypeResource::collection($this->whenLoaded('selectedPhenotypes'));
+        $data['excluded_phenotypes'] = PhenotypeResource::collection($this->whenLoaded('excludedPhenotypes'));
         $data['rationales'] = RationaleResource::collection($this->whenLoaded('rationales'));
         $data['mode_of_inheritance'] = $this->whenLoaded('modeOfInheritance');
         $data['moi'] = $this->whenLoaded('moi');
@@ -34,7 +36,7 @@ class CurationResource extends JsonResource
         $data['updated_at'] = $this->updated_at;
 
         if ($this->curation_type_id == 3) {
-            $data['isolated_phenotype'] = $this->phenotypes->first()->mim_number ?? null;
+            $data['isolated_phenotype'] = $this->selectedPhenotypes->first()->mim_number ?? null;
         }
 
         return $data;

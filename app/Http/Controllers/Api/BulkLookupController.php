@@ -23,7 +23,7 @@ class BulkLookupController extends Controller
     {
         $results = $this->search->search($request->all())
                     ->map(function ($curation) {
-                        $curation->available_phenotypes = $curation->gene->phenotypes;
+                        $curation->available_phenotypes = $curation->gene->selectedPhenotypes;
                         return $curation;
                     });
         if ($results->count() == 0) {
@@ -63,7 +63,7 @@ class BulkLookupController extends Controller
                                                 ? $curation->currentStatus->pivot->status_date 
                                                 : null,
                             'Last updated' => $curation->updated_at->format('Y-m-d H:i:s'),
-                            'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
+                            'Curated Phenotypes' => $curation->selectedPhenotypes->map(function ($ph) {
                                 return $ph->name.' ('.$ph->mim_number.')';
                             })->join("\n"),
                             'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
