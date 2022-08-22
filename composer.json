@@ -20,6 +20,7 @@
         "laravel/helpers": "^1.2",
         "laravel/legacy-factories": "^1.1",
         "laravel/passport": "^10.0",
+        "laravel/sanctum": "^2.0",
         "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
