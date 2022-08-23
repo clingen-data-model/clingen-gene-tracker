@@ -227,6 +227,9 @@
                 return !Boolean(this.updatedCuration && this.updatedCuration.expert_panel_id && this.updatedCuration.id);
             },
             canEditGdmUuid () {
+                if (!this.updatedCuration.expert_panel) {
+                    return false;
+                }
                 return user.hasPermission('update curation gdm_uuid') 
                     || user.isPanelCoordinator(this.updatedCuration.expert_panel)
                     || user.canEditPanelCurations(this.updatedCuration.expert_panel)
