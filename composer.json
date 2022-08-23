@@ -28,7 +28,8 @@
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "spatie/laravel-permission": "^4.0",
-        "venturecraft/revisionable": "^1.38"
+        "venturecraft/revisionable": "^1.38",
+        "zircote/swagger-php": "^4.4"
     },
     "require-dev": {
         "backpack/generators": "^3.0",

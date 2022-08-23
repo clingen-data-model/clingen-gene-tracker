@@ -29,7 +29,6 @@ class CurationResource extends JsonResource
         $data['current_status_date'] = ($this->currentStatus && $this->currentStatus->id) ? $this->currentStatusDate : null;
         $data['current_classification'] = $this->currentClassification->id ? $this->currentClassification : null;
         $data['curation_type'] = $this->whenLoaded('curationType');
-        $data['curation_type'] = $this->whenLoaded('curationType');
         $data['created_at'] = $this->created_at;
         $data['updated_at'] = $this->updated_at;
 

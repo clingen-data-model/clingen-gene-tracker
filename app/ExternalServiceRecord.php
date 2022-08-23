@@ -21,7 +21,7 @@ class ExternalServiceRecord implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return $this->attributes;
+        return json_encode($this->attributes);
     }
 
     public function __get($key)
