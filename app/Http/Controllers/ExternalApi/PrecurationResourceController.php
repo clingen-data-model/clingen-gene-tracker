@@ -98,7 +98,7 @@ class PrecurationResourceController extends Controller
      *         name="precurationId", 
      *         in="path", 
      *         required=true, 
-     *         description="ID of precuration record.",
+     *         description="Numeric ID or GT UUID of precuration record, or GDM UUID associated with precuration record.",
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
@@ -119,8 +119,22 @@ class PrecurationResourceController extends Controller
      *     )
      * )
      */
-    public function show(Curation $curation)
+    public function show($curationId)
     {
+        $curation = Curation::find($curationId);
+
+        if (!$curation) {
+            $curation = Curation::findByUuid($curationId);
+        }
+
+        if (!$curation) {
+            $curation == Curation::findByGdmUuid($curationId);
+        }
+
+        if (!$curation) {
+            return response('Curation not found', 404);
+        }
+
         return new CurationResource(
             $curation->load([
                 'phenotypes',

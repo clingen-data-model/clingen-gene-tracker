@@ -36,6 +36,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::redirect('logs', 'admin/logs');
 
+    /**
+     * Route so GCI can easily link to pre-curation detail by GDM UUID
+     */
+    Route::get('gdm/{gdmUuid}', CurationByGdmController::class);
+
     Route::impersonate();
 });
 
