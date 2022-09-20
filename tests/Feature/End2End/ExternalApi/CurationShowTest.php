@@ -11,16 +11,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Testing\TestResponse;
 
-class CurationShowTest extends TestCase
+/**
+ * @group external-api
+ */
+class CurationShowTest extends ExternalApiTest
 {
-    use DatabaseTransactions;
-    use WithFaker;
-
     private Curation $curation;
     private string $gdmUuid;
     private string $gtUuid;
-    private ApiClient $client;
-    private string $token;
 
     public function setup():void
     {
@@ -32,9 +30,18 @@ class CurationShowTest extends TestCase
                         'gdm_uuid' => $this->gdmUuid, 
                         'uuid' => $this->gtUuid
                     ]);
+    }
 
-        $this->client = ApiClient::factory()->create();
-        $this->token = $this->client->createToken('test')->plainTextToken;
+    /**
+     * @test
+     */
+    public function guest_cannot_get_a_precuration()
+    {
+        $this->makeExternalApiRequestAsGuest(
+            method: 'GET',
+            uri: '/api/v1/pre-curations/'.$this->curation->id,
+        )
+        ->assertStatus(401);
     }
 
     /**
@@ -88,11 +95,9 @@ class CurationShowTest extends TestCase
     {
         $id = $id ?? $this->curation->id;
 
-        return $this->json(
-            method: 'GET', 
-            uri: '/api/v1/pre-curations/'.$id, 
-            data: [], 
-            headers: ['Authorization' => 'Bearer '.$this->token]
+        return $this->makeExternalApiRequest(
+            method: 'GET',
+            uri: '/api/v1/pre-curations/'.$id,
         );
     }
     
