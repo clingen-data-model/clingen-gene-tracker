@@ -30,11 +30,6 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
         ]);
     }
 
-    private function makeMessageKey()
-    {
-        return Uuid::uuid4()->toString();
-    }
-
     private function getSchemaVersion()
     {
         return 1;

@@ -38,7 +38,7 @@ class CreateStreamMessage implements ShouldQueue
      */
     public function handle(MessageFactoryInterface $factory)
     {
-        $msg = StreamMessage::create([
+        StreamMessage::create([
             'topic' => $this->topic,
             'message' => $factory->make($this->curation, $this->eventType)
         ]);

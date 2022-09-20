@@ -40,6 +40,8 @@ class ReplayGciEvents extends Command
      * Execute the console command.
      *
      * @return mixed
+     * 
+     * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
     public function handle()
     {

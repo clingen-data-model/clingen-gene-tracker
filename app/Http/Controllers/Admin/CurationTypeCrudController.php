@@ -15,6 +15,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
     public function setUp(): void
     {
 
@@ -36,6 +39,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setFromDb();
 
         $this->crud->denyAccess(['list','create','update','delete']);
+        
         if (\Auth::user()->hasPermissionTo('create curation-types')) {
             $this->crud->allowAccess(['list']);
         }

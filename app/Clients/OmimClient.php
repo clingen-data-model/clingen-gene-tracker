@@ -2,11 +2,12 @@
 
 namespace App\Clients;
 
+use Exception;
 use GuzzleHttp\Client;
 use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\NullOmimEntry;
-use App\Clients\Omim\OmimEntryContract;
 use Illuminate\Support\Facades\Cache;
+use App\Clients\Omim\OmimEntryContract;
 use App\Contracts\OmimClient as OmimClientContract;
 
 /**
@@ -19,7 +20,7 @@ class OmimClient implements OmimClientContract
     public function __construct($client = null)
     {
         if ($client && get_class($client) != Client::class) {
-            throw new \Exception('Bad client exception');
+            throw new Exception('Bad client exception');
         }
 
         $this->client = $client;

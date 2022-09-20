@@ -77,9 +77,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
     }
     public static function filterInvalid(Collection $collection):Collection
     {
-        $mondoClient = app()->make(MondoClient::class);
-        return $collection->filter(function ($item) use ($mondoClient) {
-            $cid = $item->data['curation']['id'];
+        return $collection->filter(function ($item) {
             $curation = Curation::find($item->data['curation']['id']);
             if (!$curation) {
                 return false;
@@ -89,7 +87,6 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
             }
 
             try {
-                $record = $mondoClient->fetchRecord($curation->numericMondoId);
                 return false;
             } catch (HttpNotFoundException $e) {
                 return true;

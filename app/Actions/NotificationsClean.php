@@ -7,7 +7,11 @@ use App\Notification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsCommand;
-
+/**
+ * Clean the notifications table
+ * 
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ */
 class NotificationsClean
 {
     use AsCommand;
@@ -24,7 +28,12 @@ class NotificationsClean
      *
      * @return mixed
      */
-    public function handle(bool $deleteUnread = false, Carbon|null $createdBefore = null, Carbon|null $readBefore = null, bool $dryRun = false)
+    public function handle(
+        bool $deleteUnread = false, 
+        ?Carbon $createdBefore = null, 
+        ?Carbon $readBefore = null, 
+        bool $dryRun = false
+    )
     {
         $query = Notification::query();
         

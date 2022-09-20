@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Gci;
 
+use Exception;
 use App\Affiliation;
 use App\GciCuration;
 use App\Classification;
@@ -82,7 +83,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         }
 
         if (!$gciCuration) {
-            throw new \Exception('GciCuration for gdm_uuid '.$this->gciMessage->gdm_uuid.' not found. Status: '.$this->gciMessage->getStatus());
+            throw new Exception('GciCuration for gdm_uuid '.$this->gciMessage->gdm_uuid.' not found. Status: '.$this->gciMessage->getStatus());
             return;
         }
 
@@ -122,23 +123,18 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         return $this->affiliations->get($affiliationId)->id;
     }
 
-    private function getMoiId($moiString)
-    {
-        return $this->mois->get($this->parseMoi($moiString))->id;
-    }
-
-    private function parseMoi($moiString)
-    {
-        $matches = [];
-        preg_match('/\w*\((HP:\d{7})\)$/', $moiString, $matches);
-        if (count($matches) != 2) {
-            if ($moiString == 'Other') {
-                return 'Other';
-            }
-            throw new InvalidArgumentException('Failed to parse MOI string '.$moiString);
-        }
-        return $matches[1];
-    }
+    // private function parseMoi($moiString)
+    // {
+    //     $matches = [];
+    //     preg_match('/\w*\((HP:\d{7})\)$/', $moiString, $matches);
+    //     if (count($matches) != 2) {
+    //         if ($moiString == 'Other') {
+    //             return 'Other';
+    //         }
+    //         throw new InvalidArgumentException('Failed to parse MOI string '.$moiString);
+    //     }
+    //     return $matches[1];
+    // }
 
     private function populateLookups()
     {

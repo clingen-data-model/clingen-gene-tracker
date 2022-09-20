@@ -46,7 +46,7 @@ class SetOwner
 
                 $this->curation->refresh();
                 if ($this->curation->expertPanel->hasCoordinators()) {
-                    $mail = Mail::to($this->curation->expertPanel->coordinators)
+                    Mail::to($this->curation->expertPanel->coordinators)
                             ->cc($originalOwner->coordinators)
                             ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
                 }

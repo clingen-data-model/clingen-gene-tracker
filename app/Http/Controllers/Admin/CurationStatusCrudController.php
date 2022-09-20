@@ -14,6 +14,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
     public function setUp(): void
     {
         $this->user = \Auth::user();

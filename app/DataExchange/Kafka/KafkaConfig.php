@@ -2,6 +2,8 @@
 
 namespace App\DataExchange\Kafka;
 
+use \RdKafka\Conf;
+
 use Illuminate\Support\Facades\Log;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Kafka\KafkaEnvValidator;
@@ -13,7 +15,7 @@ class KafkaConfig
     public function __construct(KafkaEnvValidator $validator)
     {
         $validator();
-        $this->conf = new \RdKafka\Conf();
+        $this->conf = new Conf();
 
         // Initial list of Kafka brokers
         $this->setBrokers()

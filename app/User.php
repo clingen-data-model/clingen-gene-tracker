@@ -63,10 +63,9 @@ class User extends Authenticatable
         static::creating(
             function ($model) {
                 if (is_null($model->password)) {
+                    $model->password = 'tester';
                     if (env('production')) {
                         $model->password = uniqid();
-                    } else {
-                        $model->password = 'tester';
                     }
                 }
             }
@@ -111,7 +110,7 @@ class User extends Authenticatable
     }
     
 
-    public function deactivateUser($crud = false)
+    public function deactivateUser()
     {
         if (is_null($this->deactivated_at)) {
             return '<a class="btn btn-xs btn-default" '
@@ -125,10 +124,9 @@ class User extends Authenticatable
 
     public function setPasswordAttribute($value)
     {
+        $this->attributes['password'] = $value;
         if (Hash::needsRehash($value)) {
             $this->attributes['password'] = Hash::make($value);
-        } else {
-            $this->attributes['password'] = $value;
         }
     }
     

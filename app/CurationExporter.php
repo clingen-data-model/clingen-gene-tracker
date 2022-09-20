@@ -72,6 +72,9 @@ class CurationExporter
                 });
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
+     */
     public function getCsv($params = [], $csvPath = null)
     {
         $filename = 'exports/curations_export';
@@ -92,7 +95,7 @@ class CurationExporter
         $fh = fopen($path, 'w');
         if ($data->count() > 0) {
             fputcsv($fh, array_keys($data->first()));
-            foreach ($data as $idx => $row) {
+            foreach ($data as $row) {
                 fputcsv($fh, $row);
             }
         } else {

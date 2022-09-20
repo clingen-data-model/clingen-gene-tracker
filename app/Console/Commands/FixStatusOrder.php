@@ -66,11 +66,9 @@ class FixStatusOrder extends Command
         if ($curation->created_at->timestamp > $minInstance->pivot->status_date->timestamp) {
             $this->output('setting uploaded status date to '.$minInstance->pivot->status_date);
             $curation->statuses()->updateExistingPivot(config('curations.statuses.uploaded'), ['status_date' => $minInstance->pivot->status_date]);
-        } else {
-            if ($minInstance->curation_status_id != config('curations.statuses.uploaded')) {
-                $this->output('setting uploaded status date to '.$curation->created_at);
-                $curation->statuses()->updateExistingPivot(config('curations.statuses.uploaded'), ['status_date' => $curation->created_at]);
-            }
+        } else if ($minInstance->curation_status_id != config('curations.statuses.uploaded')) {
+            $this->output('setting uploaded status date to '.$curation->created_at);
+            $curation->statuses()->updateExistingPivot(config('curations.statuses.uploaded'), ['status_date' => $curation->created_at]);
         }
 
         UpdateCurrentStatus::dispatch($curation);

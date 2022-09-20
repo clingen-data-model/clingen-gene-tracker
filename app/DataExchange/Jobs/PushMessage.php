@@ -2,14 +2,15 @@
 
 namespace App\DataExchange\Jobs;
 
+use Exception;
 use Carbon\Carbon;
 use App\StreamMessage;
 use Illuminate\Bus\Queueable;
-use App\DataExchange\Contracts\MessagePusher;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Exceptions\StreamingServiceDisabledException;
 
@@ -63,6 +64,6 @@ class PushMessage implements ShouldQueue
             return json_encode($message);
         }
 
-        throw new \Exception("Expected message to be string, object, or array.  Got ".gettype($message));
+        throw new Exception("Expected message to be string, object, or array.  Got ".gettype($message));
     }
 }

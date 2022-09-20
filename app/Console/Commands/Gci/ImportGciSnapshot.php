@@ -118,11 +118,7 @@ class ImportGciSnapshot extends Command
                 if (!isset($errors[$type])) {
                     $errors[$type] = [];
                 }
-                if ($e->hasData()) {
-                    $errors[$type][] = $e->getData();
-                } else {
-                    $errors[$type][] = $e->getMessage();
-                }
+                $errors[$type][] = $e->hasData() ? $e->hasData() : $e->getMessage();
             } catch (Exception $e) {
                 throw $e;
             }
@@ -276,25 +272,25 @@ class ImportGciSnapshot extends Command
         return $curations->first();
     }
 
-    private function matchHgncAndEmail($row)
-    {
-        $matching = $this->curations->filter(function ($curation) use ($row) {
-            if (is_null($curation->curator)) {
-                return false;
-            }
-            if (!is_null($curation->mondo_id)) {
-                return false;
-            }
-            return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
-                && $curation->curator->email == $row['creator email'];
-        });
+    // private function matchHgncAndEmail($row)
+    // {
+    //     $matching = $this->curations->filter(function ($curation) use ($row) {
+    //         if (is_null($curation->curator)) {
+    //             return false;
+    //         }
+    //         if (!is_null($curation->mondo_id)) {
+    //             return false;
+    //         }
+    //         return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
+    //             && $curation->curator->email == $row['creator email'];
+    //     });
 
-        if ($matching->count() > 1) {
-            throw $this->buildRowError($row, 409);
-        }
+    //     if ($matching->count() > 1) {
+    //         throw $this->buildRowError($row, 409);
+    //     }
 
-        return $matching->first();
-    }
+    //     return $matching->first();
+    // }
     
     private function buildRowError($data, $code)
     {
@@ -350,29 +346,29 @@ class ImportGciSnapshot extends Command
         $curation->gdm_uuid = $row['gdm uuid'];
     }
 
-    private function updateCurator($curation, $row)
-    {
-        if (empty($row['creator email'])) {
-            throw new GciSyncException('no email data for row');
-        }
+    // private function updateCurator($curation, $row)
+    // {
+    //     if (empty($row['creator email'])) {
+    //         throw new GciSyncException('no email data for row');
+    //     }
 
-        $user = User::where('email', $row['creator email'])->first();
+    //     $user = User::where('email', $row['creator email'])->first();
 
-        if (is_null($user)) {
-            $user = User::create([
-                'name' => $row['creator name'],
-                'email' => $row['creator email'],
-                'password' => uniqid(),
-                'deactivated_at' => Carbon::now(),
-            ]);
-        }
+    //     if (is_null($user)) {
+    //         $user = User::create([
+    //             'name' => $row['creator name'],
+    //             'email' => $row['creator email'],
+    //             'password' => uniqid(),
+    //             'deactivated_at' => Carbon::now(),
+    //         ]);
+    //     }
 
-        $user->update(['gci_uuid' => $row['creator uuid']]);
+    //     $user->update(['gci_uuid' => $row['creator uuid']]);
 
-        if (is_null($curation->curator_id)) {
-            $curation->curator_id = $user->id;
-        }
-    }
+    //     if (is_null($curation->curator_id)) {
+    //         $curation->curator_id = $user->id;
+    //     }
+    // }
 
     private function setAffiliation($curation, $row)
     {

@@ -27,7 +27,7 @@ class StoreMailInDatabase
      */
     public function handle(MessageSent $event)
     {
-        $email = Email::create([
+        Email::create([
             'from' => $event->message->getFrom(),
             'sender' => $event->message->getSender(),
             'reply_to' => $event->message->getReplyTo(),

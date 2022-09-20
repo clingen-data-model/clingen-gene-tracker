@@ -83,7 +83,7 @@ class CustomDownloadImporter
                 'date_name_changed' => $this->getValueOrNull($record->date_name_changed),
             ];
 
-            $newGene = Gene::updateOrCreate(['hgnc_id' => $record->hgnc_id], $newAttributes);
+            Gene::updateOrCreate(['hgnc_id' => $record->hgnc_id], $newAttributes);
         });
         yield 'done';
     }

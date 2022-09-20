@@ -90,6 +90,7 @@ class RegisterController extends Controller
 
     private function return403()
     {
+        $data = [];
         $data['title'] = '403';
         $data['name'] = 'Registration is closed';
     

@@ -34,10 +34,11 @@ class ModelSearchService
                     
         if (!is_null($this->defaultSelect)) {
             $query->select($this->defaultSelect);
-        } else {
-            $dummy = new $this->modelClass();
-            $query->select($dummy->getTable().'.*');
+        // } else {
+        //     $dummy = new $this->modelClass();
+        //     $query->select($dummy->getTable().'.*');
         }
+        
         if (isset($params['sort'])) {
             $query = $this->sortQuery($query, $params['sort']);
         }
@@ -71,9 +72,9 @@ class ModelSearchService
         foreach ($where as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
+                continue;
             }
+            $query->where($key, $value);
         }
 
         return $query;

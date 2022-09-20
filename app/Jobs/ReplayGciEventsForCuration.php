@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Curation;
 use App\Gci\GciMessage;
 use Illuminate\Bus\Queueable;
@@ -38,7 +39,7 @@ class ReplayGciEventsForCuration implements ShouldQueue
     public function handle()
     {
         if (!$this->curation->gdm_uuid) {
-            throw new \Exception('Curation '.$this->curation->id.' is not linked to a GDM.');
+            throw new Exception('Curation '.$this->curation->id.' is not linked to a GDM.');
             return 1;
         }
 

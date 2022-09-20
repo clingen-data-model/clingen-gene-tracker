@@ -16,23 +16,17 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
 {
     use Queueable;
 
-    private $curation;
-    private $phenotype;
-    private $oldName;
-    private $oldMimNumber;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation, EloquentCollection $phenotypes, string $oldName, int $oldMimNumber)
+    public function __construct(
+        private Curation $curation, 
+        private EloquentCollection $phenotypes, 
+        private string $oldName, 
+        private int $oldMimNumber)
     {
-        //
-        $this->curation = $curation;
-        $this->oldName = $oldName;
-        $this->phenotypes = $phenotypes;
-        $this->oldMimNumber = $oldMimNumber;
     }
 
     /**

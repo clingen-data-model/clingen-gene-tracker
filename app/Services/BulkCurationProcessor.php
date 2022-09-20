@@ -183,7 +183,6 @@ class BulkCurationProcessor
     private function handleSheet($sheet, $expertPanelId)
     {
         $newCurations = collect();
-        $header = [];
 
         $this->applyToSheet($sheet, function ($idx, $data) use ($newCurations, $expertPanelId) {
             try {
@@ -206,6 +205,9 @@ class BulkCurationProcessor
         return array_combine($header, $values);
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedPrivateMethod) // used as callback in this class
+     */
     private function emptyStringToNull($item)
     {
         return $item == '' ? null : $item;
@@ -419,7 +421,7 @@ class BulkCurationProcessor
                 continue;
             }
 
-            $result = $callable($idx, $data);
+            $callable($idx, $data);
         }
 
         return $sheet;

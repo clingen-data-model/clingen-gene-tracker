@@ -62,7 +62,6 @@ class Affiliation extends Model
 
     public function getDescriptiveShortNameAttribute()
     {
-        $name = (empty($this->short_name)) ? $this->name : $this->short_name;
         return $this->short_name.' ('.$this->type->name.')';
     }
 }

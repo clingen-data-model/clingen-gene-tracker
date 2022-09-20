@@ -60,20 +60,6 @@ class AddStatus implements ShouldQueue
         });
     }
 
-    private function isAfterPreviousStatus()
-    {
-        if (!$this->previousStatus) {
-            return true;
-        }
-
-        $status = $this->curation->statuses->keyBy('id')->get($this->previousStatus->id);
-        if (!$status) {
-            return true;
-        }
-
-        return $this->date->gte($status->pivot->status_date);
-    }
-
     private function isCurrentStatus()
     {
         return $this->curation->currentStatus && $this->curation->currentStatus->id == $this->curationStatus->id;

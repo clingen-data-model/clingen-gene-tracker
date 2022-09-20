@@ -43,8 +43,6 @@ class MakeGtGciSyncMessage
         }
         
         if (!$this->precurationCompleted($event->curation)) {
-            $currentStatusName = ($event->curation->currentStatus) ? $event->curation->currentStatus->name : 'null';
-            // \Log::debug('  status not precuration-complete; has status '.$currentStatusName);
             return;
         }
         \Log::info(' has precuration-complete status');
