@@ -35,8 +35,13 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        // Order matters here b/c of route locations.
+        // external API routes (/api/v1) must preceed API routes (/api/*)
+        // for auth to look at the correct guard.
+        $this->mapExternalApiRoutes();
+        
         $this->mapApiRoutes();
-
+        
         $this->mapWebRoutes();
     }
 
@@ -67,5 +72,13 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapExternalApiRoutes()
+    {
+        Route::prefix('/api/v1')
+            ->middleware('api')
+            // ->namespace($this->namespace)
+            ->group(base_path('routes/api_external.php'));
     }
 }

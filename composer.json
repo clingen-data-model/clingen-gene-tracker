@@ -20,6 +20,7 @@
         "laravel/helpers": "^1.2",
         "laravel/legacy-factories": "^1.1",
         "laravel/passport": "^10.0",
+        "laravel/sanctum": "^2.0",
         "laravel/slack-notification-channel": "^2.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
@@ -27,7 +28,8 @@
         "predis/predis": "^1.1",
         "rap2hpoutre/laravel-log-viewer": "^1.7",
         "spatie/laravel-permission": "^4.0",
-        "venturecraft/revisionable": "^1.38"
+        "venturecraft/revisionable": "^1.38",
+        "zircote/swagger-php": "^4.4"
     },
     "require-dev": {
         "backpack/generators": "^3.0",

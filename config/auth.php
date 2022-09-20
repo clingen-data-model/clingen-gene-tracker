@@ -45,6 +45,10 @@ return [
             'driver' => 'passport',
             'provider' => 'activated-users',
         ],
+        'api-external' => [
+            'driver' => 'sanctum',
+            'provider' => 'api-clients'
+        ]
     ],
 
     /*
@@ -72,12 +76,11 @@ return [
         'activated-users' => [
             'driver' => 'activated-eloquent',
             'model' => App\User::class
+        ],
+        'api-clients' => [
+            'driver' => 'eloquent',
+            'model' => App\ApiClient::class
         ]
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*

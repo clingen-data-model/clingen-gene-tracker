@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Auth\LoginController;
 
 /*
@@ -35,6 +36,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::redirect('logs', 'admin/logs');
 
+    /**
+     * Route so GCI can easily link to pre-curation detail by GDM UUID
+     */
+    Route::get('gdm/{gdmUuid}', CurationByGdmController::class);
+
     Route::impersonate();
 });
 
@@ -43,3 +49,7 @@ Auth::routes();
 Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 
 Route::get('/admin/login', 'Auth\LoginController@showLoginForm');
+
+Route::middleware(['auth:api-external'])->get('api-v1-docs', function () {
+    return View::make('swagger');
+});
