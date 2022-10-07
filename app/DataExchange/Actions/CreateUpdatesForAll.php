@@ -34,11 +34,13 @@ class CreateUpdatesForAll
         }
 
         if ($command->option('showQuery')) {
+            $command->info(renderQuery($curationQuery));
             return;
         }
 
         if ($command->option('onlyCount')) {
             $command->info('Result Count: '.$curationQuery->count());
+            $command->info('Results from query: '.renderQuery($curationQuery));
             return;
         }
 
