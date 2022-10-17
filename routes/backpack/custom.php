@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ApiClientCrudController;
+
 // --------------------------
 // Custom Backpack Routes
 // --------------------------
@@ -35,6 +37,8 @@ Route::group([
         Route::crud('notification', 'NotificationCrudController');
         Route::crud('upload-category', 'UploadCategoryCrudController');
         Route::crud('moi', 'MoiCrudController');
+        Route::crud('api-client', 'ApiClientCrudController');
+        Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
     // Route::group([
 //     'prefix'     => config('backpack.base.route_prefix', 'admin'),
 //     'middleware' => ['web', 'auth'],

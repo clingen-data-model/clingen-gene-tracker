@@ -92,7 +92,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
          ]);
 
         // ------ CRUD ACCESS
-        $this->crud->denyAccess(['list','create','update','deactivate','delete']);
+        $this->crud->denyAccess(['list','create','update','delete']);
         if ($this->user->hasPermissionTo('list expert-panels')) {
             $this->crud->allowAccess(['list']);
         }

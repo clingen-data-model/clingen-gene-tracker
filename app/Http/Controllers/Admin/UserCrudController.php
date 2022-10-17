@@ -138,10 +138,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
                 'deactivated_at' => Carbon::now(),
             ]);
 
-            return Redirect::back()->with(['msg', 'User '.$user->name.' deactivated successfully']);
+            \Alert::add('success', 'User '.$user->name.' deactivated successfully')->flash();
+            return Redirect::back();
         }
 
-        return Redirect::back()->withErrors(['msg', 'Logged in user does not hae access to do deactivate users']);
+        \Alert::add('error', 'Logged in user does not hae access to do deactivate users')->flash();
+        return Redirect::back();
     }
 
     public function reactivate(Request $request)
@@ -152,10 +154,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
                 'deactivated_at' => null,
             ]);
 
-            return Redirect::back()->with(['msg', 'User '.$user->name.' reactivated successfully']);
+            \Alert::add('success', 'User '.$user->name.' reactivated successfully')->flash();
+            return Redirect::back();
         }
 
-        return Redirect::back()->withErrors(['msg', 'Logged in user does not hae access to do deactivate users']);
+        \Alert::add('error', 'Logged in user does not hae access to do reactivate users')->flash();
+        return Redirect::back();
     }
 
     private function processExpertPanels(Request $request)

@@ -94,7 +94,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setRequiredFields(UpdateRequest::class, 'edit');
 
         // ------ CRUD ACCESS
-        $this->crud->denyAccess(['list','create','update','deactivate','delete']);
+        $this->crud->denyAccess(['list','create','update','delete']);
         if (Auth::user()->hasPermissionTo('list mois')) {
             $this->crud->allowAccess(['list']);
         }

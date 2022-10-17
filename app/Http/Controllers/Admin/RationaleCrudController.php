@@ -27,7 +27,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/rationale');
         $this->crud->setEntityNameStrings('rationale', 'rationales');
 
-        $this->crud->denyAccess(['list','create','update','deactivate','delete']);
+        $this->crud->denyAccess(['list','create','update','delete']);
         if (\Auth::user()->hasPermissionTo('list users')) {
             $this->crud->allowAccess(['list']);
         }
@@ -36,9 +36,6 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         }
         if (\Auth::user()->hasPermissionTo('update users')) {
             $this->crud->allowAccess(['update']);
-        }
-        if (\Auth::user()->hasPermissionTo('deactivate users')) {
-            $this->crud->allowAccess(['deactivate']);
         }
         if (\Auth::user()->hasPermissionTo('delete users')) {
             $this->crud->allowAccess(['delete']);

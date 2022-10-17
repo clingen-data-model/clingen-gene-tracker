@@ -65,6 +65,14 @@
     </li>
 @endif
 
+@if(Auth::user()->hasAnyRole(['programmer', 'admin'])) 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url(config('backpack.base.route_prefix').'/api-client') }}">
+            <i class="nav-icon la la-file-o"></i> <span>API Clients</span>
+        </a>
+    </li>
+@endif
+
 {{-- @if(Auth::user()->hasPermissionTo('view email')) --}}
     <li class="nav-item">
         <hr>
