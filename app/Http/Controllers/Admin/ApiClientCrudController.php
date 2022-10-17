@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\ApiClientCreate;
 use App\ApiClient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,12 +23,18 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 class ApiClientCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
+        store as baseCreateStore;
+    }
+
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 
-    public function __construct(private ApiClientCreateToken $createToken)
+    public function __construct(
+        private ApiClientCreateToken $createToken, 
+        private ApiClientCreate $createClient
+    )
     {
         parent::__construct();
     }
@@ -43,6 +50,29 @@ class ApiClientCrudController extends CrudController
         CRUD::setModel(ApiClient::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/api-client');
         CRUD::setEntityNameStrings('api client', 'api clients');
+    }
+
+    public function store () {
+        $this->crud->hasAccessOrFail('create');
+
+        // execute the FormRequest authorization and validation, if one is required
+        $request = $this->crud->validateRequest();
+
+        // insert item in the db
+        $data = $this->crud->getStrippedSaveRequest();
+        $client = $this->createClient->handle(
+            name: $data['name'],
+            email: $data['contact_email']
+        );
+        $this->data['entry'] = $this->crud->entry = $client;
+
+        // show a success message
+        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+
+        // save the redirect choice for next time
+        $this->crud->setSaveAction();
+
+        return $this->crud->performSaveAction($client->getKey());
     }
 
     public function createToken(Request $request)

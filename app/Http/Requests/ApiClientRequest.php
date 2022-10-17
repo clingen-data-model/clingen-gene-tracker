@@ -32,6 +32,7 @@ class ApiClientRequest extends FormRequest
         
         return [
             'name' => ['required', Rule::unique('api_clients', 'name')->ignore($apiClient)],
+            'contact_email' => ['required', 'email']
         ];
     }
 }
