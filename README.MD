@@ -55,11 +55,33 @@ Digestible notifications are stored to the database when they are "sent".  Once 
 ### External API
 An external API has been added to allow third parties to request data from the GT.  This was created to facilitate the GCI's integration with the GT.
 
-Clients of the external must have an entry in the api_clients table and have been granted a personal access token.
+Clients of the external api must have an entry in the api_clients table and have been granted a personal access token.
 
-Clients can be created by running `php artisan api-client:create <client-name> <client-email>` command.  This will print the new client id.
+Clients can be created in one of two ways:
+1. by running `php artisan api-client:create <client-name> <client-email>` command.  This will print the new client id.
+2. Using the [admin UI](https://gene-tracker.clinicalgenome.org/admin/api-client)
 
-Tokens can be created for the client by running `php artisan api-client:create-token <client-id> <token-name>`.  Tokens will only be displayed immediately after creation.  The token should be copied and securely conveyed to the client.  There is not limit to the number of tokens a an api-client can have.
+Tokens can be created for the client by 
+1. running `php artisan api-client:create-token <client-id> <token-name>`.  
+2. clicking the 'Create access token' link for the api-client in the [admin UI](https://gene-tracker.clinicalgenome.org/admin/api-client).
+
+Tokens will only be displayed immediately after creation.  The token should be copied and securely conveyed to the client.  There is not limit to the number of tokens a an api-client can have.
+
+api-clients must include their access token in the header of requests:
+
+```
+curl -i -H "Authorization: Bearer $TOKEN" -H "Accept: application/json" https://gene-tracker.clinicalgenome.org/api/v1/pre-curations/10
+```
+
+Currently only two endpoints are supported:
+* GET - `pre-curations` - Returns a paginated list of pre-curation summaries.
+* GET - `pre-curations/[pre-curation-id]` - Returns a complete pre-curation record where `[pre-curation-id]`is id either:
+    * The numeric id of the GT pre-curation record
+    * The uuid of the GT pre-curation record
+    * The gci gdm-uuid of the curation associated to the pre-curation
+
+Full OpenApi documentation for the external API can be found at the api root: https://gene-tracker.clinicalgenome.org/api/v1/.  Note that authentication is required to access the API documentation.
+
 
 ### Data integrations
 #### OMIMs
