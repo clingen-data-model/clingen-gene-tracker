@@ -121,15 +121,7 @@ class PrecurationResourceController extends Controller
      */
     public function show($curationId)
     {
-        $curation = Curation::find($curationId);
-
-        if (!$curation) {
-            $curation = Curation::findByUuid($curationId);
-        }
-
-        if (!$curation) {
-            $curation == Curation::findByGdmUuid($curationId);
-        }
+        $curation = Curation::findByAnyId($curationId);
 
         if (!$curation) {
             return response('Curation not found', 404);

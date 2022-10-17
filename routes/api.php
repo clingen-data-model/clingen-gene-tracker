@@ -16,8 +16,8 @@ Route::group([
     'namespace' => 'Api',
 ], function () {
     Route::get('/features', 'FeaturesController@index');
-    // Resources
     Route::resource('/expert-panels', 'ExpertPanelController');
+    // Resources
 
     Route::post('/curations/{id}/owner', 'CurationTransferController@store');
     Route::resource('/curations/{id}/classifications', 'CurationClassificationController')

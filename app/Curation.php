@@ -372,14 +372,34 @@ class Curation extends Model implements Notable
     /**
      * DOMAIN METHODS.
      */
+    
     public static function findByUuid($uuid)
     {
-        return static::where('uuid', $uuid)->orWhere('gdm_uuid', $uuid)->first();
+        return static::where('uuid', $uuid)->first();
     }
 
     public static function findByGdmUuid($uuid)
     {
         return static::where('gdm_uuid', $uuid)->first();
+    }
+
+    public static function findByAnyId($curationId): ?self
+    {
+        $curation = null;
+        
+        if (is_numeric($curationId)) {
+            $curation = Curation::find($curationId);
+        }
+
+        if (!$curation) {
+            $curation = Curation::findByUuid($curationId);
+        }
+
+        if (!$curation) {
+            $curation = Curation::findByGdmUuid($curationId);
+        }
+
+        return $curation;
     }
 
     public static function findByHgncAndMondo($hgncId, $mondoId)

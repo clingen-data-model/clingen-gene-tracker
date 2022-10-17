@@ -82,7 +82,12 @@ class CurationController extends Controller
      */
     public function show($id)
     {
-        $curation = Curation::findOrFail($id);
+        $curation = Curation::findByAnyId($id);
+        
+        if (!$curation) {
+            return response('Curation not found', 404);
+        }
+
         $this->loadRelations($curation);
         $curation->rationals = $curation->rationales->transform(function ($item) {
             unset($item->pivot);
