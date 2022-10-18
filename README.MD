@@ -39,7 +39,7 @@ Users can be assigned to expert panels and granted access on their edit screen i
 ### Clingen DataExchange Integration
 The ClinGen Data Exchange (DX) is a [Kafka](https://kafka.apache.org/) message broker run by the Broad Grant, hosted on https://conflluent.io.
 
-The GT integrates with the DX to publish messages about pre-curation records on the `precuration-events` topic. 
+The GT integrates with the DX to publish messages about pre-curation records on the `gt-precuration-events` topic. See the [examples](public/data-exchange/gt-precuration-events-example.json) and a [json schema](public/data-exchange/gt-precuration-events-schema.json) details about `gt-precuration-events`
 
 The GT consumes data from the following topics:
 * `gene-validity-events` - Messages GCI gene curations are used to link GT pre-curations to GCI gene curations and keep the two synchronized.
