@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\ApiClientDeleteToken;
 use App\Http\Controllers\Admin\ApiClientCrudController;
 
 // --------------------------
@@ -15,11 +16,6 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes`
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
-    // Route::get('dashboard', '\Backpack\Base\app\Http\Controllers\AdminController@dashboard')
-    //     ->name('backpack.dashboard');
-    // Route::get('/', '\Backpack\Base\app\Http\Controllers\AdminController@redirect')
-    //     ->name('backpack');
-
     Route::get('/user/{id}/deactivate', 'UserCrudController@deactivate')
         ->name('user-deactivate');
 
@@ -39,13 +35,11 @@ Route::group([
         Route::crud('moi', 'MoiCrudController');
         Route::crud('api-client', 'ApiClientCrudController');
         Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
-    // Route::group([
-//     'prefix'     => config('backpack.base.route_prefix', 'admin'),
-//     'middleware' => ['web', 'auth'],
-//     // 'middleware' => array_merge(
-//     //     (array) config('backpack.base.web_middleware', 'web'),
-//     //     (array) config('backpack.base.middleware_key', 'admin')
-//     // ),
-//     'namespace'  => 'App\Http\Controllers\Admin',
-// ], function () { // custom admin routes
 }); // this should be the absolute last line of this file
+
+Route::group([
+    'prefix' => config('backpack.base.route_prefix', 'admin'),
+    'middleware' => ['web', 'role:admin|programmer', config('backpack.base.middleware_key')],
+], function () {
+    Route::delete('api-client-tokens/{id}', ApiClientDeleteToken::class);
+});

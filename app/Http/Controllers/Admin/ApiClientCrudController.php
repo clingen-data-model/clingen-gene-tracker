@@ -50,6 +50,9 @@ class ApiClientCrudController extends CrudController
         CRUD::setModel(ApiClient::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/api-client');
         CRUD::setEntityNameStrings('api client', 'api clients');
+
+        $this->crud->setShowView('vendor.backpack.crud.api_client_show');
+        $this->crud->setEditView('vendor.backpack.crud.api_client_edit');
     }
 
     public function store () {
@@ -83,7 +86,7 @@ class ApiClientCrudController extends CrudController
 
             $request->session()->flash('message', 'fuck laravel');
 
-            $redirect = Redirect::route('api-client.index')
+            $redirect = Redirect::back()
                 ->with('newToken', [
                     'client' => $client,
                     'token' => $token->plainTextToken
@@ -94,6 +97,12 @@ class ApiClientCrudController extends CrudController
 
         return Redirect::back()->withErrors(['msg' => 'You don\'t have permission to generate an api client token.']);
     }
+
+    public function deleteToken(Request $request)
+    {
+        //code
+    }
+    
 
     /**
      * Define what happens when the List operation is loaded.
