@@ -11,6 +11,9 @@ class CleanDuplicateCurationClassifications extends Migration
 
     public function __construct()
     {
+        if (!file_exists(storage_path('database/migrated_data/'))) {
+            mkdir(storage_path('database/migrated_data/'));
+        }
         $this->backupPath = storage_path('database/migrated_data/duplicate_curation_classifications.csv');
     }
 
