@@ -3,6 +3,31 @@
 This project attempts to track curations being conducted by 
 curators working for a Gene Clinicians Expert Panel (GCEP).
 
+## Installation
+### Prerequisites
+You must have the following to stand up the application locally
+* Docker
+
+The stand up a local instance of the application
+1. Clone this repository
+2. cd into the directory
+4. `cp .env.example .env`
+5. `docker-compose up -d --build`
+3. `docker-compose exec app composer install`
+6. `docker-compose exec app php artisan key:generate`
+7. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
+
+The development server is available at http://localhost:8080
+
+Database seeding run in the last setup step has created two user/people with the following credentials
+* super.user@example.com; tester
+* super.admin@example.com; tester
+* normal.admin@example.com; tester
+
+To work on the front end client you will need:
+* node
+* npm
+
 ## Terms
 
 * **Gene** - A gene. Usually represented by a [HGNC](https://www.genenames.org/) gene symbol.
