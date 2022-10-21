@@ -130,10 +130,10 @@ A copy of all MonDO terms is updated daily at 2am by a scheduld task that runs `
 Updates to disease nomenclature are stored to the database to be sent with the weekly digest.  Notifications about term obsoletion are sent to coordinators immediately.
 
 ## Frontend Architecture
-The frontend client is built using [Vue 2](https://v2.vuejs.org/) with [vue-router v3](https://v3.router.vuejs.org/) for client side routing, vuex v3](https://v3.vuex.vuejs.org/) as a global store, and the [bootstrap-vue](https://bootstrap-vue.org/) component library.j
+The frontend client is built using [Vue 2](https://v2.vuejs.org/) with [vue-router v3](https://v3.router.vuejs.org/) for client side routing, vuex v3](https://v3.vuex.vuejs.org/) as a global store, and the [bootstrap-vue](https://bootstrap-vue.org/) component library.
 
 ## DevOps
-The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-gpm` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
+The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-genetracker` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
 
 ### Architecture
 At a high level, the project is composed of: 
@@ -155,17 +155,6 @@ The `CMD` for the image runs `.docker/start.sh` which runs the appropriate comma
 ### Topics
 * [Updating SSL Certificates](documentation/ssl-cert-updated.md)
 
-
-## Development Setup
-```
-git clone [git@bitbucket.org](mailto:git@bitbucket.org):shepsweb/clingen.git # need to change this to github!
-cd clingen
-composer install
-yarn install
-cp .env.example .env # and updated your db settings etc. *Don't forget your OMIM_API_KEY*
-php artisan key:generate
-php artisan passport:keys  # generates keys for api auth. see [https://laravel.com/docs/5.6/passport](https://laravel.com/docs/5.6/passport) for details
-```
 
 ## Other Resources
 
