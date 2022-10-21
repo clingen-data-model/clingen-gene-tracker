@@ -17,13 +17,17 @@ The stand up a local instance of the application
 6. `docker-compose exec app php artisan key:generate`
 6. `docker-compose exec app php artisan passport:keys`
 7. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
+8. `docker-compose exec app php artisan migrate --database=testing --seed` to set up the test database
 
 The development server is available at http://localhost:8080
 
 Database seeding run in the last setup step has created two user/people with the following credentials
 * super.user@example.com; tester
-* super.admin@example.com; tester
-* normal.admin@example.com; tester
+* some.admin@example.com; tester
+* james-curatorn@example.com; tester
+* eugenia-kirator@example.com; tester
+* sara-coordinator@example.com; tester
+* viewer@example.com; tester
 
 To work on the front end client you will need:
 * node

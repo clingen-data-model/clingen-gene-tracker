@@ -15,55 +15,27 @@ class UsersTableSeeder extends Seeder
     {
         $epIds = ExpertPanel::all();
         $user = User::updateOrCreate(
-            ['email' => 'sirs@unc.edu'],
+            ['email' => 'super.user@example.com'],
             [
-                'name' => 'Sirs Programmer',
+                'name' => 'Super User',
                 'password' => 'tester',
             ]
         );
         $user->assignRole('programmer');
 
         $user = User::updateOrCreate(
-            ['email' => 'jward3@email.unc.edu'],
+            ['email' => 'some.admin@example.com'],
             [
-                'name' => 'TJ Ward',
-                'password' => 'tester',
-            ]
-        );
-        $user->assignRole('programmer');
-
-        $user = User::updateOrCreate(
-            ['email' => 'maria.tobin@unc.edu'],
-            [
-                'name' => 'Maria Tobin',
-                'password' => 'tester',
-            ]
-        );
-        $user->assignRole('programmer');
-
-        $user = User::updateOrCreate(
-            ['email' => 'goldjen@email.unc.edu'],
-            [
-                'name' => 'Jenny Goldstein',
-                'password' => 'tester',
-            ]
-        );
-        $user->assignRole('admin');
-        $user->expertPanels()->sync([$epIds->first()->id]);
-
-        $user = User::updateOrCreate(
-            ['email' => 'courtney_thaxton@med.unc.edu'],
-            [
-                'name' => 'Courtney Lynn Thaxton',
+                'name' => 'Some Admin',
                 'password' => 'tester',
             ]
         );
         $user->assignRole('admin');
         $user->expertPanels()->sync([$epIds->first()->id, $epIds->get(2)->id]);
 
-        if (!env('production')) {
+        if (!app()->environment('production')) {
             $user = User::updateOrCreate(
-                ['email' => 'james-curatorn@med.unc.edu'],
+                ['email' => 'james-curatorn@example.com'],
                 [
                     'name' => 'James A Curator',
                     'password' => 'tester',
@@ -77,7 +49,7 @@ class UsersTableSeeder extends Seeder
             );
 
             $user = User::updateOrCreate(
-                ['email' => 'eugenia-kirator@med.unc.edu'],
+                ['email' => 'eugenia-kirator@example.com'],
                 [
                     'name' => 'Eugenia Kirator',
                     'password' => 'tester',
@@ -92,7 +64,7 @@ class UsersTableSeeder extends Seeder
                 );
 
             $user = User::updateOrCreate(
-                ['email' => 'sara-coordinator@med.unc.edu'],
+                ['email' => 'sara-coordinator@example.com'],
                 [
                     'name' => 'Sarah Coordinator',
                     'password' => 'tester',

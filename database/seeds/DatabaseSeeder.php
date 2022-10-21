@@ -28,12 +28,18 @@ class DatabaseSeeder extends Seeder
         $this->call(AffiliationTypesTableSeeder::class);
         $this->call(AffiliationsTableSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
+        
         if (\DB::getDatabaseName() == 'testing') {
             $this->call(WorkingGroupsTableSeeder::class);
             $this->call(ExpertPanelsTableSeeder::class);
             $this->call(UsersTableSeeder::class);
             $this->call(TestGeneSeeder::class);
         }
+
+        if (app()->environment('local')) {
+            $this->call(UsersTableSeeder::class);
+        }
+
         $this->call(CurationStatusesTableSeeder::class);
         $this->call(CurationTypesTableSeeder::class);
         $this->call(RationalesTableSeeder::class);
