@@ -17,7 +17,7 @@ The stand up a local instance of the application
 6. `docker-compose exec app php artisan key:generate`
 6. `docker-compose exec app php artisan passport:keys`
 7. Confirm that the `.docker/data` directory exists (it can take a few minutes for the database to be setup).  When it does run `docker-compose exec app php artisan migrate --seed`
-8. `docker-compose exec app php artisan migrate --database=testing --seed` to set up the test database
+8. migrate and seed the test database: `docker-compose exec app php artisan migrate --seed --database=testing`
 
 The development server is available at http://localhost:8080
 
