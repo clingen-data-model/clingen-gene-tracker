@@ -5,7 +5,8 @@
             :class="{'error': errors.mondo_id}"
         >
             <search-select 
-                v-model="updatedCuration.disease" 
+                :value="updatedCuration.disease"
+                @input="updateCurationDisease"
                 :search-function="searchMondo"
                 style="z-index: 2"
                 placeholder="MonDO ID or name"
@@ -54,6 +55,9 @@
                 </div>
             </transition>
         </b-form-group>
+
+        <send-to-gci-button :curation="updatedCuration" @saved="emitUpdated"/>
+
     </div>
 </template>
 <script>
@@ -61,6 +65,7 @@
     import CurationNotification from './ExistingCurationNotification.vue'
     import ValidationError from '../../ValidationError.vue'
     import SearchSelect from '../../forms/SearchSelect.vue'
+    import SendToGciButton from '../SendToGciButton.vue'
 
     export default {
         mixins: [
@@ -69,7 +74,8 @@
         components: {
             ValidationError,
             CurationNotification,
-            SearchSelect
+            SearchSelect,
+            SendToGciButton,
         },
         data: function () {
             return {
@@ -86,13 +92,24 @@
         },
         watch: {
             updatedCuration: function () {
-                this.$emit('input', this.updatedCuration)
+                this.emitUpdated()
             },
             value: function (to, from) {
                 if (this.value != this.updatedCuration) {
                     this.syncValue();
                 }
             }
-        }
+        },
+        methods: {
+            updateCurationDisease: function (value) {
+                console.log(value);
+                this.updatedCuration.disease = value;
+                this.updatedCuration.mondo_id = value ? value.mondo_id : null;
+                this.emitUpdated()
+            },
+            emitUpdated () {
+                this.$emit('input', this.updatedCuration)
+            }
+       }
     }
 </script>
