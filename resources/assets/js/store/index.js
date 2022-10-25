@@ -27,7 +27,8 @@ const state = {
         pubmed: 0,
     },
     features: {
-        transferEnabled: false
+        transferEnabled: false,
+        sendToGciEnabled: false
     }
 }
 

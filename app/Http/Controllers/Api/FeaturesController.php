@@ -9,7 +9,8 @@ class FeaturesController extends Controller
     public function index()
     {
         return [
-            'transferEnabled' => config('app.transfers_enabled')
+            'transferEnabled' => config('app.transfers_enabled'),
+            'sendToGciEnabled' => config('app.send-to-gci-enabled'),
         ];
     }
     

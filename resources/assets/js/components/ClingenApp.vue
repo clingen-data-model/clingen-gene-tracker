@@ -24,7 +24,10 @@
                 this.getAllCurationStatuses();
                 this.getAllRationales();
             }
-            if (!this.$store.state.features.transferEnabled) {
+            if (
+                !this.$store.state.features.transferEnabled
+                || !this.$store.state.features.sendToGciEnabled
+            ) {
                 this.getFeatures();
             }
         }

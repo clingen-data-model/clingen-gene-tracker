@@ -5,9 +5,9 @@
     "/js/modules/CurationEdit~CurationShow.589c408f7dfa13800d4f.js.map": "/js/modules/CurationEdit~CurationShow.589c408f7dfa13800d4f.js.map?id=70eb56fc3ecfbaa7b663",
     "/js/modules/vendors~CurationCreate~CurationEdit.e1f6dbcb0cb7a8cc9e84.js": "/js/modules/vendors~CurationCreate~CurationEdit.e1f6dbcb0cb7a8cc9e84.js?id=4402acd0268c243c2e73",
     "/js/modules/vendors~CurationCreate~CurationEdit.e1f6dbcb0cb7a8cc9e84.js.map": "/js/modules/vendors~CurationCreate~CurationEdit.e1f6dbcb0cb7a8cc9e84.js.map?id=626f7035b095b905041b",
-    "/js/app.js": "/js/app.js?id=e64c406c59d68c588b72",
+    "/js/app.js": "/js/app.js?id=659ad266b41018a537ea",
     "/css/app.css": "/css/app.css?id=936b9f6377f072de9fd4",
-    "/js/app.js.map": "/js/app.js.map?id=41039c5f60054954e488",
+    "/js/app.js.map": "/js/app.js.map?id=f4560b4801fc471059f9",
     "/css/app.css.map": "/css/app.css.map?id=d3e78187d04c941fee9f",
     "/js/modules/BulkLookup.7121f783e75a9de06189.js": "/js/modules/BulkLookup.7121f783e75a9de06189.js?id=21769f97d86938a62104",
     "/js/modules/BulkLookup.7121f783e75a9de06189.js.map": "/js/modules/BulkLookup.7121f783e75a9de06189.js.map?id=ce2ee9462a8ddcbdefe5",
@@ -15,8 +15,8 @@
     "/js/modules/CriteriaOverview.0d2fde0e6cc58953546c.js.map": "/js/modules/CriteriaOverview.0d2fde0e6cc58953546c.js.map?id=a495bab65e622aa90161",
     "/js/modules/CurationCreate.59c3f7e04b3b4ddc5827.js": "/js/modules/CurationCreate.59c3f7e04b3b4ddc5827.js?id=5f39ef03a93201d93d89",
     "/js/modules/CurationCreate.59c3f7e04b3b4ddc5827.js.map": "/js/modules/CurationCreate.59c3f7e04b3b4ddc5827.js.map?id=4e8fb11104609a4e6866",
-    "/js/modules/CurationEdit.7373492811e2bf71afaf.js": "/js/modules/CurationEdit.7373492811e2bf71afaf.js?id=a4232e041dbb845bc189",
-    "/js/modules/CurationEdit.7373492811e2bf71afaf.js.map": "/js/modules/CurationEdit.7373492811e2bf71afaf.js.map?id=eb46fe692e2ede6767f2",
+    "/js/modules/CurationEdit.4c6b586f111d660ab05e.js": "/js/modules/CurationEdit.4c6b586f111d660ab05e.js?id=53f9bf1f86c9b3b45ce5",
+    "/js/modules/CurationEdit.4c6b586f111d660ab05e.js.map": "/js/modules/CurationEdit.4c6b586f111d660ab05e.js.map?id=84c50fc22a6c925d66f3",
     "/js/modules/CurationExportForm.05e4c9c0f6eba2ea8167.js": "/js/modules/CurationExportForm.05e4c9c0f6eba2ea8167.js?id=67b0c9981d670a47e47f",
     "/js/modules/CurationExportForm.05e4c9c0f6eba2ea8167.js.map": "/js/modules/CurationExportForm.05e4c9c0f6eba2ea8167.js.map?id=80f5d7fe07e97868c9ed",
     "/js/modules/CurationList.9ba1252f9a6d04e184d0.js": "/js/modules/CurationList.9ba1252f9a6d04e184d0.js?id=13cd5b1f7f21ee5bb18e",
@@ -34,5 +34,7 @@
     "/js/modules/WorkingGroups.f7911cef3f95235856f8.js": "/js/modules/WorkingGroups.f7911cef3f95235856f8.js?id=26ea6963591896d8bfbb",
     "/js/modules/WorkingGroups.f7911cef3f95235856f8.js.map": "/js/modules/WorkingGroups.f7911cef3f95235856f8.js.map?id=fd78313eaf8f985c4ab5",
     "/js/modules/curations.16a329860c1fe55e296d.js": "/js/modules/curations.16a329860c1fe55e296d.js?id=640949010146e4dcfa77",
-    "/js/modules/curations.16a329860c1fe55e296d.js.map": "/js/modules/curations.16a329860c1fe55e296d.js.map?id=d9a30e66bd77b03db7c7"
+    "/js/modules/curations.16a329860c1fe55e296d.js.map": "/js/modules/curations.16a329860c1fe55e296d.js.map?id=d9a30e66bd77b03db7c7",
+    "/js/modules/vendors~CurationEdit.10a8a80ec1769e7b71c0.js": "/js/modules/vendors~CurationEdit.10a8a80ec1769e7b71c0.js?id=e097934ab304e4f59d3e",
+    "/js/modules/vendors~CurationEdit.10a8a80ec1769e7b71c0.js.map": "/js/modules/vendors~CurationEdit.10a8a80ec1769e7b71c0.js.map?id=6cb1040d9c0e63719485"
 }

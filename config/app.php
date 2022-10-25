@@ -109,4 +109,5 @@ return [
 
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', null),
     'transfers_enabled' => env('TRANSFERS_ENABLED', false),
+    'send-to-gci-enabled' => env('SEND_TO_GCI_ENABLED', false)
 ];

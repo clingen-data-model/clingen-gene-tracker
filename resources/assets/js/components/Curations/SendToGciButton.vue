@@ -83,7 +83,7 @@ export default {
 </script>
 
 <template>
-    <div>
+    <div v-if="$store.state.features.sendToGciEnabled">
         <span id="send-to-gci-button">            
             <button class="btn btn-primary btn-lg" 
                 :disabled="!enabled" 

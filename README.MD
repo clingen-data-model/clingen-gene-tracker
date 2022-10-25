@@ -8,6 +8,7 @@ curators working for a Gene Clinicians Expert Panel (GCEP).
 You must have the following to stand up the application locally
 * Docker
 
+### Backend
 The stand up a local instance of the application
 1. Clone this repository
 2. cd into the directory
@@ -29,9 +30,22 @@ Database seeding run in the last setup step has created two user/people with the
 * sara-coordinator@example.com; tester
 * viewer@example.com; tester
 
+### Frontend
 To work on the front end client you will need:
 * node
 * npm
+
+To build and watch client-side assets for development:
+```
+npm run serve
+
+```
+Not that this does not enable hot module replacement. You must shift+reload to see updates in the browser.
+
+Client builds should be committed to the repository.  To build client-side assets for deployment:
+```
+npm run build
+```
 
 ## Terms
 
@@ -112,6 +126,21 @@ Currently only two endpoints are supported:
 
 Full OpenApi documentation for the external API can be found at the api root: https://gene-tracker.clinicalgenome.org/api/v1/.  Note that authentication is required to access the API documentation.
 
+### Other GCI integration points
+Precurations can be accessed at their detail screen by using any of the followin ids in the URL:
+  * numeric id
+  * gt uuid
+  * gdm uuid
+
+A button as been added to the MonDO tab in the curation edit screen with the label 'Complete PreCuration and Go to GCI'.  Clicking this button will:
+  * Store any changes made to the pre-curation
+  * Set the status to 'Precuration Complete'
+  * Redirect the the user to the GCI with relevant info from the pre-curation to start a new GCI curation record.
+For the button is disabled unless the following requirements are met:
+  * The pre-curation has gene, disease, and moi.
+  * The pre-curation does not have a gdm_uuid associated with it.
+
+NOTE: this feature is currently turned off.  To turn the feature on set the `SEND_TO_GCI_ENABLED` environment variable to `true`.  This can be done in the web-console or via the OpenShift command-line client: `oc set env dc/app SEND_TO_GCI_ENABLED=true`
 
 ### Data integrations
 #### OMIMs
@@ -120,6 +149,10 @@ A copy of all OMIM phenotypes is updated daily at 3am by a scheduled task that r
 Phenotypes are linked to genes in the database.
 
 Updates to OMIM phenotype status or nomenclature will trigger notifications to coordinators if those phenotypes are connected to any pre-curations in the GT
+
+An api key is needed to access the OMIM downloads and API.  Request a key at https://omim.org/api.  The key should be set in as the `OMIM_API_KEY` environment variable.
+
+Note that OMIM revokes access regularly (annually, I think).  You will need to fill out the form linked above and with the same email address and access will be re-granted for the same code.
 
 #### HGNC
 A copy of HGNC data is updated daily at 1am by a scheduled task that runs `App\Hgnc\Artisan\ImportHgncCustomDownload`. 
@@ -131,6 +164,10 @@ Updates to disease nomenclature are stored to the database to be sent with the w
 
 ## Frontend Architecture
 The frontend client is built using [Vue 2](https://v2.vuejs.org/) with [vue-router v3](https://v3.router.vuejs.org/) for client side routing, vuex v3](https://v3.vuex.vuejs.org/) as a global store, and the [bootstrap-vue](https://bootstrap-vue.org/) component library.
+
+Bundling is done with webpack & LaravelMix.
+
+Find js and css in `resources/assets/js` and `resources/assets/css` respectively.
 
 ## DevOps
 The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-genetracker` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
