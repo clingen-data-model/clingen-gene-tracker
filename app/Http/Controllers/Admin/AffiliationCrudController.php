@@ -102,7 +102,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         if ($this->user->hasPermissionTo('update expert-panels')) {
             $this->crud->allowAccess(['update']);
         }
-        if ($this->user->hasPermissionTo('delete expert-panels')) {
+        if ($this->user->hasRole('programmer')) {
             $this->crud->allowAccess(['delete']);
         }
     }

@@ -32,7 +32,7 @@ class AffiliationsUpdate
         collect($affiliationData)
             ->each(function ($aff) {
                 $name = $aff->affiliation_fullname .' Parent';
-                $parent = Affiliation::updateOrCreate(['clingen_id' => $aff->affiliation_id], [
+                $parent = Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $aff->affiliation_id], [
                     'name' => $name,
                     'affiliation_type_id' => 1,
                     'parent_id' => null
