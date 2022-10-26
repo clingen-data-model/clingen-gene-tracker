@@ -66,7 +66,8 @@ class UpdateOmimData extends Command
         $newDateGenerated = null;
         $lastGeneMapDownload = AppState::findByName('last_genemap_download');
         try {
-            $request = $client->get('https://data.omim.org/downloads/6tNWNo1sQ-O1xzRqwiP-KA/genemap2.txt', ['stream' => true]);
+            $url = 'https://data.omim.org/downloads/'.config('app.omim_key').'/genemap2.txt';
+            $request = $client->get($url, ['stream' => true]);
             $this->info('Retrieved file...');
 
             $keys = [];
@@ -78,7 +79,7 @@ class UpdateOmimData extends Command
                     $keys = $this->parseKeys($line);
                     continue;
                 }
-               
+
                 if ($this->lineIsDateGenerated($line)) {
                     $newDateGenerated = $this->getGeneratedDate($line);
                     if (!is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
@@ -135,11 +136,15 @@ class UpdateOmimData extends Command
                                             return $phenotype;
                                         }
                                         
-                                        $phenotype = Phenotype::create([
-                                            'mim_number' => $pheno['mim_number'],
-                                            'name' => trim($pheno['name']),
-                                            'moi' => $pheno['moi']
-                                        ]);
+                                        $phenotype = Phenotype::updateOrCreate(
+                                            [
+                                                'mim_number' => $pheno['mim_number'],
+                                                'name' => trim($pheno['name']),
+                                            ],
+                                            [
+                                                'moi' => $pheno['moi']
+                                            ]
+                                        );
                                         event(new PhenotypeAddedForGene($phenotype, $gene));
 
                                         return $phenotype;
