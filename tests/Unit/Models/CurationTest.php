@@ -429,7 +429,7 @@ class CurationTest extends TestCase
         $curations = factory(Curation::class, 5)->create();
         $curation = factory(Curation::class)->create(['gdm_uuid' => $uuid]);
 
-        $this->assertNotNull(Curation::findByUuid($uuid));
+        $this->assertNotNull(Curation::findByGdmUuid($uuid));
     }
 
     /**
