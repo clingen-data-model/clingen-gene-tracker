@@ -73,6 +73,11 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->data['curation']['id'].'-'.$item->data['phenotype']['id'];
+    }
+
     public static function getUnique(Collection $collection): Collection
     {
         return $collection;

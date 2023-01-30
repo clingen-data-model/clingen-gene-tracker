@@ -66,10 +66,15 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return 'disease-name-changed-'.$item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+    }
+
     public static function getUnique(Collection $items): Collection
     {
         return $items->unique(function ($item) {
-            return 'disease-name-changed-'.$item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+            return static::uniqueStringForItem($item);
         });
     }
 

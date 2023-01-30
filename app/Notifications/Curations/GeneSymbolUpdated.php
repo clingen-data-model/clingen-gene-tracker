@@ -67,10 +67,15 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
+    }
+
     public static function getUnique(Collection $items): Collection
     {
         return $items->unique(function ($item) {
-            return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
+            return static::uniqueStringForItem($item);
         });
     }
 

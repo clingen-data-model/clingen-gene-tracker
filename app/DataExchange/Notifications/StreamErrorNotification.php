@@ -53,6 +53,11 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->id;
+    }
+
     public static function getUnique(Collection $collection):Collection
     {
         return $collection;

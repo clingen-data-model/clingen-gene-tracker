@@ -61,9 +61,16 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->data['curation']['id'].'-'.$item->data['phenotype']['id'];
+    }
+
     public static function getUnique(Collection $collection): Collection
     {
-        return $collection;
+        return $collection->unique(function ($item) {
+            return static::uniqueStringForItem($item);
+        });
     }
 
     public static function filterInvalid(Collection $collection): Collection

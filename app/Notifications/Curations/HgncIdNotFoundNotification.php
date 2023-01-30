@@ -68,6 +68,11 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         ];
     }
 
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
+    }
+
     public static function getUnique(Collection $collection):Collection
     {
         return $collection->unique(function ($item) {

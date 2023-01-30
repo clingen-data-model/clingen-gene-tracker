@@ -75,7 +75,11 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
             'template' => 'email.digest.pheno_name_updated'
         ];
     }
-    
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->id;
+    }
+
     public static function getUnique(Collection $collection):Collection
     {
         return $collection;

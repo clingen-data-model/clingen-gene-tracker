@@ -69,10 +69,15 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
         ];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function uniqueStringForItem($item): string
+    {
+        return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+    }
+
+   public static function getUnique(Collection $collection):Collection
     {
         return $collection->unique(function ($item) {
-            return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
+            return static::uniqueStringForItem($item);
         });
     }
     public static function filterInvalid(Collection $collection):Collection
