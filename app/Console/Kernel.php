@@ -45,6 +45,9 @@ class Kernel extends ConsoleKernel
                 ->weekly()->mondays()->at('5:10');
         }
 
+        $schedule->command('notifications:delete-duplicates')
+            ->dailyAt('4:00');
+
         $schedule->command('send-notifications')
             ->weekly()->mondays()->at('6:00');
 
