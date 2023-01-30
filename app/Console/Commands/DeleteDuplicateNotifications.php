@@ -52,18 +52,10 @@ class DeleteDuplicateNotifications extends Command
         $itc = 0;
         $uniqueRecords = collect();
         while ($uniqueRecords->flatten()->count() < Notification::count()) {
-            // dump([
-            //     '$uniqueRecords->count()' => $uniqueRecords,
-            //     '$total_notifications' => Notification::count(),
-            // ]);
           $itc++;
-          if ($itc > 10) {
-            break;
-          }
           $notifications_processed = 0;
           $this->info('start iteration '.$itc);
           Notification::query()
-            // ->where('type', PhenotypeAddedForCurationNotification::class)
             ->chunk($this->option('chunk-size'), function ($chunk) use ($uniqueRecords, &$notifications_processed, &$deletes) {
                 $progress = $this->output->createProgressBar($this->option('chunk-size'));
                 $chunk->each(function ($notification) use ($uniqueRecords, &$deletes, $progress, &$notifications_processed) {
