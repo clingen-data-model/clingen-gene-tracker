@@ -46,8 +46,10 @@ class SendNotificationDigest extends Command
         $users = User::has('unreadNotifications')
                     ->with('unreadNotifications')
                     ->get();
+
+        $bar = $this->output->createProgressBar($users->count());
         
-        $users->each(function ($user) {
+        $users->each(function ($user) use ($bar) {
             $groupedNotifications =  $user->unreadNotifications
                                         ->groupBy('type')
                                         ->map(function ($group, $class) {
@@ -66,7 +68,9 @@ class SendNotificationDigest extends Command
                 ->update([
                     'read_at' => Carbon::now()
                 ]);
+            $bar->advance();
         });
+        $bar->finish();
         \Log::info('Sent notification digests.');
     }
 }
