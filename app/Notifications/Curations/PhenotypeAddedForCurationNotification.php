@@ -55,8 +55,8 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
     public function toArray($notifiable)
     {
         return [
-            'curation' => $this->curation,
-            'phenotype' => $this->phenotype,
+            'curation' => $this->curation->only('id', 'gene_symbol'),
+            'phenotype' => $this->phenotype->only('id', 'name'),
             'template' => 'email.digest.phenotype_added'
         ];
     }
