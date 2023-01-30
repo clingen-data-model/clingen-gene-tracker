@@ -55,7 +55,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
 
         $this->populateLookups();
 
-        $gciCuration = GciCuration::findByGdmUuid($this->gciMessage->getUuid());
+        $gciCuration = GciCuration::findByUuid($this->gciMessage->getUuid());
         $newData = [
             'mondo_id' => $this->gciMessage->mondoId,
             'moi_id' => $this->mois->get($this->gciMessage->getMoi())->id,
