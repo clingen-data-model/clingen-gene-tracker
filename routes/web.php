@@ -35,6 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
     Route::redirect('logs', 'admin/logs');
+    Route::redirect('curations/{id}', '/#/curations/{id}');
 
     /**
      * Route so GCI can easily link to pre-curation detail by GDM UUID
