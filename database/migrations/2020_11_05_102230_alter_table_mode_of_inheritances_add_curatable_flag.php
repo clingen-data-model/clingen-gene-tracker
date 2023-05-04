@@ -19,16 +19,16 @@ class AlterTableModeOfInheritancesAddCuratableFlag extends Migration
         });
 
         /*
-         * 1 => undetermined
-         * 2 => AD
-         * 3 => AR
-         * 4 => X-linked
-         * 5 => SMD
+         * undetermined
+         * AD
+         * AR
+         * X-linked
+         * SMD
          */
-        ModeOfInheritance::find([1, 2, 10, 25, 29])
-            ->each(function ($moi) {
-                $moi->update(['curatable' => 1]);
-            });
+        foreach (['HP:0000005', 'HP:0000006', 'HP:0000007', 'HP:0001417', 'HP:0032113']
+            as $hpId) {
+                ModeOfInheritance::findByHpId($hpId)?->update(['curatable' => 1]);
+            }
     }
 
     /**
