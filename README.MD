@@ -10,8 +10,11 @@ You must have the following to stand up the application locally
 
 ### Backend
 The stand up a local instance of the application
-1. Clone this repository
-2. cd into the directory
+1. Set a DOCKER_USER variable in your environment: `export DOCKER_USER=$UID:$GID` (this will run containers
+   as this user rather than root-- avoiding security implications of root, but allowing appropriate
+   permissions to bind mounts). Consider just putting this in your startup .bashrc or .zshrc file.
+2. Clone this repository
+3. cd into the directory
 4. `cp .env.example .env`
 5. `docker-compose up -d --build`
 3. `docker-compose exec app composer install` (to get composer dependencies in the mounted directory.)

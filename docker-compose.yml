@@ -17,7 +17,7 @@ services:
         volumes:
             - .:/srv/app
         env_file: .docker.env
-        user: ${DOCKER_USER}:0
+        user: ${DOCKER_USER}
         environment:
             CONTAINER_ROLE: app
             CONTAINER_ENV: local
