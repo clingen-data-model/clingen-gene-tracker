@@ -33,6 +33,6 @@
     },
     "dependencies": {
         "autotrack": "^2.4.1",
-        "laravel-mix": "^5.0.7"
+        "laravel-mix": "^6.0.49"
     }
 }
