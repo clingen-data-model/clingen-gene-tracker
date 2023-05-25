@@ -22,9 +22,9 @@
         "lodash": "^4.17.21",
         "moment": "^2.29.1",
         "popper.js": "^1.12",
-        "resolve-url-loader": "^3.1.2",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.27.0",
-        "sass-loader": "^8.0.2",
+        "sass-loader": "^13.2.0",
         "vue": "^2.6.12",
         "vue-router": "^3.4.7",
         "vue-template-compiler": "^2.6.12",
@@ -33,6 +33,6 @@
     },
     "dependencies": {
         "autotrack": "^2.4.1",
-        "laravel-mix": "^5.0.7"
+        "laravel-mix": "^6.0.49"
     }
 }
