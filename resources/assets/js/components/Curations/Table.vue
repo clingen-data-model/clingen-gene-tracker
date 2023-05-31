@@ -182,11 +182,9 @@
                         }
                     },
                     {
-                        key: 'created_at',
-                        label: 'created',
+                        key: 'id',
+                        label: 'Precuration ID',
                         sortable: true,
-                        formatter: (value) => this.$options.filters.formatDate(value, 'YYYY-MM-DD')
-
                     },
                     {
                         key: 'actions',
