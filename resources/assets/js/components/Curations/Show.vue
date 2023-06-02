@@ -283,7 +283,7 @@
             // },
             mondoUrl: function () {
                 if (this.curation.mondo_id) {
-                    return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`
+                    return `https://www.ebi.ac.uk/ols4/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`
                 }
             }
 

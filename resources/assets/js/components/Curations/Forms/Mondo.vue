@@ -30,7 +30,7 @@
             <validation-error :messages="errors.mondo_id"></validation-error>
             <gci-linked-message :curation="updatedCuration" attribute-label="MonDO ID">
                 <small class="text-muted">
-                    Alternatively, refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID
+                    Alternatively, refer to <a href="https://www.ebi.ac.uk/ols4/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID
                 </small>
             </gci-linked-message>
             <!-- <small class="text-muted" v-else>

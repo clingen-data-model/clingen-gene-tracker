@@ -43,7 +43,7 @@ class ClientServiceProvider extends ServiceProvider
 
         $this->app->bind(MondoClientContract::class, function () {
             $guzzleClient = new Client([
-                'base_uri' => 'https://www.ebi.ac.uk/ols/api/ontologies/mondo/',
+                'base_uri' => 'https://www.ebi.ac.uk/ols4/api/ontologies/mondo/',
                 'headers' => [
                     'Accept' => 'application/json'
                 ]

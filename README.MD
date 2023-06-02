@@ -199,6 +199,6 @@ The `CMD` for the image runs `.docker/start.sh` which runs the appropriate comma
 ## Other Resources
 
 * <b>[OMIM](https://www.omim.org/)</b> - Online Mendelian Inheritance in Man catalog of genes and genetic disorders
-* <b>[MONDO](https://www.ebi.ac.uk/ols/ontologies/mondo)</b> - Monarch Disease Ontology: ontology of disease ontologies
+* <b>[MONDO](https://www.ebi.ac.uk/ols4/ontologies/mondo)</b> - Monarch Disease Ontology: ontology of disease ontologies
 * <b>[GCI](https://curation.clinicalgenome.org/)</b> - DB and interface for ClinGen Curators to manage classification of curation curations
 
