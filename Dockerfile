@@ -30,7 +30,8 @@ COPY . /srv/app
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
     && chmod a+x /srv/app/.openshift/deploy.sh \
-    && chmod a+x /srv/app/scripts/entrypoint.sh
+    && chmod a+x /srv/app/scripts/entrypoint.sh \
+    && chmod a+x /srv/app/scripts/awaitdb.bash
     # && pecl install xdebug-2.9.5 \
     # && docker-php-ext-enable xdebug \
 

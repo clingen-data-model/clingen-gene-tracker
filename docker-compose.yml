@@ -89,6 +89,7 @@ services:
             - bash
             - -c
             - |-
+                /srv/app/scripts/awaitdb.bash
                 while true
                 do
                   php artisan schedule:run --verbose --no-interaction &
@@ -114,6 +115,7 @@ services:
                 echo "SESSION_DRIVER: $SESSION_DRIVER"
                 echo "CACHE_DRIVER: $CACHE_DRIVER"
                 echo "QUEUE_CONNECTION: $QUEUE_CONNECTION..."
+                /srv/app/scripts/awaitdb.bash
                 php /srv/app/artisan queue:work --verbose --tries=3 --timeout=90
         volumes:
             - .:/srv/app
