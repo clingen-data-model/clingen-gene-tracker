@@ -1,0 +1,106 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-clean-backups
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            run: db-backup
+        spec:
+          containers:
+          - command:
+            - bash
+            - -c
+            - for x in $(find ${BACKUP_PATH} -type f -mtime +7); do rm "$x"; done; echo 'Cleaned backups.'
+            env:
+            - name: BACKUP_PATH
+              value: /backups
+            image: mysql:8.0
+            imagePullPolicy: IfNotPresent
+            name: mysql-backup-cleaner
+            volumeMounts:
+            - mountPath: /backups
+              name: backups-dir
+              subPath: mysql
+          volumes:
+          - name: backups-dir
+            persistentVolumeClaim:
+              claimName: backups
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+  schedule: 0 2 */1 * *
+  successfulJobsHistoryLimit: 3
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-backup
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            run: db-backup
+        spec:
+          containers:
+          - command:
+            - bash
+            - -c
+            - |
+              set -Eeu -o pipefail;
+              date;
+              echo Backing up all
+              mysqldump -u root -h ${MYSQL_HOST:-mysql} --quick \
+                    --comments --dump-date --all-databases --lock-all-tables  \
+                    --column-statistics=0 --flush-privileges --flush-logs \
+                | gzip > "$BACKUP_PATH"/mysql-ALL.$(date +"%Y-%m-%d-%H-%M-%S.sql.gz")
+              date
+              echo "Backing up individual database(s)"
+              for db in $(
+                echo show databases |
+                mysql -u root -B -N |
+                grep -Evw '(information_schema|performance_schema|sys)'
+              )
+              do
+                echo Backing up $db
+                mysqldump -u root -h ${MYSQL_HOST:-mysql} --quick \
+                    --comments --dump-date --lock-all-tables  \
+                    --column-statistics=0 --flush-privileges --flush-logs \
+                    "$db" \
+                  | gzip > "${BACKUP_PATH}"/"$db".$(date +"%Y-%m-%d-%H-%M-%S.sql.gz")
+                date
+              done
+              echo "Success!"
+            env:
+            - name: BACKUP_PATH
+              value: /backups
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_PWD
+              valueFrom:
+                secretKeyRef:
+                  key: database-root-password
+                  name: mysql
+            image: mysql:8.0
+            imagePullPolicy: IfNotPresent
+            name: mysql-backup
+            volumeMounts:
+            - mountPath: /backups
+              name: backups-dir
+              subPath: mysql
+          volumes:
+          - name: backups-dir
+            persistentVolumeClaim:
+              claimName: backups
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+  schedule: 40 */6 * * *
+  successfulJobsHistoryLimit: 4
