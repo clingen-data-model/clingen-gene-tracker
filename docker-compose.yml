@@ -1,77 +1,127 @@
 version: "3"
-services: 
+services:
+    db:
+        container_name: ${DOCKER_NAME:-gt}-db
+        image: mysql:8.0
+        healthcheck:
+            test: MYSQL_PWD=$${MYSQL_PASSWORD} mysqladmin -u $${MYSQL_USER} -h db ping
+            interval: 60s
+            start_period: 120s
+            retries: 5
+        expose:
+            - "3306"
+        volumes:
+            - db:/var/lib/mysql
+            - .docker/mysql/db-init:/docker-entrypoint-initdb.d
+        environment:
+            - MYSQL_DATABASE=${DB_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+            - MYSQL_USER=${DB_USERNAME}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+            - MYSQL_SORT_BUFFER_SIZE=256000000
+        user: ${DOCKER_USER:-501:20}
+
     app:
-        build: .
-        image: ${DOCKER_NAME}-app
-        container_name: ${DOCKER_NAME}-app
-        sysctls:
-            - net.ipv4.ip_unprivileged_port_start=0
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3}
+        container_name: ${DOCKER_NAME:-gt}-app
+        entrypoint:
+            - bash
+            - /srv/app/.docker/entrypoint.sh
         depends_on:
-            - database
+            - db
             - redis
-        ports:
-            - "8080:8080"
+        expose:
+            - "9000"
         links:
-            - database:database
+            - db:db
             - redis:redis
         volumes:
             - .:/srv/app
-        env_file: .docker.env
-        user: ${DOCKER_USER}
         environment:
-            CONTAINER_ROLE: app
-            CONTAINER_ENV: local
+            HOME: /srv/app
+            DB_HOST: ${DOCKER_NAME:-gt}-db
+            REDIS_HOST: ${DOCKER_NAME:-gt}-redis
+            SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8012},127.0.0.1:${APP_PORT:-8012}
+        user: ${DOCKER_USER:-501:20}
 
-    database:
-        container_name: ${DOCKER_NAME}-db
-        image: mysql:5.7
+    nginx:
+        container_name: ${DOCKER_NAME:-gt}-nginx
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3}
+        depends_on:
+            - app
         ports:
-            - "13309:3306"
+            - "${APP_PORT:-8012}:8080"
         volumes:
-            - .docker/mysql/data:/var/lib/mysql
-            - .docker/mysql/db-init:/docker-entrypoint-initdb.d
-        environment:
-            - MYSQL_DATABASE=gene_tracker
-            - MYSQL_ROOT_PASSWORD=password
-            - MYSQL_USER=gene_tracker
-            - MYSQL_PASSWORD=password
+            - .:/srv/app
+        user: ${DOCKER_USER:-501:20}
+        entrypoint:
+            - /usr/sbin/nginx
+            - -g
+            - "daemon off;"
+
     redis:
-        container_name: ${DOCKER_NAME}-redis
-        image: centos/redis-5-centos7
-        ports:
-            - "6379:6379"
+        container_name: ${DOCKER_NAME:-gt}-redis
+        image: redis:alpine3.18
+        expose: 
+            - "6379"
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
+        volumes:
+            - redis:/var/lib/redis/data
+        command:
+            - /bin/sh
+            - -c
+            - redis-server --requirepass "$${REDIS_PASSWORD:?Need to set REDIS_PASSWORD variable}"
 
-    # scheduler:
-    #     image: ${DOCKER_NAME}-app
-    #     container_name: ${DOCKER_NAME}-scheduler
-    #     sysctls: 
-    #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on: 
-    #         - app
-    #     volumes:
-    #         - .:/srv/app
-    #     links:
-    #         - database:database
-    #         - redis:redis
-    #     environment:
-    #         CONTAINER_ROLE: scheduler
-    #         CONTAINER_ENV: local
+    mailpit:
+        image: 'axllent/mailpit:latest'
+        expose:
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+        ports:
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8037}:8025'
 
-    # queue:
-    #     image: ${DOCKER_NAME}-app
-    #     container_name: ${DOCKER_NAME}-queue
-    #     sysctls: 
-    #         - net.ipv4.ip_unprivileged_port_start=0
-    #     depends_on: 
-    #         - app
-    #     volumes:
-    #         - .:/srv/app
-    #     links:
-    #         - database:database
-    #         - redis:redis
-    #     environment:
-    #         CONTAINER_ROLE: queue
-    #         CONTAINER_ENV: local        
-        
+    scheduler:
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3}
+        container_name: ${DOCKER_NAME:-gt}-scheduler
+        depends_on:
+            - app
+        entrypoint:
+            - bash
+            - -c
+            - |-
+                while true
+                do
+                  php artisan schedule:run --verbose --no-interaction &
+                  sleep 60
+                done
+        volumes:
+            - .:/srv/app
+        environment:
+            DB_HOST: ${DOCKER_NAME:-gt}-db
+            REDIS_HOST: ${DOCKER_NAME:-gt}-redis
+        user: ${DOCKER_USER:-501:20}
+
+    queue:
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3}
+        container_name: ${DOCKER_NAME:-gt}-queue
+        depends_on:
+            - app
+        entrypoint:
+            - bash
+            - -c
+            - |-
+                echo "role: queue"
+                echo "SESSION_DRIVER: $SESSION_DRIVER"
+                echo "CACHE_DRIVER: $CACHE_DRIVER"
+                echo "QUEUE_CONNECTION: $QUEUE_CONNECTION..."
+                php /srv/app/artisan queue:work --verbose --tries=3 --timeout=90
+        volumes:
+            - .:/srv/app
+        environment:
+            DB_HOST: ${DOCKER_NAME:-gt}-db
+            REDIS_HOST: ${DOCKER_NAME:-gt}-redis
+        user: ${DOCKER_USER:-501:20}
+
+volumes:
+    db:
+    redis:

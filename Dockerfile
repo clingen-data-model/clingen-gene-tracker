@@ -1,9 +1,9 @@
-FROM jward3/php:8.0-apache
+FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3
 
-LABEL maintainer="TJ Ward" \
+LABEL maintainer="UNC ClinGen Infrastructure Team" \
     io.openshift.tags="gene-tracker:v1" \
     io.k8s.description="An application for tracking gene/disease curation process." \
-    io.openshift.expose-services="8080:http,8443:https" \
+    io.openshift.expose-services="8080:http" \
     io.k8s.display-name="gene-tracker version 1" \
     io.openshift.tags="php,apache"
 
@@ -25,21 +25,17 @@ RUN composer install \
         --no-suggest \
         --prefer-dist
 
-COPY .docker/php/conf.d/* $PHP_INI_DIR/conf.d/
-
-COPY .docker/start.sh /usr/local/bin/start
-
 COPY . /srv/app
 
 RUN chgrp -R 0 /srv/app \
     && chmod -R g+w /srv/app \
-    && chmod g+x /srv/app/.openshift/deploy.sh \
-    && chmod g+x /usr/local/bin/start
+    && chmod a+x /srv/app/.openshift/deploy.sh \
+    && chmod a+x /srv/app/.docker/entrypoint.sh
     # && pecl install xdebug-2.9.5 \
     # && docker-php-ext-enable xdebug \
 
 RUN php artisan storage:link
 
-USER 1001
+USER www-data:0
 
-CMD ["/usr/local/bin/start"]
+CMD ["/bin/bash"]
