@@ -20,3 +20,11 @@ psysh/psysh_history
 python/token.pickle
 tests/files/omim_api/full_genemap2.txt
 yarn-error.log
+
+/.docker/mysql/db-init/*.sql.gz
+
+# things that composer and related tools may drop in $HOME
+/.config
+/.bash_history
+/.local
+/.cache
