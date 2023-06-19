@@ -26,7 +26,7 @@ services:
         container_name: ${DOCKER_NAME:-gt}-app
         entrypoint:
             - bash
-            - /srv/app/.docker/entrypoint.sh
+            - /srv/app/scripts/entrypoint.sh
         depends_on:
             - db
             - redis
