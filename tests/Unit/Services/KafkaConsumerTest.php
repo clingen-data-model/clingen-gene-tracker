@@ -17,7 +17,7 @@ class KafkaConsumerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         if (! class_exists(\RdKafka\KafkaConsumer::class)) {

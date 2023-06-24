@@ -14,7 +14,7 @@ use Tests\TestCase;
  */
 class KafkaProducerTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         if (! class_exists(\RdKafka\Producer::class)) {

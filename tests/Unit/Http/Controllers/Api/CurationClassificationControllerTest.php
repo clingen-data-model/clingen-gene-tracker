@@ -15,7 +15,7 @@ class CurationClassificationControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->actingAs(factory(User::class)->create(), 'api');

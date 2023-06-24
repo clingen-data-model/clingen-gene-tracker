@@ -15,7 +15,7 @@ class CurationTypeControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->u = factory(\App\User::class)->create();

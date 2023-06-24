@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class DeleteCurationTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = factory(\App\User::class)->create();

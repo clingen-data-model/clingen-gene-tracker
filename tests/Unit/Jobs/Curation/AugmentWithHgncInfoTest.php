@@ -20,7 +20,7 @@ class AugmentWithHgncInfoTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->ep = factory(ExpertPanel::class)->create();

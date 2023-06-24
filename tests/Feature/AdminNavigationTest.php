@@ -13,7 +13,7 @@ class AdminNavigationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $seeder = new RolesAndPermissionsSeeder();

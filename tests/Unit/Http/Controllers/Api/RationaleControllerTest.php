@@ -14,7 +14,7 @@ class RationaleControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->rationales = factory(Rationale::class, 3)->create();
