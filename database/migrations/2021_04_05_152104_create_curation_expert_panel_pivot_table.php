@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCurationExpertPanelPivotTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class CreateCurationExpertPanelPivotTable extends Migration
     {
         Schema::dropIfExists('curation_expert_panel');
     }
-}
+};

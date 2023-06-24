@@ -3,7 +3,7 @@
 use App\Services\Utilities\CleanDuplicateCurationStatuses;
 use Illuminate\Database\Migrations\Migration;
 
-class CleanDuplicateCurationCurationStatuses extends Migration
+return new class extends Migration
 {
     protected $cleaner;
 
@@ -31,4 +31,4 @@ class CleanDuplicateCurationCurationStatuses extends Migration
     {
         $this->cleaner->restore();
     }
-}
+};

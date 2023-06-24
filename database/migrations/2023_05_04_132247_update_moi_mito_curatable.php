@@ -3,7 +3,7 @@
 use App\ModeOfInheritance;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateMoiMitoCuratable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -24,4 +24,4 @@ class UpdateMoiMitoCuratable extends Migration
     {
         ModeOfInheritance::findByHPId('HP:0001427')?->update(['curatable' => 0]);
     }
-}
+};

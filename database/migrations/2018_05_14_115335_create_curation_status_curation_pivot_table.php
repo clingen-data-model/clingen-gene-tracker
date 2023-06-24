@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCurationStatusCurationPivotTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -31,4 +31,4 @@ class CreateCurationStatusCurationPivotTable extends Migration
     {
         Schema::drop('curation_status_curation');
     }
-}
+};
