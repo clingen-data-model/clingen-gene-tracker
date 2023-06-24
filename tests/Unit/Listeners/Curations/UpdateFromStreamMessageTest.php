@@ -360,7 +360,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->fireTestEvent($this->gdmTransfered);
 
         $this->assertDatabaseHas('notes', [
-            'subject_type' => 'App\Curation',
+            'subject_type' => \App\Curation::class,
             'subject_id' => $curation->id,
             'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
             'topic' => 'curation transfer (via GCI)',
