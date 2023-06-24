@@ -19,18 +19,18 @@ Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'i
     Route::get('/user/{id}/reactivate', [App\Http\Controllers\Admin\UserCrudController::class, 'reactivate'])
         ->name('user-reactivate');
 
-    Route::crud('user', 'UserCrudController');
-    Route::crud('aff', 'AffiliationCrudController');
-    Route::crud('expert-panel', 'ExpertPanelCrudController');
-    Route::crud('curation-status', 'CurationStatusCrudController');
-    Route::crud('working-group', 'WorkingGroupCrudController');
-    Route::crud('curation-type', 'CurationTypeCrudController');
-    Route::crud('rationale', 'RationaleCrudController');
-    Route::crud('email', 'EmailCrudController');
-    Route::crud('notification', 'NotificationCrudController');
-    Route::crud('upload-category', 'UploadCategoryCrudController');
-    Route::crud('moi', 'MoiCrudController');
-    Route::crud('api-client', 'ApiClientCrudController');
+    Route::crud('user', 'App\Http\Controllers\Admin\UserCrudController');
+    Route::crud('aff', 'App\Http\Controllers\Admin\AffiliationCrudController');
+    Route::crud('expert-panel', 'App\Http\Controllers\Admin\ExpertPanelCrudController');
+    Route::crud('curation-status', 'App\Http\Controllers\Admin\CurationStatusCrudController');
+    Route::crud('working-group', 'App\Http\Controllers\Admin\WorkingGroupCrudController');
+    Route::crud('curation-type', 'App\Http\Controllers\Admin\CurationTypeCrudController');
+    Route::crud('rationale', 'App\Http\Controllers\Admin\RationaleCrudController');
+    Route::crud('email', 'App\Http\Controllers\Admin\EmailCrudController');
+    Route::crud('notification', 'App\Http\Controllers\Admin\NotificationCrudController');
+    Route::crud('upload-category', 'App\Http\Controllers\Admin\UploadCategoryCrudController');
+    Route::crud('moi', 'App\Http\Controllers\Admin\MoiCrudController');
+    Route::crud('api-client', 'App\Http\Controllers\Admin\ApiClientCrudController');
     Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
 }); // this should be the absolute last line of this file
 
