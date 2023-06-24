@@ -52,8 +52,8 @@ class User extends Authenticatable
         'created' => Created::class,
     ];
 
-    protected $dates = [
-        'deactivated_at',
+    protected $casts = [
+        'deactivated_at' => 'datetime',
     ];
 
     public static function boot()
