@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Role;
 
-class AddViewerRole extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -25,4 +25,4 @@ class AddViewerRole extends Migration
     {
         Role::where('name', 'viewer')->get()->each->delete();
     }
-}
+};

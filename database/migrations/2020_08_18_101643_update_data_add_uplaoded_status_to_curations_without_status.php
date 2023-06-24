@@ -5,7 +5,7 @@ use App\CurationStatus;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateDataAddUplaodedStatusToCurationsWithoutStatus extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -30,4 +30,4 @@ class UpdateDataAddUplaodedStatusToCurationsWithoutStatus extends Migration
     public function down()
     {
     }
-}
+};

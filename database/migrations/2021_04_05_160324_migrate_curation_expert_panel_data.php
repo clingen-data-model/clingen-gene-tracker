@@ -4,7 +4,7 @@ use App\Curation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class MigrateCurationExpertPanelData extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -30,4 +30,4 @@ class MigrateCurationExpertPanelData extends Migration
     {
         DB::table('curation_expert_panel')->truncate();
     }
-}
+};

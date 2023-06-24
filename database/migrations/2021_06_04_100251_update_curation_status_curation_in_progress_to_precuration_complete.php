@@ -3,7 +3,7 @@
 use App\CurationStatus;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateCurationStatusCurationInProgressToPrecurationComplete extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -30,4 +30,4 @@ class UpdateCurationStatusCurationInProgressToPrecurationComplete extends Migrat
             $status->update(['name' => 'Curation In Progress']);
         }
     }
-}
+};

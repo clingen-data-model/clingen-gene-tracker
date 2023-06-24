@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CleanDuplicateCurationClassifications extends Migration
+return new class extends Migration
 {
     protected $backupPath;
 
@@ -95,4 +95,4 @@ class CleanDuplicateCurationClassifications extends Migration
         DB::table($this->table)
             ->insert($records);
     }
-}
+};

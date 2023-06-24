@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class AlterIncomingStreamMessagesAddKey extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -105,4 +105,4 @@ class AlterIncomingStreamMessagesAddKey extends Migration
         DB::table('incoming_stream_messages')
             ->insert($records);
     }
-}
+};

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterExpertPanelsTableAddWorkingGroupId extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -31,4 +31,4 @@ class AlterExpertPanelsTableAddWorkingGroupId extends Migration
             $table->dropColumn('working_group_id');
         });
     }
-}
+};
