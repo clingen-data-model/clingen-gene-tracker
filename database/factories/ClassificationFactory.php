@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
 $factory->define(Classification::class, function (Faker $faker) {
-    $sentence = $faker->sentence;
+    $sentence = $faker->sentence();
 
     return [
         'name' => $sentence,

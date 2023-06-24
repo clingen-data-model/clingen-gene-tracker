@@ -9,6 +9,6 @@ $factory->define(App\StreamMessage::class, function (Faker $faker) {
         'topic' => 'test',
         'message' => $faker->sentence(),
         'sent_at' => $success ? Carbon\Carbon::now() : null,
-        'error' => $success ? null : $faker->sentence,
+        'error' => $success ? null : $faker->sentence(),
     ];
 });
