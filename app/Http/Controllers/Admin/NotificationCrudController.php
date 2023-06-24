@@ -27,7 +27,7 @@ class NotificationCrudController extends CrudController
         | CrudPanel Basic Information
         |--------------------------------------------------------------------------
         */
-        $this->crud->setModel('App\Notification');
+        $this->crud->setModel(\App\Notification::class);
         $this->crud->setRoute(config('backpack.base.route_prefix').'/notification');
         $this->crud->setEntityNameStrings('notification', 'notifications');
 

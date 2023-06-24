@@ -24,7 +24,7 @@ class CurationTypeCrudController extends CrudController
         | BASIC CRUD INFORMATION
         |--------------------------------------------------------------------------
         */
-        $this->crud->setModel('App\CurationType');
+        $this->crud->setModel(\App\CurationType::class);
         $this->crud->setRoute(config('backpack.base.route_prefix').'/curation-type');
         $this->crud->setEntityNameStrings('curation type', 'curation types');
 

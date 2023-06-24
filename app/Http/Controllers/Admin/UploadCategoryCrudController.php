@@ -27,7 +27,7 @@ class UploadCategoryCrudController extends CrudController
         | CrudPanel Basic Information
         |--------------------------------------------------------------------------
         */
-        $this->crud->setModel('App\UploadCategory');
+        $this->crud->setModel(\App\UploadCategory::class);
         $this->crud->setRoute(config('backpack.base.route_prefix').'/upload-category');
         $this->crud->setEntityNameStrings('upload category', 'upload categories');
 

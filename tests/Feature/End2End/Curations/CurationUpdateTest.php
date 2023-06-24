@@ -117,7 +117,7 @@ class CurationUpdateTest extends TestCase
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
         $this->assumeGeneSymbolValid();
-        app()->bind('App\Contracts\OmimClient', function ($app) {
+        app()->bind(\App\Contracts\OmimClient::class, function ($app) {
             return new class extends OmimClient
             {
                 public function getEntry($omimId): OmimEntryContract
@@ -229,7 +229,7 @@ class CurationUpdateTest extends TestCase
         $mock->method('geneSymbolIsValid')
             ->willReturn(true);
 
-        app()->instance('App\Contracts\OmimClient', $mock);
+        app()->instance(\App\Contracts\OmimClient::class, $mock);
 
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/'.$curation->id, $data)
@@ -251,7 +251,7 @@ class CurationUpdateTest extends TestCase
             'gene_symbol' => 'PDSS1',
         ]);
 
-        app()->bind('App\Contracts\OmimClient', function ($app) {
+        app()->bind(\App\Contracts\OmimClient::class, function ($app) {
             return new class extends OmimClient
             {
                 public function getGenePhenotypes($geneSymbol)
@@ -260,7 +260,7 @@ class CurationUpdateTest extends TestCase
                 }
             };
         });
-        app()->bind('App\Rules\ValidGeneSymbolRule', function ($app) {
+        app()->bind(\App\Rules\ValidGeneSymbolRule::class, function ($app) {
             return new class extends ValidHgncGeneSymbol
             {
                 public function passes($attribute, $value)
@@ -295,7 +295,7 @@ class CurationUpdateTest extends TestCase
             'gene_symbol' => 'myl2',
         ]);
 
-        app()->bind('App\Contracts\OmimClient', function ($app) {
+        app()->bind(\App\Contracts\OmimClient::class, function ($app) {
             $stub = $this->createMock(OmimClient::class);
             $stub->method('geneSymbolIsValid')
                 ->willReturn(true);
@@ -324,7 +324,7 @@ class CurationUpdateTest extends TestCase
      */
     public function rationales_required_when_gene_has_more_than_1_phenotype()
     {
-        app()->bind('App\Contracts\OmimClient', function ($app) {
+        app()->bind(\App\Contracts\OmimClient::class, function ($app) {
             $stub = $this->createMock(OmimClient::class);
             $stub->method('geneSymbolIsValid')
                 ->willReturn(true);

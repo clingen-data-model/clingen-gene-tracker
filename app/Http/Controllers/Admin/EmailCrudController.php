@@ -28,7 +28,7 @@ class EmailCrudController extends CrudController
         | CrudPanel Basic Information
         |--------------------------------------------------------------------------
         */
-        $this->crud->setModel('App\Email');
+        $this->crud->setModel(\App\Email::class);
         $this->crud->setRoute(config('backpack.base.route_prefix').'/email');
         $this->crud->setEntityNameStrings('email', 'email');
 
