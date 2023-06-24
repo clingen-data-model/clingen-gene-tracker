@@ -71,7 +71,7 @@ class GeneController extends Controller
                     $value = explode(',', $value);
                 }
                 $value = array_filter(array_map(function ($i) {
-                return trim($i);
+                    return trim($i);
                 }, $value), function ($i) {
                     return ! empty($i);
                 });
