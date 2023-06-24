@@ -14,7 +14,7 @@ class ExpertPanelControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->panels = factory(\App\ExpertPanel::class, 10)->create();

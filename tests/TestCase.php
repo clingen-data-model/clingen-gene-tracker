@@ -18,7 +18,7 @@ abstract class TestCase extends BaseTestCase
 
     protected $fakeCurationSavedEvent = true;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $mock = Mockery::mock(MessagePusher::class)->shouldIgnoreMissing();

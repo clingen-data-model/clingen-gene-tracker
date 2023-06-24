@@ -14,7 +14,7 @@ class WorkingGroupTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->workingGroup = factory(\App\WorkingGroup::class)->create();

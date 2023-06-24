@@ -17,7 +17,7 @@ class OmimClientTest extends TestCase
 {
     use GetsOmimClient;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }

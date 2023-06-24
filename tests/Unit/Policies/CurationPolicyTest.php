@@ -13,7 +13,7 @@ class CurationPolicyTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->policy = new CurationPolicy();

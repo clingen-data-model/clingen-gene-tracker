@@ -13,7 +13,7 @@ class UsersControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->users = factory(\App\User::class, 10)->create();
