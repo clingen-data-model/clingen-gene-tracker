@@ -25,5 +25,6 @@ abstract class AbstractMessageHandler implements MessageHandler
         if ($this->nextHandler) {
             return $this->nextHandler->handle($message);
         }
+
     }
 }

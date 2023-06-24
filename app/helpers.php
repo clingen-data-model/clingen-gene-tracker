@@ -43,7 +43,7 @@ if (! function_exists('forEachFileInDirectory')) {
     function forEachFileInDirectory($directory, $callback)
     {
         $contents = array_filter(scandir($directory), function ($item) {
-            return ! in_array($item, ['.', '..']);
+        return ! in_array($item, ['.', '..']);
         });
         foreach ($contents as $filename) {
             yield $callback($filename, $directory);
