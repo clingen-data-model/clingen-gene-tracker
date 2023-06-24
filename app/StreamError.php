@@ -15,9 +15,8 @@ class StreamError extends Model
         'notification_sent_at',
     ];
 
-    public $dates = ['notification_sent_at'];
-
-    public $casts = [
+    protected $casts = [
+        'notification_sent_at' => 'datetime',
         'message_payload' => 'object',
     ];
 

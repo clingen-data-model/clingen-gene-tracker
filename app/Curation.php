@@ -55,11 +55,8 @@ class Curation extends Model implements Notable
         'affiliation_id',
     ];
 
-    protected $dates = [
-        'curation_date',
-    ];
-
     protected $casts = [
+        'curation_date' => 'datetime',
         'pmids' => 'array',
     ];
 

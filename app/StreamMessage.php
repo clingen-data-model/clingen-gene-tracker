@@ -13,15 +13,12 @@ class StreamMessage extends Model
         'error',
     ];
 
-    protected $dates = [
-        'sent_at',
-    ];
-
     protected $dispatchesEvents = [
         'created' => Created::class,
     ];
 
     protected $casts = [
+        'sent_at' => 'datetime',
         'message' => 'array',
     ];
 
