@@ -11,10 +11,7 @@
 |
 */
 
-Route::group([
-    'middleware' => ['auth:api'],
-    'namespace' => 'Api',
-], function () {
+Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('/features', 'FeaturesController@index');
     Route::resource('/expert-panels', 'ExpertPanelController');
     // Resources
