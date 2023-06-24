@@ -11,8 +11,8 @@ $factory->define(App\Phenotype::class, function (Faker $faker) {
             'mimNumber' => $faker->unique()->randomNumber(7),
             'status' => 'live',
             'titles' => [
-                'preferredTitle' => $faker->unique()->word,
-                'includedTitles' => $faker->unique()->word,
+                'preferredTitle' => $faker->unique()->word(),
+                'includedTitles' => $faker->unique()->word(),
             ],
         ],
     ];

@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 $factory->define(IncomingStreamMessage::class, function (Faker $faker) {
     return [
         'topic' => 'gene_validity_events',
-        'key' => $faker->uuid,
+        'key' => $faker->uuid(),
         'partition' => 0,
         'offset' => $faker->numberBetween(1000, 10000),
         'timestamp' => time(),
@@ -20,24 +20,24 @@ $factory->define(IncomingStreamMessage::class, function (Faker $faker) {
                 'name' => DB::table('curation_statuses')->select('name', 'id')->get()->random()->name,
                 'date' => $faker->dateTimeBetween('-10 minutes', 'now'),
             ],
-            'report_id' => $faker->uuid,
+            'report_id' => $faker->uuid(),
             'contributors' => [
                 [
-                    'id' => $faker->uuid,
-                    'name' => $faker->name,
-                    'email' => $faker->email,
+                    'id' => $faker->uuid(),
+                    'name' => $faker->name(),
+                    'email' => $faker->email(),
                     'roles' => [
                         'creator',
                     ],
                 ],
             ],
             'performed_by' => [
-                'id' => $faker->uuid,
-                'name' => $faker->name,
-                'email' => $faker->email,
+                'id' => $faker->uuid(),
+                'name' => $faker->name(),
+                'email' => $faker->email(),
                 'on_behalf_of' => [
                     'id' => DB::table('affiliations')->select('clingen_id')->get()->random()->clingen_id,
-                    'name' => $faker->name,
+                    'name' => $faker->name(),
                 ],
             ],
             'gene_validity_evidence_level' => [
