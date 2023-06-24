@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Str;
 
 return [
