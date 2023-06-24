@@ -2,20 +2,19 @@
 
 namespace Tests\Unit\Mondo;
 
-use Tests\TestCase;
 use App\Mondo\OboParser;
+use Tests\TestCase;
 
 /**
  * @group mondo
  */
 class OboParserTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->parser = new OboParser(base_path('tests/files/mondo/mondo_test.obo'));
     }
-    
 
     /**
      * @test
@@ -33,22 +32,22 @@ class OboParserTest extends TestCase
         $testTerm1 = [
             'mondo_id' => 'MONDO:0000001',
             'name' => 'disease or disorder',
-            "is_obsolete" => false,
-            "replaced_by" => null
+            'is_obsolete' => false,
+            'replaced_by' => null,
         ];
 
         $testTerm2 = [
             'mondo_id' => 'MONDO:0600008',
             'name' => 'cytokine release syndrome',
-            "is_obsolete" => false,
-            "replaced_by" => null
+            'is_obsolete' => false,
+            'replaced_by' => null,
         ];
 
         $testTerm3 = [
             'mondo_id' => 'MONDO:0000002',
             'name' => 'obsolete 46,XX sex reversal',
             'is_obsolete' => true,
-            'replaced_by' => 'MONDO:0009299'
+            'replaced_by' => 'MONDO:0009299',
         ];
 
         $term1 = $this->parser->getNextTerm();

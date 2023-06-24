@@ -24,14 +24,14 @@ class BulkLookupRequest extends FormRequest
     public function rules()
     {
         return [
-            'gene_symbol' => 'required'
+            'gene_symbol' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'gene_symbol.required' => 'You must include at least one gene symbol to do a bulk lookup.'
+            'gene_symbol.required' => 'You must include at least one gene symbol to do a bulk lookup.',
         ];
     }
 }

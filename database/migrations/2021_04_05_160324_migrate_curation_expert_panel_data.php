@@ -1,10 +1,8 @@
 <?php
 
 use App\Curation;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 class MigrateCurationExpertPanelData extends Migration
 {
@@ -18,7 +16,7 @@ class MigrateCurationExpertPanelData extends Migration
         $curations = Curation::all();
         $curations->each(function ($curation) {
             $curation->expertPanels()->attach([
-                $curation->expert_panel_id => ['start_date' => $curation->created_at]
+                $curation->expert_panel_id => ['start_date' => $curation->created_at],
             ]);
         });
     }

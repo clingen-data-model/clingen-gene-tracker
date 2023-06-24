@@ -3,15 +3,14 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use Carbon\Carbon;
 use App\CurationStatus;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Jobs\Curations\UpdateCurrentStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class AddStatus implements ShouldQueue
 {
@@ -21,8 +20,11 @@ class AddStatus implements ShouldQueue
     use SerializesModels;
 
     public $curation;
+
     public $curationStatus;
+
     public $date;
+
     private $previousStatus;
 
     /**

@@ -2,12 +2,9 @@
 
 namespace App\Listeners\Curations;
 
-use App\StreamMessage;
-use App\Events\Curation\Deleted;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Jobs\Curations\CreatePrecurationStreamMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use App\Events\Curation\Deleted;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
 
 class MakeCurationDeletedStreamMessage
 {
@@ -24,7 +21,6 @@ class MakeCurationDeletedStreamMessage
     /**
      * Handle the event.
      *
-     * @param  Deleted  $event
      * @return void
      */
     public function handle(Deleted $event)

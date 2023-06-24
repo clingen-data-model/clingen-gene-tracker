@@ -3,7 +3,6 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -20,17 +19,17 @@ class Affiliation extends Model
     use CrudTrait;
 
     protected $revisionCreationsEnabled = true;
-    
+
     protected $fillable = [
         'clingen_id',
         'name',
         'short_name',
         'affiliation_type_id',
-        'parent_id'
+        'parent_id',
     ];
 
     protected $with = [
-        'type'
+        'type',
     ];
 
     public function type()
@@ -47,13 +46,11 @@ class Affiliation extends Model
     {
         return $this->belongsTo(Affiliation::class, 'parent_id');
     }
-    
 
     public static function findByClingenId($clingenId)
     {
         return static::where('clingen_id', $clingenId)->first();
     }
-    
 
     public function getDescriptiveNameAttribute()
     {

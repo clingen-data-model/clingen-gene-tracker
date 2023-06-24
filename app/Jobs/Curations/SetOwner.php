@@ -3,12 +3,10 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Bus\Dispatchable;
 use App\Mail\Curations\TransferNotification;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
+use Carbon\Carbon;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Mail;
 
 class SetOwner
 {
@@ -40,7 +38,7 @@ class SetOwner
         ) {
             \DB::transaction(function () {
                 $originalOwner = $this->curation->expertPanel;
-                
+
                 $this->setEndOfOwnership();
                 $this->addNewOwner();
 
@@ -50,9 +48,7 @@ class SetOwner
                             ->cc($originalOwner->coordinators)
                             ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
                 }
-
             });
-
         }
     }
 
@@ -60,24 +56,23 @@ class SetOwner
     {
         $this->curation->expertPanels()
             ->updateExistingPivot(
-                $this->curation->expert_panel_id, 
-                ['end_date'=>($this->endDate)]
+                $this->curation->expert_panel_id,
+                ['end_date' => ($this->endDate)]
             );
     }
-    
+
     private function addNewOwner()
     {
         $this->curation->expertPanels()
         ->attach([
             $this->expertPanelId => [
-                'start_date'=> $this->startDate,
-                'end_date' => null
-            ]
+                'start_date' => $this->startDate,
+                'end_date' => null,
+            ],
         ]);
-    
+
         if ($this->curation->expert_panel_id != $this->expertPanelId) {
             $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
         }
     }
-    
 }

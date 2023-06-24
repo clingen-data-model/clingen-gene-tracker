@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\Curation\Created;
 use App\Actions\NotifyPhenotypeAdded;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -39,33 +38,33 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\Disease\DiseaseNameChanged::class => [
-            \App\Listeners\Disease\NotifyDiseaseNameChanged::class
+            \App\Listeners\Disease\NotifyDiseaseNameChanged::class,
         ],
         \App\Events\Disease\MondoTermObsoleted::class => [
-            \App\Listeners\Disease\NotifyMondoObsoleted::class
+            \App\Listeners\Disease\NotifyMondoObsoleted::class,
         ],
 
         \App\Events\Genes\GeneSymbolChanged::class => [
             \App\Listeners\Genes\UpdateCurations::class,
-            \App\Listeners\Genes\NotifyGeneSymbolChanged::class
+            \App\Listeners\Genes\NotifyGeneSymbolChanged::class,
         ],
         \App\Events\Phenotypes\OmimRemovedPhenotype::class => [
             \App\Listeners\SendPhenotypeRemovedNotification::class,
-            \App\Listeners\Curations\UnlinkRemovedPhenotype::class
+            \App\Listeners\Curations\UnlinkRemovedPhenotype::class,
         ],
         \App\Events\Phenotypes\OmimMovedPhenotype::class => [
             \App\Listeners\Curations\UpdateLinkedPhenotype::class,
-            \App\Listeners\SendPhenotypeMovedNotification::class
+            \App\Listeners\SendPhenotypeMovedNotification::class,
         ],
         \App\Events\Phenotypes\PhenotypeNameChanged::class => [
-            \App\Listeners\SendPhenotypeNameChangedNotification::class
+            \App\Listeners\SendPhenotypeNameChangedNotification::class,
         ],
         \App\Events\Phenotypes\PhenotypeAddedForGene::class => [
-            NotifyPhenotypeAdded::class
+            NotifyPhenotypeAdded::class,
         ],
         \Illuminate\Mail\Events\MessageSent::class => [
-            \App\Listeners\Mail\StoreMailInDatabase::class
-        ]
+            \App\Listeners\Mail\StoreMailInDatabase::class,
+        ],
     ];
 
     /**

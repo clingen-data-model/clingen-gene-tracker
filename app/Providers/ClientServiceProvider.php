@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Hgnc\HgncClient;
-use App\Clients\OmimClient;
 use App\Clients\MondoClient;
-use App\Hgnc\HgncClientContract as HgncClientContract;
-use App\Contracts\OmimClient as OmimClientContract;
+use App\Clients\OmimClient;
 use App\Contracts\MondoClient as MondoClientContract;
+use App\Contracts\OmimClient as OmimClientContract;
+use App\Hgnc\HgncClient;
+use App\Hgnc\HgncClientContract as HgncClientContract;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,11 +33,12 @@ class ClientServiceProvider extends ServiceProvider
 
         $this->app->bind(HgncClientContract::class, function () {
             $guzzleClient = new Client([
-                'base_uri'=>'http://rest.genenames.org/',
-                'headers'=>[
-                    'Accept' => 'application/json'
-                ]
+                'base_uri' => 'http://rest.genenames.org/',
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
             ]);
+
             return new HgncClient($guzzleClient);
         });
 
@@ -45,9 +46,10 @@ class ClientServiceProvider extends ServiceProvider
             $guzzleClient = new Client([
                 'base_uri' => 'https://www.ebi.ac.uk/ols/api/ontologies/mondo/',
                 'headers' => [
-                    'Accept' => 'application/json'
-                ]
+                    'Accept' => 'application/json',
+                ],
             ]);
+
             return new MondoClient($guzzleClient);
         });
     }

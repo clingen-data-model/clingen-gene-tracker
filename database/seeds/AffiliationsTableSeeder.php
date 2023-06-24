@@ -34,7 +34,7 @@ class AffiliationsTableSeeder extends Seeder
             ]
         );
 
-        if (!empty($data['gcep affiliation id'])) {
+        if (! empty($data['gcep affiliation id'])) {
             Affiliation::updateOrCreate(
                 ['clingen_id' => $data['gcep affiliation id']],
                 [
@@ -46,7 +46,7 @@ class AffiliationsTableSeeder extends Seeder
             );
         }
 
-        if (!empty($data['vcep affiliation id'])) {
+        if (! empty($data['vcep affiliation id'])) {
             Affiliation::firstOrCreate(
                 ['clingen_id' => $data['vcep affiliation id']],
                 [

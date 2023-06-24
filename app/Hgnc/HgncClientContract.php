@@ -2,8 +2,6 @@
 
 namespace App\Hgnc;
 
-use Illuminate\Support\Collection;
-
 interface HgncClientContract
 {
     public function fetch($key, $value): HgncRecord;

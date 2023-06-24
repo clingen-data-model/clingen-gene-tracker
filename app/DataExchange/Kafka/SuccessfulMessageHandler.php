@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
@@ -19,10 +20,10 @@ class SuccessfulMessageHandler extends AbstractMessageHandler
     {
         if ($message->err == RD_KAFKA_RESP_ERR_NO_ERROR) {
             $this->eventDispatcher->dispatch(new Received($message));
+
             return;
         }
 
         return parent::handle($message);
     }
-    
 }

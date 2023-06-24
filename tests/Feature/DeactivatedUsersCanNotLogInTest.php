@@ -3,10 +3,8 @@
 namespace Tests\Feature;
 
 use App\User;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group auth
@@ -23,7 +21,7 @@ class DeactivatedUsersCanNotLogInTest extends TestCase
         $this->call('POST', '/login', ['email' => $user->email, 'password' => 'tester'])
             ->assertRedirect('/home');
     }
- 
+
     /**
      * @test
      */
@@ -37,5 +35,4 @@ class DeactivatedUsersCanNotLogInTest extends TestCase
         $this->call('GET', '/', ['email' => $user->email, 'password' => 'tester'])
             ->assertRedirect('/login');
     }
-    
 }

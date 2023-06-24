@@ -8,10 +8,11 @@ class OboParser
         'id' => 'mondo_id',
         'name' => 'name',
         'is_obsolete' => 'is_obsolete',
-        'replaced_by' => 'replaced_by'
+        'replaced_by' => 'replaced_by',
     ];
 
     protected $oboPath;
+
     protected $handle;
 
     private $versionDate = null;
@@ -23,7 +24,7 @@ class OboParser
 
     public function getVersionDate()
     {
-        if (!$this->versionDate) {
+        if (! $this->versionDate) {
             $this->rewind();
             while (($line = fgets($this->handle)) !== false) {
                 if (substr($line, 0, 13) == 'data-version:') {
@@ -32,6 +33,7 @@ class OboParser
             }
             $this->rewind();
         }
+
         return $this->versionDate;
     }
 
@@ -44,6 +46,7 @@ class OboParser
 
             if ($line == '[Term]') {
                 $inTerm = true;
+
                 continue;
             }
 
@@ -51,7 +54,7 @@ class OboParser
                 if ($line == '') {
                     break;
                 }
-                [$key, $val] = explode(": ", $line);
+                [$key, $val] = explode(': ', $line);
                 if (in_array($key, array_keys(static::ATTRS))) {
                     $term[static::ATTRS[$key]] = $this->evaluate($val);
                 }
@@ -63,6 +66,7 @@ class OboParser
         if (is_null($term['is_obsolete'])) {
             $term['is_obsolete'] = 0;
         }
+
         return $term;
     }
 
@@ -85,6 +89,7 @@ class OboParser
         foreach (static::ATTRS as $attr) {
             $term[$attr] = null;
         }
+
         return $term;
     }
 

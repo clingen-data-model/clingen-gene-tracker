@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Contracts\OmimClient;
 use App\Gene;
 use App\Phenotype;
-use App\Contracts\OmimClient;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class ImportOmimPhenotype
@@ -37,10 +37,10 @@ class ImportOmimPhenotype
             [
                 'name' => $omimEntry->phenotypeName,
                 'status' => $omimEntry->status,
-                'moi' => $omimEntry->moi
+                'moi' => $omimEntry->moi,
             ]
         );
-        
+
         if ($omimEntry->mappedGeneMimNumber) {
             $gene = Gene::findByOmimId($omimEntry->mappedGeneMimNumber);
             if ($gene) {

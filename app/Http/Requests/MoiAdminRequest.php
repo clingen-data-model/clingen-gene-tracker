@@ -24,7 +24,7 @@ class MoiAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            
+
         ];
     }
 }

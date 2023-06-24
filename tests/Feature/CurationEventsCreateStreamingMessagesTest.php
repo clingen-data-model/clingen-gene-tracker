@@ -2,20 +2,17 @@
 
 namespace Tests\Feature;
 
-use Mockery;
 use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\StreamMessage;
 use App\CurationStatus;
-use App\Jobs\Curations\AddStatus;
-use Illuminate\Support\Facades\Bus;
-use  App\DataExchange\Kafka\KafkaProducer;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Contracts\MessagePusher;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\DataExchange\Exceptions\StreamingServiceException;
+use App\Jobs\Curations\AddStatus;
+use App\StreamMessage;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Bus;
+use Mockery;
+use Tests\TestCase;
 
 class CurationEventsCreateStreamingMessagesTest extends TestCase
 {
@@ -37,7 +34,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
                                 ->get();
         $this->assertEquals(1, $matchingMessages->count());
     }
-    
+
     /**
      * @test
      */
@@ -60,10 +57,10 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     public function gt_gci_message_created_when_curation_updated_with_GDM_and_curation_complete_status()
     {
         $curation = factory(Curation::class)->create();
-        $curation->update(['gene_symbol' => 'TP53', 'hgnc_id'=>123, 'moi_id' => 1, 'mondo_id' => 'MONDO:1234566']);
+        $curation->update(['gene_symbol' => 'TP53', 'hgnc_id' => 123, 'moi_id' => 1, 'mondo_id' => 'MONDO:1234566']);
 
         $this->assertDatabaseMissing('stream_messages', [
-            'topic' => config('dx.topics.outgoing.gt-gci-sync')
+            'topic' => config('dx.topics.outgoing.gt-gci-sync'),
         ]);
 
         $job = new AddStatus($curation, CurationStatus::find(config('curations.statuses.precuration-complete')));
@@ -75,7 +72,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
             'message->data->uuid' => $curation->uuid,
         ]);
     }
-     
+
     /**
      * @test
      */
@@ -102,7 +99,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $mock = Mockery::mock(MessagePusher::class);
         $mock->shouldReceive([
             'topic' => $mock,
-            'push' => null
+            'push' => null,
         ]);
         $this->instance(MessagePusher::class, $mock);
 
@@ -120,7 +117,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $this->assertDatabaseHas('stream_messages', [
             'id' => $message->id,
-            'sent_at' => now()->format("Y-m-d H:i:s")
+            'sent_at' => now()->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -130,13 +127,15 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     public function sent_at_should_not_be_updated_when_message_send_fails()
     {
         Carbon::setTestNow('2019-01-01');
-        $this->instance(MessagePusher::class, new class implements MessagePusher {
-            public function topic($topic) {
+        $this->instance(MessagePusher::class, new class implements MessagePusher
+        {
+            public function topic($topic)
+            {
                 throw new StreamingServiceException('bad bad bad');
             }
+
             public function push(string $message, $uuid = null)
             {
-                
             }
         });
 
@@ -144,7 +143,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
 
         $this->assertDatabaseHas('stream_messages', [
             'id' => $message->id,
-            'sent_at' => null
+            'sent_at' => null,
         ]);
     }
 }

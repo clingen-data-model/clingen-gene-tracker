@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
-use App\Phenotype;
-use Tests\TestCase;
 use App\Jobs\Curations\SyncPhenotypes;
+use App\Phenotype;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class SyncPhenotypesTest extends TestCase
 {
@@ -19,7 +19,7 @@ class SyncPhenotypesTest extends TestCase
                         ->transform(function ($item) {
                             return [
                                 'mim_number' => $item->mim_number,
-                                'name' => $item->name
+                                'name' => $item->name,
                             ];
                         });
         $this->curation = factory(\App\Curation::class)->create();
@@ -46,12 +46,12 @@ class SyncPhenotypesTest extends TestCase
         $newMims = collect([
             [
                 'mim_number' => 123456,
-                'name' => 'transsubstantiation'
+                'name' => 'transsubstantiation',
             ],
             [
                 'mim_number' => 768910,
-                'name' => 'tetrisitis'
-            ]
+                'name' => 'tetrisitis',
+            ],
         ]);
         $phs = $this->phs->toBase()->merge($newMims);
         $job = new SyncPhenotypes($this->curation, $phs);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ExpertPanel;
 use App\CurationExporter;
 use Illuminate\Http\Request;
 
@@ -14,8 +13,6 @@ class CurationExportController extends Controller
     {
         $this->exporter = $exporter;
     }
-
-
 
     public function getCsv(Request $request)
     {

@@ -45,7 +45,7 @@ class RunQueueTest extends Command
         $this->info($startMsg);
         // dump((int) $this->options('count'));
         $count = $this->option('count') ?? 1;
-        for ($i = 0; $i < $count; ++$i) {
+        for ($i = 0; $i < $count; $i++) {
             // dump($i);
             TestQueueProcess::dispatch();
         }

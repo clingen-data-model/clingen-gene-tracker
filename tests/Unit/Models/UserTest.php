@@ -49,7 +49,7 @@ class UserTest extends TestCase
     public function user_gets_random_password_on_creating_if_not_set()
     {
         $u = factory(User::class)->create([
-            'password'=> null
+            'password' => null,
         ]);
         $this->assertNotNull($u->password);
     }
@@ -60,7 +60,7 @@ class UserTest extends TestCase
     public function user_creating_with_password_gets_that_password()
     {
         $u = factory(User::class)->create([
-            'password' => 'secret'
+            'password' => 'secret',
         ]);
 
         $this->assertTrue(\Hash::check('secret', $u->password));
@@ -72,7 +72,7 @@ class UserTest extends TestCase
     public function user_password_hashed_on_assignment()
     {
         $u = factory(User::class)->create([
-            'password' => 'test'
+            'password' => 'test',
         ]);
 
         $this->assertNotEquals('test', $u->password);
@@ -90,10 +90,10 @@ class UserTest extends TestCase
         $this->user->expertPanels()->attach($panel->id);
         $this->assertFalse($this->user->fresh()->canEditPanelCurations($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations'=>1]]);
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations' => 1]]);
         $this->assertTrue($this->user->fresh()->canEditPanelCurations($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations'=>0, 'is_coordinator'=>1]]);
+        $this->user->expertPanels()->sync([$panel->id => ['can_edit_curations' => 0, 'is_coordinator' => 1]]);
         $this->assertTrue($this->user->fresh()->canEditPanelCurations($panel));
     }
 
@@ -108,7 +108,7 @@ class UserTest extends TestCase
         $this->user->expertPanels()->attach($panel->id);
         $this->assertFalse($this->user->fresh()->isPanelCoordinator($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['is_coordinator'=>1]]);
+        $this->user->expertPanels()->sync([$panel->id => ['is_coordinator' => 1]]);
         $this->assertTrue($this->user->fresh()->isPanelCoordinator($panel));
     }
 
@@ -123,7 +123,7 @@ class UserTest extends TestCase
         $this->user->expertPanels()->attach($panel->id);
         $this->assertFalse($this->user->fresh()->isPanelCurator($panel));
 
-        $this->user->expertPanels()->sync([$panel->id => ['is_curator'=>1]]);
+        $this->user->expertPanels()->sync([$panel->id => ['is_curator' => 1]]);
         $this->assertTrue($this->user->fresh()->isPanelCurator($panel));
     }
 }

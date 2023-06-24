@@ -3,12 +3,10 @@
 namespace App\Listeners\Genes;
 
 use App\Curation;
-use Illuminate\Support\Facades\Bus;
 use App\Events\Genes\GeneSymbolChanged;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\GeneSymbolUpdated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Bus;
 
 class NotifyGeneSymbolChanged
 {
@@ -25,7 +23,6 @@ class NotifyGeneSymbolChanged
     /**
      * Handle the event.
      *
-     * @param  GeneSymbolChanged  $event
      * @return void
      */
     public function handle(GeneSymbolChanged $event)

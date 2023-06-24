@@ -1,17 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
 
 use App\DataExchange\Contracts\MessageConsumer;
-use  App\DataExchange\Kafka\ErrorMessageHandler;
-use  App\DataExchange\Kafka\NoNewMessageHandler;
-use  App\DataExchange\Kafka\StoreMessageHandler;
-use Illuminate\Contracts\Events\Dispatcher;
-use App\DataExchange\Exceptions\StreamingServiceException;
-use  App\DataExchange\Kafka\NoActionMessageHandler;
-use  App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
+use App\DataExchange\Exceptions\StreamingServiceException;
+use Illuminate\Contracts\Events\Dispatcher;
 
 /**
  * @property array $topics
@@ -19,8 +15,11 @@ use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
 class KafkaConsumer implements MessageConsumer
 {
     protected $kafkaConsumer;
+
     protected $topics = [];
+
     protected $listening = false;
+
     protected $eventDispatcher;
 
     public function __construct(\RdKafka\KafkaConsumer $kafkaConsumer, Dispatcher $eventDispatcher)
@@ -39,23 +38,22 @@ class KafkaConsumer implements MessageConsumer
     /**
      * Add a topic to consume
      *
-     * @param string $topicName Name of topic to add
-     * @return MessageConsumer
+     * @param  string  $topicName Name of topic to add
      */
-    public function addTopic(String $topicName):MessageConsumer
+    public function addTopic(string $topicName): MessageConsumer
     {
         array_push($this->topics, $topicName);
         $this->cleanTopics();
+
         return $this;
     }
 
     /**
      * Remove topic from topic list
      *
-     * @param string $topicName Name of topic to remove from topic list
-     * @return MessageConsumer
+     * @param  string  $topicName Name of topic to remove from topic list
      */
-    public function removeTopic(String $topicName):MessageConsumer
+    public function removeTopic(string $topicName): MessageConsumer
     {
         if (in_array($topicName, $this->topics)) {
             unset($this->topics[array_search($topicName, $this->topics)]);
@@ -78,24 +76,24 @@ class KafkaConsumer implements MessageConsumer
             function ($topic) {
                 return [
                     'name' => $topic->getName(),
-                    'offset' => $topic->getOffset()
+                    'offset' => $topic->getOffset(),
                 ];
             },
             $availableTopics
         );
     }
-    
 
     /**
      * Listens to the specified topic and handles messages with handler chain
      * NOTE: This is a vestigial method that only supports gene_validity_events topic.
      *       This method is deprecated and will be removed in a future release.
+     *
      * @deprecated
      */
     public function listen(): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-    
+
         $handlerChain = $this->getMessageHandlerChain();
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
@@ -115,13 +113,12 @@ class KafkaConsumer implements MessageConsumer
      * Begin listening for messages on topics in topic list.
      * Call the provided callback if provided or use handlerChain for backwards compatibility.
      *
-     * @param Callable|null $callback callable to called on each message.
-     * @return MessageConsumer
+     * @param  callable|null  $callback callable to called on each message.
      */
     public function consume(?callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-        
+
         $handleMessage = $this->getMessageHandler($callback);
 
         while (true) {
@@ -140,10 +137,9 @@ class KafkaConsumer implements MessageConsumer
 
     /**
      * Consume a limited number of messages.
-     * 
-     * @param Int $numberOfMessages - number of messages to consumed.
-     * @param Callable|null $callback callable to called on each message.
-     * @return MessageConsumer
+     *
+     * @param  int  $numberOfMessages - number of messages to consumed.
+     * @param  callable|null  $callback callable to called on each message.
      */
     public function consumeSomeMessages($numberOfMessages, ?callable $callback = null): MessageConsumer
     {
@@ -167,24 +163,21 @@ class KafkaConsumer implements MessageConsumer
             }
         }
 
-
         return $this;
     }
 
-
     /**
-     * Begin listening for messages on topics in topic list.  
+     * Begin listening for messages on topics in topic list.
      * When receive timeout or partition eof message stop consuming.
-     * 
+     *
      * Call the provided callback if provided or use handlerChain for backwards compatibility.
      *
-     * @param Callable|null $callback callable to called on each message with err == 0.
-     * @return MessageConsumer
+     * @param  callable|null  $callback callable to called on each message with err == 0.
      */
     public function consumePresentMessages(?callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
-        
+
         $handleMessage = $this->getMessageHandler($callback);
 
         while (true) {
@@ -205,8 +198,9 @@ class KafkaConsumer implements MessageConsumer
 
     private function getMessageHandler(?callable $callable = null): callable
     {
-        if (!$callable) {
+        if (! $callable) {
             $chain = $this->getMessageHandlerChain();
+
             return function ($message) use ($chain) {
                 $chain->handle($message);
             };
@@ -214,7 +208,6 @@ class KafkaConsumer implements MessageConsumer
 
         return $callable;
     }
-    
 
     private function getMessageHandlerChain()
     {

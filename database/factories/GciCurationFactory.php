@@ -15,6 +15,6 @@ $factory->define(GciCuration::class, function (Faker $faker) {
         'status_id' => DB::table('curation_statuses')->select('id')->get()->random()->id,
         'affiliation_id' => DB::table('affiliations')->select('id')->get()->random()->id,
         'creator_uuid' => $faker->uuid,
-        'creator_email' => $faker->email
+        'creator_email' => $faker->email,
     ];
 });

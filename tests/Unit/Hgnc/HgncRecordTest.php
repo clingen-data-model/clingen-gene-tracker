@@ -17,7 +17,6 @@ class HgncRecordTest extends TestCase
 
         $this->assertEquals(4036, $hgncRecord->hgnc_id);
     }
-    
 
     /**
      * @test

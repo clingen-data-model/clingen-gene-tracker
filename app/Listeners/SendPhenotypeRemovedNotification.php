@@ -2,12 +2,10 @@
 
 namespace App\Listeners;
 
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Events\Phenotypes\OmimRemovedPhenotype;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\PhenotypeOmimEntryRemoved;
+use Illuminate\Support\Facades\Bus;
 
 class SendPhenotypeRemovedNotification
 {
@@ -24,7 +22,6 @@ class SendPhenotypeRemovedNotification
     /**
      * Handle the event.
      *
-     * @param  OmimRemovedPhenotype  $event
      * @return void
      */
     public function handle(OmimRemovedPhenotype $event)

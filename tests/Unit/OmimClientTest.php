@@ -2,14 +2,11 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use GuzzleHttp\Client;
-use App\Clients\OmimClient;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 use App\Clients\Omim\OmimEntry;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use Tests\TestCase;
 use Tests\Traits\GetsOmimClient;
-use GuzzleHttp\Handler\MockHandler;
 
 /**
  * @group omim-client
@@ -34,14 +31,13 @@ class OmimClientTest extends TestCase
         $this->assertInstanceOf(\App\Clients\OmimClient::class, $omimClient);
     }
 
-
     /**
      * @test
      */
     public function can_get_an_entry()
     {
         $entryJson = file_get_contents(base_path('tests/files/omim_api/entry_response.json'));
-        $omim = $this->getOmimClient([ new Response(200, [], $entryJson) ]);
+        $omim = $this->getOmimClient([new Response(200, [], $entryJson)]);
         $entry = $omim->getEntry(100100);
 
         $expectedEntry = new OmimEntry(json_decode($entryJson)->omim->entryList[0]->entry);
@@ -56,12 +52,12 @@ class OmimClientTest extends TestCase
     {
         $json = file_get_contents(base_path('tests/files/omim_api/search_response.json'));
         $omim = $this->getOmimClient([new Response(200, [], $json)]);
-        $results = $omim->search(['search'=>'myl2']);
+        $results = $omim->search(['search' => 'myl2']);
 
         $expectedEntries = collect(json_decode($json)->omim->searchResponse->entryList)->transform(function ($entry) {
             return $entry->entry;
         });
-        ;
+
         $this->assertEquals($expectedEntries, $results);
     }
 
@@ -89,9 +85,9 @@ class OmimClientTest extends TestCase
         $notFoundJson = json_encode([
             'omim' => [
                 'searchResponse' => [
-                    'entryList' => []
-                ]
-            ]
+                    'entryList' => [],
+                ],
+            ],
         ]);
         $omim = $this->getOmimClient([new Response(200, [], $notFoundJson)]);
         $this->assertFalse($omim->geneSymbolIsValid('MLTN1'));
@@ -104,25 +100,25 @@ class OmimClientTest extends TestCase
                             'entry' => [
                                 'mimNumber' => '113705',
                                 'titles' => [
-                                    'preferredTitle' => 'BREAST CANCER 1 GENE; BRCA1'
+                                    'preferredTitle' => 'BREAST CANCER 1 GENE; BRCA1',
                                 ],
-                                'matches' => 'brca1'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'matches' => 'brca1',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
         $omim = $this->getOmimClient([new Response(200, [], $foundJson)]);
         $this->assertTrue($omim->geneSymbolIsValid('BRCA1'));
     }
-    
+
     /**
      * @test
      */
     public function caches_successful_responses_for_20_minutes()
     {
-        $foundJson = (object)['test' => 'beans'];
+        $foundJson = (object) ['test' => 'beans'];
         $omim = $this->getOmimClient([
             new Response(200, [], json_encode($foundJson)),
         ]);

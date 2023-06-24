@@ -14,8 +14,8 @@ use Backpack\CRUD\CrudPanel;
  * @property CrudPanel $crud
  */
 class UploadCategoryCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -44,7 +44,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setRequiredFields(StoreRequest::class, 'create');
         $this->crud->setRequiredFields(UpdateRequest::class, 'edit');
     }
-    
+
     protected function setupCreateOperation()
     {
         $this->crud->setValidation(StoreRequest::class);
@@ -54,5 +54,4 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     {
         $this->crud->setValidation(UpdateRequest::class);
     }
-
 }

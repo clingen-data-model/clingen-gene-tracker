@@ -5,7 +5,6 @@ namespace Tests\Unit\Hgnc;
 use App\Exceptions\HttpNotFoundException;
 use App\Exceptions\HttpUnexpectedResponseException;
 use App\Hgnc\HgncClient;
-use App\Hgnc\HgncRecord;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

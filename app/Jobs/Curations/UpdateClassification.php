@@ -3,7 +3,6 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -40,10 +39,10 @@ class UpdateClassification
         $relatedClassification = $this->curation
                                     ->classifications
                                     ->firstWhere('pivot.id', $this->curationClassificationId);
-        
+
         $relatedClassification->pivot->update([
             'classification_id' => $this->data['classification_id'],
-            'classification_date' => $this->data["classification_date"]
+            'classification_date' => $this->data['classification_date'],
         ]);
     }
 }

@@ -2,21 +2,21 @@
 
 namespace Tests\Unit\Listeners\Curations;
 
-use App\Gene;
-use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Affiliation;
-use App\ExpertPanel;
-use App\StreamError;
-use Ramsey\Uuid\Uuid;
+use App\Curation;
 use App\CurationStatus;
-use App\ModeOfInheritance;
-use App\Jobs\Curations\AddStatus;
 use App\DataExchange\Events\Received;
 use App\Disease;
+use App\ExpertPanel;
+use App\Gene;
+use App\Jobs\Curations\AddStatus;
 use App\Jobs\Curations\SetOwner;
+use App\ModeOfInheritance;
+use App\StreamError;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group gci
@@ -40,7 +40,6 @@ class UpdateFromStreamMessageTest extends TestCase
             'gene_symbol' => 'DICER1',
             'hgnc_id' => 17098,
         ]);
-
     }
 
     /**
@@ -51,14 +50,14 @@ class UpdateFromStreamMessageTest extends TestCase
         $gdmTrio = [
             'hgnc_id' => 17098,
             'mondo_id' => 'MONDO:0011111',
-            'moi_id' => 2
+            'moi_id' => 2,
         ];
-        
+
         $curationOther = factory(Curation::class)
                             ->create(
                                 array_merge(['uuid' => '0c861e10-78a7-4ebc-ac57-853fb16f94c9', 'gene_symbol' => 'FRTS'], $gdmTrio)
                             );
-        
+
         $curationOther2 = factory(Curation::class)
                             ->create(
                                 array_merge(['gene_symbol' => 'FRTY'], $gdmTrio)
@@ -71,17 +70,17 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curations', [
             'id' => $curationOther->id,
-            'gdm_uuid' => null
+            'gdm_uuid' => null,
         ]);
 
         $this->assertDatabaseHas('curations', [
             'id' => $curationOther2->id,
-            'gdm_uuid' => null
+            'gdm_uuid' => null,
         ]);
 
         $this->assertDatabaseHas('curations', [
             'id' => $curationTarget->id,
-            'gdm_uuid' => $gdmTrio['gdm_uuid']
+            'gdm_uuid' => $gdmTrio['gdm_uuid'],
         ]);
     }
 
@@ -177,7 +176,6 @@ class UpdateFromStreamMessageTest extends TestCase
      *
      * Assume a change in mondo id if curation has gdm_uuid
      * and event with gdm_uuid has different mondo than curation.
-     *
      */
     public function updates_mondo_id_on_update_when_matched_by_gdm_uuid()
     {
@@ -185,9 +183,9 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $payload = json_decode(file_get_contents($this->approvedMsgPath));
         $payload->gene_validity_evidence_level->genetic_condition->condition = 'MONDO:8888888';
-        
+
         $curation->update(['gdm_uuid' => $payload->report_id]);
-        
+
         $kafkaMessage = $this->makeMessage(json_encode($payload));
         $event = new Received($kafkaMessage);
 
@@ -198,7 +196,6 @@ class UpdateFromStreamMessageTest extends TestCase
             'mondo_id' => 'MONDO:8888888',
         ]);
     }
-    
 
     /**
      * @test
@@ -316,12 +313,12 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         Carbon::setTestNow('2021-05-04');
 
-        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
-        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
-        
-        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
-        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
-        
+        $affiliation1 = factory(Affiliation::class)->create(['clingen_id' => '40001']);
+        $expertPanel1 = factory(ExpertPanel::class)->create(['affiliation_id' => $affiliation1->id]);
+
+        $affiliation2 = factory(Affiliation::class)->create(['clingen_id' => '40002']);
+        $expertPanel2 = factory(ExpertPanel::class)->create(['affiliation_id' => $affiliation2->id]);
+
         $curation = $this->createDICER1();
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
         Carbon::setTestNow('2022-07-08');
@@ -350,12 +347,12 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         Carbon::setTestNow('2021-05-04');
 
-        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
-        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
-        
-        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
-        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
-        
+        $affiliation1 = factory(Affiliation::class)->create(['clingen_id' => '40001']);
+        $expertPanel1 = factory(ExpertPanel::class)->create(['affiliation_id' => $affiliation1->id]);
+
+        $affiliation2 = factory(Affiliation::class)->create(['clingen_id' => '40002']);
+        $expertPanel2 = factory(ExpertPanel::class)->create(['affiliation_id' => $affiliation2->id]);
+
         $curation = $this->createDICER1();
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
         Carbon::setTestNow('2022-07-08');
@@ -366,10 +363,9 @@ class UpdateFromStreamMessageTest extends TestCase
             'subject_type' => 'App\Curation',
             'subject_id' => $curation->id,
             'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
-            'topic' => 'curation transfer (via GCI)'
+            'topic' => 'curation transfer (via GCI)',
         ]);
     }
-    
 
     /**
      * @test
@@ -384,10 +380,9 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->assertDatabaseHas('curations', [
             'id' => $curation->id,
-            'mondo_id' => $newDisease->mondo_id
+            'mondo_id' => $newDisease->mondo_id,
         ]);
     }
-    
 
     private function fireTestEvent($messagePath)
     {
@@ -398,7 +393,7 @@ class UpdateFromStreamMessageTest extends TestCase
 
         return json_decode($message->payload);
     }
-    
+
     private function createDICER1()
     {
         return factory(Curation::class)->create([
@@ -410,13 +405,17 @@ class UpdateFromStreamMessageTest extends TestCase
 
     private function makeMessage($payload)
     {
-        $kafkaMessage = new class {
+        $kafkaMessage = new class
+        {
             public $payload;
 
-            public function errstr() {
+            public function errstr()
+            {
                 return 'error string!';
             }
-            public function headers () {
+
+            public function headers()
+            {
                 return 'headers!';
             }
         };

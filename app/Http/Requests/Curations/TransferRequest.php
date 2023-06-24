@@ -28,12 +28,11 @@ class TransferRequest extends FormRequest
             'start_date' => 'required|date',
         ];
     }
-    
+
     public function messages()
     {
         return [
-            'required' => 'This field is required.'
+            'required' => 'This field is required.',
         ];
     }
-    
 }

@@ -5,9 +5,6 @@ namespace App\Listeners\Curations;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\Events\Curation\Created;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\StreamMessage;
 
 class MakeCurationCreatedStreamMessage
 {
@@ -26,7 +23,6 @@ class MakeCurationCreatedStreamMessage
     /**
      * Handle the event.
      *
-     * @param  Created  $event
      * @return void
      */
     public function handle(Created $event)

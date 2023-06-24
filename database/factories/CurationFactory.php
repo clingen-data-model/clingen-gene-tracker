@@ -2,8 +2,8 @@
 
 use App\Curation;
 use App\ExpertPanel;
-use Ramsey\Uuid\Uuid;
 use Faker\Generator as Faker;
+use Ramsey\Uuid\Uuid;
 
 $expertPanels = ExpertPanel::all();
 

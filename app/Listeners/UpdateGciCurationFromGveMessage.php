@@ -2,17 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Gci\GciMessage;
-use Illuminate\Support\Facades\Bus;
 use App\DataExchange\Events\Received;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Events\AppDataExchangeEventsReceived;
+use App\Gci\GciMessage;
 use App\Jobs\Gci\UpdateGciCurationFromStreamMessage;
+use Illuminate\Support\Facades\Bus;
 
 class UpdateGciCurationFromGveMessage
 {
-
     /**
      * Create the event listener.
      *

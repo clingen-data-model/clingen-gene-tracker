@@ -2,28 +2,27 @@
 
 namespace App\Services;
 
-use App\User;
-use App\Curation;
-use App\Rationale;
-use App\ExpertPanel;
-use App\CurationType;
-use App\CurationStatus;
 use App\Clients\OmimClient;
+use App\Curation;
+use App\CurationStatus;
+use App\CurationType;
+use App\Events\Curation\Created;
+use App\Exceptions\BulkUploads\InvalidFileException;
+use App\Exceptions\BulkUploads\InvalidRowException;
+use App\Exceptions\DuplicateBulkCurationException;
+use App\ExpertPanel;
+use App\Jobs\Curations\AddStatus;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use App\Jobs\Curations\SyncPhenotypes;
+use App\Rationale;
+use App\Rules\ValidHgncGeneSymbol;
+use App\User;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Events\Curation\Created;
-use App\Jobs\Curations\AddStatus;
-use App\Rules\ValidHgncGeneSymbol;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Event;
-use App\Jobs\Curations\SyncPhenotypes;
-use GuzzleHttp\Exception\ClientException;
-use App\Exceptions\DuplicateBulkCurationException;
-use App\Exceptions\BulkUploads\InvalidRowException;
-use App\Exceptions\BulkUploads\InvalidFileException;
-use App\Jobs\Curations\CreatePrecurationStreamMessage;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class BulkCurationProcessor
 {
@@ -37,10 +36,15 @@ class BulkCurationProcessor
     ];
 
     public $users;
+
     public $curationTypes;
+
     public $rationales;
+
     public $panels;
+
     protected $validationErrors;
+
     protected $omim;
 
     public function __construct()
@@ -68,15 +72,15 @@ class BulkCurationProcessor
         $reader->open($path);
         $newCurations = collect();
 
-        if (!$this->fileIsValid($reader)) {
+        if (! $this->fileIsValid($reader)) {
             throw new InvalidFileException($this->validationErrors);
         }
-        
+
         DB::beginTransaction();
 
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($sheet->getName() === 'Curations') {
-                if (!$this->sheetIsValid($sheet)) {
+                if (! $this->sheetIsValid($sheet)) {
                     DB::rollBack();
                     throw new InvalidFileException($this->validationErrors);
                 }
@@ -151,6 +155,7 @@ class BulkCurationProcessor
             }
         }
         $this->validationErrors->put('file', ['Your spreadsheet does not have a "Curations" sheet.  You\'re probably not using the template linked below.  Please download the template and use that as your starting point.']);
+
         return false;
     }
 
@@ -160,13 +165,13 @@ class BulkCurationProcessor
 
         $fileErrors = [];
 
-        if (!$this->headerIsValid($sheet)) {
+        if (! $this->headerIsValid($sheet)) {
             $fileErrors[] = 'We can\'t proccess your file because the column headings do not match what we expected.  Please use the bulk upload template linked on this page to ensure you upload a correctly formatted file.';
         }
 
         $this->applyToSheet($sheet, function ($idx, $data) use (&$rowCount) {
             $this->rowIsValid($data, $idx);
-            ++$rowCount;
+            $rowCount++;
         });
 
         if ($rowCount > 50) {
@@ -244,7 +249,7 @@ class BulkCurationProcessor
             $this->addStatus($curation, $this->statuses->get($id), $statusName.'_date', $rowData);
         }
 
-        if (!$curation->fresh()->currentStatus) {
+        if (! $curation->fresh()->currentStatus) {
             AddStatus::dispatch($curation, $this->statuses->get(config('project.curation-statuses.uploaded')));
         }
 
@@ -274,7 +279,7 @@ class BulkCurationProcessor
     private function getPmids($rowData)
     {
         $pmids = [];
-        for ($i = 0; $i < 10; ++$i) {
+        for ($i = 0; $i < 10; $i++) {
             if (isset($rowData['pmid_'.$i])) {
                 $pmids[] = $rowData['pmid_'.$i];
             }
@@ -287,7 +292,7 @@ class BulkCurationProcessor
     {
         $badMimNumbers = [];
         $phenotypes = [];
-        for ($i = 0; $i < 10; ++$i) {
+        for ($i = 0; $i < 10; $i++) {
             if (isset($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
@@ -308,7 +313,7 @@ class BulkCurationProcessor
     private function getRationales($rowData)
     {
         $rationales = [];
-        for ($i = 0; $i < 4; ++$i) {
+        for ($i = 0; $i < 4; $i++) {
             if (isset($rowData['rationale_'.$i])) {
                 $rationales[] = $this->rationales->firstWhere('name', $rowData['rationale_'.$i])->id;
             }
@@ -329,7 +334,7 @@ class BulkCurationProcessor
                 }
 
                 $badHeaders = [];
-                for ($i = 0; $i < count(static::VALID_HEADER_ARRAY); ++$i) {
+                for ($i = 0; $i < count(static::VALID_HEADER_ARRAY); $i++) {
                     if ($headerArray[$i] !== static::VALID_HEADER_ARRAY[$i]) {
                         $badHeaders['Column 1'] = 'Header for column '.($i + 1).' should be "'
                                             .ucwords(str_replace('_', ' ', static::VALID_HEADER_ARRAY[$i])).'"';
@@ -367,14 +372,14 @@ class BulkCurationProcessor
             $errors[$key] = implode(', ', $value);
         }
 
-        $valid = !$validator->fails();
+        $valid = ! $validator->fails();
 
-        for ($i = 0; $i < 10; ++$i) {
-            if (isset($rowData['omim_id_'.$i]) && !empty($rowData['omim_id_'.$i])) {
+        for ($i = 0; $i < 10; $i++) {
+            if (isset($rowData['omim_id_'.$i]) && ! empty($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
                 try {
                     $entry = $this->omim->getEntry($mimNumber);
-                    if (!$entry->isValid()) {
+                    if (! $entry->isValid()) {
                         $errors['OMIM ID '.$i] = 'Bad mim number: '.$mimNumber;
                         $valid = false;
                     }
@@ -385,13 +390,13 @@ class BulkCurationProcessor
             }
         }
 
-        for ($i = 1; $i < 5; ++$i) {
+        for ($i = 1; $i < 5; $i++) {
             $field = 'rationale_'.$i;
-            if (!isset($rowData[$field]) || is_null($rowData[$field])) {
+            if (! isset($rowData[$field]) || is_null($rowData[$field])) {
                 continue;
             }
 
-            if (!$this->rationales->pluck('name')->contains($rowData[$field])) {
+            if (! $this->rationales->pluck('name')->contains($rowData[$field])) {
                 $errors[$field] = 'Rationale '.$rowData[$field].' was not found in the system';
                 $valid = false;
             }
@@ -411,6 +416,7 @@ class BulkCurationProcessor
                 $header = array_map(function ($item) {
                     return implode('_', explode(' ', strtolower($item)));
                 }, $row->toArray());
+
                 continue;
             }
 
@@ -418,6 +424,7 @@ class BulkCurationProcessor
 
             if ($this->rowIsEmpty($data)) {
                 \Log::debug(__METHOD__.': row is empty');
+
                 continue;
             }
 

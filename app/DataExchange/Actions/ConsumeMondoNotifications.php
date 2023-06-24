@@ -2,11 +2,10 @@
 
 namespace App\DataExchange\Actions;
 
-use Illuminate\Console\Command;
-use Lorisleiva\Actions\Concerns\AsCommand;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Exceptions\StreamingServiceException;
-use App\DataExchange\Exceptions\StreamingServiceEndOfFileException;
+use Illuminate\Console\Command;
+use Lorisleiva\Actions\Concerns\AsCommand;
 
 class ConsumeMondoNotifications
 {
@@ -16,28 +15,25 @@ class ConsumeMondoNotifications
 
     private MessageConsumer $consumer;
 
-
     public function __construct(
         private NotifyMondoObsoletionCandidate $notifyCandidateAction,
-    )
-    {
-        
+    ) {
     }
-    
 
     public function handle($limit = null): void
     {
         $this->consumer = app()->make(MessageConsumer::class);
         $this->consumeMessages(function ($message) {
             $payload = json_decode($message->payload);
-            
-            if (!$message->payload) {
+
+            if (! $message->payload) {
                 if ($message->err) {
                     throw new StreamingServiceException($message->errstr());
                 }
+
                 return;
             }
-            
+
             if ($payload->event_type == 'obsoletion_candidate') {
                 $this->notifyCandidateAction->handle($payload);
             }
@@ -56,6 +52,7 @@ class ConsumeMondoNotifications
 
         if ($limit) {
             $this->consumer->consumeSomeMessages($limit, $callback);
+
             return;
         }
 

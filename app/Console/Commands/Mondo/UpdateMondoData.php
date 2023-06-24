@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands\Mondo;
 
-use App\Disease;
 use App\AppState;
+use App\Disease;
 use App\Mondo\OboParser;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Console\Command;
 
 class UpdateMondoData extends Command
@@ -46,15 +46,15 @@ class UpdateMondoData extends Command
     public function handle(ClientInterface $guzzleClient, OboParser $parser)
     {
         $tmpFilePath = $this->option('file');
-        if (!$this->option('file')) {
+        if (! $this->option('file')) {
             $this->info('downloading latest obo...');
             $tmpFilePath = $this->downloadOboFile($guzzleClient);
             $this->info('donwload complete.');
         }
-        
+
         $this->info('Parsing obo file and updating diseases.');
         $parser->setOboPath($tmpFilePath);
-        
+
         while ($term = $parser->getNextTerm()) {
             Disease::updateOrCreate(['mondo_id' => $term['mondo_id']], $term);
         }
@@ -78,7 +78,7 @@ class UpdateMondoData extends Command
         $handle = fopen($tmpFilePath, 'w');
 
         $lastMondoUpdate = AppState::findByName('last_mondo_update');
-        while (!$response->getBody()->eof()) {
+        while (! $response->getBody()->eof()) {
             $line = Utils::readLine($response->getBody());
             fwrite($handle, $line);
 
@@ -87,12 +87,13 @@ class UpdateMondoData extends Command
              * 1. Start an extra http connections to find out if I want to download the whole thing.
              * 2. Download the whole thing and then check the date.
              */
-            if (!$this->dataIsNew($line, $lastMondoUpdate)) {
+            if (! $this->dataIsNew($line, $lastMondoUpdate)) {
                 $this->info('Mondo data is not new. Stop download.');
                 break;
             }
         }
         fclose($handle);
+
         return $tmpFilePath;
     }
 
@@ -100,10 +101,11 @@ class UpdateMondoData extends Command
     {
         if (substr($line, 0, 13) == 'data-version:') {
             $versionDate = Carbon::parse(substr($line, 23, 10));
-            if (!is_null($lastMondoUpdate->value) && $lastMondoUpdate->value->gte(Carbon::parse($versionDate))) {
+            if (! is_null($lastMondoUpdate->value) && $lastMondoUpdate->value->gte(Carbon::parse($versionDate))) {
                 return false;
             }
         }
+
         return true;
     }
 }

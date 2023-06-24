@@ -3,20 +3,20 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use App\Model;
 
 class Email extends Model
 {
     use CrudTrait;
 
     protected $guarded = [];
+
     protected $casts = [
         'from' => 'array',
         'sender' => 'array',
         'to' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
-        'reply_to' => 'array'
+        'reply_to' => 'array',
     ];
 
     public function scopeFrom($query, $from)
@@ -28,7 +28,7 @@ class Email extends Model
     {
         return $query->where('from_address', 'LIKE', '%'.$from.'%');
     }
-    
+
     public function scopeTo($query, $to)
     {
         return $query->where('to', $to);

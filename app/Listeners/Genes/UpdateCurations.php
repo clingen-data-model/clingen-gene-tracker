@@ -3,8 +3,6 @@
 namespace App\Listeners\Genes;
 
 use App\Events\Genes\GeneSymbolChanged;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateCurations
 {
@@ -21,7 +19,6 @@ class UpdateCurations
     /**
      * Handle the event.
      *
-     * @param  GeneSymbolChanged  $event
      * @return void
      */
     public function handle(GeneSymbolChanged $event)

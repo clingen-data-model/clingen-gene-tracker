@@ -2,19 +2,19 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\User;
 use App\Curation;
-use App\Phenotype;
-use Carbon\Carbon;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\Curations\MondoIdNotFound;
 use App\Notifications\CurationNotificationsDigest;
 use App\Notifications\Curations\GeneSymbolUpdated;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Notifications\Curations\PhenotypeOmimEntryMoved;
 use App\Notifications\Curations\HgncIdNotFoundNotification;
+use App\Notifications\Curations\MondoIdNotFound;
 use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
+use App\Notifications\Curations\PhenotypeOmimEntryMoved;
+use App\Phenotype;
+use App\User;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 /**
  * @group notifications
@@ -24,7 +24,7 @@ class SendNotificationDigestTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $users = factory(User::class, 2)->create();
@@ -37,7 +37,7 @@ class SendNotificationDigestTest extends TestCase
         Carbon::setTestNow($realNow->subDays(8));
         $this->user1->notify(new GeneSymbolUpdated($curations->random(), 'ABCDE'));
         $this->user1->notifications->each->update(['read_at' => Carbon::now()]);
-        
+
         Carbon::setTestNow($realNow->subDays(7));
         $this->user1->notify(new HgncIdNotFoundNotification($curations->random()));
         Carbon::setTestNow($realNow->subDays(6));
@@ -59,7 +59,7 @@ class SendNotificationDigestTest extends TestCase
         Notification::assertSentTo($this->user1, CurationNotificationsDigest::class, function ($notification) {
             return $notification->groupedNotifications->count() == 5;
         });
-        
+
         Notification::assertSentTo($this->user2, CurationNotificationsDigest::class, function ($notification) {
             return $notification->groupedNotifications->count() == 1;
         });

@@ -2,25 +2,22 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\User;
 use App\AppState;
-use App\Curation;
-use App\Phenotype;
-use Carbon\Carbon;
-use Tests\TestCase;
-use App\ExpertPanel;
-use Tests\SeedsGenes;
-use Tests\SeedsPhenotypes;
 use App\Contracts\OmimClient;
-use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
-use Tests\Traits\GetsOmimClient;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Curation;
+use App\ExpertPanel;
 use App\Notifications\Curations\PhenotypeOmimEntryMoved;
 use App\Notifications\Curations\PhenotypeOmimEntryRemoved;
+use App\Phenotype;
+use App\User;
+use Carbon\Carbon;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\SeedsGenes;
+use Tests\SeedsPhenotypes;
+use Tests\TestCase;
+use Tests\Traits\GetsOmimClient;
 
 class UpdateOmimMovedAndRemovedTest extends TestCase
 {
@@ -29,7 +26,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     use SeedsPhenotypes;
     use GetsOmimClient;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->phenotypes = $this->seedPhenotypes();
@@ -46,7 +43,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->first()->mim_number,
-            'omim_status' => 'removed'
+            'omim_status' => 'removed',
         ]);
     }
 
@@ -56,7 +53,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     public function updates_phenotype_status_and_moved_to_mim_number_if_moved()
     {
         $this->bindMovedResponse();
-        
+
         $this->artisan('omim:check-moved-and-removed');
 
         $this->assertDatabaseHas('phenotypes', [
@@ -64,7 +61,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
             'omim_status' => 'moved',
             // 'moved_to_mim_number' => json_encode(['607084'])
         ]);
-        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+        $this->assertEquals(['607084'], $this->phenotypes->first()->fresh()->moved_to_mim_number);
     }
 
     /**
@@ -75,7 +72,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         Phenotype::findByMimNumber(607084)->forceDelete();
 
         $this->bindMovedResponse();
-        
+
         $this->artisan('omim:check-moved-and-removed');
 
         $this->assertDatabaseHas('phenotypes', [
@@ -84,12 +81,12 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
             // 'moved_to_mim_number' => json_encode(['607084'])
         ]);
 
-        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+        $this->assertEquals(['607084'], $this->phenotypes->first()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => 607084,
             'omim_status' => 'live',
-            'moi' => 'Autosomal recessive'
+            'moi' => 'Autosomal recessive',
         ]);
     }
 
@@ -131,10 +128,10 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved()
     {
         factory(Phenotype::class)->create([
-            'mim_number' => 193510
+            'mim_number' => 193510,
         ]);
         factory(Phenotype::class)->create([
-            'mim_number' => 606952
+            'mim_number' => 606952,
         ]);
         $ep = $this->makeEpAndCoordinator();
         $curation = $this->makeCurationWithPhenotype($this->phenotypes->last(), ['expert_panel_id' => $ep->id]);
@@ -161,7 +158,6 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
 
         $this->assertNotContains(115195, $curation->fresh()->phenotypes->pluck('mim_number')->toArray());
     }
-    
 
     /**
      * @test
@@ -175,7 +171,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
 
         $this->assertDatabaseHas('app_states', [
             'name' => 'last_omim_moved_check',
-            'value' => '2021-05-01 01:01:01'
+            'value' => '2021-05-01 01:01:01',
         ]);
     }
 
@@ -185,26 +181,26 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     public function handles_moved_to_multiple_new_mim_numbers()
     {
         factory(Phenotype::class)->create([
-            'mim_number' => 193510
+            'mim_number' => 193510,
         ]);
         factory(Phenotype::class)->create([
-            'mim_number' => 606952
+            'mim_number' => 606952,
         ]);
 
         $this->bindMovedToMultipleResponse();
         $this->artisan('omim:check-moved-and-removed');
 
         $movedPh = Phenotype::findByMimNumber(180200);
-        $this->assertEquals(["193510", "606952"], $movedPh->moved_to_mim_number);
+        $this->assertEquals(['193510', '606952'], $movedPh->moved_to_mim_number);
     }
-    
+
     /**
      * @test
      */
     public function handle_all_pages_if_paginated()
     {
         factory(Phenotype::class)->create([
-            'mim_number' => 193510
+            'mim_number' => 193510,
         ]);
 
         $this->bindLargeResultSetResponse();
@@ -214,26 +210,24 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
             'mim_number' => $this->phenotypes->first()->mim_number,
             'omim_status' => 'moved',
         ]);
-        $this->assertEquals(["607084"], $this->phenotypes->first()->fresh()->moved_to_mim_number);
+        $this->assertEquals(['607084'], $this->phenotypes->first()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => 607084,
-            'omim_status' => 'live'
+            'omim_status' => 'live',
         ]);
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => $this->phenotypes->last()->mim_number,
             'omim_status' => 'moved',
         ]);
-        $this->assertEquals(["193510"], $this->phenotypes->last()->fresh()->moved_to_mim_number);
+        $this->assertEquals(['193510'], $this->phenotypes->last()->fresh()->moved_to_mim_number);
 
         $this->assertDatabaseHas('phenotypes', [
             'mim_number' => 193510,
-            'omim_status' => 'live'
+            'omim_status' => 'live',
         ]);
     }
-    
-
 
     private function bindRemoveResponse()
     {
@@ -245,7 +239,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     {
         $omimClient = $this->getOmimClient([
             new Response(200, [], file_get_contents(base_path('tests/files/omim_api/entry_moved_search_response.json'))),
-            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/607084_with_geneMap.json')))
+            new Response(200, [], file_get_contents(base_path('tests/files/omim_api/607084_with_geneMap.json'))),
         ]);
         app()->instance(OmimClient::class, $omimClient);
     }
@@ -257,7 +251,6 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         ]);
         app()->instance(OmimClient::class, $omimClient);
     }
-        
 
     private function bindLargeResultSetResponse()
     {
@@ -267,7 +260,6 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
         ]);
         app()->instance(OmimClient::class, $omimClient);
     }
-    
 
     private function makeEpAndCoordinator()
     {
@@ -282,6 +274,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     {
         $curation = factory(Curation::class)->create($curationAttr);
         $curation->addPhenotype($phenotype);
+
         return $curation;
     }
 }

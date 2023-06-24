@@ -2,7 +2,7 @@
 
 use Ramsey\Uuid\Uuid;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 
@@ -12,24 +12,24 @@ $conf = new RdKafka\Conf();
 $conf->setRebalanceCb(function (RdKafka\KafkaConsumer $kafka, $err, array $partitions = null) {
     switch ($err) {
         case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-            echo "Assign: ";
+            echo 'Assign: ';
             var_dump($partitions);
             $kafka->assign($partitions);
             break;
 
-         case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-             echo "Revoke: ";
-             var_dump($partitions);
-             $kafka->assign(null);
-             break;
+        case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
+            echo 'Revoke: ';
+            var_dump($partitions);
+            $kafka->assign(null);
+            break;
 
-         default:
+        default:
             throw new \Exception($err);
     }
 });
 
 $conf->setErrorCb(function ($kafka, $err, $reason) {
-    throw new StreamingServiceException("Kafka producer error: ".rd_kafka_err2str($err)." (reason: ".$reason.')');
+    throw new StreamingServiceException('Kafka producer error: '.rd_kafka_err2str($err).' (reason: '.$reason.')');
 });
 
 $conf->setStatsCb(function ($kafka, $json, $json_len) {
@@ -54,14 +54,13 @@ $conf->set('sasl.password', env('DX_PASSWORD'));
 $conf->set('group.id', env('DX_GROUP'));
 // $conf->set('metadata.broker.list', env('DX_BROKER'));
 
-
 $rk = new RdKafka\Producer($conf);
 $rk->setLogLevel(LOG_DEBUG);
 $rk->addBrokers(env('DX_BROKER'));
 
-$topic = $rk->newTopic("gt-precuration-events-test");
+$topic = $rk->newTopic('gt-precuration-events-test');
 
-$stdin = fopen("php://stdin", "r");
+$stdin = fopen('php://stdin', 'r');
 
 echo "starting input loop...\n";
 while (true) {
@@ -73,7 +72,6 @@ while (true) {
     $topic->produce(RD_KAFKA_PARTITION_UA, 0, trim($line), Uuid::uuid4()->toString());
     $rk->poll(0);
 }
-
 
 while ($rk->getOutQLen() > 0) {
     $rk->poll(50);

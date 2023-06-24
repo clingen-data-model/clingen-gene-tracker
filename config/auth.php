@@ -47,8 +47,8 @@ return [
         ],
         'api-external' => [
             'driver' => 'sanctum',
-            'provider' => 'api-clients'
-        ]
+            'provider' => 'api-clients',
+        ],
     ],
 
     /*
@@ -75,12 +75,12 @@ return [
         ],
         'activated-users' => [
             'driver' => 'activated-eloquent',
-            'model' => App\User::class
+            'model' => App\User::class,
         ],
         'api-clients' => [
             'driver' => 'eloquent',
-            'model' => App\ApiClient::class
-        ]
+            'model' => App\ApiClient::class,
+        ],
     ],
 
     /*

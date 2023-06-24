@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Note extends Model
 {
@@ -16,18 +16,16 @@ class Note extends Model
         'content',
         'topic',
         'author_type',
-        'author_id'
+        'author_id',
     ];
 
     public $casts = [
         'id' => 'integer',
-        'subject_id' => 'integer'
+        'subject_id' => 'integer',
     ];
 
     /**
      * Get the subject that owns the Note
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function subject(): MorphTo
     {

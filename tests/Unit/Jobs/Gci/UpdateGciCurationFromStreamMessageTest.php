@@ -2,22 +2,20 @@
 
 namespace Tests\Unit\Jobs\Gci;
 
-use App\Gene;
-use Tests\TestCase;
-use App\GciCuration;
-use Ramsey\Uuid\Uuid;
 use App\Gci\GciMessage;
+use App\GciCuration;
 use App\IncomingStreamMessage;
-use Illuminate\Support\Facades\Bus;
 use App\Jobs\Gci\UpdateGciCurationFromStreamMessage;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Bus;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 class UpdateGciCurationFromStreamMessageTest extends TestCase
 {
     use DatabaseTransactions;
 
-
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->uuid = Uuid::uuid4();
@@ -27,7 +25,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
             'moi_id' => 10,
             'status_id' => 9,
             'affiliation_id' => 13,
-            'classification_id' => 1
+            'classification_id' => 1,
         ]);
     }
 
@@ -43,7 +41,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
             'classification_id' => 2,
-            'status_id' => 6
+            'status_id' => 6,
         ]);
     }
 
@@ -63,7 +61,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
             'classification_id' => 2,
-            'status_id' => 4
+            'status_id' => 4,
         ]);
     }
 
@@ -80,34 +78,34 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('gci_curations', [
             'gdm_uuid' => $this->uuid,
             'classification_id' => 2,
-            'status_id' => 6
+            'status_id' => 6,
         ]);
     }
-    
 
     public function setupIsm()
     {
         $ism = factory(IncomingStreamMessage::class)->make([
             'gdm_uuid' => $this->uuid->toString(),
         ]);
-        $ism->payload = (object)array_merge((array)$ism->payload, [
+        $ism->payload = (object) array_merge((array) $ism->payload, [
             'report_id' => $this->uuid,
-            'performed_by' => (object)[
-                'on_behalf_of' => (object)[
+            'performed_by' => (object) [
+                'on_behalf_of' => (object) [
                     'id' => 40007,
-                    'name' => 'bob'
-                ]
+                    'name' => 'bob',
+                ],
             ],
             'gene_validity_evidence_level' => (object) [
                 'evidence_level' => 'Strong',
                 'genetic_condition' => [
                     'gene' => 'hgnc:1',
-                    'condition' => "MONDO:109999",
-                    'mode_of_inheritance' => 'HP:0000007'
-                ]
+                    'condition' => 'MONDO:109999',
+                    'mode_of_inheritance' => 'HP:0000007',
+                ],
             ],
-            'status' => (object)['name' => 'approved', 'date'=>'2021-06-08T16:21:21.426Z']
+            'status' => (object) ['name' => 'approved', 'date' => '2021-06-08T16:21:21.426Z'],
         ]);
+
         return $ism;
     }
 }

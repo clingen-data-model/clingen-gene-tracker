@@ -4,12 +4,10 @@ namespace App\Notifications\Curations;
 
 use App\Curation;
 use App\Notifications\DigestibleNotificationInterface;
-use App\Phenotype;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 
 class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotificationInterface
@@ -22,9 +20,9 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
      * @return void
      */
     public function __construct(
-        private Curation $curation, 
-        private EloquentCollection $phenotypes, 
-        private string $oldName, 
+        private Curation $curation,
+        private EloquentCollection $phenotypes,
+        private string $oldName,
         private int $oldMimNumber)
     {
     }
@@ -72,7 +70,7 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
             'oldMimNumber' => $this->oldMimNumber,
             'phenotypes' => $this->phenotypes,
             'curation' => $this->curation,
-            'template' => 'email.digest.omim_entry_moved'
+            'template' => 'email.digest.omim_entry_moved',
         ];
     }
 
@@ -81,19 +79,21 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
         return $item->id;
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function filterInvalid(Collection $collection):Collection
+
+    public static function filterInvalid(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function getValidUnique(Collection $collection):Collection
+
+    public static function getValidUnique(Collection $collection): Collection
     {
         return static::getUnique(static::filterInvalid($collection));
     }
-    
+
     public static function getDigestTemplate(): string
     {
         return 'email.digest.omim_entry_moved';

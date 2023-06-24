@@ -2,16 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\User;
-use App\Disease;
-use App\Curation;
-use App\Phenotype;
-use Tests\TestCase;
-use App\ExpertPanel;
 use App\Contracts\SearchService;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Curation;
+use App\Disease;
+use App\ExpertPanel;
+use App\Phenotype;
 use App\Services\Curations\CurationSearchService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\User;
+use Tests\TestCase;
 
 /**
  * @group search
@@ -19,7 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  */
 class CurationSearchTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->user = factory(\App\User::class)->create();
@@ -30,7 +28,7 @@ class CurationSearchTest extends TestCase
 
         $this->search = new CurationSearchService();
     }
-    
+
     /**
      * @test
      */
@@ -46,7 +44,7 @@ class CurationSearchTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $testGene = 'BRCA1';
-        $curation = factory(\App\Curation::class, 4)->create(['gene_symbol'=>$testGene]);
+        $curation = factory(\App\Curation::class, 4)->create(['gene_symbol' => $testGene]);
         $curation = factory(\App\Curation::class, 3)->create([]);
 
         $results = $this->search->search(['gene_symbol' => $testGene]);
@@ -63,14 +61,14 @@ class CurationSearchTest extends TestCase
         factory(Disease::class)->create(['mondo_id' => 'MONDO:98765']);
         $curation1 = $this->curations->shift();
         $curation1->update([
-            'mondo_id' => 'MONDO:12345'
+            'mondo_id' => 'MONDO:12345',
         ]);
         $curation2 = $this->curations->shift();
         $curation2->update([
-            'mondo_id' => 'MONDO:98765'
+            'mondo_id' => 'MONDO:98765',
         ]);
 
-        $results = $this->search->search(['mondo_id'=>'MONDO:12345']);
+        $results = $this->search->search(['mondo_id' => 'MONDO:12345']);
         $this->assertContains($curation1->mondo_id, $results->pluck('mondo_id'));
         $this->assertNotContains($curation2->mondo_id, $results->pluck('mondo_id'));
 
@@ -86,12 +84,12 @@ class CurationSearchTest extends TestCase
     {
         $curation1 = $this->curations->shift();
         $curation1->update(['hgnc_id' => '12345']);
-        
+
         $curation2 = $this->curations->shift();
         $curation2->update(['hgnc_id' => '98765']);
 
         $results = $this->search->search(['filter' => '12345']);
-        $this->assertContains((int)$curation1->hgnc_id, $results->pluck('hgnc_id')->toArray());
+        $this->assertContains((int) $curation1->hgnc_id, $results->pluck('hgnc_id')->toArray());
         $this->assertNotContains($curation2->hgnc_id, $results->pluck('hgnc_id'));
     }
 
@@ -119,7 +117,7 @@ class CurationSearchTest extends TestCase
         $this->curations->first()->expertPanel->addCoordinator($user);
 
         $results = $this->search->search(['with' => ['expertPanel', 'expertPanel.coordinators']]);
-        
+
         $this->assertNotEquals(0, $results->pluck('expertPanel.coordinators')->flatten()->count());
     }
 
@@ -129,12 +127,12 @@ class CurationSearchTest extends TestCase
     public function can_filter_by_specific_field()
     {
         \DB::table('curations')->delete();
-        $curation = factory(Curation::class)->create(['gene_symbol'=>'RETT']);
-        $ep = factory(ExpertPanel::class)->create(['name'=>'retina']);
+        $curation = factory(Curation::class)->create(['gene_symbol' => 'RETT']);
+        $ep = factory(ExpertPanel::class)->create(['name' => 'retina']);
         $epCuration = factory(Curation::class)->create(['expert_panel_id' => $ep->id]);
 
         $results = $this->search->search(['filter' => 'ret', 'filter_field' => 'gene_symbol']);
-        
+
         $this->assertEquals(1, $results->count());
     }
 }

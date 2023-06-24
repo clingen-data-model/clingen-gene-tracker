@@ -25,7 +25,7 @@ class BulkUploadRequest extends FormRequest
     {
         return [
             'expert_panel_id' => 'required|exists:expert_panels,id',
-            'bulk_curations' => 'required_without:path'
+            'bulk_curations' => 'required_without:path',
         ];
     }
 }

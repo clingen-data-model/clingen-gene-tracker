@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Gci\Actions;
 
 use App\Affiliation;
@@ -17,9 +18,9 @@ class AffiliationsUpdate
         $response = $client->get(
             uri: 'https://6wbpqalizj.execute-api.us-west-2.amazonaws.com/prod/affiliations?target=api',
             options: [
-                'headers'=>[
-                    'x-api-key' => config('app.gci_api_key')
-                ]
+                'headers' => [
+                    'x-api-key' => config('app.gci_api_key'),
+                ],
             ]
         );
 
@@ -31,26 +32,23 @@ class AffiliationsUpdate
 
         collect($affiliationData)
             ->each(function ($aff) {
-                $name = $aff->affiliation_fullname .' Parent';
+                $name = $aff->affiliation_fullname.' Parent';
                 $parent = Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $aff->affiliation_id], [
                     'name' => $name,
                     'affiliation_type_id' => 1,
-                    'parent_id' => null
+                    'parent_id' => null,
                 ]);
                 if (isset($aff->subgroups)) {
-                    foreach ((array)$aff->subgroups as $type => $sub) {
-                        Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $sub->id],[
+                    foreach ((array) $aff->subgroups as $type => $sub) {
+                        Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $sub->id], [
                             'clingen_id' => $sub->id,
                             'name' => $sub->fullname,
                             'affiliation_type_id' => ($type == 'vcep') ? 4 : 3,
-                            'parent_id' =>  $parent->id
+                            'parent_id' => $parent->id,
                         ]);
                     }
                 }
             });
         \Log::info('Affiliations synced from GCI/VCI api.');
     }
-
-
-    
 }

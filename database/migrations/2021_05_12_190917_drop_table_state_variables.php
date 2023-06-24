@@ -25,7 +25,7 @@ class DropTableStateVariables extends Migration
      */
     public function down()
     {
-        if (!Schema::hasTable('state_variables')) {
+        if (! Schema::hasTable('state_variables')) {
             Schema::create('state_variables', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name')->unique();

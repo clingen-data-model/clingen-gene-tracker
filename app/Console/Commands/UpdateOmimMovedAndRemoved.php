@@ -3,11 +3,11 @@
 namespace App\Console\Commands;
 
 use App\AppState;
+use App\Contracts\OmimClient;
+use App\Jobs\ImportOmimPhenotype;
 use App\Phenotype;
 use Carbon\Carbon;
-use App\Contracts\OmimClient;
 use Illuminate\Console\Command;
-use App\Jobs\ImportOmimPhenotype;
 use Illuminate\Support\Facades\Log;
 
 class UpdateOmimMovedAndRemoved extends Command
@@ -46,15 +46,15 @@ class UpdateOmimMovedAndRemoved extends Command
         Log::info('Check for moved and removed omim phenotypes.');
         $this->info('Getting search results...');
         $searchResults = $this->getPaginatedSearchResults($omimClient, [], 0, $this->option('page-size'));
-        
+
         $phenotypes = $this->getPhenotypes($searchResults);
         $moveToPhenotypes = $this->getMovedToPhenotypes($searchResults);
 
         $this->info('iterate through results...');
         $progressBar = $this->output->createProgressBar(count($searchResults));
-        
+
         foreach ($searchResults as $item) {
-            if (!$phenotypes->pluck('mim_number')->contains($item->mimNumber)) {
+            if (! $phenotypes->pluck('mim_number')->contains($item->mimNumber)) {
                 continue;
             }
             $pheno = $phenotypes->get($item->mimNumber);
@@ -63,7 +63,7 @@ class UpdateOmimMovedAndRemoved extends Command
             if (isset($item->movedTo)) {
                 $mimNumbers = explode(',', $item->movedTo);
                 foreach ($mimNumbers as $mimNum) {
-                    if (!$moveToPhenotypes->get($mimNum)) {
+                    if (! $moveToPhenotypes->get($mimNum)) {
                         ImportOmimPhenotype::dispatch($mimNum);
                     }
                 }
@@ -87,18 +87,19 @@ class UpdateOmimMovedAndRemoved extends Command
         $results = $omimClient->paginatedSearch(['search' => $this->buildSearchString()], $start, $limit);
         $accumulator = array_merge($accumulator, $results['entries']->toArray());
 
-        if ($results['total'] == $results['end']+1) {
+        if ($results['total'] == $results['end'] + 1) {
             return $accumulator;
         }
 
-        $newStart = $results['end']+1;
+        $newStart = $results['end'] + 1;
+
         return $this->getPaginatedSearchResults($omimClient, $accumulator, $newStart, $limit);
     }
 
     private function buildSearchString()
     {
         $searchParams = ['prefix:^'];
-        
+
         $lastUpdated = $this->getLastUpdated();
         if ($lastUpdated) {
             $searchParams[] = 'date_updated:'.$lastUpdated->format('Y/m/d').'-*';
@@ -112,7 +113,7 @@ class UpdateOmimMovedAndRemoved extends Command
         $mimNumbers = collect($searchResults)->map(function ($item) {
             return $item->mimNumber;
         })->toArray();
-        
+
         return Phenotype::whereIn('mim_number', $mimNumbers)->get()->keyBy('mim_number');
     }
 

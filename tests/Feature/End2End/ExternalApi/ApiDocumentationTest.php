@@ -2,10 +2,6 @@
 
 namespace Tests\Feature\End2End\ExternalApi;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-
 /**
  * @group external-api
  */
@@ -29,6 +25,4 @@ class ApiDocumentationTest extends ExternalApiTest
             ->assertStatus(200)
             ->assertSee(['openapi: 3.0.0']);
     }
-    
-    
 }

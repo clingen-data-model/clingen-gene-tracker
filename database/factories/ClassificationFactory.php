@@ -3,13 +3,14 @@
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
 use App\Classification;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Classification::class, function (Faker $faker) {
     $sentence = $faker->sentence;
+
     return [
         'name' => $sentence,
-        'slug' => Str::kebab($sentence)
+        'slug' => Str::kebab($sentence),
     ];
 });

@@ -27,5 +27,4 @@ class ApiClientCreateToken
 
         $command->info('New token created for ApiClient '.$apiClient->name.': '.$token->plainTextToken);
     }
-    
 }

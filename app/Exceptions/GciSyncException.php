@@ -7,7 +7,7 @@ use Exception;
 class GciSyncException extends Exception
 {
     protected $data = [];
-        
+
     public function addData($data)
     {
         array_push($this->data, $data);

@@ -2,20 +2,15 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\Gene;
 use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\ExpertPanel;
-use App\GciCuration;
-use Ramsey\Uuid\Uuid;
-use App\IncomingStreamMessage;
-use Illuminate\Support\Facades\Bus;
+use App\Gene;
 use App\Jobs\Curations\LinkGciCuration;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Bus;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group gci
@@ -25,7 +20,7 @@ class LinkPrecurationsToCurationsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
 
@@ -35,12 +30,12 @@ class LinkPrecurationsToCurationsTest extends TestCase
         $this->expertPanel = ExpertPanel::find(5);
 
         $this->curation = factory(Curation::class)->create([
-                            'gdm_uuid' => null,
-                            'hgnc_id' => $this->gene->hgnc_id,
-                            'mondo_id' => 'MONDO:0044312',
-                            'moi_id' => 2,
-                            'expert_panel_id' => $this->expertPanel->id,
-                        ]);
+            'gdm_uuid' => null,
+            'hgnc_id' => $this->gene->hgnc_id,
+            'mondo_id' => 'MONDO:0044312',
+            'moi_id' => 2,
+            'expert_panel_id' => $this->expertPanel->id,
+        ]);
         $curationWGdmUuid = factory(Curation::class)->create();
     }
 

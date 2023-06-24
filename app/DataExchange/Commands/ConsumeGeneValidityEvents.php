@@ -2,10 +2,10 @@
 
 namespace App\DataExchange\Commands;
 
-use Illuminate\Console\Command;
-use App\DataExchange\Contracts\MessageConsumer;
 use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Jobs\DryRunUpdateFromGeneValidityMessage;
+use Illuminate\Console\Command;
 
 class ConsumeGeneValidityEvents extends Command
 {
@@ -47,14 +47,15 @@ class ConsumeGeneValidityEvents extends Command
         $consumer->addTopic($this->option('topic'));
         if ($this->option('message-number')) {
             $this->info('listening to '.implode(', ', $consumer->topics));
-            $consumer->consumeSomeMessages((integer)$this->option("message-number"));
+            $consumer->consumeSomeMessages((int) $this->option('message-number'));
+
             return;
         }
-
 
         if ($this->option('listen')) {
             $this->info('Listening.  ctrl+c to stop.');
             $consumer->listen();
+
             return;
         }
 

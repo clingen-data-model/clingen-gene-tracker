@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
@@ -6,7 +7,7 @@ namespace App\DataExchange\Kafka;
 class NoActionMessageHandler extends AbstractMessageHandler
 {
     private $noActionErrors = [
-        RD_KAFKA_RESP_ERR__TIMED_OUT
+        RD_KAFKA_RESP_ERR__TIMED_OUT,
     ];
 
     public function handle(\RdKafka\Message $message)
@@ -34,7 +35,7 @@ class NoActionMessageHandler extends AbstractMessageHandler
             return false;
         }
 
-        if (!isset($payload->status)) {
+        if (! isset($payload->status)) {
             return false;
         }
 
@@ -48,5 +49,4 @@ class NoActionMessageHandler extends AbstractMessageHandler
 
         return false;
     }
-    
 }

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 interface Notable
 {
-    public function notes(): MorphMany;    
+    public function notes(): MorphMany;
 }

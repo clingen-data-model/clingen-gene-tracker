@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\User;
 use App\ExpertPanel;
+use App\User;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -33,7 +33,7 @@ class UsersTableSeeder extends Seeder
         $user->assignRole('admin');
         $user->expertPanels()->sync([$epIds->first()->id, $epIds->get(2)->id]);
 
-        if (!app()->environment('production')) {
+        if (! app()->environment('production')) {
             $user = User::updateOrCreate(
                 ['email' => 'james-curatorn@example.com'],
                 [
@@ -77,10 +77,10 @@ class UsersTableSeeder extends Seeder
             );
 
             $viewer = User::updateOrCreate(
-                ['email'=> 'viewer@example.com'],
+                ['email' => 'viewer@example.com'],
                 [
                     'name' => 'Curation Viewer',
-                    'password' => 'tester'
+                    'password' => 'tester',
                 ]
             );
 

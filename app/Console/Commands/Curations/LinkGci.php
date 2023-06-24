@@ -3,12 +3,9 @@
 namespace App\Console\Commands\Curations;
 
 use App\Curation;
-use App\GciCuration;
+use App\Jobs\Curations\LinkGciCuration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Jobs\Curations\LinkGciCuration;
-use App\Jobs\ReplayGciEventsForCuration;
-use App\Jobs\Curations\LinkToGciCuration;
 
 class LinkGci extends Command
 {

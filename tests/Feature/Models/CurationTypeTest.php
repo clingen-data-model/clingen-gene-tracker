@@ -25,7 +25,7 @@ class CurationTypeTest extends TestCase
      */
     public function has_fillable_name()
     {
-        $this->curationType->update(['name'=>'beans']);
+        $this->curationType->update(['name' => 'beans']);
         $this->assertEquals('beans', $this->curationType->name);
     }
 

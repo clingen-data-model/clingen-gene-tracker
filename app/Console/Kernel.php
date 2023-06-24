@@ -2,9 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\PopulateMimNames;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use App\Console\Commands\PopulateMimNames;
 use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
@@ -15,29 +15,28 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        PopulateMimNames::class
+        PopulateMimNames::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('hgnc:update-data')
-            ->dailyAt("01:00:00");
-        
-            $schedule->command('mondo:update-data')
-            ->dailyAt("O2:00:00");
+            ->dailyAt('01:00:00');
+
+        $schedule->command('mondo:update-data')
+        ->dailyAt('O2:00:00');
 
         $schedule->command('omim:update-data')
-            ->dailyAt("03:00:00")
+            ->dailyAt('03:00:00')
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
             });
-        
+
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
                 ->everyTenMinutes()

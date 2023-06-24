@@ -9,11 +9,11 @@ class CurationExporter
     protected function buildQuery($params)
     {
         $query = Curation::with([
-            'expertPanel', 
-            'curationStatuses', 
-            'curator', 
-            'statuses', 
-            'classifications'
+            'expertPanel',
+            'curationStatuses',
+            'curator',
+            'statuses',
+            'classifications',
         ]);
         if (isset($params['expert_panel_id'])) {
             $query->where('expert_panel_id', $params['expert_panel_id']);
@@ -119,5 +119,4 @@ class CurationExporter
         })
         ->pluck('pivot.status_date', 'id');
     }
-    
 }

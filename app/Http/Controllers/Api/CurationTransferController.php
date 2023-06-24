@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Curation;
-use App\Jobs\AddNote;
-use Illuminate\Http\Request;
-use App\Jobs\Curations\SetOwner;
-use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Curations\TransferRequest;
+use App\Jobs\AddNote;
+use App\Jobs\Curations\SetOwner;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
 
 class CurationTransferController extends Controller
 {
@@ -17,7 +16,7 @@ class CurationTransferController extends Controller
     {
         $curation = Curation::findOrFail($curationId);
 
-        if (!Auth::user()->can('transfer', $curation)) {
+        if (! Auth::user()->can('transfer', $curation)) {
             return response(['error' => 'You do not have permission to transfer ownership of this curation'], 403);
         }
 
@@ -42,9 +41,10 @@ class CurationTransferController extends Controller
                         'working_group_id' => $epRel->working_group_id,
                         'start_date' => $epRel->pivot->start_date,
                         'end_date' => $epRel->pivot->end_date,
-                        'pivot' => $epRel->pivot
+                        'pivot' => $epRel->pivot,
                     ];
                 });
+
         return ['curation_id' => $curation->id, 'expert_panels' => $ownerRecords->values()];
     }
 }

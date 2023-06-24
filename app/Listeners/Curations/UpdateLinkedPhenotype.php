@@ -3,8 +3,6 @@
 namespace App\Listeners\Curations;
 
 use App\Events\Phenotypes\OmimMovedPhenotype;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateLinkedPhenotype
 {
@@ -21,7 +19,6 @@ class UpdateLinkedPhenotype
     /**
      * Handle the event.
      *
-     * @param  OmimMovedPhenotype  $event
      * @return void
      */
     public function handle(OmimMovedPhenotype $event)

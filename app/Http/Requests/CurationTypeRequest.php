@@ -25,7 +25,7 @@ class CurationTypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:5|max:255|unique:curation_types,name'
+            'name' => 'required|min:5|max:255|unique:curation_types,name',
         ];
     }
 

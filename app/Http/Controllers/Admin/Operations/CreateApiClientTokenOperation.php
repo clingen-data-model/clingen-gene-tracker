@@ -10,15 +10,15 @@ trait CreateApiClientTokenOperation
     /**
      * Define which routes are needed for this operation.
      *
-     * @param string $segment    Name of the current entity (singular). Used as first URL segment.
-     * @param string $routeName  Prefix of the route name.
-     * @param string $controller Name of the current CrudController.
+     * @param  string  $segment    Name of the current entity (singular). Used as first URL segment.
+     * @param  string  $routeName  Prefix of the route name.
+     * @param  string  $controller Name of the current CrudController.
      */
     protected function setupCreateApiClientTokenRoutes($segment, $routeName, $controller)
     {
         Route::get($segment.'/create-token', [
-            'as'        => $routeName.'.create-token',
-            'uses'      => $controller.'@createToken',
+            'as' => $routeName.'.create-token',
+            'uses' => $controller.'@createToken',
             'operation' => 'createApiClientToken',
         ]);
     }
@@ -54,6 +54,6 @@ trait CreateApiClientTokenOperation
         $this->data['title'] = $this->crud->getTitle() ?? 'createapiclienttoken '.$this->crud->entity_name;
 
         // load the view
-        return view("crud::operations.createapiclienttoken", $this->data);
+        return view('crud::operations.createapiclienttoken', $this->data);
     }
 }

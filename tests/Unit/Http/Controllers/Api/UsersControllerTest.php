@@ -2,9 +2,8 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Tests\TestCase;
-use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group api

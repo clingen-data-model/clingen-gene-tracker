@@ -4,10 +4,8 @@ namespace App\Listeners\Curations;
 
 use App\Curation;
 use App\Events\Curation\CurationEvent;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\CreateStreamMessage;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Bus;
 
 class MakeGtGciSyncMessage
 {
@@ -37,12 +35,12 @@ class MakeGtGciSyncMessage
             return;
         }
 
-        if (!$this->hasGeneDiseaseMoi($event->curation)) {
+        if (! $this->hasGeneDiseaseMoi($event->curation)) {
             // \Log::debug('  does not yet have gene, disease, or moi: ', $event->curation->only('gene_symbol', 'moi_id', 'mondo_id'));
             return;
         }
-        
-        if (!$this->precurationCompleted($event->curation)) {
+
+        if (! $this->precurationCompleted($event->curation)) {
             return;
         }
         \Log::info(' has precuration-complete status');
@@ -60,27 +58,27 @@ class MakeGtGciSyncMessage
                 $eventType = 'gdm_updated';
             }
             Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, $eventType));
+
             return;
         }
     }
 
     private function linkedToGciRecord(Curation $curation)
     {
-        return !is_null($curation->gdm_uuid);
+        return ! is_null($curation->gdm_uuid);
     }
-    
 
     private function hasGeneDiseaseMoi(Curation $curation)
     {
-        if (!$curation->hgnc_id) {
-            return false; 
-        }
-
-        if (!$curation->mondo_id) {
+        if (! $curation->hgnc_id) {
             return false;
         }
 
-        if (!$curation->moi_id) {
+        if (! $curation->mondo_id) {
+            return false;
+        }
+
+        if (! $curation->moi_id) {
             return false;
         }
 
@@ -119,10 +117,10 @@ class MakeGtGciSyncMessage
         if ($curation->getOriginal('moi_id') == $curation->moi_id) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     private function diseaseUpdated(Curation $curation)
     {
         // \Log::debug('  new mondo_id, ', ['new' => $curation->mondo_id, 'original' => $curation->getOriginal('mondo_id')]);

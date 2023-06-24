@@ -5,6 +5,7 @@ namespace Profiling;
 class TaskTimingEvent
 {
     private $name;
+
     private $microtime;
 
     public function __construct($name, $microtime = null)

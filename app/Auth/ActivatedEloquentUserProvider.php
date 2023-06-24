@@ -11,5 +11,4 @@ class ActivatedEloquentUserProvider extends EloquentUserProvider implements User
     {
         return parent::newModelQuery($model)->whereNull('deactivated_at');
     }
-
 }

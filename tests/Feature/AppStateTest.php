@@ -4,10 +4,8 @@ namespace Tests\Feature;
 
 use App\AppState;
 use Carbon\Carbon;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class AppStateTest extends TestCase
 {
@@ -47,8 +45,6 @@ class AppStateTest extends TestCase
         $state = $this->createState(['type' => 'json', 'value' => '{"a":"a", "b":"b", "c":"c"}']);
         $this->assertIsArray($state->value);
     }
-    
-    
 
     private function createState($data)
     {

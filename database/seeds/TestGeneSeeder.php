@@ -27,8 +27,8 @@ class TestGeneSeeder extends Seeder
                 'hgnc_id' => $hgnc_id,
                 'gene_symbol' => $symbol,
                 'hgnc_name' => uniqid(),
-                'hgnc_status' => 'Approved'
-            ]); 
+                'hgnc_status' => 'Approved',
+            ]);
         }
     }
 }

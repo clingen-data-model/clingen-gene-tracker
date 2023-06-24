@@ -1,13 +1,9 @@
 <?php
 
-use App\Curation;
-use App\CurationStatus;
-use App\Jobs\Curations\AddStatus;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 
 class AlterCurationsAddCurationStatusIdAndSetLatestStatusId extends Migration
 {
@@ -18,7 +14,7 @@ class AlterCurationsAddCurationStatusIdAndSetLatestStatusId extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('curations', 'curation_status_id')) {
+        if (! Schema::hasColumn('curations', 'curation_status_id')) {
             Schema::table('curations', function (Blueprint $table) {
                 $table->unsignedInteger('curation_status_id')->default(1)->after('hgnc_id');
             });

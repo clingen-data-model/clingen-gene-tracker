@@ -2,9 +2,9 @@
 
 namespace App\Hgnc\Artisan;
 
+use App\Hgnc\CustomDownloadImporter;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use App\Hgnc\CustomDownloadImporter;
 
 class ImportHgncCustomDownload extends Command
 {

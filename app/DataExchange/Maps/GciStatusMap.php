@@ -27,9 +27,9 @@ class GciStatusMap
     public function get($gciStatus)
     {
         $newStatus = $this->map->get($gciStatus);
-        if (!$newStatus) {
+        if (! $newStatus) {
             $newStatus = $this->map->get('Curation '.$gciStatus);
-            if (!$newStatus) {
+            if (! $newStatus) {
                 throw new GciSyncException('Unknown status: '.$gciStatus);
             }
         }

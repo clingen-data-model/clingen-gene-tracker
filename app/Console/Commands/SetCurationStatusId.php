@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Curation;
 use App\CurationStatus;
-use Illuminate\Console\Command;
 use App\Jobs\Curations\AddStatus;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
 
 class SetCurationStatusId extends Command
@@ -51,17 +51,17 @@ class SetCurationStatusId extends Command
                                 return $item->pivot->status_date->timestamp.'.'.$item->id;
                             })
                             ->first();
-            if (!$currentStatus) {
+            if (! $currentStatus) {
                 $currentStatus = $uploadedStatus;
                 Bus::dispatch(new AddStatus($curation, $currentStatus));
             }
-            
+
             $curation->update(['curation_status_id' => $currentStatus->id]);
 
             $bar->advance();
         });
 
         $bar->finish();
-        echo("\n");
+        echo "\n";
     }
 }

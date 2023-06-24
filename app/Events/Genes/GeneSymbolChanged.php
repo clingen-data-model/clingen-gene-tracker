@@ -3,20 +3,17 @@
 namespace App\Events\Genes;
 
 use App\Gene;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class GeneSymbolChanged
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Gene $gene;
-    
+
     public String $previousSymbol;
 
     /**
@@ -24,7 +21,7 @@ class GeneSymbolChanged
      *
      * @return void
      */
-    public function __construct(Gene $gene, String $previousSymbol)
+    public function __construct(Gene $gene, string $previousSymbol)
     {
         $this->gene = $gene;
         $this->previousSymbol = $previousSymbol;

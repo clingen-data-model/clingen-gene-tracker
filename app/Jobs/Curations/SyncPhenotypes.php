@@ -2,8 +2,8 @@
 
 namespace App\Jobs\Curations;
 
-use App\Phenotype;
 use App\Curation;
+use App\Phenotype;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,7 +13,9 @@ use Illuminate\Queue\SerializesModels;
 class SyncPhenotypes implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     protected $curation;
+
     protected $phenotypes;
 
     /**
@@ -34,7 +36,7 @@ class SyncPhenotypes implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->phenotypes && $this->phenotypes->count() > 0) {
+        if (! $this->phenotypes && $this->phenotypes->count() > 0) {
             return;
         }
 

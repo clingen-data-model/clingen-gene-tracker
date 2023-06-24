@@ -53,7 +53,7 @@ class CheckMondoForUpdates extends Command
                         ->with('expertPanel')
                         ->get()
                         ->filter(function ($curation) {
-                            return !is_null($curation->mondo_id);
+                            return ! is_null($curation->mondo_id);
                         });
 
         $bar = $this->output->createProgressBar($curations->count());
@@ -76,10 +76,12 @@ class CheckMondoForUpdates extends Command
             } catch (HttpNotFoundException $th) {
                 if ($printRequests) {
                     $this->warn('  - '.$mondoId.' NOT FOUND');
+
                     continue;
                 }
                 if ($this->option('print-errors')) {
                     $this->warn($th->getMessage());
+
                     continue;
                 }
                 $this->sendNotificationForCurations($curationsForMondo);

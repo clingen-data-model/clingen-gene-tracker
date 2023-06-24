@@ -3,7 +3,6 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use App\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Rationale extends Model
@@ -12,8 +11,9 @@ class Rationale extends Model
     use RevisionableTrait;
 
     protected $revisionCreationsEnabled = true;
+
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     protected $touches = ['curations'];

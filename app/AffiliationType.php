@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -10,10 +9,11 @@ class AffiliationType extends Model
 {
     use SoftDeletes;
     use RevisionableTrait;
-    
+
     protected $revisionCreationsEnabled = true;
+
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     public function affiliations()
@@ -25,6 +25,4 @@ class AffiliationType extends Model
         {
             return $this->attributes['name'];
         }
-    
-
 }

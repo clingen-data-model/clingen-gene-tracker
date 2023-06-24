@@ -28,7 +28,7 @@ class DefaultApiController extends Controller
     private function resolveModelClass($classString)
     {
         $className = $this->resolveClassName($classString);
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             abort(404, 'We couldn\'t find what you were looking for');
         }
 
@@ -39,7 +39,7 @@ class DefaultApiController extends Controller
     {
         $className = '\\App\\Http\\Resources\\'.substr($this->resolveClassName($classString), 5).'Resource';
 
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             return \App\Http\Resources\DefaultResource::class;
         }
 
@@ -50,7 +50,7 @@ class DefaultApiController extends Controller
     {
         $className = '\\App\\'.ucfirst(Str::camel(Str::singular($classString)));
 
-        if (!class_exists($className)) {
+        if (! class_exists($className)) {
             abort(404, 'We couldn\'t find what you were looking for.');
         }
 

@@ -2,14 +2,11 @@
 
 namespace Tests\Unit\Services;
 
-use Mockery;
-use Tests\TestCase;
-use  App\DataExchange\Kafka\KafkaProducer;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\DataExchange\Exceptions\StreamingServiceException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use  App\DataExchange\KafkaConfig;
+use App\DataExchange\Kafka\KafkaProducer;
+use  Mockery;
 use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group streaming-service
@@ -17,10 +14,10 @@ use Ramsey\Uuid\Uuid;
  */
 class KafkaProducerTest extends TestCase
 {
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
-        if (!class_exists(\RdKafka\Producer::class)) {
+        if (! class_exists(\RdKafka\Producer::class)) {
             $this->markTestSkipped('RdKafka is not installed so skip these tests');
         }
     }

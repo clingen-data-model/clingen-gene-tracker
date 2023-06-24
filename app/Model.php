@@ -3,8 +3,8 @@
 namespace App;
 
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Model extends BaseModel
 {
@@ -13,7 +13,6 @@ class Model extends BaseModel
     /**
      * Prepare a date for array / JSON serialization.
      *
-     * @param  \DateTimeInterface  $date
      * @return string
      */
     protected function serializeDate(DateTimeInterface $date)

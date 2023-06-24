@@ -2,13 +2,10 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Event;
 use App\Events\Genes\GeneSymbolChanged;
-use App\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
-use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Do I treat this like an aggregateRoot or a Repository or is it a conflation of the two?
@@ -21,6 +18,7 @@ class Gene extends Model
     use RevisionableTrait;
 
     public $incrementing = false;
+
     protected $primaryKey = 'hgnc_id';
 
     public $fillable = [
@@ -35,7 +33,7 @@ class Gene extends Model
         'date_approved',
         'date_modified',
         'date_symbol_changed',
-        'date_name_changed'
+        'date_name_changed',
     ];
 
     protected $dates = [
@@ -64,8 +62,6 @@ class Gene extends Model
     // Relations
     /**
      * The phenotypes that belong to the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function phenotypes(): BelongsToMany
     {
@@ -77,21 +73,20 @@ class Gene extends Model
     {
         return $this->hasMany(Curation::class, 'hgnc_id', 'hgnc_id');
     }
-    
 
     // Access methods
 
-    public static function findBySymbol(String $symbol)
+    public static function findBySymbol(string $symbol)
     {
         return static::where('gene_symbol', $symbol)->first();
     }
 
-    public static function findByOmimId(Int $id)
+    public static function findByOmimId(int $id)
     {
         return static::where('omim_id', $id)->first();
     }
 
-    public static function findByPreviousSymbol(String $symbol)
+    public static function findByPreviousSymbol(string $symbol)
     {
         return static::whereJsonContains('previous_symbols', $symbol)->first();
     }

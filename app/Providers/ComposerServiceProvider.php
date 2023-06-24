@@ -21,7 +21,7 @@ class ComposerServiceProvider extends ServiceProvider
                 $user = [
                     'roles' => [],
                     'expert_panels' => [],
-                    'permissions' => []
+                    'permissions' => [],
                 ];
                 $view->with('user', compact('user'));
 
@@ -36,7 +36,7 @@ class ComposerServiceProvider extends ServiceProvider
 
             $impersonatable = collect();
             if (Auth::user()->canImpersonate()) {
-                $impersonatable = User::with('roles')->active()->orderBy('name','asc')->get()->filter(function ($user) {
+                $impersonatable = User::with('roles')->active()->orderBy('name', 'asc')->get()->filter(function ($user) {
                     return $user->canBeImpersonated();
                 });
             }

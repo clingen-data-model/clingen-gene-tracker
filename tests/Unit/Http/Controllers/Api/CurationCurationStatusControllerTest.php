@@ -2,15 +2,13 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use App\User;
 use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\CurationStatus;
 use App\Jobs\Curations\AddStatus;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class CurationCurationStatusControllerTest extends TestCase
 {
@@ -24,14 +22,13 @@ class CurationCurationStatusControllerTest extends TestCase
         $this->curation->created_at = '1977-01-01';
         $this->curation->save();
 
-        $curationStatuses = CurationStatus::find([2,3])->keyBy('id');
+        $curationStatuses = CurationStatus::find([2, 3])->keyBy('id');
         // not including id 1 b/c it's added on creation -tjw
         foreach ([2, 3] as $statusId) {
             AddStatus::dispatch($this->curation, $curationStatuses->get($statusId), '1977-01-01');
         }
         $this->actingAs($this->user, 'api');
     }
-    
 
     public function test_lists_all_statuses_for_curation()
     {
@@ -44,9 +41,9 @@ class CurationCurationStatusControllerTest extends TestCase
     {
         Carbon::setTestNow(Carbon::tomorrow());
         $response = $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
-                'curation_status_id' => 4,
-                'status_date' => '1977-09-16'
-            ])
+            'curation_status_id' => 4,
+            'status_date' => '1977-09-16',
+        ])
             ->assertStatus(200);
 
         $this->assertEquals(4, $this->curation->fresh()->curationStatuses->count());
@@ -59,17 +56,17 @@ class CurationCurationStatusControllerTest extends TestCase
             ->assertStatus(422);
 
         $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
-            'curation_status_id' => 3000
+            'curation_status_id' => 3000,
         ])->assertStatus(422);
 
         $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
             'curation_status_id' => 1,
-            'status_date' => '09/16/1988'
+            'status_date' => '09/16/1988',
         ])->assertStatus(422);
 
         $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
             'curation_status_id' => 1,
-            'status_date' => 'bob'
+            'status_date' => 'bob',
         ])->assertStatus(422);
     }
 
@@ -84,7 +81,7 @@ class CurationCurationStatusControllerTest extends TestCase
     {
         $ccs = $this->curation->statuses->random();
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$ccs->pivot->id, [
-            'status_date' => '1982-05-17'
+            'status_date' => '1982-05-17',
         ])
         ->assertStatus(200)
         ->assertJson($ccs->fresh()->toArray());
@@ -100,11 +97,11 @@ class CurationCurationStatusControllerTest extends TestCase
     public function test_update_status_date_validates_date()
     {
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id, [
-            'status_date' => 'ted'
+            'status_date' => 'ted',
         ])->assertStatus(422);
 
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id, [
-            'status_date' => '09/16/1988'
+            'status_date' => '09/16/1988',
         ])->assertStatus(422);
     }
 

@@ -3,15 +3,13 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use App\StreamMessage;
-use GuzzleHttp\Psr7\Message;
+use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 
 class CreatePrecurationStreamMessage implements ShouldQueue
 {
@@ -40,10 +38,10 @@ class CreatePrecurationStreamMessage implements ShouldQueue
     public function handle(MessageFactoryInterface $factory)
     {
         $job = new CreateStreamMessage(
-                    config('dx.topics.outgoing.precuration-events'), 
-                    $this->curation, 
-                    $this->eventType
-                );
+            config('dx.topics.outgoing.precuration-events'),
+            $this->curation,
+            $this->eventType
+        );
         Bus::dispatchNow($job);
     }
 }

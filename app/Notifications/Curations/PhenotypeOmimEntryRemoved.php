@@ -3,12 +3,11 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
+use App\Notifications\DigestibleNotificationInterface;
 use App\Phenotype;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 
 class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotificationInterface
@@ -16,6 +15,7 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
     use Queueable;
 
     private $curation;
+
     private $phenotype;
 
     /**
@@ -69,7 +69,7 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
         return [
             'phenotype' => $this->phenotype,
             'curation' => $this->curation,
-            'template' => 'email.curations.omim_entry_moved'
+            'template' => 'email.curations.omim_entry_moved',
         ];
     }
 
@@ -92,6 +92,7 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
     {
         return $collection;
     }
+
     public static function getDigestTemplate(): string
     {
         return 'email.curations.omim_entry_moved';

@@ -10,6 +10,6 @@ $factory->define(Disease::class, function (Faker $faker) {
         'mondo_id' => 'MONDO:'.$faker->numberBetween(1000000, 9999999),
         'name' => $faker->word,
         'is_obsolete' => $faker->boolean(),
-        'replaced_by' => null
+        'replaced_by' => null,
     ];
 });

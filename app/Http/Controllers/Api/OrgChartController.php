@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\WorkingGroup;
 
@@ -36,7 +35,7 @@ class OrgChartController extends Controller
         $cdwgs = [];
         foreach ($results as $result) {
             $name = is_null($result->cdwg) ? 'No CDWG' : $result->cdwg;
-            if (!isset($cdwgs[$name])) {
+            if (! isset($cdwgs[$name])) {
                 $cdwgs[$name]['expert_panels'] = [];
             }
             $cdwgs[$name]['expert_panels'][] = [

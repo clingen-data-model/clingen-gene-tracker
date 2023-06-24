@@ -27,8 +27,8 @@ class AlterTableModeOfInheritancesAddCuratableFlag extends Migration
          */
         foreach (['HP:0000005', 'HP:0000006', 'HP:0000007', 'HP:0001417', 'HP:0032113']
             as $hpId) {
-                ModeOfInheritance::findByHpId($hpId)?->update(['curatable' => 1]);
-            }
+            ModeOfInheritance::findByHpId($hpId)?->update(['curatable' => 1]);
+        }
     }
 
     /**

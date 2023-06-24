@@ -20,9 +20,10 @@ class GciClassificationMap
     public function get($key)
     {
         $classification = $this->map->get(strtolower($key));
-        if (!$classification) {
+        if (! $classification) {
             throw new GciSyncException('Unknown Classification: '.$key);
         }
+
         return $classification;
     }
 }

@@ -2,16 +2,14 @@
 
 namespace App\Notifications\Curations;
 
-use App\Contracts\MondoClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
 use App\Notifications\DigestibleNotificationInterface;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class MondoIdNotFound extends Notification implements DigestibleNotificationInterface
 {
@@ -65,7 +63,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
     {
         return [
             'curation' => $this->curation,
-            'template' => 'email.digest.mondoid_not_found'
+            'template' => 'email.digest.mondoid_not_found',
         ];
     }
 
@@ -74,17 +72,18 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
         return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
     }
 
-   public static function getUnique(Collection $collection):Collection
-    {
-        return $collection->unique(function ($item) {
-            return static::uniqueStringForItem($item);
-        });
-    }
-    public static function filterInvalid(Collection $collection):Collection
+   public static function getUnique(Collection $collection): Collection
+   {
+       return $collection->unique(function ($item) {
+           return static::uniqueStringForItem($item);
+       });
+   }
+
+    public static function filterInvalid(Collection $collection): Collection
     {
         return $collection->filter(function ($item) {
             $curation = Curation::find($item->data['curation']['id']);
-            if (!$curation) {
+            if (! $curation) {
                 return false;
             }
             if ($curation->mondo_id == $item->data['curation']['mondo_id']) {
@@ -100,7 +99,8 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
             }
         });
     }
-    public static function getValidUnique(Collection $collection):Collection
+
+    public static function getValidUnique(Collection $collection): Collection
     {
         return static::filterInvalid(static::getUnique($collection));
     }

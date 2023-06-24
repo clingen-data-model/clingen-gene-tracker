@@ -2,35 +2,34 @@
 
 namespace App\DataExchange;
 
-use ReflectionClass;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Lorisleiva\Actions\Action;
-use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
+use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\MessageConsumer;
+use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Kafka\KafkaConfig;
 use App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Kafka\KafkaProducer;
-use App\DataExchange\Contracts\MessagePusher;
-use App\DataExchange\Contracts\MessageConsumer;
-use App\Contracts\GeneValidityCurationUpdateJob;
-use App\DataExchange\MessagePushers\MessageLogger;
-use App\Listeners\UpdateGciCurationFromGveMessage;
-use App\DataExchange\MessagePushers\DisabledPusher;
-use App\Jobs\UpdateCurationFromGeneValidityMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
+use App\DataExchange\MessagePushers\DisabledPusher;
+use App\DataExchange\MessagePushers\MessageLogger;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
+use App\Listeners\UpdateGciCurationFromGveMessage;
+use Illuminate\Console\Command;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
 
 class DataExchangeServiceProvider extends ServiceProvider
 {
     protected $listen = [
         \App\DataExchange\Events\Created::class => [
-            \App\Listeners\StreamMessages\PushMessage::class
+            \App\Listeners\StreamMessages\PushMessage::class,
         ],
         \App\DataExchange\Events\Received::class => [
             \App\Listeners\Curations\UpdateFromStreamMessage::class,
-            UpdateGciCurationFromGveMessage::class
+            UpdateGciCurationFromGveMessage::class,
         ],
     ];
 
@@ -53,7 +52,7 @@ class DataExchangeServiceProvider extends ServiceProvider
     protected function bindInstances()
     {
         $this->app->bind(MessagePusher::class, function () {
-            if (!config('dx.push-enable')) {
+            if (! config('dx.push-enable')) {
                 return new DisabledPusher();
             }
             if (config('dx.driver') == 'kafka') {
@@ -62,8 +61,9 @@ class DataExchangeServiceProvider extends ServiceProvider
             if (config('dx.driver') == 'log') {
                 return new MessageLogger();
             }
-            
+
             \Log::warning('No DataExchange driver set.  Defaulting to log driver');
+
             return new MessageLogger();
         });
 
@@ -89,7 +89,6 @@ class DataExchangeServiceProvider extends ServiceProvider
         $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
         $this->app->bind(MessageFactoryInterface::class, PrecurationV1MessageFactory::class);
     }
-
 
     /**
      * Register all of the commands in the given directory.

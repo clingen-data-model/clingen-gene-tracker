@@ -1,8 +1,6 @@
 <?php
 
 use App\CurationStatus;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateCurationStatusCurationInProgressToPrecurationComplete extends Migration

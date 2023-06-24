@@ -2,14 +2,11 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
-use App\Curation;
-use Tests\TestCase;
 use App\Classification;
-use App\CurationClassification;
+use App\Curation;
 use App\Jobs\Curations\AddClassification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group classifications
@@ -33,7 +30,7 @@ class AddClassificationTest extends TestCase
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => $classification->id,
-            'classification_date' => '2019-12-25'
+            'classification_date' => '2019-12-25',
         ]);
     }
 
@@ -49,20 +46,20 @@ class AddClassificationTest extends TestCase
         $job->handle();
 
         $curation = $curation->fresh();
-        
+
         $job2 = new AddClassification($curation, $classification, '2020-12-25');
         $job2->handle();
 
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => $classification->id,
-            'classification_date' => '2019-12-25'
+            'classification_date' => '2019-12-25',
         ]);
 
         $this->assertDatabaseMissing('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => $classification->id,
-            'classification_date' => '2020-12-25'
+            'classification_date' => '2020-12-25',
         ]);
     }
 
@@ -78,19 +75,17 @@ class AddClassificationTest extends TestCase
         $job->handle();
 
         AddClassification::dispatchNow(
-            $curation->fresh(), 
+            $curation->fresh(),
             Classification::find(config('project.classifications.moderate')),
             '2019-12-01'
         );
 
         AddClassification::dispatchNow(
-            $curation->fresh(), 
+            $curation->fresh(),
             Classification::find(config('project.classifications.moderate')),
             '2019-12-01'
         );
 
         $this->assertEquals(2, $curation->fresh()->classifications()->count());
-
     }
-
 }

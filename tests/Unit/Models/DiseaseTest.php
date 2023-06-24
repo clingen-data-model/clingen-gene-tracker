@@ -3,22 +3,21 @@
 namespace Tests\Unit\Models;
 
 use App\Disease;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
 use App\Events\Disease\DiseaseNameChanged;
 use App\Events\Disease\MondoTermObsoleted;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class DiseaseTest extends TestCase
 {
     use DatabaseTransactions;
-    
-    public function setup():void
+
+    public function setup(): void
     {
         parent::setup();
         $this->disease = factory(Disease::class)->create(['is_obsolete' => 0]);
     }
-    
 
     /**
      * @test
@@ -40,7 +39,6 @@ class DiseaseTest extends TestCase
      */
     public function dispatches_MondoTermObsoleted_when_obsoleted_changes_from_0_to_1()
     {
-
         Event::fake(MondoTermObsoleted::class);
         $this->disease->update(['is_obsolete' => 1]);
         Event::assertDispatched(MondoTermObsoleted::class);
@@ -48,6 +46,4 @@ class DiseaseTest extends TestCase
             return $event->disease == $this->disease;
         });
     }
-    
-    
 }

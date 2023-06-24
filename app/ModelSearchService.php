@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -18,27 +17,25 @@ class ModelSearchService
     ) {
         //code
     }
-    
+
     public function search($params): Collection
     {
         return $this->buildQuery($params)
                 ->get();
     }
-    
 
     public function buildQuery($params): Builder
     {
         $query = $this->modelClass::query()
                     ->with($this->defaultWith);
 
-                    
-        if (!is_null($this->defaultSelect)) {
+        if (! is_null($this->defaultSelect)) {
             $query->select($this->defaultSelect);
-        // } else {
+            // } else {
         //     $dummy = new $this->modelClass();
         //     $query->select($dummy->getTable().'.*');
         }
-        
+
         if (isset($params['sort'])) {
             $query = $this->sortQuery($query, $params['sort']);
         }
@@ -62,16 +59,16 @@ class ModelSearchService
         return $query;
     }
 
-
     private function addWhereClause($query, $where)
     {
-        if (!is_null($this->whereFunction)) {
+        if (! is_null($this->whereFunction)) {
             return ($this->whereFunction)($query, $where);
         }
 
         foreach ($where as $key => $value) {
             if (is_array($value)) {
                 $query->whereIn($key, $value);
+
                 continue;
             }
             $query->where($key, $value);
@@ -79,18 +76,17 @@ class ModelSearchService
 
         return $query;
     }
-    
 
     private function eagerLoadRelations($query, $with)
     {
         $relations = $with;
 
-        if (!is_null($this->eagerLoadFunction)) {
+        if (! is_null($this->eagerLoadFunction)) {
             return ($this->eagerLoadFunction)($query, $with);
         }
 
         if (is_string($relations)) {
-            $relations = array_map(function ($i) use ($with) {
+            $relations = array_map(function ($i) {
                 return trim($i);
             }, explode(',', $relations));
         }
@@ -98,25 +94,23 @@ class ModelSearchService
         if ($with) {
             $query->with($relations);
         }
-        
+
         return $query;
     }
-   
+
     private function removeEagerLoadRelations($query, $without)
     {
         $query->without($without);
-        
+
         return $query;
     }
-    
-
 
     private function sortQuery($query, $sort)
     {
         $field = $sort['field'];
         $dir = $sort['dir'] ?? 'asc';
 
-        if (!is_null($this->sortFunction)) {
+        if (! is_null($this->sortFunction)) {
             return ($this->sortFunction)($query, $field, $dir);
         }
 

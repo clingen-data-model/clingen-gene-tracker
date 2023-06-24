@@ -9,6 +9,6 @@ $factory->define(StateVariable::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->name,
         'type' => $faker->shuffleArray(['string', 'integer', 'float', 'boolean', 'array', 'object']),
-        'value' => $faker->randomNumber()
+        'value' => $faker->randomNumber(),
     ];
 });

@@ -2,11 +2,10 @@
 
 namespace App;
 
-use App\Model;
 use App\Events\Disease\DiseaseNameChanged;
 use App\Events\Disease\MondoTermObsoleted;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Disease extends Model
 {
@@ -14,11 +13,11 @@ class Disease extends Model
         'mondo_id',
         'name',
         'is_obsolete',
-        'replaced_by'
+        'replaced_by',
     ];
 
     protected $casts = [
-        'is_obsolete' => 'bool'
+        'is_obsolete' => 'bool',
     ];
 
     public static function boot()
@@ -39,8 +38,6 @@ class Disease extends Model
 
     /**
      * Get the replacedBy that owns the Disease
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function replacedBy(): BelongsTo
     {
@@ -49,8 +46,6 @@ class Disease extends Model
 
     /**
      * Get the curations that owns the Disease
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function curations(): HasMany
     {
@@ -70,21 +65,19 @@ class Disease extends Model
         return $query->where('mondo_id', $mondoId);
     }
 
-    
-    static public function findByMondoId($mondoId)
+    public static function findByMondoId($mondoId)
     {
         return static::mondoId($mondoId)->first();
     }
-    
-    static public function findByMondoIdOrFail($mondoId)
+
+    public static function findByMondoIdOrFail($mondoId)
     {
         return static::mondoId($mondoId)->firstOrFail();
     }
 
-    public function scopeSearch($query, $string) {
+    public function scopeSearch($query, $string)
+    {
         return $query->where('name', 'like', '%'.$string.'%')
             ->orWhere('mondo_id', 'like', '%'.$string.'%');
     }
-    
-
 }

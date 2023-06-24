@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Policies;
 
+use App\Curation;
 use App\ExpertPanel;
 use App\Policies\CurationPolicy;
-use App\Curation;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -17,14 +17,14 @@ class CurationPolicyTest extends TestCase
     {
         parent::setUp();
         $this->policy = new CurationPolicy();
-        $this->panel = factory(ExpertPanel::class)->create(['name'=>uniqid('panel')]);
+        $this->panel = factory(ExpertPanel::class)->create(['name' => uniqid('panel')]);
 
         $this->curator = factory(User::class)->create();
         $this->coordinator = factory(User::class)->create();
 
         $this->panel->users()->sync([
-            $this->curator->id => ['is_curator'=>true],
-            $this->coordinator->id => ['is_coordinator'=>true]
+            $this->curator->id => ['is_curator' => true],
+            $this->coordinator->id => ['is_coordinator' => true],
         ]);
     }
 
@@ -43,7 +43,7 @@ class CurationPolicyTest extends TestCase
      */
     public function curation_curator_can_update_curation()
     {
-        $curation = factory(Curation::class)->create(['curator_id'=>$this->curator->id]);
+        $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id]);
         $this->assertTrue($this->policy->update($this->curator, $curation));
     }
 
@@ -52,7 +52,7 @@ class CurationPolicyTest extends TestCase
      */
     public function coordinator_of_curation_expert_panel_can_update_curation()
     {
-        $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id, 'expert_panel_id'=>$this->panel->id]);
+        $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id, 'expert_panel_id' => $this->panel->id]);
         $this->assertTrue($this->policy->update($this->coordinator, $curation));
     }
 

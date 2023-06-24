@@ -2,16 +2,16 @@
 
 namespace App\Console\Commands\Gci;
 
-use App\User;
-use App\Curation;
-use Carbon\Carbon;
 use App\Affiliation;
 use App\Classification;
+use App\Curation;
 use App\CurationStatus;
-use App\ModeOfInheritance;
-use Illuminate\Console\Command;
 use App\Exceptions\GciSyncException;
+use App\ModeOfInheritance;
+use App\User;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Console\Command;
 
 class ImportGciSnapshot extends Command
 {
@@ -19,7 +19,7 @@ class ImportGciSnapshot extends Command
         0 => 'mapping',
         401 => 'no curator',
         404 => 'missing',
-        409 => 'ambiguous'
+        409 => 'ambiguous',
     ];
 
     /**
@@ -62,7 +62,7 @@ class ImportGciSnapshot extends Command
         $this->uuidMatches = collect();
 
         config(['mail.driver' => 'array']);
-        if (!file_exists($this->argument('file'))) {
+        if (! file_exists($this->argument('file'))) {
             $this->error('File '.$this->argument('file').' does not exist');
         }
 
@@ -79,7 +79,7 @@ class ImportGciSnapshot extends Command
 
         $this->classifications = Classification::all()->keyBy('name');
         $this->classifications->put('No Reported Evidence', $this->classifications['No Known Disease Relationship']);
-        
+
         $this->mois = ModeOfInheritance::all()->keyBy('hp_id');
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');
 
@@ -99,7 +99,7 @@ class ImportGciSnapshot extends Command
 
         $bar = $this->output->createProgressBar(count($rows));
         $errors = [];
-        
+
         foreach ($rows as $row) {
             try {
                 $curation = $this->getMatchingCuration($row);
@@ -115,7 +115,7 @@ class ImportGciSnapshot extends Command
                 $curation->save();
             } catch (GciSyncException $e) {
                 $type = $this->errorCodes[$e->getCode()];
-                if (!isset($errors[$type])) {
+                if (! isset($errors[$type])) {
                     $errors[$type] = [];
                 }
                 $errors[$type][] = $e->hasData() ? $e->hasData() : $e->getMessage();
@@ -141,13 +141,14 @@ class ImportGciSnapshot extends Command
                 $headerKeys = array_map(function ($item) {
                     return trim(strtolower($item));
                 }, $line);
+
                 continue;
             }
 
-            
             $row = array_combine($headerKeys, $line);
             if ($this->skipRow($row)) {
                 $skipped++;
+
                 continue;
             }
 
@@ -164,7 +165,7 @@ class ImportGciSnapshot extends Command
         foreach ($errors as $type => $contents) {
             $errors[$type] = array_flatten($contents, 1);
             $errors['missing'] = array_filter($errors['missing'], function ($item) {
-                return !empty($item['affiliation']);
+                return ! empty($item['affiliation']);
             });
         }
         file_put_contents(base_path('files/gci_snapshot_import_errors.json'), json_encode($errors, JSON_PRETTY_PRINT));
@@ -180,7 +181,7 @@ class ImportGciSnapshot extends Command
             $this->errorsToCsv($errors['ambiguous'], base_path('files/gci_snapshot_ambiguous.csv'));
         }
     }
-    
+
     private function errorsToCsv($errors, $outputFile)
     {
         $fh = fopen($outputFile, 'w');
@@ -190,8 +191,6 @@ class ImportGciSnapshot extends Command
         }
         fclose($fh);
     }
-    
-    
 
     private function skipRow($row)
     {
@@ -212,7 +211,7 @@ class ImportGciSnapshot extends Command
             '6189bdf4-8751-4ac1-a7d8-b159d3dfb92f',
             '1fcd4927-5557-4d07-84ba-4a1cba6d13f6',
             '54d978f1-1ad9-4301-bae0-633923d36110',
-            "7cd56c3b-b370-4f9b-9e19-75b290148638",
+            '7cd56c3b-b370-4f9b-9e19-75b290148638',
             'c4031490-5407-4bfc-8c59-4e4fbc47f598',
             'eeb94ab6-1e2e-4f89-89ed-037e6b3a97a6',
             'a9c50f8f-33a0-4c13-87d3-5997849f6993',
@@ -220,18 +219,18 @@ class ImportGciSnapshot extends Command
 
         return in_array($row['gdm uuid'], $skipData);
     }
-    
 
     private function getMatchingCuration($row)
     {
         $curation = $this->matchGdmUuid($row);
-        if (!is_null($curation)) {
+        if (! is_null($curation)) {
             $this->uuidMatches->push([$curation->id, $curation->gdm_uuid]);
+
             return $curation;
         }
 
-        $curation  = $this->matchHgncAndMondo($row);
-        if (!is_null($curation)) {
+        $curation = $this->matchHgncAndMondo($row);
+        if (! is_null($curation)) {
             return $curation;
         }
 
@@ -242,7 +241,7 @@ class ImportGciSnapshot extends Command
             'mondo_id' => $row['mondo id'],
             'affiliation' => $row['affiliation name'],
             'creator' => $row['creator email'],
-            'uuid' => $row['gdm uuid']
+            'uuid' => $row['gdm uuid'],
         ];
         $hgncMondoData = json_encode(['HGNC_ID' => $row['hgnc id'], 'MonDO ID' => $row['mondo id']]);
         $th = new GciSyncException('Curation not found: '.$hgncMondoData, 404);
@@ -256,7 +255,6 @@ class ImportGciSnapshot extends Command
 
         return $uuidMap->get($row['gdm uuid']);
     }
-    
 
     private function matchHgncAndMondo($row)
     {
@@ -264,7 +262,7 @@ class ImportGciSnapshot extends Command
             return 'HGNC:'.$curation->hgnc_id == $row['hgnc id']
                     && $curation->mondo_id == 'MONDO:'.str_pad($row['mondo id'], 7, '0', STR_PAD_LEFT);
         });
-        
+
         if ($curations->count() > 1) {
             throw $this->buildRowError($row, 409);
         }
@@ -291,7 +289,7 @@ class ImportGciSnapshot extends Command
 
     //     return $matching->first();
     // }
-    
+
     private function buildRowError($data, $code)
     {
         $keys = [
@@ -308,19 +306,18 @@ class ImportGciSnapshot extends Command
 
         return $th;
     }
-    
 
     private function updateStatus($curation, $row)
     {
         $matchStatus = strtolower($row['status']);
         $newStatus = $this->curationStatuses->get($matchStatus);
-        if (!$newStatus) {
+        if (! $newStatus) {
             $newStatus = $this->curationStatuses->get('Curation '.$matchStatus);
-            if (!$newStatus) {
+            if (! $newStatus) {
                 throw new GciSyncException('Unknown status: '.$matchStatus);
             }
         }
-        if (!$curation->currentStatus || $curation->currentStatus->id != $newStatus->id) {
+        if (! $curation->currentStatus || $curation->currentStatus->id != $newStatus->id) {
             $curation->statuses()
                 ->syncWithoutDetaching($newStatus->id);
         }
@@ -331,7 +328,7 @@ class ImportGciSnapshot extends Command
         if (empty($row['classification']) || $row['classification'] == 'No Classification') {
             return;
         }
-        if (!isset($this->classifications[$row['classification']])) {
+        if (! isset($this->classifications[$row['classification']])) {
             throw new GciSyncException('Unknown classification: '.$row['classification']);
         }
         $newClassification = $this->classifications[$row['classification']];
@@ -375,7 +372,7 @@ class ImportGciSnapshot extends Command
         if (empty($row['affiliation id'])) {
             return;
         }
-        if (!isset($this->affiliations[$row['affiliation id']])) {
+        if (! isset($this->affiliations[$row['affiliation id']])) {
             throw new GciSyncException('Affiliation id '.$row['affiliation id'].' not found');
         }
         if (is_null($curation->affiliation_id)) {
@@ -387,9 +384,9 @@ class ImportGciSnapshot extends Command
     {
         $moiId = substr(substr($row['moi'], -11), 0, 10);
         $moi = $this->mois->get($moiId);
-        if (!$moi) {
+        if (! $moi) {
             $moi = $this->mois->firstWhere('name', $row['moi']);
-            if (!$moi) {
+            if (! $moi) {
                 throw new GciSyncException('MOI "'.$row['moi'].'" not found');
             }
         }
@@ -399,37 +396,37 @@ class ImportGciSnapshot extends Command
     private function disambiguateRecords()
     {
         $map = [
-            1424 => "4fd43e6c-1015-4460-a279-4629ac82259a",
-            1532 => "ba9039b2-d139-472d-90b9-fef79f9f532e",
-            1533 => "b70a32eb-5863-4859-bb1b-0696dd4d7a3f",
-            1535 => "fe512442-fa12-457b-b40d-33a4b863ed04",
-            3945 => "f8ccd4e5-8a92-41bf-ae08-2eda3ee42c84",
-            100 => "f8a3ab80-4c02-4f66-bfe8-c1d07ecd801d",
-            377 => "ea69f940-a536-40b5-9f13-689db9f71126",
-            2251 => "499b3d31-14aa-4ff2-bfb6-6e806986255b",
-            1517 => "f41b3abf-f562-45e4-89dc-f79a104c4a03",
-            1518 => "548a311c-212b-49d0-bf60-44e7e14aa965",
-            1524 => "1adc4355-939a-4756-b1b5-d9e6742e49ad",
-            1525 => "2328aa25-6230-4b81-9465-18602b4558e5",
-            1514 => "2b01bea1-5b69-4878-bbb5-ccb3db7eef5d",
-            1515 => "93f4d17d-1e74-43b3-9886-d079542f2ce6",
-            1241 => "9fca0130-ec4f-4f0a-9270-3825bb1ee063",
-            227 => "8ad2a522-5c68-480b-b37e-7d3d228671ba",
-            1543 => "b28b005e-2933-438e-ba1b-26866b4891bd",
-            1306 => "b2d6488b-5314-44ae-87e3-48cd156fa8d6",
-            1307 => "dae1797c-30f1-4c11-9c11-d91cb5c86504",
-            1308 => "f1f5438f-acd0-4ed8-a92c-5bb58e544eff",
-            1309 => "bbdfdb48-b677-4076-a3c0-9ee2159c93fc",
-            1310 => "fc9cf504-7428-4383-8ea2-1aa26f50eba2",
-            1311 => "d4ab608c-95a9-4bf8-9c1c-e1a87b504e08",
-            1312 => "36fcfaf7-788e-4f89-aaf1-ddedb5a7a271",
-            1313 => "420bcb82-ee9a-4d15-a5bb-fb7190422941",
-            1314 => "2aa25fd9-4a0f-438f-baf5-33a0ea72345f",
-            1315 => "f271f109-e6a1-4bb0-8cb2-db9e7d9924be",
-            2256 => "316ac2fc-555e-4c2e-a0ba-29a7e1663f72",
-            1492 => "4ccfba39-0769-4346-ab63-56c9cbd20185",
-            1493 => "2ae22ff7-9c17-489a-a723-86a9d7b3eeb0",
-            2254 => "61ad3529-b9e2-4b94-a388-3c11b1cb5144"
+            1424 => '4fd43e6c-1015-4460-a279-4629ac82259a',
+            1532 => 'ba9039b2-d139-472d-90b9-fef79f9f532e',
+            1533 => 'b70a32eb-5863-4859-bb1b-0696dd4d7a3f',
+            1535 => 'fe512442-fa12-457b-b40d-33a4b863ed04',
+            3945 => 'f8ccd4e5-8a92-41bf-ae08-2eda3ee42c84',
+            100 => 'f8a3ab80-4c02-4f66-bfe8-c1d07ecd801d',
+            377 => 'ea69f940-a536-40b5-9f13-689db9f71126',
+            2251 => '499b3d31-14aa-4ff2-bfb6-6e806986255b',
+            1517 => 'f41b3abf-f562-45e4-89dc-f79a104c4a03',
+            1518 => '548a311c-212b-49d0-bf60-44e7e14aa965',
+            1524 => '1adc4355-939a-4756-b1b5-d9e6742e49ad',
+            1525 => '2328aa25-6230-4b81-9465-18602b4558e5',
+            1514 => '2b01bea1-5b69-4878-bbb5-ccb3db7eef5d',
+            1515 => '93f4d17d-1e74-43b3-9886-d079542f2ce6',
+            1241 => '9fca0130-ec4f-4f0a-9270-3825bb1ee063',
+            227 => '8ad2a522-5c68-480b-b37e-7d3d228671ba',
+            1543 => 'b28b005e-2933-438e-ba1b-26866b4891bd',
+            1306 => 'b2d6488b-5314-44ae-87e3-48cd156fa8d6',
+            1307 => 'dae1797c-30f1-4c11-9c11-d91cb5c86504',
+            1308 => 'f1f5438f-acd0-4ed8-a92c-5bb58e544eff',
+            1309 => 'bbdfdb48-b677-4076-a3c0-9ee2159c93fc',
+            1310 => 'fc9cf504-7428-4383-8ea2-1aa26f50eba2',
+            1311 => 'd4ab608c-95a9-4bf8-9c1c-e1a87b504e08',
+            1312 => '36fcfaf7-788e-4f89-aaf1-ddedb5a7a271',
+            1313 => '420bcb82-ee9a-4d15-a5bb-fb7190422941',
+            1314 => '2aa25fd9-4a0f-438f-baf5-33a0ea72345f',
+            1315 => 'f271f109-e6a1-4bb0-8cb2-db9e7d9924be',
+            2256 => '316ac2fc-555e-4c2e-a0ba-29a7e1663f72',
+            1492 => '4ccfba39-0769-4346-ab63-56c9cbd20185',
+            1493 => '2ae22ff7-9c17-489a-a723-86a9d7b3eeb0',
+            2254 => '61ad3529-b9e2-4b94-a388-3c11b1cb5144',
         ];
 
         $this->info('Setting uuid on records to disambiguate...');

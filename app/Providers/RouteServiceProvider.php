@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -39,9 +39,9 @@ class RouteServiceProvider extends ServiceProvider
         // external API routes (/api/v1) must preceed API routes (/api/*)
         // for auth to look at the correct guard.
         $this->mapExternalApiRoutes();
-        
+
         $this->mapApiRoutes();
-        
+
         $this->mapWebRoutes();
     }
 

@@ -2,24 +2,27 @@
 
 namespace App\DataExchange\Jobs;
 
-use App\Curation;
 use App\Affiliation;
+use App\Curation;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Maps\GciStatusMap;
+use App\Exceptions\GciSyncException;
+use App\Gci\GciClassificationMap;
 use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
-use App\Gci\GciClassificationMap;
-use App\Exceptions\GciSyncException;
-use App\DataExchange\Maps\GciStatusMap;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 
 class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJob
 {
     use Dispatchable, Queueable;
 
     protected $curation;
+
     protected $gciMessage;
+
     protected $statusMap;
+
     protected $classificationMap;
 
     /**
@@ -54,17 +57,18 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
         try {
             if ($this->gciMessage->status == 'created') {
                 \Log::debug($updateSummary);
+
                 return;
             }
-    
+
             $updateSummary['addStatus'] = [
                 'status' => $this->statusMap->get($this->gciMessage->status) ? $this->statusMap->get($this->gciMessage->status)->name : 'No Status??',
-                'status_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s')
+                'status_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s'),
             ];
-    
+
             $updateSummary['addClassification'] = [
                 'classification' => $this->classificationMap->get($this->gciMessage->classification) ? $this->classificationMap->get($this->gciMessage->classification)->name : 'No Classification??',
-                'classification_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s')
+                'classification_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s'),
             ];
         } catch (GciSyncException $gciSyncException) {
             \Log::error($gciSyncException);

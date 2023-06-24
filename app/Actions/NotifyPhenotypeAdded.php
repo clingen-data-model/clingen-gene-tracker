@@ -3,12 +3,12 @@
 namespace App\Actions;
 
 use App\Curation;
+use App\Events\Phenotypes\PhenotypeAddedForGene;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 use App\Phenotype;
 use Illuminate\Support\Facades\Bus;
 use Lorisleiva\Actions\Concerns\AsListener;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
-use App\Events\Phenotypes\PhenotypeAddedForGene;
-use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 
 class NotifyPhenotypeAdded
 {
@@ -26,6 +26,4 @@ class NotifyPhenotypeAdded
             $this->handle($curation, $event->phenotype);
         });
     }
-    
-    
 }

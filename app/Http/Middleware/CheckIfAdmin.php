@@ -18,19 +18,17 @@ class CheckIfAdmin
      * is an admin, and not a regular user.
      *
      * @param [type] $user [description]
-     *
      * @return bool [description]
      */
     private function checkIfUserIsAdmin($user)
     {
-        return ($user->hasAnyRole('admin', 'programmer'));
+        return $user->hasAnyRole('admin', 'programmer');
     }
 
     /**
      * Answer to unauthorized access request.
      *
      * @param [type] $request [description]
-     *
      * @return [type] [description]
      */
     private function respondToUnauthorizedRequest($request)
@@ -45,9 +43,7 @@ class CheckIfAdmin
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -56,7 +52,7 @@ class CheckIfAdmin
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (!$this->checkIfUserIsAdmin(Auth::user())) {
+        if (! $this->checkIfUserIsAdmin(Auth::user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
 

@@ -2,9 +2,8 @@
 
 namespace App\Gci;
 
-use stdClass;
 use Carbon\Carbon;
-use App\Affiliation;
+use stdClass;
 
 /**
  * @property-read object $payload
@@ -19,6 +18,7 @@ use App\Affiliation;
 class GciMessage
 {
     protected $payload;
+
     public function __construct($payload)
     {
         if (is_string($payload)) {
@@ -26,7 +26,6 @@ class GciMessage
         }
         $this->payload = $payload;
     }
-
 
     public function __get($key)
     {
@@ -36,44 +35,44 @@ class GciMessage
         }
     }
 
-    public function getPayload():stdClass
+    public function getPayload(): stdClass
     {
         return $this->payload;
     }
 
-    public function getUuid():string
+    public function getUuid(): string
     {
         return $this->payload->report_id;
     }
 
-    public function getHgncId():string
+    public function getHgncId(): string
     {
         return $this->payload->gene_validity_evidence_level->genetic_condition->gene;
     }
 
-    public function getMondoId():string
+    public function getMondoId(): string
     {
         return $this->payload->gene_validity_evidence_level->genetic_condition->condition;
     }
 
-    public function getMoi():string
+    public function getMoi(): string
     {
         return $this->payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance;
     }
 
-    public function getAffiliation():stdClass
+    public function getAffiliation(): stdClass
     {
-        return (object)$this->payload->performed_by->on_behalf_of;
+        return (object) $this->payload->performed_by->on_behalf_of;
     }
 
     public function hasStatus(): bool
     {
-        return (bool)$this->status;
+        return (bool) $this->status;
     }
-    
-    public function getStatus():?string
+
+    public function getStatus(): ?string
     {
-        if (!isset($this->payload->status)) {
+        if (! isset($this->payload->status)) {
             return null;
         }
 
@@ -84,28 +83,29 @@ class GciMessage
         return $this->payload->status;
     }
 
-    public function getClassification():string
+    public function getClassification(): string
     {
         return $this->payload->gene_validity_evidence_level->evidence_level;
     }
 
-    public function getMessageDate():Carbon
+    public function getMessageDate(): Carbon
     {
         return Carbon::parse($this->payload->date);
     }
 
     public function getStatusDate(): ?Carbon
     {
-        if (!$this->status) {
+        if (! $this->status) {
             return null;
         }
         if (is_object($this->payload->status) && isset($this->payload->status->date)) {
             return Carbon::parse($this->payload->status->date);
         }
+
         return Carbon::parse($this->payload->date);
     }
 
-    public function getCreator():stdClass
+    public function getCreator(): stdClass
     {
         return collect($this->payload->contributors)
             ->filter(function ($c) {
@@ -120,10 +120,10 @@ class GciMessage
 
     private function hasContentEventType(): bool
     {
-        return ($this->hasContent() && isset($this->payload->content->event_type));
+        return $this->hasContent() && isset($this->payload->content->event_type);
     }
 
-    public function getContent():stdClass
+    public function getContent(): stdClass
     {
         if (isset($this->payload->content)) {
             return $this->payload->content;
@@ -134,17 +134,17 @@ class GciMessage
 
     public function getOriginalDisease(): ?string
     {
-        if (!$this->hasContent()) {
+        if (! $this->hasContent()) {
             return null;
         }
 
-        if (!isset($this->getContent()->original_disease)) {
+        if (! isset($this->getContent()->original_disease)) {
             return null;
         }
 
         return $this->getContent()->original_disease;
     }
-    
+
     public function hasContentNotes(): bool
     {
         return $this->hasContent() && isset($this->getContent()->notes);
@@ -152,27 +152,23 @@ class GciMessage
 
     public function getContentNotes(): ?string
     {
-        if (!$this->hasContentNotes()) {
+        if (! $this->hasContentNotes()) {
             return null;
         }
 
         return $this->getContent()->notes;
-
     }
-    
-    
 
     // METHODS TO CHECK MESSAGE TYPE
-    
+
     public function isCreate(): bool
     {
         return $this->getStatus() == 'created';
     }
-    
 
     public function isGdmTransfer(): bool
     {
-        if (!$this->hasContentEventType()) {
+        if (! $this->hasContentEventType()) {
             return false;
         }
 
@@ -185,7 +181,7 @@ class GciMessage
 
     public function isDiseaseChange(): bool
     {
-        if (!$this->hasContent()) {
+        if (! $this->hasContent()) {
             return false;
         }
 
@@ -195,5 +191,4 @@ class GciMessage
 
         return false;
     }
-
 }

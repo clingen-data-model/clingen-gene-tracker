@@ -18,7 +18,7 @@ class TestConsumer implements MessageConsumer
         $this->messages[] = $message;
     }
 
-    public function addTopic(String $topic): MessageConsumer
+    public function addTopic(string $topic): MessageConsumer
     {
         return $this;
     }
@@ -29,6 +29,7 @@ class TestConsumer implements MessageConsumer
             $message = array_shift($this->messages);
             $callable($message);
         }
+
         return $this;
     }
 
@@ -43,6 +44,7 @@ class TestConsumer implements MessageConsumer
             $callable($message);
             $count++;
         }
+
         return $this;
     }
 
@@ -52,6 +54,7 @@ class TestConsumer implements MessageConsumer
             $message = array_shift($this->messages);
             $callable($message);
         }
+
         return $this;
     }
 
@@ -60,15 +63,13 @@ class TestConsumer implements MessageConsumer
         return [];
     }
 
-    public function removeTopic(String $topic): MessageConsumer
-    {
-        return $this;
-    }
-    
-    public function listen(): MessageConsumer
+    public function removeTopic(string $topic): MessageConsumer
     {
         return $this;
     }
 
-    
+    public function listen(): MessageConsumer
+    {
+        return $this;
+    }
 }

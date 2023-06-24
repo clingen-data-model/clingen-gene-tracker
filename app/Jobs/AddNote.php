@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Note;
 use App\Contracts\Notable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -46,7 +45,7 @@ class AddNote
                 'content' => $this->content,
                 'topic' => $this->topic,
                 'author_type' => $this->author ? get_class($this->author) : null,
-                'author_id' => $this->author ? $this->author->id : null
+                'author_id' => $this->author ? $this->author->id : null,
             ]);
     }
 }

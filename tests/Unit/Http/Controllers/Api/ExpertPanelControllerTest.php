@@ -2,9 +2,8 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Tests\TestCase;
-use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group expert-panels
@@ -39,7 +38,7 @@ class ExpertPanelControllerTest extends TestCase
      */
     public function index_includes_users_when_requested()
     {
-        \Artisan::call('db:seed', ['--class'=>'RolesAndPermissionsSeeder']);
+        \Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
         $this->panels->first()->users()->attach($this->user->id, ['is_curator' => true]);
 
         $response = $this->actingAs($this->user, 'api')

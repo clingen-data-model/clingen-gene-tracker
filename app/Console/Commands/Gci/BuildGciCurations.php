@@ -2,22 +2,19 @@
 
 namespace App\Console\Commands\Gci;
 
-use Exception;
-use Throwable;
-use Carbon\Carbon;
 use App\Affiliation;
-use App\GciCuration;
-use App\StreamMessage;
 use App\Classification;
 use App\CurationStatus;
 use App\Gci\GciMessage;
-use App\ModeOfInheritance;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
+use App\GciCuration;
 use App\IncomingStreamMessage;
+use App\ModeOfInheritance;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Intervention\Image\Exception\NotFoundException;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class BuildGciCurations extends Command
 {
@@ -34,10 +31,13 @@ class BuildGciCurations extends Command
      * @var string
      */
     protected $description = 'Build GciCurations from stream messages.';
-    
+
     protected $mois;
+
     protected $statuses;
+
     protected $classifications;
+
     protected $affiliations;
 
     /**
@@ -77,7 +77,7 @@ class BuildGciCurations extends Command
         $errors = [];
         $streamMessages->chunk(500, function ($chunk) use ($gciCurations, $bar, &$errors) {
             $chunk->each(function ($ism) use ($gciCurations, $bar, &$errors) {
-                if (!$ism->gdm_uuid) {
+                if (! $ism->gdm_uuid) {
                     return;
                 }
 
@@ -91,9 +91,9 @@ class BuildGciCurations extends Command
                         'affiliation_id' => $this->getAffiliationId($gciMessage->getAffiliation()->id),
                         'updated_at' => $gciMessage->getMessageDate(),
                     ];
-    
+
                     $gciCuration = $gciCurations->get($gciMessage->getUuid());
-                    if (!$gciCuration || $gciMessage->getStatus() == 'created') {
+                    if (! $gciCuration || $gciMessage->getStatus() == 'created') {
                         $newData['hgnc_id'] = substr($gciMessage->getHgncId(), 5);
                         $newData['creator_uuid'] = $gciMessage->getCreator()->id;
                         $newData['creator_email'] = $gciMessage->getCreator()->email;
@@ -102,15 +102,17 @@ class BuildGciCurations extends Command
                         $gciCuration = GciCuration::firstOrCreate($newData);
                         $gciCurations->put($gciCuration->gdm_uuid, $gciCuration);
                         $bar->advance();
+
                         return;
                     }
-    
-                    if (!$gciCuration) {
+
+                    if (! $gciCuration) {
                         $errors[] = 'GciCuration for gdm_uuid '.$ism->gdm_uuid.' not found. Status: '.$gciMessage->getStatus();
                         $bar->advance();
+
                         return;
                     }
-    
+
                     $gciCuration->fill($newData);
                     $gciCuration->save();
                     $bar->advance();
@@ -121,13 +123,12 @@ class BuildGciCurations extends Command
             });
         });
         $bar->finish();
-        echo("\n");
+        echo "\n";
         $this->info(count($errors).' errors found.');
         foreach ($errors as $e) {
             $this->error($e);
         }
     }
-
 
     private function populateFromSnapshot()
     {
@@ -147,12 +148,12 @@ class BuildGciCurations extends Command
                 'creator_email' => $row['creator_email'],
                 'affiliation_id' => $this->getAffiliationId($row['affiliation_id']),
                 'created_at' => Carbon::parse($row['gdm_created_date']),
-                'updated_at' => Carbon::parse($row['gdm_created_date'])
+                'updated_at' => Carbon::parse($row['gdm_created_date']),
             ];
-            if (!isset($gdmCount[$row['gdm_uuid']])) {
+            if (! isset($gdmCount[$row['gdm_uuid']])) {
                 $gdmCount[$row['gdm_uuid']] = [];
             }
-            $gdmCount[$row['gdm_uuid']][] =  $data;
+            $gdmCount[$row['gdm_uuid']][] = $data;
 
             GciCuration::updateOrCreate(
                 ['gdm_uuid' => $row['gdm_uuid']],
@@ -162,7 +163,7 @@ class BuildGciCurations extends Command
         }
 
         $bar->finish();
-        echo("\n");
+        echo "\n";
 
         $this->info('Created '.GciCuration::count().' GciCuration records');
         $duplicates = collect($gdmCount)->filter(function ($i) {
@@ -174,7 +175,7 @@ class BuildGciCurations extends Command
     private function getRows()
     {
         $snapshotPath = base_path('files/gci_snapshot.csv');
-        if (!file_exists($snapshotPath)) {
+        if (! file_exists($snapshotPath)) {
             throw new Exception('Snapshot file not found at '.$snapshotPath);
         }
 
@@ -188,10 +189,10 @@ class BuildGciCurations extends Command
                 $headerKeys = array_map(function ($item) {
                     return trim(Str::snake(strtolower($item)));
                 }, $line);
+
                 continue;
             }
 
-            
             $row = array_combine($headerKeys, $line);
             // if ($this->skipRow($row)) {
             //     $skipped++;
@@ -208,34 +209,36 @@ class BuildGciCurations extends Command
     private function getStatusId($name)
     {
         $name = str_replace('_', ' ', strtolower($name));
-        if (!$this->statuses->get($name)) {
+        if (! $this->statuses->get($name)) {
             throw new InvalidArgumentException($name.' not found in statuses table');
         }
+
         return $this->statuses->get($name)->id;
     }
-    
+
     private function getClassificationId($name)
     {
         $name = str_replace('_', ' ', strtolower($name));
         if (empty($name) || $name == 'no classification') {
             return null;
         }
-        if (!$this->classifications->get($name)) {
+        if (! $this->classifications->get($name)) {
             throw new InvalidArgumentException($name.' not found in classifications table');
         }
+
         return $this->classifications->get($name)->id;
     }
-    
+
     private function getAffiliationId($affiliationId)
     {
         if (empty($affiliationId)) {
             return null;
         }
 
-        if (!$this->affiliations->get($affiliationId)) {
+        if (! $this->affiliations->get($affiliationId)) {
             throw new InvalidArgumentException($affiliationId.' not found in affiliations table');
         }
-        
+
         return $this->affiliations->get($affiliationId)->id;
     }
 
@@ -254,6 +257,7 @@ class BuildGciCurations extends Command
             }
             throw new InvalidArgumentException('Failed to parse MOI string '.$moiString);
         }
+
         return $matches[1];
     }
 
@@ -266,10 +270,11 @@ class BuildGciCurations extends Command
         $this->statuses = CurationStatus::all()
                             ->map(function ($st) {
                                 $st->name = strtolower($st->name);
+
                                 return $st;
                             })
                             ->keyBy('name');
-                            
+
         $this->statuses->put('none', $this->statuses['uploaded']);
         $this->statuses->put('in progress', $this->statuses['precuration complete']);
         $this->statuses->put('created', $this->statuses['precuration complete']);
@@ -281,6 +286,7 @@ class BuildGciCurations extends Command
         $this->classifications = Classification::all()
                                     ->map(function ($cl) {
                                         $cl->name = strtolower($cl->name);
+
                                         return $cl;
                                     })
                                     ->keyBy('name');

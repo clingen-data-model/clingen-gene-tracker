@@ -2,14 +2,12 @@
 
 namespace Tests\Unit\Services;
 
-use Tests\TestCase;
-use  App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Contracts\MessageConsumer;
-use App\DataExchange\Events\Received;
+use  App\DataExchange\Events\Received;
+use App\DataExchange\Kafka\KafkaConsumer;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group streaming-service
@@ -19,10 +17,10 @@ class KafkaConsumerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
-        if (!class_exists(\RdKafka\KafkaConsumer::class)) {
+        if (! class_exists(\RdKafka\KafkaConsumer::class)) {
             $this->markTestSkipped('RdKafka is not installed so skip these tests');
         }
     }
@@ -83,7 +81,7 @@ class KafkaConsumerTest extends TestCase
 
         $this->assertEquals(['test', 'beans'], $consumer->topics);
     }
-    
+
     /**
      * @test
      */
@@ -154,7 +152,7 @@ class KafkaConsumerTest extends TestCase
             'partition' => $message->partition,
             'offset' => $message->offset,
             'error_code' => $message->err,
-            'gdm_uuid' => json_decode($message->payload)->report_id
+            'gdm_uuid' => json_decode($message->payload)->report_id,
         ]);
 
         $this->assertDatabaseHas('incoming_stream_messages', [
@@ -162,14 +160,14 @@ class KafkaConsumerTest extends TestCase
             'partition' => $message2->partition,
             'offset' => $message2->offset,
             'error_code' => $message2->err,
-            'gdm_uuid' => null
+            'gdm_uuid' => null,
         ]);
         $this->assertDatabaseMissing('incoming_stream_messages', [
             'topic' => $eofMessage->topic_name,
             'partition' => $eofMessage->partition,
             'offset' => $eofMessage->offset,
             'error_code' => $eofMessage->err,
-            'gdm_uuid' => null
+            'gdm_uuid' => null,
         ]);
     }
 

@@ -85,5 +85,4 @@ class CurationPolicy
 
         return false;
     }
-    
 }

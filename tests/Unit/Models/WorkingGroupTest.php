@@ -25,7 +25,7 @@ class WorkingGroupTest extends TestCase
      */
     public function has_fillable_name()
     {
-        $this->workingGroup->fill(['name'=>'test group']);
+        $this->workingGroup->fill(['name' => 'test group']);
         $this->workingGroup->save();
         $this->assertEquals('test group', $this->workingGroup->name);
     }
@@ -41,7 +41,7 @@ class WorkingGroupTest extends TestCase
             'working_groups',
             [
                 'name' => $this->workingGroup->name,
-                'deleted_at'=>$this->workingGroup->deleted_at
+                'deleted_at' => $this->workingGroup->deleted_at,
             ]
         );
     }

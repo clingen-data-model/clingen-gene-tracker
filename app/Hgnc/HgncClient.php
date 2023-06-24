@@ -8,8 +8,6 @@ use App\Exceptions\HttpUnexpectedResponseException;
 use App\Hgnc\HgncClientContract as HgncClientContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class HgncClient implements HgncClientContract
 {

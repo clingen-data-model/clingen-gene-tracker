@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Model;
 use InvalidArgumentException;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -15,14 +14,14 @@ class StateVariable extends Model
     public $fillable = [
         'name',
         'type',
-        'value'
+        'value',
     ];
 
     public function setValueAttribute($value)
     {
         switch ($this->type) {
             case 'boolean':
-                $this->attributes['value'] = (string)((integer)$value);
+                $this->attributes['value'] = (string) ((int) $value);
                 break;
             case 'array':
                 $this->attributes['value'] = json_encode($value);
@@ -31,7 +30,7 @@ class StateVariable extends Model
                 $this->attributes['value'] = json_encode($value);
                 break;
             default:
-                $this->attributes['value'] = (string)$value;
+                $this->attributes['value'] = (string) $value;
                 break;
         }
     }
@@ -44,6 +43,7 @@ class StateVariable extends Model
             case 'boolean':
             case 'float':
                 settype($this->attributes['value'], $this->type);
+
                 return $this->attributes['value'];
                 break;
             case 'array':

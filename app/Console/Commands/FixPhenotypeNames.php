@@ -42,7 +42,6 @@ class FixPhenotypeNames extends Command
     {
         // turn off mail while we do this so we don't flood coordinators with email.
         config(['mail.driver' => 'log']);
-    
 
         $phenoQuery = Phenotype::query();
         if ($this->option('limit')) {
@@ -63,7 +62,7 @@ class FixPhenotypeNames extends Command
                     return;
                 }
                 $newName = $omimEntry->phenotypeMapList[0]->phenotypeMap->phenotype;
-                
+
                 $pheno->update(['name' => $newName]);
             } catch (OmimResponseException $e) {
                 if ($omimEntry->status == 'moved') {

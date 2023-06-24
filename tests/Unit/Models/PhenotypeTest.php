@@ -4,10 +4,10 @@ namespace Tests\Unit\Models;
 
 use App\Curation;
 use App\Phenotype;
-use Tests\TestCase;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Tests\TestCase;
 
 /**
  * @group phenotypes
@@ -47,14 +47,14 @@ class PhenotypeTest extends TestCase
 
         $this->assertNotNull($phenotype->name);
     }
-    
+
     /**
      * @test
      */
     public function can_create_new_phenotype()
     {
         $phenotype = factory(Phenotype::class)->create([
-            'mim_number' => 12345
+            'mim_number' => 12345,
         ]);
 
         $allPhenes = Phenotype::all();
@@ -68,13 +68,13 @@ class PhenotypeTest extends TestCase
     {
         $phenotype = factory(Phenotype::class)->create([
             'mim_number' => 12345,
-            'name' => 'test test test'
+            'name' => 'test test test',
         ]);
 
         $this->expectException(QueryException::class);
         $phenotype2 = factory(Phenotype::class)->create([
             'mim_number' => 12345,
-            'name' => 'test test test'
+            'name' => 'test test test',
         ]);
     }
 
@@ -97,12 +97,12 @@ class PhenotypeTest extends TestCase
     public function omim_entry_cast_to_array()
     {
         $entry = [
-            "prefix" => "#",
-            "mimNumber" => 1234567,
-            "status" => "live",
-            "titles" => [
-                "preferredTitle" => 'beans',
-                "includedTitles" => 'monkeys',
+            'prefix' => '#',
+            'mimNumber' => 1234567,
+            'status' => 'live',
+            'titles' => [
+                'preferredTitle' => 'beans',
+                'includedTitles' => 'monkeys',
             ],
         ];
         $phenotype = factory(Phenotype::class)->create(['omim_entry' => $entry]);

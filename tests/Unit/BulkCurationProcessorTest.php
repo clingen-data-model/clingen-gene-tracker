@@ -2,19 +2,18 @@
 
 namespace Tests\Unit;
 
-use Mockery;
-use App\User;
-use App\Curation;
-use Tests\TestCase;
-use App\ExpertPanel;
-use App\Clients\OmimClient;
 use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\OmimEntryContract;
-use App\Services\BulkCurationProcessor;
+use App\Clients\OmimClient;
 use App\Contracts\OmimClient as OmimClientContract;
+use App\Curation;
 use App\Exceptions\BulkUploads\InvalidFileException;
-use Doctrine\DBAL\Exception\InvalidFieldNameException;
+use App\ExpertPanel;
+use App\Services\BulkCurationProcessor;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Mockery;
+use Tests\TestCase;
 
 /**
  * @group bulk-curations
@@ -27,7 +26,7 @@ class BulkCurationProcessorTest extends TestCase
     {
         parent::setUp();
         $this->user = User::where('email', 'sirs@unc.edu')->first();
-        if (!$this->user) {
+        if (! $this->user) {
             $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
         }
         $this->ep = factory(ExpertPanel::class)->create([]);
@@ -36,14 +35,16 @@ class BulkCurationProcessorTest extends TestCase
         // $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
         // $omimClientMock->method('getEntry')->willReturn(true);
 
-        app()->instance(OmimClient::class, new class extends OmimClient {
-            public function geneSymbolisValid($symbol) 
+        app()->instance(OmimClient::class, new class extends OmimClient
+        {
+            public function geneSymbolisValid($symbol)
             {
                 return true;
             }
-            public function getEntry($id): OmimEntryContract 
+
+            public function getEntry($id): OmimEntryContract
             {
-                return new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);;
+                return new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);
             }
         });
         $this->data = [
@@ -271,7 +272,7 @@ class BulkCurationProcessorTest extends TestCase
     public function validates_file_has_Curations_sheet()
     {
         \DB::table('curations')->delete();
-        
+
         try {
             $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad_file.xlsx'), 1);
             $this->fail('InvalidFileException not thrown for bad file.');
@@ -280,5 +281,4 @@ class BulkCurationProcessorTest extends TestCase
             $this->assertEquals(0, \DB::table('curations')->count());
         }
     }
-    
 }

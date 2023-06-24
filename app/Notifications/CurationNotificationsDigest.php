@@ -2,20 +2,10 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Notifications\Curations\MondoIdNotFound;
-use App\Notifications\Curations\GeneSymbolUpdated;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Notifications\Disease\NameChangedNotification;
-use App\DataExchange\Notifications\StreamErrorNotification;
-use App\Notifications\Curations\HgncIdNotFoundNotification;
-use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
-use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
-use App\DataExchange\Notifications\MondoObsoletionCandidateNotification;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class CurationNotificationsDigest extends Notification
 {

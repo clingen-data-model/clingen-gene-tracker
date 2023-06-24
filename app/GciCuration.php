@@ -2,10 +2,9 @@
 
 namespace App;
 
-use App\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class GciCuration extends Model
 {
@@ -25,8 +24,6 @@ class GciCuration extends Model
 
     /**
      * Get the status that owns the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function status(): BelongsTo
     {
@@ -35,8 +32,6 @@ class GciCuration extends Model
 
     /**
      * Get the classification that owns the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function classification(): BelongsTo
     {
@@ -45,8 +40,6 @@ class GciCuration extends Model
 
     /**
      * Get the affiliation that owns the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function affiliation(): BelongsTo
     {
@@ -55,8 +48,6 @@ class GciCuration extends Model
 
     /**
      * Get the moi that owns the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function moi(): BelongsTo
     {
@@ -65,8 +56,6 @@ class GciCuration extends Model
 
     /**
      * Get the gene that owns the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function gene(): BelongsTo
     {
@@ -75,8 +64,6 @@ class GciCuration extends Model
 
     /**
      * Get the curation associated with the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function curation(): HasOne
     {
@@ -85,8 +72,6 @@ class GciCuration extends Model
 
     /**
      * Get all of the incomingStreamMessages for the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function incomingStreamMessages(): HasMany
     {

@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\User;
-
 // VALIDATION: change the requests to match your own file names if you need form validation
-use Backpack\CRUD\CrudPanel;
-use Illuminate\Http\Request;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Backpack\CRUD\CrudPanel;
 
 /**
  * Class NotificationCrudController
- * @package App\Http\Controllers\Admin
+ *
  * @property-read CrudPanel $crud
  */
 class NotificationCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -30,7 +28,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         |--------------------------------------------------------------------------
         */
         $this->crud->setModel('App\Notification');
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/notification');
+        $this->crud->setRoute(config('backpack.base.route_prefix').'/notification');
         $this->crud->setEntityNameStrings('notification', 'notifications');
 
         /*
@@ -47,13 +45,13 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->denyAccess('create');
 
         $this->crud->removeColumns(['notifiable_type']);
-        
+
         $this->crud->addColumn([
             'name' => 'created_at',
             'type' => 'date',
             'label' => 'Created',
             'visibleInTable' => true,
-            'priority' => 1
+            'priority' => 1,
         ])->makeFirstColumn();
 
         $this->crud->setColumnDetails('notifiable_id', [
@@ -66,7 +64,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
                         return $qu->where('name', 'LIKE', '%'.$term.'%');
                     });
                 });
-            }
+            },
         ]);
 
         $this->crud->modifyColumn('type', [
@@ -75,13 +73,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'searchLogic' => function ($query, $column, $searchTerm) {
                 $query->orWhere('type', $searchTerm);
             },
-            'priority' => 1
+            'priority' => 1,
         ]);
-
 
         $this->crud->modifyColumn('read_at', [
             'visibleInTable' => true,
-            'priority' => 1
+            'priority' => 1,
         ]);
 
         $this->crud->modifyColumn('data', [
@@ -89,7 +86,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'data',
             'visibleInTable' => false,
             'visibleInShow' => true,
-            'priority' => 1000000000
+            'priority' => 1000000000,
         ]);
     }
 }

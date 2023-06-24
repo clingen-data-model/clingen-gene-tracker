@@ -3,12 +3,9 @@
 namespace App\DataExchange\Commands;
 
 use App\Curation;
-use App\Gci\GciMessage;
-use App\IncomingStreamMessage;
+use App\Jobs\ReplayGciEventsForCuration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Contracts\GeneValidityCurationUpdateJob;
-use App\Jobs\ReplayGciEventsForCuration;
 
 class ReplayGciEvents extends Command
 {
@@ -40,7 +37,7 @@ class ReplayGciEvents extends Command
      * Execute the console command.
      *
      * @return mixed
-     * 
+     *
      * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
     public function handle()
@@ -49,9 +46,10 @@ class ReplayGciEvents extends Command
         if ($this->argument('curation_id') == 'all') {
             $curations = Curation::whereNotNull('gdm_uuid')->get();
         } else {
-            $curation = Curation::findOrFail((int)$this->argument('curation_id'));
-            if (!$curation->gdm_uuid) {
+            $curation = Curation::findOrFail((int) $this->argument('curation_id'));
+            if (! $curation->gdm_uuid) {
                 $this->error('Curation '.$curation->id.' is not linked to a GDM.');
+
                 return 1;
             }
             $curations->push($curation);

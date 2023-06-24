@@ -2,9 +2,9 @@
 
 namespace App\Jobs\Curations;
 
+use App\Classification;
 use App\Curation;
 use Carbon\Carbon;
-use App\Classification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -43,8 +43,8 @@ class AddClassification
 
         $this->curation->classifications()->attach([
             $this->classification->id => [
-                'classification_date' => $this->date
-            ]
+                'classification_date' => $this->date,
+            ],
         ]);
     }
 
@@ -56,13 +56,11 @@ class AddClassification
     private function isExistingDatedClassification()
     {
         $filtered = $this->curation->classifications
-                        ->filter(function($classification) {
+                        ->filter(function ($classification) {
                             return $classification->id == $this->classification->id
                                 && $classification->pivot->classification_date = $this->date;
                         });
 
         return $filtered->count() > 0;
     }
-    
-    
 }

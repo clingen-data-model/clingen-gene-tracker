@@ -2,17 +2,17 @@
 
 namespace App\DataExchange\Jobs;
 
-use Exception;
-use Carbon\Carbon;
+use App\DataExchange\Contracts\MessagePusher;
+use App\DataExchange\Exceptions\StreamingServiceDisabledException;
+use App\DataExchange\Exceptions\StreamingServiceException;
 use App\StreamMessage;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\DataExchange\Contracts\MessagePusher;
-use App\DataExchange\Exceptions\StreamingServiceException;
-use App\DataExchange\Exceptions\StreamingServiceDisabledException;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class PushMessage implements ShouldQueue
 {
@@ -42,7 +42,7 @@ class PushMessage implements ShouldQueue
             $message = $this->getMessageString($this->message->message);
             $pusher->push($message);
             $this->message->update([
-                'sent_at' => Carbon::now()
+                'sent_at' => Carbon::now(),
             ]);
         } catch (StreamingServiceDisabledException $e) {
             if (config('dx.warn-disabled', true)) {
@@ -50,6 +50,7 @@ class PushMessage implements ShouldQueue
             }
         } catch (StreamingServiceException $e) {
             report($e);
+
             return;
         }
     }
@@ -59,11 +60,11 @@ class PushMessage implements ShouldQueue
         if (is_string($message)) {
             return $message;
         }
-        
+
         if (is_array($message) || is_object($message)) {
             return json_encode($message);
         }
 
-        throw new Exception("Expected message to be string, object, or array.  Got ".gettype($message));
+        throw new Exception('Expected message to be string, object, or array.  Got '.gettype($message));
     }
 }

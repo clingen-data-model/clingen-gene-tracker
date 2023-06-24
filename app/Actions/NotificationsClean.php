@@ -2,14 +2,15 @@
 
 namespace App\Actions;
 
-use Carbon\Carbon;
 use App\Notification;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsCommand;
+
 /**
  * Clean the notifications table
- * 
+ *
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 class NotificationsClean
@@ -29,22 +30,21 @@ class NotificationsClean
      * @return mixed
      */
     public function handle(
-        bool $deleteUnread = false, 
-        ?Carbon $createdBefore = null, 
-        ?Carbon $readBefore = null, 
+        bool $deleteUnread = false,
+        ?Carbon $createdBefore = null,
+        ?Carbon $readBefore = null,
         bool $dryRun = false
-    )
-    {
+    ) {
         $query = Notification::query();
-        
-        if (!$deleteUnread) {
+
+        if (! $deleteUnread) {
             $query->read();
         }
-        
+
         $createdBefore = $createdBefore ?? Carbon::now()->subDays(30);
 
         $query->where('created_at', '<', $createdBefore);
-        
+
         if ($readBefore) {
             $query->where('created_at', '<', $readBefore);
         }
@@ -52,29 +52,31 @@ class NotificationsClean
         if ($dryRun) {
             return 'Would delete '.$query->count().' notifications';
         }
-        
+
         $count = $query->count();
         $query->get()->each->delete();
-        
+
         Log::info('Cleaned notifications table.');
+
         return $count.' notifications cleaned.';
     }
 
     public function asCommand(Command $command): void
     {
-        if (app()->environment('production') && !$command->option('force')) {
-            if (!$command->confirm('You are about to clear notifications in a PRODUCTION environment.  This cannot be undone.  Are you sure you want to continue?')) {
+        if (app()->environment('production') && ! $command->option('force')) {
+            if (! $command->confirm('You are about to clear notifications in a PRODUCTION environment.  This cannot be undone.  Are you sure you want to continue?')) {
                 $command->info('notificaions:clear was cancelled.');
+
                 return;
             }
         }
         $response = $this->handle(
-            deleteUnread: $command->option('unread'), 
+            deleteUnread: $command->option('unread'),
             createdBefore: $command->option('created-before') ? Carbon::parse($command->option('created-before')) : null,
             readBefore: $command->option('read-before') ? Carbon::parse($command->option('read-before')) : null,
             dryRun: $command->option('dry-run')
         );
-        if (!$command->option('quiet')) {
+        if (! $command->option('quiet')) {
             $command->info($response);
         }
     }
@@ -83,6 +85,4 @@ class NotificationsClean
     {
         return 'Cleans read notifications.';
     }
-    
-    
 }

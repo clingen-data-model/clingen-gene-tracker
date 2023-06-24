@@ -13,7 +13,7 @@ class AddUuidToCurations extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('curations', 'uuid')) {
+        if (! Schema::hasColumn('curations', 'uuid')) {
             Schema::table('curations', function (Blueprint $table) {
                 $table->uuid('uuid')->after('id');
             });

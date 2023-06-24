@@ -1,23 +1,20 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CleanDuplicateCurationClassifications extends Migration
 {
     protected $backupPath;
+
     protected $table = 'classification_curation';
 
     public function __construct()
     {
-        if (!file_exists(storage_path('database/migrated_data/'))) {
+        if (! file_exists(storage_path('database/migrated_data/'))) {
             mkdir(storage_path('database/migrated_data/'));
         }
         $this->backupPath = storage_path('database/migrated_data/duplicate_curation_classifications.csv');
     }
-
-
 
     /**
      * Run the migrations.
@@ -47,7 +44,7 @@ class CleanDuplicateCurationClassifications extends Migration
                     WHERE tbl1.curation_id = tbl2.curation_id
                         AND tbl1.`classification_id` = tbl2.`classification_id`
                         AND tbl1.classification_date = tbl2.`classification_date`'
-                    );
+        );
     }
 
     private function backupDuplicateForRoleback()
@@ -59,15 +56,15 @@ class CleanDuplicateCurationClassifications extends Migration
                     ->whereColumn('tbl1.curation_id', 'tbl2.curation_id')
                     ->whereColumn('tbl1.classification_id', 'tbl2.classification_id')
                     ->whereColumn('tbl1.classification_date', 'tbl2.classification_date');
-                })
+            })
             ->orderBy('tbl2.id');
-        
+
         $fh = fopen($this->backupPath, 'w+');
         $query->chunk(5000, function ($chunk, $idx) use ($fh) {
             $chunk->each(function ($record, $i) use ($fh, $idx) {
-                $record = (array)$record;
+                $record = (array) $record;
                 if ($idx == 1 && $i == 0) {
-                    fputcsv($fh, array_keys($record),",","'");
+                    fputcsv($fh, array_keys($record), ',', "'");
                 }
                 fputcsv($fh, array_values($record));
             });
@@ -83,19 +80,19 @@ class CleanDuplicateCurationClassifications extends Migration
         while (($data = fgetcsv($fh)) !== false) {
             if (count($keys) == 0) {
                 $keys = $data;
+
                 continue;
             }
             $records[] = array_combine($keys, $data);
-            
+
             if (count($records) == 100) {
                 DB::table($this->table)
                     ->insert($records);
                 $records = [];
             }
-        }   
+        }
 
         DB::table($this->table)
             ->insert($records);
     }
-
 }

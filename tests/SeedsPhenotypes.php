@@ -8,26 +8,26 @@ trait SeedsPhenotypes
 {
     public function seedPhenotypes($data = null)
     {
-        if (!$data) {
+        if (! $data) {
             $data = [
                 [
                     'name' => 'Cardiomyopathy, hypertrophic, 2',
                     'mim_number' => 115195,
-                    'moi' => 'Autosomal dominant'
+                    'moi' => 'Autosomal dominant',
                 ],
                 [
                     'name' => 'Neurofibromatosis, type 2',
                     'mim_number' => 607084,
-                    'moi' => 'Autosomal recessive'
+                    'moi' => 'Autosomal recessive',
                 ],
                 [
                     'name' => ' Retinoblastoma',
                     'mim_number' => 180200,
-                    'moi' => 'Atosomal recessive'
-                ]
+                    'moi' => 'Atosomal recessive',
+                ],
             ];
         }
-        
+
         $phenotypes = collect();
         foreach ($data as $d) {
             $ph = Phenotype::create($d);

@@ -2,40 +2,38 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\User;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Notifications\DatabaseNotification;
-use App\Notifications\Disease\NameChangedNotification;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Curations\PhenotypeOmimEntryRemoved;
-use Tests\Feature\End2End\Dx\MondoObsoletionCandidateTest;
+use App\User;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Facades\Artisan;
+use Tests\TestCase;
 
 class DeleteDuplicateNotificationsTest extends TestCase
 {
     use DatabaseTransactions;
 
     private $u1;
+
     private $u2;
+
     private $notifications;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->u1 = factory(User::class)->create();
         $this->u2 = factory(User::class)->create();
 
         $this->notifications = collect();
-        foreach([$this->u1, $this->u2] as $user) {
+        foreach ([$this->u1, $this->u2] as $user) {
             $this->notifications->push(factory(DatabaseNotification::class, 10)->create([
                 'notifiable_id' => $user->id,
                 'notifiable_type' => get_class($user),
                 'data' => [
                     'curation' => ['id' => 1],
-                    'phenotype' => ['id' => 1]
-                ]
+                    'phenotype' => ['id' => 1],
+                ],
             ]));
             $this->notifications->push(factory(DatabaseNotification::class, 2)->create([
                 'notifiable_id' => $user->id,
@@ -43,8 +41,8 @@ class DeleteDuplicateNotificationsTest extends TestCase
                 'type' => PhenotypeOmimEntryRemoved::class,
                 'data' => [
                     'curation' => ['id' => 1],
-                    'phenotype' => ['id' => 1]
-                ]
+                    'phenotype' => ['id' => 1],
+                ],
             ]));
             $this->notifications->push(factory(DatabaseNotification::class)->create(
                 [
@@ -52,7 +50,7 @@ class DeleteDuplicateNotificationsTest extends TestCase
                     'notifiable_type' => get_class($user),
                     'data' => [
                         'curation' => ['id' => 2],
-                        'phenotype' => ['id' => 1]
+                        'phenotype' => ['id' => 1],
                     ],
                 ]
             ));

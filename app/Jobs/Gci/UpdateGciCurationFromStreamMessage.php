@@ -2,30 +2,32 @@
 
 namespace App\Jobs\Gci;
 
-use Exception;
 use App\Affiliation;
-use App\GciCuration;
 use App\Classification;
 use App\CurationStatus;
 use App\Gci\GciMessage;
+use App\GciCuration;
 use App\ModeOfInheritance;
+use Exception;
 use Illuminate\Bus\Queueable;
-use InvalidArgumentException;
-use App\IncomingStreamMessage;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use InvalidArgumentException;
 
 class UpdateGciCurationFromStreamMessage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
     public $gciMessage;
+
     private $affiliations;
+
     private $statuses;
+
     private $classifications;
+
     private $mois;
 
     /**
@@ -49,7 +51,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->messageHasUuid()) {
+        if (! $this->messageHasUuid()) {
             return;
         }
 
@@ -68,9 +70,8 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
             $newData['status_id'] = $this->getStatusId($this->gciMessage->getStatus());
         }
 
-
-        if (!$gciCuration || $this->gciMessage->getStatus() == 'created') {
-            if (!isset($newData['status_id'])) {
+        if (! $gciCuration || $this->gciMessage->getStatus() == 'created') {
+            if (! isset($newData['status_id'])) {
                 $newData['status_id'] = config('curations.statuses.precuration-complete');
             }
             $newData['hgnc_id'] = substr($this->gciMessage->getHgncId(), 5);
@@ -79,11 +80,13 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
             $newData['created_at'] = $this->gciMessage->getMessageDate();
             $newData['gdm_uuid'] = $this->gciMessage->getUuid();
             $gciCuration = GciCuration::firstOrCreate(['gdm_uuid' => $this->gciMessage->getUuid()], $newData);
+
             return;
         }
 
-        if (!$gciCuration) {
+        if (! $gciCuration) {
             throw new Exception('GciCuration for gdm_uuid '.$this->gciMessage->gdm_uuid.' not found. Status: '.$this->gciMessage->getStatus());
+
             return;
         }
 
@@ -94,32 +97,35 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
     private function getStatusId($name)
     {
         $name = str_replace('_', ' ', strtolower($name));
-        if (!$this->statuses->get($name)) {
+        if (! $this->statuses->get($name)) {
             throw new InvalidArgumentException($name.' not found in statuses table');
         }
+
         return $this->statuses->get($name)->id;
     }
-    
+
     private function getClassificationId($name)
     {
         $name = str_replace('_', ' ', strtolower($name));
         if (empty($name) || $name == 'no classification') {
             return null;
         }
-        if (!$this->classifications->get($name)) {
+        if (! $this->classifications->get($name)) {
             throw new InvalidArgumentException($name.' not found in classifications table');
         }
+
         return $this->classifications->get($name)->id;
     }
-    
+
     private function getAffiliationId($affiliationId)
     {
         if (empty($affiliationId)) {
             return null;
         }
-        if (!$this->affiliations->get($affiliationId)) {
+        if (! $this->affiliations->get($affiliationId)) {
             throw new InvalidArgumentException($affiliationId.' not found in affiliations table');
         }
+
         return $this->affiliations->get($affiliationId)->id;
     }
 
@@ -145,10 +151,11 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         $this->statuses = CurationStatus::all()
                             ->map(function ($st) {
                                 $st->name = strtolower($st->name);
+
                                 return $st;
                             })
                             ->keyBy('name');
-                            
+
         $this->statuses->put('none', $this->statuses['uploaded']);
         $this->statuses->put('in progress', $this->statuses['precuration complete']);
         $this->statuses->put('created', $this->statuses['precuration complete']);
@@ -160,6 +167,7 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         $this->classifications = Classification::all()
                                     ->map(function ($cl) {
                                         $cl->name = strtolower($cl->name);
+
                                         return $cl;
                                     })
                                     ->keyBy('name');
@@ -170,6 +178,6 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
 
     private function messageHasUuid()
     {
-        return (boolean)$this->gciMessage->getUuid();
+        return (bool) $this->gciMessage->getUuid();
     }
 }

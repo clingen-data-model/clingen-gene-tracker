@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExpertPanelResource extends JsonResource
@@ -21,6 +20,7 @@ class ExpertPanelResource extends JsonResource
         $data['users'] = UserResource::collection($this->whenLoaded('users'));
         $data['coordinators'] = UserResource::collection($this->whenLoaded('coordinators'));
         $data['curators'] = UserResource::collection($this->whenLoaded('curators'));
+
         return $data;
     }
 }

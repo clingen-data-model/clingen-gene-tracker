@@ -2,17 +2,12 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
+use App\CurationType;
+use App\Http\Resources\CurationResource;
 use App\User;
 use Carbon\Carbon;
-use Tests\TestCase;
-use App\CurationType;
-use App\Clients\OmimClient;
-use App\Clients\Omim\OmimEntry;
-use App\Clients\Omim\OmimEntryContract;
-use App\Rules\ValidGeneSymbolRule;
-use App\Http\Resources\CurationResource;
-use App\Rules\ValidHgncGeneSymbol;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group api
@@ -265,10 +260,9 @@ class CurationControllerTest extends TestCase
 
         $this->actingAs($this->user, 'api')
             ->json('POST', '/api/curations', $data)
-            ->assertJsonFragment(['mim_number'=>$phenotype->mim_number])
-            ->assertJsonFragment(['mim_number'=>12345])
-            ->assertJsonFragment(['mim_number'=>67890])
-            ;
+            ->assertJsonFragment(['mim_number' => $phenotype->mim_number])
+            ->assertJsonFragment(['mim_number' => 12345])
+            ->assertJsonFragment(['mim_number' => 67890]);
     }
 
     /**

@@ -21,6 +21,4 @@ class ApiServerErrorException extends Exception
         $message = 'There was a problem accessing the '.$this->api.' API at '.$this->url;
         parent::__construct($message, 500, $previous);
     }
-
-    
 }

@@ -3,7 +3,6 @@
 namespace App\DataExchange\MessageFactories;
 
 use App\Curation;
-use Ramsey\Uuid\Uuid;
 
 class PrecurationV1MessageFactory implements MessageFactoryInterface
 {
@@ -20,8 +19,8 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                     'id' => $curation->id,
                     'uuid' => $curation->uuid,
                     'gene' => $this->getGene($curation),
-                    'group' => $this->getGroup($curation)
-                ]
+                    'group' => $this->getGroup($curation),
+                ],
             ]);
         }
 
@@ -38,6 +37,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     private function assembleData($curation)
     {
         $curation = $curation->fresh();
+
         return array_filter([
             'id' => $curation->id,
             'uuid' => $curation->uuid,
@@ -64,7 +64,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     {
         return [
             'hgnc_id' => $curation->hgnc_id,
-            'symbol' => $curation->gene_symbol
+            'symbol' => $curation->gene_symbol,
         ];
     }
 
@@ -73,13 +73,12 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
         if (empty($curation->mondo_id) && empty($curation->disease_entity_notes)) {
             return null;
         }
+
         return [
             'mondo_id' => $curation->mondo_id,
-            'notes' => $curation->disease_entity_notes
+            'notes' => $curation->disease_entity_notes,
         ];
     }
-    
-    
 
     private function getMoi($curation)
     {
@@ -116,8 +115,8 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     private function getStatus($curation)
     {
         return [
-            "name" => $curation->currentStatus->name,
-            "effective_date" => $curation->currentStatusDate ? $curation->currentStatusDate->toIsoString() : null
+            'name' => $curation->currentStatus->name,
+            'effective_date' => $curation->currentStatusDate ? $curation->currentStatusDate->toIsoString() : null,
         ];
     }
 
@@ -126,14 +125,15 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
         if ($curation->rationales->count() === 0 && empty($curation->pmids)) {
             return null;
         }
+
         return [
-            'pmids' => !empty($curation->pmids)
+            'pmids' => ! empty($curation->pmids)
                             ? $curation->pmids
                             : null,
             'rationales' => $curation->rationales->count() > 0
                             ? $curation->rationales->pluck('name')->toArray()
                             : null,
-            'notes' => $curation->rationale_notes
+            'notes' => $curation->rationale_notes,
         ];
     }
 
@@ -141,10 +141,11 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     {
         if ($curation->phenotypes->count() > 0) {
             return [
-                "included" => $curation->phenotypes->pluck('mim_number')->toArray(),
-                "excluded" => $curation->excludedPhenotypes->pluck('mim_number')->toArray()
+                'included' => $curation->phenotypes->pluck('mim_number')->toArray(),
+                'excluded' => $curation->excludedPhenotypes->pluck('mim_number')->toArray(),
             ];
         }
+
         return null;
     }
 }

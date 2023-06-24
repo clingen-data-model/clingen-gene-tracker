@@ -4,8 +4,8 @@ namespace App\DataExchange\Actions;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
 class StreamErrorsClean
@@ -27,6 +27,7 @@ class StreamErrorsClean
         $dryRun = $command->option('dry-run');
         if ($dryRun) {
             $command->info('DRY RUN: Would clear '.$count.' incoming stream errors.');
+
             return;
         }
 
@@ -34,7 +35,6 @@ class StreamErrorsClean
 
         $command->info('Cleared '.$count.' incoming steam errors.');
     }
-    
 
     private function buildQuery(): Builder
     {
