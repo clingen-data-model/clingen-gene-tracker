@@ -9,12 +9,7 @@ use App\Http\Controllers\Admin\ApiClientCrudController;
 // This route file is loaded automatically by Backpack\Base.
 // Routes you generate using Backpack\Generators will be placed here.
 
-Route::group([
-    'prefix' => config('backpack.base.route_prefix', 'admin'),
-    // 'middleware' => ['web', 'auth', 'role:admin|programmer'],
-    'middleware' => ['web', 'role:admin|programmer', config('backpack.base.middleware_key')],
-    'namespace' => 'App\Http\Controllers\Admin',
-], function () { // custom admin routes`
+Route::prefix(config('backpack.base.route_prefix', 'admin'))->middleware('web', 'role:admin|programmer', config('backpack.base.middleware_key'))->namespace('App\Http\Controllers\Admin')->group(function () { // custom admin routes`
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
     Route::get('/user/{id}/deactivate', 'UserCrudController@deactivate')
         ->name('user-deactivate');
@@ -37,9 +32,6 @@ Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->n
     Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
 }); // this should be the absolute last line of this file
 
-Route::group([
-    'prefix' => config('backpack.base.route_prefix', 'admin'),
-    'middleware' => ['web', 'role:admin|programmer', config('backpack.base.middleware_key')],
-], function () {
+Route::prefix(config('backpack.base.route_prefix', 'admin'))->middleware('web', 'role:admin|programmer', config('backpack.base.middleware_key'))->group(function () {
     Route::delete('api-client-tokens/{id}', ApiClientDeleteToken::class);
 });

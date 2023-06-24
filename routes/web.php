@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\View;
 
 Route::get('/org-chart', 'Api\OrgChartController@index');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::middleware('auth')->group(function () {
     Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');
 });
 
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('auth')->group(function () {
     Route::get('/', 'MainController@index');
     Route::get('/home', 'MainController@index');
 
