@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api;
+use App\Http\Controllers\Auth;
+use App\Http\Controllers\BulkUploadController;
+use App\Http\Controllers\CurationExportController;
+use App\Http\Controllers\MainController;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
 /*
@@ -13,25 +19,25 @@ use Illuminate\Support\Facades\View;
 |
 */
 
-Route::get('/org-chart', 'Api\OrgChartController@index');
+Route::get('/org-chart', [Api\OrgChartController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');
+    Route::get('auth/timeout-test', [Api\TimeoutTestController::class, 'index']);
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', 'MainController@index');
-    Route::get('/home', 'MainController@index');
+    Route::get('/', [MainController::class, 'index']);
+    Route::get('/home', [MainController::class, 'index']);
 
-    Route::get('/omim/entry', 'Api\OmimController@entry');
-    Route::get('/omim/search', 'Api\OmimController@search');
-    Route::get('/omim/gene', 'Api\OmimController@gene');
+    Route::get('/omim/entry', [Api\OmimController::class, 'entry']);
+    Route::get('/omim/search', [Api\OmimController::class, 'search']);
+    Route::get('/omim/gene', [Api\OmimController::class, 'gene']);
 
-    Route::get('bulk-uploads', 'BulkUploadController@show')->name('bulk-uploads.show');
-    Route::post('bulk-uploads', 'BulkUploadController@upload')->name('bulk-uploads.upload');
+    Route::get('bulk-uploads', [BulkUploadController::class, 'show'])->name('bulk-uploads.show');
+    Route::post('bulk-uploads', [BulkUploadController::class, 'upload'])->name('bulk-uploads.upload');
 
-    Route::get('curations/export/form', 'CurationExportController@getForm')->name('curations.export');
-    Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
+    Route::get('curations/export/form', [CurationExportController::class, 'getForm'])->name('curations.export');
+    Route::get('curations/export', [CurationExportController::class, 'getCsv'])->name('curations.export.download');
 
     Route::redirect('logs', 'admin/logs');
     Route::redirect('curations/{id}', '/#/curations/{id}');
@@ -46,9 +52,9 @@ Route::middleware('auth')->group(function () {
 
 Auth::routes();
 
-Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
+Route::get('admin/password/reset/{token}', [Auth\ResetPasswordController::class, 'showResetForm']);
 
-Route::get('/admin/login', 'Auth\LoginController@showLoginForm');
+Route::get('/admin/login', [Auth\LoginController::class, 'showLoginForm']);
 
 Route::middleware(['auth:api-external'])->get('api-v1-docs', function () {
     return View::make('swagger');
