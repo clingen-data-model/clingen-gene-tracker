@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\App;
-use Illuminate\Support\Facades\Route;
 use App\Actions\ApiClientDeleteToken;
 use App\Http\Controllers\Admin\ApiClientCrudController;
+use App\Http\Controllers\App;
+use Illuminate\Support\Facades\Route;
 
 // --------------------------
 // Custom Backpack Routes
