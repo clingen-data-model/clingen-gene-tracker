@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notifications:clean -f -q')
             ->monthly();
 
-        $schedule->command('dx:clean-incoming-errors -f -q')
+        $schedule->command('dx:clean-incoming-errors')
             ->monthly();
     }
 
