@@ -6,6 +6,7 @@
                 $oldName = $notification->data['oldName'];
                 $oldMimNumber = $notification->data['oldMimNumber'];
                 $phenotypes = $notification->data['phenotypes'];
+                $curation = $notification->data['curation'];
             @endphp
             <li>
                 @if (count($phenotypes) == 1)        
