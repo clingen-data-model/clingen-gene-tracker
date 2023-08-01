@@ -43,13 +43,11 @@ class SendNotificationDigest extends Command
         // Make sure notifications have been created for all unsent streaming service errors
         $this->call('dx:notify-errors');
 
-        $users = User::has('unreadNotifications')
-                    ->with('unreadNotifications')
-                    ->get();
+        $hasUnread = User::has('unreadNotifications');
 
-        $bar = $this->output->createProgressBar($users->count());
+        $bar = $this->output->createProgressBar($hasUnread->count());
         
-        $users->each(function ($user) use ($bar) {
+        $hasUnread->with('unreadNotifications')->each(function ($user) use ($bar) {
             $groupedNotifications =  $user->unreadNotifications
                                         ->groupBy('type')
                                         ->map(function ($group, $class) {
