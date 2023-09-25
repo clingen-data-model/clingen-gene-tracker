@@ -19,8 +19,11 @@ php artisan migrate --force --no-interaction
 echo "Making passport keys (if they do not already exist)"
 php artisan passport:keys || echo "... keys were probably already there"
 
-# make a new APP_KEY if the one in .env is not properly formatted
-grep APP_KEY=base64 .env >/dev/null || php artisan key:generate -q
+# make a new APP_KEY if not in environment and if the one in .env is not properly formatted
+if [[ ${APP_KEY:-invalid} != base64* ]]; then
+    touch .env # make sure we have an .env file soe key:generate doesn't complain
+    grep APP_KEY=base64 .env >/dev/null || php artisan key:generate -q
+fi
 
 if [[ $env != "local" ]]; then
     echo "Caching configuration..."
