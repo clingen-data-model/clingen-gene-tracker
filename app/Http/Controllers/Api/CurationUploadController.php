@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
 use App\Curation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUploadRequest;
@@ -86,7 +87,7 @@ class CurationUploadController extends Controller
      * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
-    public function show($curationId, $uploadId)
+    public function show(int $curationId, int $uploadId)
     {
         $upload = Upload::findOrFail($uploadId);
         $upload->load('category');
@@ -117,7 +118,7 @@ class CurationUploadController extends Controller
      * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $curationId, $uploadId)
+    public function update(Request $request, int $curationId, int $uploadId)
     {
         $upload = Upload::find($uploadId);
         if (! Auth::user()->can('update', $upload)) {
@@ -137,7 +138,7 @@ class CurationUploadController extends Controller
      * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
-    public function destroy($curationId, $uploadId)
+    public function destroy(int $curationId, int $uploadId): Response
     {
         $upload = Upload::find($uploadId);
         if (! Auth::user()->can('delete', $upload)) {

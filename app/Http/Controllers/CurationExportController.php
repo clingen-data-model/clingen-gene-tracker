@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\CurationExporter;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class CurationExportController extends Controller
         $this->exporter = $exporter;
     }
 
-    public function getCsv(Request $request)
+    public function getCsv(Request $request): BinaryFileResponse
     {
         return response()->download($this->exporter->getCsv($request->all()));
     }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 
 class ModeOfInheritance extends Model
@@ -21,7 +22,7 @@ class ModeOfInheritance extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(ModeOfInheritance::class, 'parent_id', 'id');
     }

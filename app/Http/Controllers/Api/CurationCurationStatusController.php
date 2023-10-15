@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Curation;
 use App\CurationStatus;
 use App\Http\Controllers\Controller;
@@ -91,7 +92,7 @@ class CurationCurationStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($curationId, $pivotId)
+    public function destroy($curationId, $pivotId): JsonResponse
     {
         $curation = Curation::findOrFail($curationId);
 

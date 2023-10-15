@@ -12,7 +12,7 @@ class CreateTestLogger
      *
      * @return \Monolog\Logger
      */
-    public function __invoke(array $config)
+    public function __invoke(array $config): Logger
     {
         $monolog = new Logger('test');
         $monolog->pushHandler(new TestHandler());

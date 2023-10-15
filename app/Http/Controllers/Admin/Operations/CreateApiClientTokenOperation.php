@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Operations;
 
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,7 @@ trait CreateApiClientTokenOperation
      * @param  string  $routeName  Prefix of the route name.
      * @param  string  $controller Name of the current CrudController.
      */
-    protected function setupCreateApiClientTokenRoutes($segment, $routeName, $controller)
+    protected function setupCreateApiClientTokenRoutes(string $segment, string $routeName, string $controller)
     {
         Route::get($segment.'/create-token', [
             'as' => $routeName.'.create-token',
@@ -45,7 +46,7 @@ trait CreateApiClientTokenOperation
      *
      * @return Response
      */
-    public function createapiclienttoken()
+    public function createapiclienttoken(): View
     {
         $this->crud->hasAccessOrFail('createapiclienttoken');
 

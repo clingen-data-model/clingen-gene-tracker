@@ -12,7 +12,7 @@ class WorkingGroupsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $wgs = [
             ['id' => 16, 'name' => 'Neurodevelopmental Disorders CDWG'],

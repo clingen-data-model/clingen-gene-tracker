@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App\Exceptions\BulkUploads\InvalidFileException;
 use App\Exceptions\DuplicateBulkCurationException;
 use App\Http\Requests\BulkUploadRequest;
@@ -16,12 +17,12 @@ class BulkUploadController extends Controller
         $this->processor = $processor;
     }
 
-    public function show()
+    public function show(): View
     {
         return view('bulk_uploads.show');
     }
 
-    public function upload(BulkUploadRequest $request)
+    public function upload(BulkUploadRequest $request): View
     {
         if ($request->bulk_curations) {
             $path = $request->file('bulk_curations')->store('bulk_curation_uploads');

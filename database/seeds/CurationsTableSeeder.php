@@ -14,7 +14,7 @@ class CurationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $users = User::all();
         $panels = ExpertPanel::all();

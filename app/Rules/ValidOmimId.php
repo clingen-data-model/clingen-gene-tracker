@@ -28,7 +28,7 @@ class ValidOmimId implements Rule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         try {
             $entry = $this->omim->getEntry($value);
@@ -47,7 +47,7 @@ class ValidOmimId implements Rule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return 'This must be a valid MIM number.';
     }

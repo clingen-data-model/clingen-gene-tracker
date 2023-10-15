@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Contracts\OmimClient;
 use App\Curation;
 use App\CurationStatus;
@@ -78,7 +79,7 @@ class CurationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         $curation = Curation::findByAnyId($id);
 
@@ -103,7 +104,7 @@ class CurationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CurationUpdateRequest $request, $id)
+    public function update(CurationUpdateRequest $request, int $id)
     {
         $curation = Curation::findOrFail($id);
         $this->authorize('update', $curation);
@@ -131,7 +132,7 @@ class CurationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $curation = Curation::findOrFail($id);
         $this->authorize('delete', $curation);

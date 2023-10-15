@@ -11,7 +11,7 @@ class DummyDataSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $this->call(WorkingGroupsTableSeeder::class);
         $this->call(ExpertPanelsTableSeeder::class);

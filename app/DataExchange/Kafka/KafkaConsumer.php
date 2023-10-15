@@ -141,7 +141,7 @@ class KafkaConsumer implements MessageConsumer
      * @param  int  $numberOfMessages - number of messages to consumed.
      * @param  callable|null  $callback callable to called on each message.
      */
-    public function consumeSomeMessages($numberOfMessages, callable $callback = null): MessageConsumer
+    public function consumeSomeMessages(int $numberOfMessages, callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 

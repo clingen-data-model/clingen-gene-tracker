@@ -105,7 +105,7 @@ class ApiClientCrudController extends CrudController
      *
      * @return void
      */
-    protected function setupListOperation()
+    protected function setupListOperation(): void
     {
         CRUD::setFromDb();
         CRUD::removeColumn('uuid');
@@ -125,7 +125,7 @@ class ApiClientCrudController extends CrudController
      *
      * @return void
      */
-    protected function setupCreateOperation()
+    protected function setupCreateOperation(): void
     {
         CRUD::setValidation(ApiClientrequest::class);
 
@@ -146,7 +146,7 @@ class ApiClientCrudController extends CrudController
      *
      * @return void
      */
-    protected function setupUpdateOperation()
+    protected function setupUpdateOperation(): void
     {
         $this->setupCreateOperation();
     }

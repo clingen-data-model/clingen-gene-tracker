@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\RedirectResponse;
 use App\ExpertPanel;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
@@ -129,7 +130,7 @@ class UserCrudController extends CrudController
         return $redirect_location;
     }
 
-    public function deactivate(Request $request)
+    public function deactivate(Request $request): RedirectResponse
     {
         if ($this->user->hasPermissionTo('deactivate users')) {
             $user = User::findOrFail($request->id);
@@ -147,7 +148,7 @@ class UserCrudController extends CrudController
         return Redirect::back();
     }
 
-    public function reactivate(Request $request)
+    public function reactivate(Request $request): RedirectResponse
     {
         if ($this->user->hasPermissionTo('deactivate users')) {
             $user = User::findOrFail($request->id);

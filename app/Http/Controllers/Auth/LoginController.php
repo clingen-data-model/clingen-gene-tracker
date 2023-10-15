@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -42,7 +43,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showLoginForm()
+    public function showLoginForm(): View
     {
         return view('auth.login');
     }

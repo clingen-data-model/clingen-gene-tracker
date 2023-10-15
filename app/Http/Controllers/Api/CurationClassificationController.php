@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use App\Classification;
 use App\Curation;
 use App\Http\Controllers\Controller;
@@ -48,7 +49,7 @@ class CurationClassificationController extends Controller
             ->first();
     }
 
-    public function destroy($curationId, $curationClassificationId)
+    public function destroy($curationId, $curationClassificationId): JsonResponse
     {
         $curation = Curation::findOrFail($curationId);
 

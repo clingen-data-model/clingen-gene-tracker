@@ -96,7 +96,7 @@ class DataExchangeServiceProvider extends ServiceProvider
      * @param  array|string  $paths
      * @return void
      */
-    protected function loadCommands($paths)
+    protected function loadCommands($paths): void
     {
         $paths = array_unique(Arr::wrap($paths));
         $paths = array_filter($paths, function ($path) {

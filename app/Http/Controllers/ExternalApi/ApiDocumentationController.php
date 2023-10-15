@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ExternalApi;
 
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
 class ApiDocumentationController extends Controller
@@ -11,7 +12,7 @@ class ApiDocumentationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): Response
     {
         $openapi = \OpenApi\Generator::scan([app_path()]);
 

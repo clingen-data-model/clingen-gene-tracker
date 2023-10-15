@@ -12,7 +12,7 @@ class TestGeneSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $genes = [
             'BRCA1' => 1,

@@ -22,7 +22,7 @@ class ValidHgncGeneSymbol implements ValidGeneSymbolRule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value)
+    public function passes(string $attribute, $value): bool
     {
         return Gene::findBySymbol($value);
     }
@@ -32,7 +32,7 @@ class ValidHgncGeneSymbol implements ValidGeneSymbolRule
      *
      * @return string
      */
-    public function message()
+    public function message(): string
     {
         return ':input is not a valid HGNC gene symbol.';
     }

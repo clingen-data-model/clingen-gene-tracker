@@ -43,7 +43,7 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $affiliation = Affiliation::findByClingenId($this->gciMessage->affiliation->id);
         $moi = ModeOfInheritance::findByHpId($this->gciMessage->moi);

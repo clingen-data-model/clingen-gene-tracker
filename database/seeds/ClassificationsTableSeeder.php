@@ -12,7 +12,7 @@ class ClassificationsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         seedFromConfig('project.classifications', Classification::class);
     }

@@ -35,7 +35,7 @@ class PushMessage implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessagePusher $pusher)
+    public function handle(MessagePusher $pusher): void
     {
         try {
             $pusher->topic($this->message->topic);

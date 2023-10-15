@@ -12,7 +12,7 @@ class AppStatesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $states = config('app_state');
         foreach ($states as $value) {

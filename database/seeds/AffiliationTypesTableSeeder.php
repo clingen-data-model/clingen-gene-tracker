@@ -12,7 +12,7 @@ class AffiliationTypesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         foreach (config('affiliations.types') as $slug => $id) {
             $name = preg_replace('/-/', ' ', $slug);
