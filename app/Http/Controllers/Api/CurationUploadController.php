@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Response;
 use App\Curation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUploadRequest;
@@ -10,6 +9,7 @@ use App\Http\Requests\CurationUploadIndexRequest;
 use App\Http\Resources\UploadResource;
 use App\Upload;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 

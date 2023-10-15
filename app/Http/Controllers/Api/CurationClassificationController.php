@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Classification;
 use App\Curation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CurationClassificationRequest;
 use App\Jobs\Curations\AddClassification;
 use App\Jobs\Curations\UpdateClassification;
+use Illuminate\Http\JsonResponse;
 
 class CurationClassificationController extends Controller
 {

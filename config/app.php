@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
 return [

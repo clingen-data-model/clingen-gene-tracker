@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Contracts\OmimClient;
 use App\Curation;
 use App\CurationStatus;
@@ -15,6 +14,7 @@ use App\Jobs\Curations\AddStatus;
 use App\Jobs\Curations\SyncPhenotypes;
 use App\Services\Curations\CurationSearchService;
 use App\Services\RequestDataCleaner;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CurationController extends Controller

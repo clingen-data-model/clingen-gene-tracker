@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\ExternalApi;
 
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class ApiDocumentationController extends Controller
 {
