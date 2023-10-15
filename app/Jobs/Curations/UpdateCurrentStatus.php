@@ -30,11 +30,11 @@ class UpdateCurrentStatus
     {
         // \Log::debug('updating current status');
         $curationStatuses = $this->curation
-                                ->curationStatuses()
-                                ->orderBy('status_date')
-                                ->orderBy('curation_curation_status.curation_status_id')
-                                ->orderBy('curation_curation_status.created_at')
-                                ->get();
+            ->curationStatuses()
+            ->orderBy('status_date')
+            ->orderBy('curation_curation_status.curation_status_id')
+            ->orderBy('curation_curation_status.created_at')
+            ->get();
         $currentStatus = $curationStatuses->last();
 
         $this->curation->update([

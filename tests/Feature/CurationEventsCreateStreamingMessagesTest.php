@@ -28,10 +28,10 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->loadForMessage();
         $matchingMessages = StreamMessage::query()
-                                ->topic(config('dx.topics.outgoing.precuration-events'))
-                                ->where('message->data->id', $curation->id)
-                                ->where('message->event_type', 'created')
-                                ->get();
+            ->topic(config('dx.topics.outgoing.precuration-events'))
+            ->where('message->data->id', $curation->id)
+            ->where('message->event_type', 'created')
+            ->get();
         $this->assertEquals(1, $matchingMessages->count());
     }
 
@@ -81,10 +81,10 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
         $curation = factory(Curation::class)->create();
         $curation->delete();
         $matchingMessages = StreamMessage::query()
-                                ->where('message->data->id', $curation->id)
-                                ->where('message->event_type', 'deleted')
+            ->where('message->data->id', $curation->id)
+            ->where('message->event_type', 'deleted')
                                 // ->unsent()
-                                ->get();
+            ->get();
 
         $this->assertEquals(1, $matchingMessages->count());
     }

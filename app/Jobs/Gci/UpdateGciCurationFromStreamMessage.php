@@ -149,12 +149,12 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         $this->mois->put('other', $this->mois['HP:0000000']);
 
         $this->statuses = CurationStatus::all()
-                            ->map(function ($st) {
-                                $st->name = strtolower($st->name);
+            ->map(function ($st) {
+                $st->name = strtolower($st->name);
 
-                                return $st;
-                            })
-                            ->keyBy('name');
+                return $st;
+            })
+            ->keyBy('name');
 
         $this->statuses->put('none', $this->statuses['uploaded']);
         $this->statuses->put('in progress', $this->statuses['precuration complete']);
@@ -165,12 +165,12 @@ class UpdateGciCurationFromStreamMessage implements ShouldQueue
         $this->statuses->put('unpublished', $this->statuses['precuration complete']);
 
         $this->classifications = Classification::all()
-                                    ->map(function ($cl) {
-                                        $cl->name = strtolower($cl->name);
+            ->map(function ($cl) {
+                $cl->name = strtolower($cl->name);
 
-                                        return $cl;
-                                    })
-                                    ->keyBy('name');
+                return $cl;
+            })
+            ->keyBy('name');
         $this->classifications->put('no reported evidence', $this->classifications['no known disease relationship']);
 
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');

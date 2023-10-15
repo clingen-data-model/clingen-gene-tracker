@@ -31,8 +31,8 @@ class NotificationsClean
      */
     public function handle(
         bool $deleteUnread = false,
-        ?Carbon $createdBefore = null,
-        ?Carbon $readBefore = null,
+        Carbon $createdBefore = null,
+        Carbon $readBefore = null,
         bool $dryRun = false
     ) {
         $query = Notification::query();

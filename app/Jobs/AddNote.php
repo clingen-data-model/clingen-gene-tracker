@@ -23,7 +23,7 @@ class AddNote
      *
      * @return void
      */
-    public function __construct(Notable $subject, string $content, ?string $topic = null, ?model $author = null)
+    public function __construct(Notable $subject, string $content, string $topic = null, model $author = null)
     {
         //
         $this->subject = $subject;

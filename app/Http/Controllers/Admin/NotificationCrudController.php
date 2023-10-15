@@ -38,22 +38,20 @@ class NotificationCrudController extends CrudController
         */
 
         // TODO: remove setFromDb() and manually define Fields and Columns
-       # $this->crud->setFromDb();
-      # $this->crud->addColumn([
-      #  'name' => 'id',
-      #  'type' => 'text',
-     #   'label' => 'ID',
-    #]);
-    
-   # $this->crud->addColumn([
-   #     'name' => 'message',
-   #     'type' => 'text',
-   #     'label' => 'Message',
-   # ]);
-    
-    // ... and so on for other columns
-    
+        // $this->crud->setFromDb();
+        // $this->crud->addColumn([
+        //  'name' => 'id',
+        //  'type' => 'text',
+        //   'label' => 'ID',
+        //]);
 
+        // $this->crud->addColumn([
+        //     'name' => 'message',
+        //     'type' => 'text',
+        //     'label' => 'Message',
+        // ]);
+
+        // ... and so on for other columns
 
         $this->crud->allowAccess('show');
         $this->crud->denyAccess('update');

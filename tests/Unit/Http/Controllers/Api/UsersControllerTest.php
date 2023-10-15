@@ -50,9 +50,9 @@ class UsersControllerTest extends TestCase
     public function filters_users_by_role()
     {
         $curators = factory(\App\User::class, 2)->create()
-                        ->each(function ($user) {
-                            $user->assignRole('admin');
-                        });
+            ->each(function ($user) {
+                $user->assignRole('admin');
+            });
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?role=admin')
@@ -69,9 +69,9 @@ class UsersControllerTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $curators = factory(\App\User::class, 2)->create()
-                        ->each(function ($user) {
-                            $user->assignRole('admin');
-                        });
+            ->each(function ($user) {
+                $user->assignRole('admin');
+            });
 
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users?with=roles')

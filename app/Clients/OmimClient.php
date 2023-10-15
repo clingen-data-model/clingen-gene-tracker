@@ -73,9 +73,9 @@ class OmimClient implements OmimClientContract
         $response = $this->fetch('entry/search', compact('query'));
 
         return collect($response->omim->searchResponse->entryList)
-                ->transform(function ($entry) {
-                    return $entry->entry;
-                });
+            ->transform(function ($entry) {
+                return $entry->entry;
+            });
     }
 
     public function paginatedSearch($searchString, $start = 0, $pageSize = 100)
@@ -85,9 +85,9 @@ class OmimClient implements OmimClientContract
         $response = $this->fetch('entry/search', compact('query'));
 
         $entries = collect($response->omim->searchResponse->entryList)
-                ->transform(function ($entry) {
-                    return $entry->entry;
-                });
+            ->transform(function ($entry) {
+                return $entry->entry;
+            });
 
         return [
             'start' => $response->omim->searchResponse->startIndex,
@@ -113,9 +113,9 @@ class OmimClient implements OmimClientContract
 
         if ($this->responseHasPhenotypeMapList($entryList)) {
             return collect($entryList[0]->geneMap->phenotypeMapList)
-                    ->transform(function ($item) {
-                        return $item->phenotypeMap;
-                    });
+                ->transform(function ($item) {
+                    return $item->phenotypeMap;
+                });
         }
 
         return collect([]);

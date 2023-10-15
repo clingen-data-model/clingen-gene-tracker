@@ -111,12 +111,12 @@ class BulkCurationUploadTest extends TestCase
 
         $this->withoutExceptionHandling();
         $nextResponse = $this->actingAs($this->user)
-                        ->call('POST', '/bulk-uploads', [
-                            'expert_panel_id' => $this->expertPanel->id,
-                            'path' => $response->original->path,
-                            'continue_duplicate_upload' => 1,
-                        ])
-                        ->assertOk();
+            ->call('POST', '/bulk-uploads', [
+                'expert_panel_id' => $this->expertPanel->id,
+                'path' => $response->original->path,
+                'continue_duplicate_upload' => 1,
+            ])
+            ->assertOk();
 
         $this->assertEquals(4, \DB::table('curations')->count());
     }

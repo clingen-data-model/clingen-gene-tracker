@@ -22,7 +22,7 @@ class CreateUpdatesForAll
     public function handle(Command $command)
     {
         $curationQuery = Curation::query()
-                        ->with(['rationales', 'expertPanel', 'affiliation', 'phenotypes', 'curationStatuses', 'currentStatus', 'curationType', 'modeOfInheritance', 'gene', 'disease', 'curator', 'gciCuration']);
+            ->with(['rationales', 'expertPanel', 'affiliation', 'phenotypes', 'curationStatuses', 'currentStatus', 'curationType', 'modeOfInheritance', 'gene', 'disease', 'curator', 'gciCuration']);
 
         if ($command->option('where')) {
             $curationQuery->whereRaw($command->option('where'));

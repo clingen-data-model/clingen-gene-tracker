@@ -47,10 +47,10 @@ class SetCurationStatusId extends Command
         $bar = $this->output->createProgressBar($curations->count());
         $curations->each(function ($curation) use ($uploadedStatus, $bar) {
             $currentStatus = $curation->curationStatuses
-                            ->sortByDesc(function ($item) {
-                                return $item->pivot->status_date->timestamp.'.'.$item->id;
-                            })
-                            ->first();
+                ->sortByDesc(function ($item) {
+                    return $item->pivot->status_date->timestamp.'.'.$item->id;
+                })
+                ->first();
             if (! $currentStatus) {
                 $currentStatus = $uploadedStatus;
                 Bus::dispatch(new AddStatus($curation, $currentStatus));

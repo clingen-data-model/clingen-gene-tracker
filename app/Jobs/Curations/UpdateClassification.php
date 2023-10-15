@@ -37,8 +37,8 @@ class UpdateClassification
     public function handle()
     {
         $relatedClassification = $this->curation
-                                    ->classifications
-                                    ->firstWhere('pivot.id', $this->curationClassificationId);
+            ->classifications
+            ->firstWhere('pivot.id', $this->curationClassificationId);
 
         $relatedClassification->pivot->update([
             'classification_id' => $this->data['classification_id'],

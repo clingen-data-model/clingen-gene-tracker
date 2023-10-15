@@ -63,7 +63,7 @@ class UpdateMondoData extends Command
         if (is_null($lastMondoUpdate->value) || $lastMondoUpdate->value->lte(Carbon::parse($parser->getVersionDate()))) {
             $this->info('Updating last_mondo_update state variable to '.$parser->getVersionDate());
             $lastMondoUpdate->set($parser->getVersionDate())
-                            ->save();
+                ->save();
         }
 
         $this->info('Deleting mondo temp file');

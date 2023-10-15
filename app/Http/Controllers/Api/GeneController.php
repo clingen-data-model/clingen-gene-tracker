@@ -26,24 +26,24 @@ class GeneController extends Controller
         ];
 
         $results = $this->search($request)
-                    ->transform(function ($gene) {
-                        if ($gene->phenotypes->count() == 0) {
-                            return collect([[
-                                'Gene' => $gene->gene_symbol,
-                                'Phenotype' => null,
-                                'MOI' => null,
-                            ]]);
-                        }
+            ->transform(function ($gene) {
+                if ($gene->phenotypes->count() == 0) {
+                    return collect([[
+                        'Gene' => $gene->gene_symbol,
+                        'Phenotype' => null,
+                        'MOI' => null,
+                    ]]);
+                }
 
-                        return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
-                            return [
-                                'Gene' => $gene->gene_symbol,
-                                'Phenotype' => $pheno->name,
-                                'Phenotype MIM Number' => $pheno->mim_number,
-                                'MOI' => $pheno->moi,
-                            ];
-                        });
-                    })->flatten(1);
+                return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
+                    return [
+                        'Gene' => $gene->gene_symbol,
+                        'Phenotype' => $pheno->name,
+                        'Phenotype MIM Number' => $pheno->mim_number,
+                        'MOI' => $pheno->moi,
+                    ];
+                });
+            })->flatten(1);
 
         $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number', 'MOI'];
         $callback = function () use ($results, $columns) {
@@ -71,7 +71,7 @@ class GeneController extends Controller
                     $value = explode(',', $value);
                 }
                 $value = array_filter(array_map(function ($i) {
-                return trim($i);
+                    return trim($i);
                 }, $value), function ($i) {
                     return ! empty($i);
                 });

@@ -76,11 +76,11 @@ class FixStatusOrder extends Command
     private function getCurations()
     {
         return Curation::query()
-                ->with('statuses', 'currentStatus')
-                ->where('curation_status_id', 1)
-                ->whereHas('statuses', function ($q) {
-                    $q->where('curation_status_id', '>', 1);
-                });
+            ->with('statuses', 'currentStatus')
+            ->where('curation_status_id', 1)
+            ->whereHas('statuses', function ($q) {
+                $q->where('curation_status_id', '>', 1);
+            });
     }
 
     private function output($message, $output = 'info')

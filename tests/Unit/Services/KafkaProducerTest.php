@@ -4,7 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\DataExchange\Exceptions\StreamingServiceException;
 use App\DataExchange\Kafka\KafkaProducer;
-use  Mockery;
+use Mockery;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 

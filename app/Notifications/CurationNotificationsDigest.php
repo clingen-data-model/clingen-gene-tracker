@@ -44,6 +44,6 @@ class CurationNotificationsDigest extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view('email.curation_notifications_digest', ['groups' => $this->groupedNotifications]);
+            ->view('email.curation_notifications_digest', ['groups' => $this->groupedNotifications]);
     }
 }

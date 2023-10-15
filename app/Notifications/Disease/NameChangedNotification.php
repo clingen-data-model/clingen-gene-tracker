@@ -48,7 +48,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->view('emails.curations.disease_name_changed', ['curation' => $this->curation, 'oldName' => $this->oldName]);
+            ->view('emails.curations.disease_name_changed', ['curation' => $this->curation, 'oldName' => $this->oldName]);
     }
 
     /**

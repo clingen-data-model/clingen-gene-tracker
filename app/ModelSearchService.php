@@ -21,19 +21,19 @@ class ModelSearchService
     public function search($params): Collection
     {
         return $this->buildQuery($params)
-                ->get();
+            ->get();
     }
 
     public function buildQuery($params): Builder
     {
         $query = $this->modelClass::query()
-                    ->with($this->defaultWith);
+            ->with($this->defaultWith);
 
         if (! is_null($this->defaultSelect)) {
             $query->select($this->defaultSelect);
             // } else {
-        //     $dummy = new $this->modelClass();
-        //     $query->select($dummy->getTable().'.*');
+            //     $dummy = new $this->modelClass();
+            //     $query->select($dummy->getTable().'.*');
         }
 
         if (isset($params['sort'])) {

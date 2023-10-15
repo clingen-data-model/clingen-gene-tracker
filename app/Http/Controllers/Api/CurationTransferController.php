@@ -32,18 +32,18 @@ class CurationTransferController extends Controller
         }
 
         $ownerRecords = $curation->expertPanels
-                ->sortByDesc('pivot.start_date')
-                ->map(function ($epRel) {
-                    return [
-                        'id' => $epRel->id,
-                        'name' => $epRel->name,
-                        'affiliation_id' => $epRel->affiliation_id,
-                        'working_group_id' => $epRel->working_group_id,
-                        'start_date' => $epRel->pivot->start_date,
-                        'end_date' => $epRel->pivot->end_date,
-                        'pivot' => $epRel->pivot,
-                    ];
-                });
+            ->sortByDesc('pivot.start_date')
+            ->map(function ($epRel) {
+                return [
+                    'id' => $epRel->id,
+                    'name' => $epRel->name,
+                    'affiliation_id' => $epRel->affiliation_id,
+                    'working_group_id' => $epRel->working_group_id,
+                    'start_date' => $epRel->pivot->start_date,
+                    'end_date' => $epRel->pivot->end_date,
+                    'pivot' => $epRel->pivot,
+                ];
+            });
 
         return ['curation_id' => $curation->id, 'expert_panels' => $ownerRecords->values()];
     }

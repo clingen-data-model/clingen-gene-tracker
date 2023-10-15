@@ -44,7 +44,7 @@ class CurationControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations')
-             ->assertStatus(200);
+            ->assertStatus(200);
     }
 
     // /**

@@ -11,11 +11,11 @@ class HgncInfoAddedToCurationOnSavingTest extends TestCase
     {
         parent::setup();
         $this->curation = factory(Curation::class)
-                            ->make([
-                                'gene_symbol' => 'TP53',
-                                'hgnc_id' => null,
-                                'hgnc_name' => null,
-                            ]);
+            ->make([
+                'gene_symbol' => 'TP53',
+                'hgnc_id' => null,
+                'hgnc_name' => null,
+            ]);
     }
 
     /**

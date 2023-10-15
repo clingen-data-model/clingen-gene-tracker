@@ -21,17 +21,17 @@ interface MessageConsumer
     /**
      * Consumes incoming messages until end-of-file exception
      */
-    public function consume(?callable $callback = null): MessageConsumer;
+    public function consume(callable $callback = null): MessageConsumer;
 
     /**
      * Consumes messages and runs callback until EOF of timeout.
      */
-    public function consumePresentMessages(?callable $callback = null): MessageConsumer;
+    public function consumePresentMessages(callable $callback = null): MessageConsumer;
 
     /**
      * Consumes $number of messages and runs callbacka.
      */
-    public function consumeSomeMessages($number, ?callable $callback = null): MessageConsumer;
+    public function consumeSomeMessages($number, callable $callback = null): MessageConsumer;
 
     /**
      * Listen to topic until told to stop

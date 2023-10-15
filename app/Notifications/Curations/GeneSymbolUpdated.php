@@ -48,7 +48,7 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                ->view('email.curations.gene_symbol_updated', ['oldGeneSymbol' => $this->oldGeneSymbol, 'curation' => $this->curation]);
+            ->view('email.curations.gene_symbol_updated', ['oldGeneSymbol' => $this->oldGeneSymbol, 'curation' => $this->curation]);
     }
 
     /**

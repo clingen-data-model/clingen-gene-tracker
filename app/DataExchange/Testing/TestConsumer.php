@@ -23,7 +23,7 @@ class TestConsumer implements MessageConsumer
         return $this;
     }
 
-    public function consume(?callable $callable = null): MessageConsumer
+    public function consume(callable $callable = null): MessageConsumer
     {
         while (count($this->messages) > 0) {
             $message = array_shift($this->messages);
@@ -33,7 +33,7 @@ class TestConsumer implements MessageConsumer
         return $this;
     }
 
-    public function consumeSomeMessages($number, ?callable $callable = null): MessageConsumer
+    public function consumeSomeMessages($number, callable $callable = null): MessageConsumer
     {
         $count = 0;
         while (count($this->messages) > 0) {
@@ -48,7 +48,7 @@ class TestConsumer implements MessageConsumer
         return $this;
     }
 
-    public function consumePresentMessages(?callable $callable = null): MessageConsumer
+    public function consumePresentMessages(callable $callable = null): MessageConsumer
     {
         while (count($this->messages) > 0) {
             $message = array_shift($this->messages);

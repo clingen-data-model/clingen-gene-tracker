@@ -64,7 +64,7 @@ class KafkaConfig
         return $this;
     }
 
-    public function setErrorCallback(?callable $callback = null): self
+    public function setErrorCallback(callable $callback = null): self
     {
         $callback = $callback ??
             function ($kafka, $err, $reason) {
@@ -75,7 +75,7 @@ class KafkaConfig
         return $this;
     }
 
-    public function setStatsCallback(?callable $callback = null): self
+    public function setStatsCallback(callable $callback = null): self
     {
         $callback = $callback ??
                     function ($kafka, $json, $json_len) {
@@ -86,7 +86,7 @@ class KafkaConfig
         return $this;
     }
 
-    public function setDeliveryReportCallback(?callable $callback = null): self
+    public function setDeliveryReportCallback(callable $callback = null): self
     {
         $callback = $callback ??
                     function ($kafka, $message) {

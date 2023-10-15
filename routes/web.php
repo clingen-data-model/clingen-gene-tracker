@@ -3,12 +3,12 @@
 use App\Http\Controllers\Api;
 //use App\Http\Controllers\Auth;
 use App\Http\Controllers\BulkUploadController;
-use App\Http\Controllers\CurationExportController;
 use App\Http\Controllers\CurationByGdmController;
+use App\Http\Controllers\CurationExportController;
 use App\Http\Controllers\MainController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------

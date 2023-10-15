@@ -30,15 +30,15 @@ class NotifyMondoObsoleted
         $event->disease->load('curations', 'curations.expertPanel.coordinators');
 
         $event->disease
-        ->curations
-        ->each(function ($curation) {
-            \Log::debug('notify for curation '.$curation->id);
-            Bus::dispatch(
-                new NotifyCoordinatorsAboutCuration(
-                    $curation,
-                    MondoTermObsoleteNotification::class
-                )
-            );
-        });
+            ->curations
+            ->each(function ($curation) {
+                \Log::debug('notify for curation '.$curation->id);
+                Bus::dispatch(
+                    new NotifyCoordinatorsAboutCuration(
+                        $curation,
+                        MondoTermObsoleteNotification::class
+                    )
+                );
+            });
     }
 }

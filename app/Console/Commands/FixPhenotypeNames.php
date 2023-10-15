@@ -75,7 +75,7 @@ class FixPhenotypeNames extends Command
             $bar->advance();
         });
         $bar->finish();
-        echo"\n";
+        echo "\n";
         if ($errors->count() > 0) {
             dump($errors);
         }

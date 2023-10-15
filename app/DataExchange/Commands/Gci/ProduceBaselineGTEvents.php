@@ -76,7 +76,7 @@ class ProduceBaselineGTEvents extends Command
     {
         $this->info('Getting curations...');
         $query = Curation::query()
-                    ->with(['currentStatus', 'expertPanel', 'expertPanel.affiliation', 'expertPanel.affiliation.parent', 'modeOfInheritance', 'curationType', 'phenotypes']);
+            ->with(['currentStatus', 'expertPanel', 'expertPanel.affiliation', 'expertPanel.affiliation.parent', 'modeOfInheritance', 'curationType', 'phenotypes']);
 
         if ($this->getLimit()) {
             $query->limit($this->getLimit());

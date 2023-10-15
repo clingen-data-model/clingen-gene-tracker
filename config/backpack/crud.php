@@ -11,7 +11,7 @@ return [
     // --------------------------
     // Default operation settings
     // --------------------------
-    
+
     /*
     |-------------------
     | TRANSLATABLE CRUDS

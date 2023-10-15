@@ -56,10 +56,10 @@ class AddClassification
     private function isExistingDatedClassification()
     {
         $filtered = $this->curation->classifications
-                        ->filter(function ($classification) {
-                            return $classification->id == $this->classification->id
-                                && $classification->pivot->classification_date = $this->date;
-                        });
+            ->filter(function ($classification) {
+                return $classification->id == $this->classification->id
+                    && $classification->pivot->classification_date = $this->date;
+            });
 
         return $filtered->count() > 0;
     }

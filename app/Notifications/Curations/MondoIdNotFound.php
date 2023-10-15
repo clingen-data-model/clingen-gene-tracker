@@ -72,12 +72,12 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
         return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
     }
 
-   public static function getUnique(Collection $collection): Collection
-   {
-       return $collection->unique(function ($item) {
-           return static::uniqueStringForItem($item);
-       });
-   }
+    public static function getUnique(Collection $collection): Collection
+    {
+        return $collection->unique(function ($item) {
+            return static::uniqueStringForItem($item);
+        });
+    }
 
     public static function filterInvalid(Collection $collection): Collection
     {

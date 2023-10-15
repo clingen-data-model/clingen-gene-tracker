@@ -71,9 +71,9 @@ class OmimClientTest extends TestCase
         $results = $omim->getGenePhenotypes('TP53');
 
         $expectedEntries = collect(json_decode($json)->omim->searchResponse->entryList[0]->entry->geneMap->phenotypeMapList)
-                                ->transform(function ($item) {
-                                    return $item->phenotypeMap;
-                                });
+            ->transform(function ($item) {
+                return $item->phenotypeMap;
+            });
         $this->assertEquals($expectedEntries, $results);
     }
 

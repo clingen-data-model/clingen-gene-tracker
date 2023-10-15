@@ -47,29 +47,29 @@ class CurationExporter
         $query = $this->buildQuery($params);
         $curationStatuses = CurationStatus::all();
 
-        return  $query->get()
-                ->transform(function ($curation) use ($curationStatuses) {
-                    $statuses = $this->getLatestStatusDates($curation);
+        return $query->get()
+            ->transform(function ($curation) use ($curationStatuses) {
+                $statuses = $this->getLatestStatusDates($curation);
 
-                    $line = [
-                        'Gene Symbol' => $curation->gene_symbol,
-                        'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
-                        'Curator' => ($curation->curator) ? $curation->curator->name : null,
-                        'Disease Entity' => $curation->mondo_id,
-                    ];
+                $line = [
+                    'Gene Symbol' => $curation->gene_symbol,
+                    'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
+                    'Curator' => ($curation->curator) ? $curation->curator->name : null,
+                    'Disease Entity' => $curation->mondo_id,
+                ];
 
-                    $curationStatuses->each(function ($status) use (&$line, $statuses) {
-                        $line[$status->name.' date'] = (isset($statuses[$status->id]))
-                                                            ? $statuses[$status->id]->format('Y-m-d')
-                                                            : null;
-                    });
-
-                    $line['Classification'] = $curation->currentClassification->name;
-                    $line['Created'] = $curation->created_at;
-                    $line['GCI UUID'] = $curation->gdm_uuid;
-
-                    return $line;
+                $curationStatuses->each(function ($status) use (&$line, $statuses) {
+                    $line[$status->name.' date'] = (isset($statuses[$status->id]))
+                                                        ? $statuses[$status->id]->format('Y-m-d')
+                                                        : null;
                 });
+
+                $line['Classification'] = $curation->currentClassification->name;
+                $line['Created'] = $curation->created_at;
+                $line['GCI UUID'] = $curation->gdm_uuid;
+
+                return $line;
+            });
     }
 
     /**
@@ -113,10 +113,10 @@ class CurationExporter
     private function getLatestStatusDates($curation)
     {
         return $curation->statuses
-        ->groupBy('id')
-        ->map(function ($statusGroup) {
-            return $statusGroup->sortByDesc('pivot.status_date')->first();
-        })
-        ->pluck('pivot.status_date', 'id');
+            ->groupBy('id')
+            ->map(function ($statusGroup) {
+                return $statusGroup->sortByDesc('pivot.status_date')->first();
+            })
+            ->pluck('pivot.status_date', 'id');
     }
 }

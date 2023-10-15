@@ -93,9 +93,9 @@ class Curation extends Model implements Notable
     public function expertPanels()
     {
         return $this->belongsToMany(ExpertPanel::class)
-                ->using(CurationExpertPanel::class)
-                ->withPivot(['start_date', 'end_date'])
-                ->withTimestamps();
+            ->using(CurationExpertPanel::class)
+            ->withPivot(['start_date', 'end_date'])
+            ->withTimestamps();
     }
 
     public function affiliation()
@@ -116,11 +116,11 @@ class Curation extends Model implements Notable
     public function curationStatuses()
     {
         return $this->belongsToMany(CurationStatus::class)
-                ->using(CurationCurationStatus::class)
-                ->withPivot('id', 'status_date', 'created_at', 'updated_at')
-                ->orderBy('curation_curation_status.status_date')
-                ->orderBy('curation_curation_status.curation_status_id')
-                ->withTimestamps();
+            ->using(CurationCurationStatus::class)
+            ->withPivot('id', 'status_date', 'created_at', 'updated_at')
+            ->orderBy('curation_curation_status.status_date')
+            ->orderBy('curation_curation_status.curation_status_id')
+            ->withTimestamps();
     }
 
     public function statuses()
@@ -146,9 +146,9 @@ class Curation extends Model implements Notable
     public function classifications()
     {
         return $this->belongsToMany(Classification::class)
-                ->withPivot('id', 'classification_date')
-                ->withTimestamps()
-                ->using(CurationClassification::class);
+            ->withPivot('id', 'classification_date')
+            ->withTimestamps()
+            ->using(CurationClassification::class);
     }
 
     public function uploads(): HasMany
@@ -195,10 +195,10 @@ class Curation extends Model implements Notable
     public function getCurrentClassificationAttribute()
     {
         return $this->classifications
-                    ->sortByDesc(function ($item) {
-                        return $item->pivot->classification_date->timestamp.'.'.$item->id;
-                    })
-                    ->first()
+            ->sortByDesc(function ($item) {
+                return $item->pivot->classification_date->timestamp.'.'.$item->id;
+            })
+            ->first()
                 ?? new Classification();
     }
 
@@ -330,10 +330,10 @@ class Curation extends Model implements Notable
         $curationPhenos = $this->phenotypes()->get();
 
         return $this->gene->phenotypes()
-                ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
-                ->select('mim_number')
-                ->orderBy('mim_number')
-                ->get();
+            ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
+            ->select('mim_number')
+            ->orderBy('mim_number')
+            ->get();
     }
 
     /**

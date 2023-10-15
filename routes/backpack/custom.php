@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 // Routes you generate using Backpack\Generators will be placed here.
 
 Route::prefix(config('backpack.base.route_prefix', 'admin'))->middleware('web', 'role:admin|programmer', config('backpack.base.middleware_key'))->group(function () { // custom admin routes`
-Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs');
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs');
     Route::get('/user/{id}/deactivate', [App\Http\Controllers\Admin\UserCrudController::class, 'deactivate'])
         ->name('user-deactivate');
 

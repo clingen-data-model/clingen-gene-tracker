@@ -39,7 +39,7 @@ class StreamErrorsClean
     private function buildQuery(): Builder
     {
         return DB::table('stream_errors')
-        ->where('created_at', '<', Carbon::today()->subDays(30))
-        ->where('direction', 'incoming');
+            ->where('created_at', '<', Carbon::today()->subDays(30))
+            ->where('direction', 'incoming');
     }
 }

@@ -45,8 +45,8 @@ class SetOwner
                 $this->curation->refresh();
                 if ($this->curation->expertPanel->hasCoordinators()) {
                     Mail::to($this->curation->expertPanel->coordinators)
-                            ->cc($originalOwner->coordinators)
-                            ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
+                        ->cc($originalOwner->coordinators)
+                        ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
                 }
             });
         }
@@ -64,12 +64,12 @@ class SetOwner
     private function addNewOwner()
     {
         $this->curation->expertPanels()
-        ->attach([
-            $this->expertPanelId => [
-                'start_date' => $this->startDate,
-                'end_date' => null,
-            ],
-        ]);
+            ->attach([
+                $this->expertPanelId => [
+                    'start_date' => $this->startDate,
+                    'end_date' => null,
+                ],
+            ]);
 
         if ($this->curation->expert_panel_id != $this->expertPanelId) {
             $this->curation->update(['expert_panel_id' => $this->expertPanelId]);

@@ -120,11 +120,11 @@ class UpdateOmimMovedAndRemoved extends Command
     private function getMovedToPhenotypes($searchResults)
     {
         $movedToMims = collect($searchResults)
-                        ->map(function ($i) {
-                            return isset($i->movedTo) ? explode(',', $i->movedTo) : null;
-                        })
-                        ->filter()
-                        ->flatten();
+            ->map(function ($i) {
+                return isset($i->movedTo) ? explode(',', $i->movedTo) : null;
+            })
+            ->filter()
+            ->flatten();
 
         return Phenotype::whereIn('mim_number', $movedToMims)->get()->keyBy('mim_number');
     }

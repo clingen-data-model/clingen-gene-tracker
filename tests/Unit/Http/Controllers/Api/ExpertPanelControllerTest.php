@@ -27,8 +27,8 @@ class ExpertPanelControllerTest extends TestCase
     public function lists_all_expert_panels()
     {
         $response = $this->actingAs($this->user, 'api')
-                        ->call('GET', '/api/expert-panels')
-                        ->assertStatus(200);
+            ->call('GET', '/api/expert-panels')
+            ->assertStatus(200);
 
         // $this->assertEquals($this->panels->pluck('name', 'id')->toArray(), $response->original->pluck('name', 'id')->toArray());
     }
@@ -42,8 +42,8 @@ class ExpertPanelControllerTest extends TestCase
         $this->panels->first()->users()->attach($this->user->id, ['is_curator' => true]);
 
         $response = $this->actingAs($this->user, 'api')
-                        ->call('GET', '/api/expert-panels?with=users')
-                        ->assertStatus(200)
-                        ->assertSee('users');
+            ->call('GET', '/api/expert-panels?with=users')
+            ->assertStatus(200)
+            ->assertSee('users');
     }
 }

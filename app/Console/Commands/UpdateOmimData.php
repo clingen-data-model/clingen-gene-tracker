@@ -115,49 +115,49 @@ class UpdateOmimData extends Command
                 }
 
                 $phenotypes = collect($phenotypes)
-                                ->map(function ($pheno) use ($gene) {
-                                    try {
-                                        // A mim_number can refer to many differently named phenotypes
-                                        // If this is the case try to get the phenotype record by mim_number
-                                        // and name to prevent constraint failures.
-                                        $phenotype = null;
-                                        try {
-                                            $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
-                                        } catch (MultipleRecordsFoundException $e) {
-                                            $phenotype = Phenotype::mimNumber($pheno['mim_number'])
-                                                            ->where('name', $pheno['name'])
-                                                            ->first();
-                                        } catch (ModelNotFoundException $e) {
-                                        }
+                    ->map(function ($pheno) use ($gene) {
+                        try {
+                            // A mim_number can refer to many differently named phenotypes
+                            // If this is the case try to get the phenotype record by mim_number
+                            // and name to prevent constraint failures.
+                            $phenotype = null;
+                            try {
+                                $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
+                            } catch (MultipleRecordsFoundException $e) {
+                                $phenotype = Phenotype::mimNumber($pheno['mim_number'])
+                                    ->where('name', $pheno['name'])
+                                    ->first();
+                            } catch (ModelNotFoundException $e) {
+                            }
 
-                                        if ($phenotype) {
-                                            $phenotype->update([
-                                                'name' => trim($pheno['name']),
-                                                'moi' => $pheno['moi'],
-                                            ]);
+                            if ($phenotype) {
+                                $phenotype->update([
+                                    'name' => trim($pheno['name']),
+                                    'moi' => $pheno['moi'],
+                                ]);
 
-                                            return $phenotype;
-                                        }
+                                return $phenotype;
+                            }
 
-                                        $phenotype = Phenotype::updateOrCreate(
-                                            [
-                                                'mim_number' => $pheno['mim_number'],
-                                                'name' => trim($pheno['name']),
-                                            ],
-                                            [
-                                                'moi' => $pheno['moi'],
-                                            ]
-                                        );
-                                        event(new PhenotypeAddedForGene($phenotype, $gene));
+                            $phenotype = Phenotype::updateOrCreate(
+                                [
+                                    'mim_number' => $pheno['mim_number'],
+                                    'name' => trim($pheno['name']),
+                                ],
+                                [
+                                    'moi' => $pheno['moi'],
+                                ]
+                            );
+                            event(new PhenotypeAddedForGene($phenotype, $gene));
 
-                                        return $phenotype;
-                                    } catch (\Throwable $th) {
-                                        Log::warning($th->getMessage());
-                                        throw $th;
+                            return $phenotype;
+                        } catch (\Throwable $th) {
+                            Log::warning($th->getMessage());
+                            throw $th;
 
-                                        return null;
-                                    }
-                                });
+                            return null;
+                        }
+                    });
 
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }

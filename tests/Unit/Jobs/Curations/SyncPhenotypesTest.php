@@ -15,13 +15,13 @@ class SyncPhenotypesTest extends TestCase
     {
         parent::setUp();
         $this->phs = factory(Phenotype::class, 3)
-                        ->create()
-                        ->transform(function ($item) {
-                            return [
-                                'mim_number' => $item->mim_number,
-                                'name' => $item->name,
-                            ];
-                        });
+            ->create()
+            ->transform(function ($item) {
+                return [
+                    'mim_number' => $item->mim_number,
+                    'name' => $item->name,
+                ];
+            });
         $this->curation = factory(\App\Curation::class)->create();
     }
 

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\DataExchange\Contracts\MessageConsumer;
-use  App\DataExchange\Events\Received;
+use App\DataExchange\Events\Received;
 use App\DataExchange\Kafka\KafkaConsumer;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

@@ -15,7 +15,7 @@ class AppStatesTableSeeder extends Seeder
     public function run()
     {
         $states = config('app_state');
-        foreach ($states as  $value) {
+        foreach ($states as $value) {
             AppState::firstOrCreate(['name' => $value['name']], $value);
         }
     }

@@ -41,10 +41,10 @@ class CurationCurationStatusController extends Controller
         AddStatus::dispatchNow($curation, $status, $request->status_date);
 
         return $curation->curationStatuses()
-                ->where('curation_status_id', $curation->curation_status_id)
-                ->limit(1)
-                ->get()
-                ->last();
+            ->where('curation_status_id', $curation->curation_status_id)
+            ->limit(1)
+            ->get()
+            ->last();
     }
 
     /**
@@ -56,8 +56,8 @@ class CurationCurationStatusController extends Controller
     public function show($curationId, $curationStatusId)
     {
         return Curation::findOrFail($curationId)
-                ->curationStatuses
-                ->firstWhere('id', $curationStatusId);
+            ->curationStatuses
+            ->firstWhere('id', $curationStatusId);
     }
 
     /**

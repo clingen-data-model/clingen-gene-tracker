@@ -33,8 +33,8 @@ class CurationCurationStatusControllerTest extends TestCase
     public function test_lists_all_statuses_for_curation()
     {
         $response = $this->json('GET', '/api/curations/'.$this->curation->id.'/statuses')
-                        ->assertStatus(200)
-                        ->assertJson($this->curation->curationStatuses->toArray());
+            ->assertStatus(200)
+            ->assertJson($this->curation->curationStatuses->toArray());
     }
 
     public function test_relates_new_status_to_curation()
@@ -83,8 +83,8 @@ class CurationCurationStatusControllerTest extends TestCase
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$ccs->pivot->id, [
             'status_date' => '1982-05-17',
         ])
-        ->assertStatus(200)
-        ->assertJson($ccs->fresh()->toArray());
+            ->assertStatus(200)
+            ->assertJson($ccs->fresh()->toArray());
 
         $curation = $this->curation->fresh();
         $ccs = $curation->statuses->keyBy('pivot.id')->get($ccs->pivot->id);

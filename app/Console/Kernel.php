@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
             ->dailyAt('01:00:00');
 
         $schedule->command('mondo:update-data')
-        ->dailyAt('O2:00:00');
+            ->dailyAt('O2:00:00');
 
         $schedule->command('omim:update-data')
             ->dailyAt('03:00:00')

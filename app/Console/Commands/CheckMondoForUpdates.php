@@ -50,11 +50,11 @@ class CheckMondoForUpdates extends Command
         $printRequests = $this->option('print-requests');
         \Log::info('Checking MonDO for updates.');
         $curations = Curation::query()
-                        ->with('expertPanel')
-                        ->get()
-                        ->filter(function ($curation) {
-                            return ! is_null($curation->mondo_id);
-                        });
+            ->with('expertPanel')
+            ->get()
+            ->filter(function ($curation) {
+                return ! is_null($curation->mondo_id);
+            });
 
         $bar = $this->output->createProgressBar($curations->count());
 

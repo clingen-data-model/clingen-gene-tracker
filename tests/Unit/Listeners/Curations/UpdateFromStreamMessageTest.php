@@ -54,14 +54,14 @@ class UpdateFromStreamMessageTest extends TestCase
         ];
 
         $curationOther = factory(Curation::class)
-                            ->create(
-                                array_merge(['uuid' => '0c861e10-78a7-4ebc-ac57-853fb16f94c9', 'gene_symbol' => 'FRTS'], $gdmTrio)
-                            );
+            ->create(
+                array_merge(['uuid' => '0c861e10-78a7-4ebc-ac57-853fb16f94c9', 'gene_symbol' => 'FRTS'], $gdmTrio)
+            );
 
         $curationOther2 = factory(Curation::class)
-                            ->create(
-                                array_merge(['gene_symbol' => 'FRTY'], $gdmTrio)
-                            );
+            ->create(
+                array_merge(['gene_symbol' => 'FRTY'], $gdmTrio)
+            );
 
         $gdmTrio['gdm_uuid'] = '0c861e10-78a7-4ebc-ac57-853fb16f94c9';
 

@@ -22,10 +22,10 @@ class CurationShowTest extends ExternalApiTest
         $this->gdmUuid = $this->faker()->uuid();
         $this->gtUuid = $this->faker()->uuid();
         $this->curation = factory(Curation::class)
-                    ->create([
-                        'gdm_uuid' => $this->gdmUuid,
-                        'uuid' => $this->gtUuid,
-                    ]);
+            ->create([
+                'gdm_uuid' => $this->gdmUuid,
+                'uuid' => $this->gtUuid,
+            ]);
     }
 
     /**
@@ -37,7 +37,7 @@ class CurationShowTest extends ExternalApiTest
             method: 'GET',
             uri: '/api/v1/pre-curations/'.$this->curation->id,
         )
-        ->assertStatus(401);
+            ->assertStatus(401);
     }
 
     /**

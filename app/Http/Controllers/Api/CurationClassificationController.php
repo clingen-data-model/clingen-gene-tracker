@@ -31,9 +31,9 @@ class CurationClassificationController extends Controller
     public function show($curationId, $curationClassificationId)
     {
         return Curation::findOrFail($curationId)
-                ->classifications()
-                ->where('classification_curation.id', $curationClassificationId)
-                ->first();
+            ->classifications()
+            ->where('classification_curation.id', $curationClassificationId)
+            ->first();
     }
 
     public function update(CurationClassificationRequest $request, $curationId, $curationClassificationId)
@@ -43,9 +43,9 @@ class CurationClassificationController extends Controller
         UpdateClassification::dispatchNow($curation, $curationClassificationId, $request->all());
 
         return $curation->classifications()
-                ->where('classification_curation.id', $curationClassificationId)
-                ->orderBy('classification_curation.updated_at', 'desc')
-                ->first();
+            ->where('classification_curation.id', $curationClassificationId)
+            ->orderBy('classification_curation.updated_at', 'desc')
+            ->first();
     }
 
     public function destroy($curationId, $curationClassificationId)

@@ -115,7 +115,7 @@ class KafkaConsumer implements MessageConsumer
      *
      * @param  callable|null  $callback callable to called on each message.
      */
-    public function consume(?callable $callback = null): MessageConsumer
+    public function consume(callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 
@@ -141,7 +141,7 @@ class KafkaConsumer implements MessageConsumer
      * @param  int  $numberOfMessages - number of messages to consumed.
      * @param  callable|null  $callback callable to called on each message.
      */
-    public function consumeSomeMessages($numberOfMessages, ?callable $callback = null): MessageConsumer
+    public function consumeSomeMessages($numberOfMessages, callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 
@@ -174,7 +174,7 @@ class KafkaConsumer implements MessageConsumer
      *
      * @param  callable|null  $callback callable to called on each message with err == 0.
      */
-    public function consumePresentMessages(?callable $callback = null): MessageConsumer
+    public function consumePresentMessages(callable $callback = null): MessageConsumer
     {
         $this->kafkaConsumer->subscribe($this->topics);
 
@@ -196,7 +196,7 @@ class KafkaConsumer implements MessageConsumer
         return $this;
     }
 
-    private function getMessageHandler(?callable $callable = null): callable
+    private function getMessageHandler(callable $callable = null): callable
     {
         if (! $callable) {
             $chain = $this->getMessageHandlerChain();

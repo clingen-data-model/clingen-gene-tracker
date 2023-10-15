@@ -84,8 +84,8 @@ class User extends Authenticatable
     public function expertPanels()
     {
         return $this->belongsToMany(ExpertPanel::class)
-                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
-                ->withTimestamps();
+            ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')
+            ->withTimestamps();
     }
 
     public function coordinatorPanels()

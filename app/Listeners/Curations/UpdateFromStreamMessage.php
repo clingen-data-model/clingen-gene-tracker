@@ -61,11 +61,11 @@ class UpdateFromStreamMessage
         $curation = Curation::findByGdmUuid($message->uuid);
         if (! $curation) {
             $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
-                            ->noGdmUuid()
+                ->noGdmUuid()
                             // ->whereHas('expertPanel', function ($q) use ($message) {
                             //     $q->where('affiliation_id', $message->affiliation->id);
                             // })
-                            ->first();
+                ->first();
 
             if (! $curation) {
                 $curation = $this->findByHgncAndOriginalMondo($message);
