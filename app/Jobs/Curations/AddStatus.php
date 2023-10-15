@@ -58,7 +58,7 @@ class AddStatus implements ShouldQueue
                 ],
             ]);
 
-            UpdateCurrentStatus::dispatchNow($this->curation);
+            UpdateCurrentStatus::dispatchSync($this->curation);
         });
     }
 

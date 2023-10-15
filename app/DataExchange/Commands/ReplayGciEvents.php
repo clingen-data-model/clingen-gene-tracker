@@ -57,7 +57,7 @@ class ReplayGciEvents extends Command
 
         $bar = $this->output->createProgressBar($curations->count());
         foreach ($curations as $curation) {
-            Bus::dispatchNow(new ReplayGciEventsForCuration($curation));
+            Bus::dispatchSync(new ReplayGciEventsForCuration($curation));
             $bar->advance();
         }
         $bar->finish();

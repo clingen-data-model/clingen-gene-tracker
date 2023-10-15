@@ -242,7 +242,7 @@ class BulkCurationProcessor
         ];
         $curation = Curation::create($attributes);
 
-        SyncPhenotypes::dispatchNow($curation, $this->getPhenotypes($rowData));
+        SyncPhenotypes::dispatchSync($curation, $this->getPhenotypes($rowData));
         $curation->rationales()->sync($this->getRationales($rowData));
 
         foreach ($this->getStatusNames() as $id => $statusName) {
@@ -272,7 +272,7 @@ class BulkCurationProcessor
     private function addStatus($curation, $status, $dateName, $row)
     {
         if (isset($row[$dateName])) {
-            AddStatus::dispatchNow($curation, $status, $row[$dateName]);
+            AddStatus::dispatchSync($curation, $status, $row[$dateName]);
         }
     }
 

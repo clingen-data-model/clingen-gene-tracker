@@ -31,7 +31,7 @@ class AugmentWithHgncInfo
             || is_null($event->curation->hgnc_name)
         ) {
             try {
-                HgncInfoJob::dispatchNow($event->curation);
+                HgncInfoJob::dispatchSync($event->curation);
             } catch (HttpNotFoundException $e) {
                 \Log::warning($e->getMessage());
             }
