@@ -30,14 +30,14 @@ class CurationCurationStatusControllerTest extends TestCase
         $this->actingAs($this->user, 'api');
     }
 
-    public function test_lists_all_statuses_for_curation()
+    public function test_lists_all_statuses_for_curation(): void
     {
         $response = $this->json('GET', '/api/curations/'.$this->curation->id.'/statuses')
             ->assertStatus(200)
             ->assertJson($this->curation->curationStatuses->toArray());
     }
 
-    public function test_relates_new_status_to_curation()
+    public function test_relates_new_status_to_curation(): void
     {
         Carbon::setTestNow(Carbon::tomorrow());
         $response = $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
@@ -50,7 +50,7 @@ class CurationCurationStatusControllerTest extends TestCase
         $this->assertEquals('1977-09-16', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
     }
 
-    public function test_validates_create_data()
+    public function test_validates_create_data(): void
     {
         $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [])
             ->assertStatus(422);
@@ -70,14 +70,14 @@ class CurationCurationStatusControllerTest extends TestCase
         ])->assertStatus(422);
     }
 
-    public function test_shows_related_curation_status()
+    public function test_shows_related_curation_status(): void
     {
         $this->json('GET', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->id)
             ->assertStatus(200)
             ->assertJson($this->curation->statuses->first()->toArray());
     }
 
-    public function test_updates_status_date_of_related_status()
+    public function test_updates_status_date_of_related_status(): void
     {
         $ccs = $this->curation->statuses->random();
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$ccs->pivot->id, [
@@ -94,7 +94,7 @@ class CurationCurationStatusControllerTest extends TestCase
         $this->assertEquals($ccs->id, $curation->curation_status_id);
     }
 
-    public function test_update_status_date_validates_date()
+    public function test_update_status_date_validates_date(): void
     {
         $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id, [
             'status_date' => 'ted',
@@ -105,7 +105,7 @@ class CurationCurationStatusControllerTest extends TestCase
         ])->assertStatus(422);
     }
 
-    public function test_removes_related_curation_status()
+    public function test_removes_related_curation_status(): void
     {
         $this->json('DELETE', '/api/curations/'.$this->curation->id.'/statuses/'.$this->curation->statuses->first()->pivot->id)
             ->assertStatus(204);

@@ -23,7 +23,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function creation_precuration_message_created_when_curation_created()
+    public function creation_precuration_message_created_when_curation_created(): void
     {
         $curation = factory(Curation::class)->create();
         $curation->loadForMessage();
@@ -38,7 +38,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function updated_precuration_message_created_when_curation_updated()
+    public function updated_precuration_message_created_when_curation_updated(): void
     {
         $curation = factory(Curation::class)->create();
         $curation->update(['curation_notes' => 'test test test']);
@@ -54,7 +54,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function gt_gci_message_created_when_curation_updated_with_GDM_and_curation_complete_status()
+    public function gt_gci_message_created_when_curation_updated_with_GDM_and_curation_complete_status(): void
     {
         $curation = factory(Curation::class)->create();
         $curation->update(['gene_symbol' => 'TP53', 'hgnc_id' => 123, 'moi_id' => 1, 'mondo_id' => 'MONDO:1234566']);
@@ -76,7 +76,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function deleted_precuration_message_created_when_curation_deleted()
+    public function deleted_precuration_message_created_when_curation_deleted(): void
     {
         $curation = factory(Curation::class)->create();
         $curation->delete();
@@ -92,7 +92,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function message_pushed_to_streaming_service_when_created()
+    public function message_pushed_to_streaming_service_when_created(): void
     {
         Carbon::setTestNow('2019-01-01');
 
@@ -109,7 +109,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function sent_at_should_be_updated_when_message_successfully_pushed()
+    public function sent_at_should_be_updated_when_message_successfully_pushed(): void
     {
         Carbon::setTestNow('2019-01-01');
 
@@ -124,7 +124,7 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function sent_at_should_not_be_updated_when_message_send_fails()
+    public function sent_at_should_not_be_updated_when_message_send_fails(): void
     {
         Carbon::setTestNow('2019-01-01');
         $this->instance(MessagePusher::class, new class implements MessagePusher

@@ -27,7 +27,7 @@ class NameChangeNotificationTest extends TestCase
     /**
      * @test
      */
-    public function notification_sent_to_coordinators_of_curations_with_disease_if_not_obsolete()
+    public function notification_sent_to_coordinators_of_curations_with_disease_if_not_obsolete(): void
     {
         Notification::fake();
         $this->disease->update(['name' => 'New Name!!']);
@@ -42,7 +42,7 @@ class NameChangeNotificationTest extends TestCase
     /**
      * @test
      */
-    public function notification_not_sent_if_desease_is_obsolete()
+    public function notification_not_sent_if_desease_is_obsolete(): void
     {
         Notification::fake();
         $this->disease->update(['name' => 'New Name!!', 'is_obsolete' => true]);

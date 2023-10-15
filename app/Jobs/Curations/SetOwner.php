@@ -30,7 +30,7 @@ class SetOwner
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (
             ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)

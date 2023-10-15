@@ -25,7 +25,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function app_resolves_abstract_OmimClient_w_concrete_implementation()
+    public function app_resolves_abstract_OmimClient_w_concrete_implementation(): void
     {
         $omimClient = app()->make(\App\Contracts\OmimClient::class);
         $this->assertInstanceOf(\App\Clients\OmimClient::class, $omimClient);
@@ -34,7 +34,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function can_get_an_entry()
+    public function can_get_an_entry(): void
     {
         $entryJson = file_get_contents(base_path('tests/files/omim_api/entry_response.json'));
         $omim = $this->getOmimClient([new Response(200, [], $entryJson)]);
@@ -48,7 +48,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function can_search_omim_database()
+    public function can_search_omim_database(): void
     {
         $json = file_get_contents(base_path('tests/files/omim_api/search_response.json'));
         $omim = $this->getOmimClient([new Response(200, [], $json)]);
@@ -64,7 +64,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function can_get_phenotypes_for_hgnc_gene_symbol()
+    public function can_get_phenotypes_for_hgnc_gene_symbol(): void
     {
         $json = file_get_contents(base_path('tests/files/omim_api/gene_phenotypes_search.json'));
         $omim = $this->getOmimClient([new Response(200, [], $json)]);
@@ -80,7 +80,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function determines_whether_omim_has_a_gene_symbol()
+    public function determines_whether_omim_has_a_gene_symbol(): void
     {
         $notFoundJson = json_encode([
             'omim' => [
@@ -116,7 +116,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
-    public function caches_successful_responses_for_20_minutes()
+    public function caches_successful_responses_for_20_minutes(): void
     {
         $foundJson = (object) ['test' => 'beans'];
         $omim = $this->getOmimClient([

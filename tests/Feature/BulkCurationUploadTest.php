@@ -29,7 +29,7 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
-    public function bulk_upload_page_exists_and_has_link_to_template()
+    public function bulk_upload_page_exists_and_has_link_to_template(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->user)
@@ -43,7 +43,7 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
-    public function bulkUploadHandler_creates_curations_from_file()
+    public function bulkUploadHandler_creates_curations_from_file(): void
     {
         \DB::table('curations')->delete();
 
@@ -67,7 +67,7 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
-    public function bulkUploadValidatesRows()
+    public function bulkUploadValidatesRows(): void
     {
         $this->actingAs($this->user)
             ->json('POST', '/bulk-uploads', [
@@ -86,7 +86,7 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
-    public function confirms_duplicates_before_saving_file()
+    public function confirms_duplicates_before_saving_file(): void
     {
         \DB::table('curations')->delete();
         factory(Curation::class)->create(['gene_symbol' => 'MYL2']);

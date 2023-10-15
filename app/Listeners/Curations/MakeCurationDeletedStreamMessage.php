@@ -23,7 +23,7 @@ class MakeCurationDeletedStreamMessage
      *
      * @return void
      */
-    public function handle(Deleted $event)
+    public function handle(Deleted $event): void
     {
         \Bus::dispatchSync(new CreatePrecurationStreamMessage($event->curation, 'deleted'));
     }

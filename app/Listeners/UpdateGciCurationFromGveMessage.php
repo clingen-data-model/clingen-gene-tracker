@@ -24,7 +24,7 @@ class UpdateGciCurationFromGveMessage
      * @param  App\DataExchange\Events\Received  $event
      * @return void
      */
-    public function handle(Received $event)
+    public function handle(Received $event): void
     {
         Bus::dispatch(new UpdateGciCurationFromStreamMessage(new GciMessage($event->message->payload)));
     }

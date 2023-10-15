@@ -13,7 +13,7 @@ class ApiClientRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return request()->user()->hasAnyRole(['programmer', 'admin']);
     }
@@ -23,7 +23,7 @@ class ApiClientRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $apiClient = new ApiClient();
         if ($this->id) {

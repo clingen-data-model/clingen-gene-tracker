@@ -21,7 +21,7 @@ class HgncInfoAddedToCurationOnSavingTest extends TestCase
     /**
      * @test
      */
-    public function adds_hgnc_info_if_hgnc_id_is_null()
+    public function adds_hgnc_info_if_hgnc_id_is_null(): void
     {
         $this->curation->save();
 

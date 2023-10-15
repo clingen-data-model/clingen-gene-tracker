@@ -33,7 +33,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -44,7 +44,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)->subject('Mondo id not found')
             ->view(
@@ -59,7 +59,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             'curation' => $this->curation,

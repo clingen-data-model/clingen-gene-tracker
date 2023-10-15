@@ -31,7 +31,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
-    public function user_not_curation_curator_cant_update_curation()
+    public function user_not_curation_curator_cant_update_curation(): void
     {
         $user = factory(User::class)->create();
         $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id]);
@@ -41,7 +41,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
-    public function curation_curator_can_update_curation()
+    public function curation_curator_can_update_curation(): void
     {
         $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id]);
         $this->assertTrue($this->policy->update($this->curator, $curation));
@@ -50,7 +50,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
-    public function coordinator_of_curation_expert_panel_can_update_curation()
+    public function coordinator_of_curation_expert_panel_can_update_curation(): void
     {
         $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id, 'expert_panel_id' => $this->panel->id]);
         $this->assertTrue($this->policy->update($this->coordinator, $curation));
@@ -59,7 +59,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
-    public function user_with_manage_panel_curations_permission_can_update_curation()
+    public function user_with_manage_panel_curations_permission_can_update_curation(): void
     {
         $otherUser = factory(User::class)->create();
         $otherUser->expertPanels()->attach([$this->panel->id => ['can_edit_curations' => 1]]);

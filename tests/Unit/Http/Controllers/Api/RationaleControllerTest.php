@@ -24,7 +24,7 @@ class RationaleControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_returns_all_rationales()
+    public function index_returns_all_rationales(): void
     {
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/rationales');

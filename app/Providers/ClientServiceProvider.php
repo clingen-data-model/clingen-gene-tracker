@@ -18,7 +18,7 @@ class ClientServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
     }
 
@@ -27,7 +27,7 @@ class ClientServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->app->bind(OmimClientContract::class, OmimClient::class);
 

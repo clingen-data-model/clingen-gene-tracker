@@ -31,7 +31,7 @@ class GeneSymbolChangedNotificationTest extends TestCase
     /**
      * @test
      */
-    public function coordinator_is_notified_when_gene_symbol_changes()
+    public function coordinator_is_notified_when_gene_symbol_changes(): void
     {
         Notification::fake();
         $this->gene->update(['gene_symbol' => 'BIRD1']);

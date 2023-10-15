@@ -92,7 +92,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function returns_validation_errors_if_file_has_invalid_rows()
+    public function returns_validation_errors_if_file_has_invalid_rows(): void
     {
         \DB::table('curations')->delete();
 
@@ -108,7 +108,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function adds_new_curations_for_valid_file()
+    public function adds_new_curations_for_valid_file(): void
     {
         \DB::table('curations')->delete();
         $curations = $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), $this->ep->id);
@@ -119,7 +119,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function creates_curation_from_valid_row_data()
+    public function creates_curation_from_valid_row_data(): void
     {
         \DB::table('curations')->delete();
         $curation = $this->svc->processRow($this->data, $this->ep->id);
@@ -167,7 +167,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function validates_valid_row_data()
+    public function validates_valid_row_data(): void
     {
         // known good row data
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -176,7 +176,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function checks_curator_address_in_users()
+    public function checks_curator_address_in_users(): void
     {
         $this->data['curator_email'] = null;
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -189,7 +189,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function checks_curation_type_is_valid()
+    public function checks_curation_type_is_valid(): void
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
@@ -203,7 +203,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function checks_rationales_are_valid()
+    public function checks_rationales_are_valid(): void
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
@@ -217,7 +217,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function checks_omim_ids_are_valid_mim_numbers()
+    public function checks_omim_ids_are_valid_mim_numbers(): void
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
@@ -236,7 +236,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function checks_gene_symbol_is_valid_hgnc_symbol()
+    public function checks_gene_symbol_is_valid_hgnc_symbol(): void
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
@@ -253,7 +253,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function validates_column_headers_before_processing()
+    public function validates_column_headers_before_processing(): void
     {
         \DB::table('curations')->delete();
 
@@ -269,7 +269,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
-    public function validates_file_has_Curations_sheet()
+    public function validates_file_has_Curations_sheet(): void
     {
         \DB::table('curations')->delete();
 

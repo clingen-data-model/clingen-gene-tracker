@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('curations', function (Blueprint $table) {
             $table->text('disease_entity_notes')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('curations', function (Blueprint $table) {
             $table->dropColumn('disease_entity_notes');

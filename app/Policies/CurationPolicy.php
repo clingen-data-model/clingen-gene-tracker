@@ -26,7 +26,7 @@ class CurationPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         // return $user->hasPermissionTo('list uploads');
         return true;
@@ -39,12 +39,12 @@ class CurationPolicy
         }
     }
 
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return true;
     }
 
-    public function update(User $user, Curation $curation)
+    public function update(User $user, Curation $curation): bool
     {
         if ($user->id == $curation->curator_id) {
             return true;
@@ -57,7 +57,7 @@ class CurationPolicy
         return false;
     }
 
-    public function delete(User $user, Curation $curation)
+    public function delete(User $user, Curation $curation): bool
     {
         if ($this->hasPrivilegedRole($user)) {
             return true;

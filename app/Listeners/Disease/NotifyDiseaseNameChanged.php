@@ -24,7 +24,7 @@ class NotifyDiseaseNameChanged
      *
      * @return void
      */
-    public function handle(DiseaseNameChanged $event)
+    public function handle(DiseaseNameChanged $event): void
     {
         $event->disease->load('curations', 'curations.expertPanel.coordinators');
 

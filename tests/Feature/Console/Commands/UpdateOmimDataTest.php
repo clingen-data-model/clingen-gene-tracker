@@ -41,7 +41,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function downloads_omim_geneamp2_file_and_stores_phenotypes()
+    public function downloads_omim_geneamp2_file_and_stores_phenotypes(): void
     {
         $this->artisan('omim:update-data');
         $this->assertEquals(24, Phenotype::count());
@@ -51,7 +51,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function adds_phenotype_moi_if_exists_on_row()
+    public function adds_phenotype_moi_if_exists_on_row(): void
     {
         $this->artisan('omim:update-data');
         $this->assertDatabaseHas('phenotypes', [
@@ -63,7 +63,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function processes_if_newer_than_last_download()
+    public function processes_if_newer_than_last_download(): void
     {
         AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-28')]);
         $this->artisan('omim:update-data');
@@ -74,7 +74,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function updates_phenotype_if_already_exists()
+    public function updates_phenotype_if_already_exists(): void
     {
         factory(Phenotype::class)->create([
             'mim_number' => 610798,
@@ -91,7 +91,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function queries_phenotype_by_name_if_multiple_with_same_mim_number()
+    public function queries_phenotype_by_name_if_multiple_with_same_mim_number(): void
     {
         factory(Phenotype::class)->create([
             'mim_number' => 612069,
@@ -113,7 +113,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function sets_new_last_genemap_download_if_newer()
+    public function sets_new_last_genemap_download_if_newer(): void
     {
         AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-28')]);
         $this->artisan('omim:update-data');
@@ -127,7 +127,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function does_not_process_if_not_newer_than_last_download()
+    public function does_not_process_if_not_newer_than_last_download(): void
     {
         AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-29')]);
         $this->artisan('omim:update-data');
@@ -138,7 +138,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function gets_gene_symbol_from_approved_symbol_or_approved_gene_symbol_index()
+    public function gets_gene_symbol_from_approved_symbol_or_approved_gene_symbol_index(): void
     {
         $command = new UpdateOmimData();
 
@@ -149,7 +149,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function fires_PhenotypeAddedForGene_if_new_phenotype_added_to_gene()
+    public function fires_PhenotypeAddedForGene_if_new_phenotype_added_to_gene(): void
     {
         Event::fake();
         $this->artisan('omim:update-data');
@@ -159,7 +159,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function notification_staged_for_coordinator_when_phenotype_added_to_curated_gene()
+    public function notification_staged_for_coordinator_when_phenotype_added_to_curated_gene(): void
     {
         $user = $this->setupUser();
         $curation = $this->setupCuration(['hgnc_id' => 30478]);
@@ -175,7 +175,7 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_added_email_template_renders()
+    public function phenotype_added_email_template_renders(): void
     {
         $curation = $this->setupCuration(['hgnc_id' => 30478]);
         $phenotype = factory(Phenotype::class)->create();

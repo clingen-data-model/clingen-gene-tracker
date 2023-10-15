@@ -27,7 +27,7 @@ class MakeGtGciSyncMessage
      * @param  Updated  $event
      * @return void
      */
-    public function handle(CurationEvent $event)
+    public function handle(CurationEvent $event): void
     {
         // \Log::debug('  '.__METHOD__);
         if ($this->linkedToGciRecord($event->curation)) {

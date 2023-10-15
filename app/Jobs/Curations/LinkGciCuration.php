@@ -38,7 +38,7 @@ class LinkGciCuration implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $searchData = [
             'hgnc_id' => $this->curation->hgnc_id,

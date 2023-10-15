@@ -26,7 +26,7 @@ class UpdateCurrentStatus
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // \Log::debug('updating current status');
         $curationStatuses = $this->curation

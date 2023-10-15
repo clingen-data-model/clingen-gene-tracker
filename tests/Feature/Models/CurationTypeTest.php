@@ -23,7 +23,7 @@ class CurationTypeTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_name()
+    public function has_fillable_name(): void
     {
         $this->curationType->update(['name' => 'beans']);
         $this->assertEquals('beans', $this->curationType->name);
@@ -32,7 +32,7 @@ class CurationTypeTest extends TestCase
     /**
      * @test
      */
-    public function has_many_curations()
+    public function has_many_curations(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $this->curationType->curations()->save($curation);

@@ -21,7 +21,7 @@ class UpdateLinkedPhenotype
      *
      * @return void
      */
-    public function handle(OmimMovedPhenotype $event)
+    public function handle(OmimMovedPhenotype $event): void
     {
         $phenotype = $event->phenotype;
         $phenotype->curations->each(function ($curation) use ($phenotype) {

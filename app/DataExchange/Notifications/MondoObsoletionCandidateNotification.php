@@ -27,12 +27,12 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
 
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             'curation' => $this->curation,

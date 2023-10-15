@@ -42,7 +42,7 @@ class LinkPrecurationsToCurationsTest extends TestCase
     /**
      * @test
      */
-    public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match()
+    public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match(): void
     {
         Bus::fake();
         Artisan::call('curations:link-gci');

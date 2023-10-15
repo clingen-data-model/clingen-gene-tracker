@@ -19,7 +19,7 @@ class DeleteCurationTest extends TestCase
      *
      * @group authorization
      */
-    public function must_have_delete_permissions_to_delete_curation()
+    public function must_have_delete_permissions_to_delete_curation(): void
     {
         $this->curation
             ->expertPanel
@@ -43,7 +43,7 @@ class DeleteCurationTest extends TestCase
      *
      * @group authorization
      */
-    public function user_can_delete_a_curation_if_they_are_the_curator_of_curation_and_has_delete_permission()
+    public function user_can_delete_a_curation_if_they_are_the_curator_of_curation_and_has_delete_permission(): void
     {
         $this->user->givePermissionTo('delete curations');
 
@@ -57,7 +57,7 @@ class DeleteCurationTest extends TestCase
      *
      * @group authorization
      */
-    public function user_can_delete_a_curation_if_they_are_a_coordinator_of_expert_panel_that_owns_the_curation()
+    public function user_can_delete_a_curation_if_they_are_a_coordinator_of_expert_panel_that_owns_the_curation(): void
     {
         //create a coordinator who's not the curator
         $coordinator = factory(User::class)->create();
@@ -76,7 +76,7 @@ class DeleteCurationTest extends TestCase
      *
      * @group authorization
      */
-    public function user_with_panel_curation_edit_perms_and_delete_curation_permission_can_delete_a_curation()
+    public function user_with_panel_curation_edit_perms_and_delete_curation_permission_can_delete_a_curation(): void
     {
         //create a user who's not the curator
         $user = factory(User::class)->create();

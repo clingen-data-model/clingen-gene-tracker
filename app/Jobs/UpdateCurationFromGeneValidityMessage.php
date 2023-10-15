@@ -51,7 +51,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $affiliation = $this->findAffiliation();
         $moi = $this->findMoi();

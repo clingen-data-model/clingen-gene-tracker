@@ -35,7 +35,7 @@ class DbHealthCheck extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         try {
             \DB::connection()->getPdo();

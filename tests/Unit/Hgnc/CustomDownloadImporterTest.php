@@ -29,7 +29,7 @@ class CustomDownloadImporterTest extends TestCase
     /**
      * @test
      */
-    public function creates_gene_record_if_hgnc_not_found()
+    public function creates_gene_record_if_hgnc_not_found(): void
     {
         $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
         $importer = $this->getImporter([new Response(200, [], $data)]);
@@ -73,7 +73,7 @@ class CustomDownloadImporterTest extends TestCase
     /**
      * @test
      */
-    public function updates_gene_if_hgnc_id_found()
+    public function updates_gene_if_hgnc_id_found(): void
     {
         Carbon::setTestNow('2020-01-01');
         $gene = Gene::create([

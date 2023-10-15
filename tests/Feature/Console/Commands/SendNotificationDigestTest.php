@@ -52,7 +52,7 @@ class SendNotificationDigestTest extends TestCase
     /**
      * @test
      */
-    public function sends_an_email_with_aggregated_notifications()
+    public function sends_an_email_with_aggregated_notifications(): void
     {
         Notification::fake();
         $this->artisan('send-notifications');
@@ -68,7 +68,7 @@ class SendNotificationDigestTest extends TestCase
     /**
      * @test
      */
-    public function marks_notifications_read_when_sent()
+    public function marks_notifications_read_when_sent(): void
     {
         $this->artisan('send-notifications');
         $this->assertEquals(0, $this->user1->unreadNotifications->count());

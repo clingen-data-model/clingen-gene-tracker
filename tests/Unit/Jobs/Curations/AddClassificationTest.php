@@ -19,7 +19,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
-    public function adds_a_classification_to_a_curation()
+    public function adds_a_classification_to_a_curation(): void
     {
         \Event::fake();
         $classification = factory(Classification::class)->create([]);
@@ -37,7 +37,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
-    public function does_not_add_current_classification_again()
+    public function does_not_add_current_classification_again(): void
     {
         \Event::fake();
         $classification = factory(Classification::class)->create([]);
@@ -66,7 +66,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
-    public function does_not_add_previously_added_classification_if_date_matches_existing_classification_date()
+    public function does_not_add_previously_added_classification_if_date_matches_existing_classification_date(): void
     {
         \Event::fake();
         $classification = factory(Classification::class)->create([]);

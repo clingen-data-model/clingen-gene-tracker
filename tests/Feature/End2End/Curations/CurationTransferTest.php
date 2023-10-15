@@ -44,7 +44,7 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
-    public function an_unpriveleged_user_cannot_transfer_a_curation()
+    public function an_unpriveleged_user_cannot_transfer_a_curation(): void
     {
         // $this->withoutExceptionHandling();
         $this->actingAs($this->ep2User, 'api')
@@ -64,7 +64,7 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
-    public function a_privileged_user_can_transfer_a_curation()
+    public function a_privileged_user_can_transfer_a_curation(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->ep1User, 'api')
@@ -105,7 +105,7 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
-    public function receiving_ep_coordinators_are_emailed_on_transfer()
+    public function receiving_ep_coordinators_are_emailed_on_transfer(): void
     {
         $this->withoutExceptionHandling();
 
@@ -132,7 +132,7 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
-    public function adds_a_note_if_notes_field_not_null()
+    public function adds_a_note_if_notes_field_not_null(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->ep1User, 'api')
@@ -158,7 +158,7 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
-    public function does_not_create_a_test_if_notes_field_is_null()
+    public function does_not_create_a_test_if_notes_field_is_null(): void
     {
         $this->actingAs($this->ep1User, 'api')
             ->json('POST', $this->url, ['expert_panel_id' => $this->ep2->id, 'start_date' => Carbon::now()->format('Y-m-d')])

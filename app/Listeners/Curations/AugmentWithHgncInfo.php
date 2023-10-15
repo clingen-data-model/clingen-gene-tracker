@@ -23,7 +23,7 @@ class AugmentWithHgncInfo
      *
      * @return void
      */
-    public function handle(Saving $event)
+    public function handle(Saving $event): void
     {
         if (
             $event->curation->isDirty('gene_symbol')

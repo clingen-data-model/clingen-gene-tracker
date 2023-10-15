@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasTable('state_variables')) {
             Schema::drop('state_variables');
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (! Schema::hasTable('state_variables')) {
             Schema::create('state_variables', function (Blueprint $table) {

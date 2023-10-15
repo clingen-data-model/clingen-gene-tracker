@@ -20,7 +20,7 @@ class CurationStatusControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_lists_curation_statuses()
+    public function index_lists_curation_statuses(): void
     {
         $u = factory(\App\User::class)->create();
         $statuses = CurationStatus::all();

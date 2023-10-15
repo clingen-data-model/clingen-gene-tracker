@@ -38,7 +38,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
-    public function creates_notification_for_admin_if_no_expert_panel_for_affiliation()
+    public function creates_notification_for_admin_if_no_expert_panel_for_affiliation(): void
     {
         Notification::fake();
         $this->artisan('dx:notify-errors');
@@ -49,7 +49,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
-    public function creates_notification_for_admin_if_no_coordinators_for_panel_related_to_affiliation()
+    public function creates_notification_for_admin_if_no_coordinators_for_panel_related_to_affiliation(): void
     {
         Notification::fake();
         $this->ep2->update(['affiliation_id' => $this->streamError1->affilaition_id]);
@@ -62,7 +62,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
-    public function creates_notification_for_coordinator_if_affliation_related_to_coordinators_ep()
+    public function creates_notification_for_coordinator_if_affliation_related_to_coordinators_ep(): void
     {
         Notification::fake();
         $affiliation = Affiliation::findByClingenId($this->streamError1->affiliation_id);
@@ -78,7 +78,7 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
-    public function marks_pending_stream_errors_sent()
+    public function marks_pending_stream_errors_sent(): void
     {
         Carbon::setTestNow('2020-06-01 00:00:00');
         $this->artisan('dx:notify-errors');

@@ -25,7 +25,7 @@ class NotifyGeneSymbolChanged
      *
      * @return void
      */
-    public function handle(GeneSymbolChanged $event)
+    public function handle(GeneSymbolChanged $event): void
     {
         $curations = Curation::where('hgnc_id', $event->gene->hgnc_id)->get();
         $curations->each(function ($curation) use ($event) {

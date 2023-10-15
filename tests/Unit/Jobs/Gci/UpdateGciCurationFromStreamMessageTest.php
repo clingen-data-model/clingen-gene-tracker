@@ -32,7 +32,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_existing_gci_curation()
+    public function updates_existing_gci_curation(): void
     {
         $ism = $this->setupIsm();
         $gciMessage = new GciMessage($ism->payload);
@@ -48,7 +48,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function creates_new_gci_curation_if_status_is_created()
+    public function creates_new_gci_curation_if_status_is_created(): void
     {
         $this->gciCuration->forceDelete();
         $ism = $this->setupIsm();
@@ -68,7 +68,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function creates_new_gci_curation_if_update_and_no_existing_record()
+    public function creates_new_gci_curation_if_update_and_no_existing_record(): void
     {
         $this->gciCuration->forceDelete();
         $ism = $this->setupIsm();

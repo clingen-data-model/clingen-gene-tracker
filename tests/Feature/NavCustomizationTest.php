@@ -30,7 +30,7 @@ class NavCustomizationTest extends TestCase
      *
      * @group nav
      */
-    public function programmers_can_see_admin_link()
+    public function programmers_can_see_admin_link(): void
     {
         $this->actingAs($this->pr)
             ->call('GET', '/')
@@ -42,7 +42,7 @@ class NavCustomizationTest extends TestCase
      *
      * @group nav
      */
-    public function admins_can_see_admin_link()
+    public function admins_can_see_admin_link(): void
     {
         $this->actingAs($this->ad)
             ->call('GET', '/')
@@ -54,7 +54,7 @@ class NavCustomizationTest extends TestCase
      *
      * @group nav
      */
-    public function others_cannot_see_admin_link()
+    public function others_cannot_see_admin_link(): void
     {
         $this->actingAs($this->cu)
             ->call('GET', '/')
@@ -66,7 +66,7 @@ class NavCustomizationTest extends TestCase
      *
      * @group nav
      */
-    public function guests_cannot_see_admin_link()
+    public function guests_cannot_see_admin_link(): void
     {
         $this->call('GET', '/')
             ->assertDontSee('Admin');

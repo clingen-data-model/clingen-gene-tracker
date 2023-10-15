@@ -38,7 +38,7 @@ class SendNotificationDigest extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         // Make sure notifications have been created for all unsent streaming service errors
         $this->call('dx:notify-errors');

@@ -13,7 +13,7 @@ class UploadResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $data = parent::toArray($request);
         $data['file_url'] = url(Storage::url('curator_uploads/'.$this->id.'/file'));

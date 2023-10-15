@@ -34,7 +34,7 @@ class SyncPhenotypes implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->phenotypes && $this->phenotypes->count() > 0) {
             return;

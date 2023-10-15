@@ -51,7 +51,7 @@ class AugmentWithHgncInfoTest extends TestCase
     /**
      * @test
      */
-    public function adds_hgnc_name_hgnc_id_to_curation()
+    public function adds_hgnc_name_hgnc_id_to_curation(): void
     {
         $gene = factory(Gene::class)->create([
             'gene_symbol' => 'TH',
@@ -71,7 +71,7 @@ class AugmentWithHgncInfoTest extends TestCase
      * @group notifications
      * @group mail
      */
-    public function updates_previous_symbol_with_new_symbol_symbol_changed()
+    public function updates_previous_symbol_with_new_symbol_symbol_changed(): void
     {
         $gene = factory(Gene::class)->create([
             'hgnc_id' => 11782,

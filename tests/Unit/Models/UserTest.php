@@ -26,7 +26,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function fires_UserCreated_event_when_created()
+    public function fires_UserCreated_event_when_created(): void
     {
         \Event::fake();
         $user = factory(\App\User::class)->create();
@@ -38,7 +38,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function user_belongsToMany_exper_panels()
+    public function user_belongsToMany_exper_panels(): void
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->user->expertPanels());
     }
@@ -46,7 +46,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function user_gets_random_password_on_creating_if_not_set()
+    public function user_gets_random_password_on_creating_if_not_set(): void
     {
         $u = factory(User::class)->create([
             'password' => null,
@@ -57,7 +57,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function user_creating_with_password_gets_that_password()
+    public function user_creating_with_password_gets_that_password(): void
     {
         $u = factory(User::class)->create([
             'password' => 'secret',
@@ -69,7 +69,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function user_password_hashed_on_assignment()
+    public function user_password_hashed_on_assignment(): void
     {
         $u = factory(User::class)->create([
             'password' => 'test',
@@ -82,7 +82,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function can_get_wether_user_can_edit_panel_curations()
+    public function can_get_wether_user_can_edit_panel_curations(): void
     {
         $panel = factory(ExpertPanel::class)->create();
         $this->assertFalse($this->user->canEditPanelCurations($panel));
@@ -100,7 +100,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function knows_if_user_is_panel_coordinator()
+    public function knows_if_user_is_panel_coordinator(): void
     {
         $panel = factory(ExpertPanel::class)->create();
         $this->assertFalse($this->user->isPanelCoordinator($panel));
@@ -115,7 +115,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function knows_if_user_is_panel_curator()
+    public function knows_if_user_is_panel_curator(): void
     {
         $panel = factory(ExpertPanel::class)->create();
         $this->assertFalse($this->user->isPanelCurator($panel));

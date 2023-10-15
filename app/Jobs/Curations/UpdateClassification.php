@@ -34,7 +34,7 @@ class UpdateClassification
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $relatedClassification = $this->curation
             ->classifications

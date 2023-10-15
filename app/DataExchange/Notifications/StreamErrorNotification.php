@@ -30,7 +30,7 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -41,7 +41,7 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         $uniqueErrors = $this->streamErrors
             ->unique(function ($error) {

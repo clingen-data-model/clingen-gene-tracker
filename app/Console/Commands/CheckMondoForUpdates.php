@@ -45,7 +45,7 @@ class CheckMondoForUpdates extends Command
      *
      * @return mixed
      */
-    public function handle(MondoClient $mondoClient)
+    public function handle(MondoClient $mondoClient): void
     {
         $printRequests = $this->option('print-requests');
         \Log::info('Checking MonDO for updates.');

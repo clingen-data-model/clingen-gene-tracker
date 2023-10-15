@@ -44,7 +44,7 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
-    public function consumes_mondo_topic_and_dispatches_notifications()
+    public function consumes_mondo_topic_and_dispatches_notifications(): void
     {
         app()->bind(MessageConsumer::class, function () {
             return new TestConsumer([
@@ -81,7 +81,7 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
-    public function notifies_coordinators_of_curations_with_mondo_id()
+    public function notifies_coordinators_of_curations_with_mondo_id(): void
     {
         Notification::fake();
         $this->runAction();
@@ -94,7 +94,7 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
-    public function digest_notification_renders_correctly()
+    public function digest_notification_renders_correctly(): void
     {
         // Send the notification via the action.
         $this->runAction();

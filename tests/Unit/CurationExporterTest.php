@@ -40,7 +40,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function exporter_returns_all_curations_with_columns()
+    public function exporter_returns_all_curations_with_columns(): void
     {
         $curationData = $this->exporter->getData();
 
@@ -73,7 +73,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function filters_by_expert_panel()
+    public function filters_by_expert_panel(): void
     {
         $curationData = $this->exporter->getData(['expert_panel_id' => $this->panels->first()->id]);
 
@@ -83,7 +83,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function filters_by_date_range()
+    public function filters_by_date_range(): void
     {
         $c1 = $this->curations->first();
         $c2 = $this->curations->last();
@@ -103,7 +103,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function filters_by_date_range_and_expert_panel_id()
+    public function filters_by_date_range_and_expert_panel_id(): void
     {
         $c1 = $this->curations->first();
         $c1->statuses()->updateExistingPivot(1, ['status_date' => now()->subDays(10)]);
@@ -116,7 +116,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function creates_a_csv_file_with_data()
+    public function creates_a_csv_file_with_data(): void
     {
         $path = $this->exporter->getCsv();
 
@@ -132,7 +132,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function coordinators_see_all_curations()
+    public function coordinators_see_all_curations(): void
     {
         $coordinator = factory(User::class)->create();
         $coordinator->expertPanels()->attach([
@@ -150,7 +150,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function admins_see_all_curations()
+    public function admins_see_all_curations(): void
     {
         $admin = factory(User::class)->create();
         $admin->assignRole('admin');
@@ -164,7 +164,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function curators_only_see_their_curations()
+    public function curators_only_see_their_curations(): void
     {
         $curator = factory(User::class)->create();
         $curator->expertPanels()->attach([
@@ -188,7 +188,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function selects_latest_date_for_any_status()
+    public function selects_latest_date_for_any_status(): void
     {
         $curation = factory(Curation::class)->create();
         CurationStatus::all()

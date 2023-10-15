@@ -11,7 +11,7 @@ class BulkLookupRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,14 +21,14 @@ class BulkLookupRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'gene_symbol' => 'required',
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'gene_symbol.required' => 'You must include at least one gene symbol to do a bulk lookup.',

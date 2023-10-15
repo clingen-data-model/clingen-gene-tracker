@@ -28,7 +28,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function implements_MessageConsumer()
+    public function implements_MessageConsumer(): void
     {
         $consumer = app()->make(KafkaConsumer::class);
 
@@ -38,7 +38,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function can_get_a_list_of_available_topics()
+    public function can_get_a_list_of_available_topics(): void
     {
         // Mock topics to be returned
         $topicA = \Mockery::mock(\RdKafka\Metadata\Topic::class);
@@ -71,7 +71,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function can_add_topics_to_listen_to_once()
+    public function can_add_topics_to_listen_to_once(): void
     {
         $consumer = app()->make(KafkaConsumer::class);
 
@@ -85,7 +85,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function can_remove_topics_to_listen_to()
+    public function can_remove_topics_to_listen_to(): void
     {
         $consumer = app()->make(KafkaConsumer::class);
 
@@ -101,7 +101,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_StreamMessages_Received_event_when_message_received_without_error()
+    public function dispatches_StreamMessages_Received_event_when_message_received_without_error(): void
     {
         $message = $this->makeMessage('unit_test', 1, '{"a": "monkeys"}');
         // $message2 = $this->makeMessage('unit_test', 2, null, RD_KAFKA_RESP_ERR_NO_ERROR);
@@ -127,7 +127,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
-    public function messages_stored_to_gci_messages_table()
+    public function messages_stored_to_gci_messages_table(): void
     {
         $messageContents = file_get_contents(base_path('tests/files/gci_messages/approved.json'));
         $message = $this->makeMessage('unit_test', 1, $messageContents);

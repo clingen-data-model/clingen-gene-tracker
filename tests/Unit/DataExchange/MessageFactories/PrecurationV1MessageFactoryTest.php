@@ -27,7 +27,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function makesCreatedMessage()
+    public function makesCreatedMessage(): void
     {
         $message = $this->factory->make($this->curation->fresh(), 'created');
         $data = $this->getBaseData();
@@ -37,7 +37,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function makesUpdatedMessage()
+    public function makesUpdatedMessage(): void
     {
         $gene = factory(Gene::class)->create();
         $phs = factory(Phenotype::class, 3)->create();
@@ -85,7 +85,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function makesDeletedMessage()
+    public function makesDeletedMessage(): void
     {
         // $this->curation->delete();
         $message = $this->factory->make($this->curation, 'deleted');

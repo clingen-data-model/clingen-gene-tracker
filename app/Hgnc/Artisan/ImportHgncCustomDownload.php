@@ -37,7 +37,7 @@ class ImportHgncCustomDownload extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $importer = app()->make(CustomDownloadImporter::class);
         foreach ($importer->import() as $message) {

@@ -31,7 +31,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function no_gt_gci_messages_created_if_status_not_precuration_complete()
+    public function no_gt_gci_messages_created_if_status_not_precuration_complete(): void
     {
         $this->curation->update(['moi_id' => 1, 'mondo_id' => 'MONDO:0000336']);
         $this->assertDatabaseMissing('stream_messages', [
@@ -42,7 +42,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function no_gt_gci_messages_created_if_mondo_id_not_set()
+    public function no_gt_gci_messages_created_if_mondo_id_not_set(): void
     {
         $this->curation->update(['moi_id' => 1]);
         $status = CurationStatus::find(config('curations.statuses.precuration-complete'));
@@ -55,7 +55,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function no_gt_gci_messages_created_if_moi_id_not_set()
+    public function no_gt_gci_messages_created_if_moi_id_not_set(): void
     {
         $this->curation->update(['mondo_id' => 'MONDO:0000336']);
         $status = CurationStatus::find(config('curations.statuses.precuration-complete'));
@@ -68,7 +68,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function message_type_is_precuration_completed_if_mondo_was_null()
+    public function message_type_is_precuration_completed_if_mondo_was_null(): void
     {
         $this->setPrecurationCompleteStatus();
 
@@ -90,7 +90,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function event_type_is_precuration_completed_if_moi_was_null()
+    public function event_type_is_precuration_completed_if_moi_was_null(): void
     {
         $this->setPrecurationCompleteStatus();
 
@@ -112,7 +112,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function event_type_is_precuration_completed_if_has_gdm_and_status_changed_to_precuration_complete()
+    public function event_type_is_precuration_completed_if_has_gdm_and_status_changed_to_precuration_complete(): void
     {
         $this->addMoi();
         $this->addMondo();
@@ -132,7 +132,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_mondo_changes()
+    public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_mondo_changes(): void
     {
         $this->addMoiAndMondo();
         $this->setPrecurationCompleteStatus();
@@ -149,7 +149,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
-    public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_moi_changes()
+    public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_moi_changes(): void
     {
         $this->addMoiAndMondo();
         $this->setPrecurationCompleteStatus();

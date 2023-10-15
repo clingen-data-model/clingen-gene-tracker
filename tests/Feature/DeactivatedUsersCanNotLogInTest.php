@@ -14,7 +14,7 @@ class DeactivatedUsersCanNotLogInTest extends TestCase
     /**
      * @test
      */
-    public function activated_user_can_log_in()
+    public function activated_user_can_log_in(): void
     {
         $user = factory(User::class)->create(['password' => Hash::make('tester'), 'deactivated_at' => null]);
 
@@ -25,7 +25,7 @@ class DeactivatedUsersCanNotLogInTest extends TestCase
     /**
      * @test
      */
-    public function deactivated_user_cannot_log_in()
+    public function deactivated_user_cannot_log_in(): void
     {
         $user = factory(User::class)->create(['password' => Hash::make('tester'), 'deactivated_at' => '2020-01-01']);
 

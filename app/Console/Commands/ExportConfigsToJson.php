@@ -36,7 +36,7 @@ class ExportConfigsToJson extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $configs = ($this->option('configs'))
                         ? explode(',', $this->option('configs'))

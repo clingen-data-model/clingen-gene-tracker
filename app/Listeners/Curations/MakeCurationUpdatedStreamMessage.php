@@ -23,7 +23,7 @@ class MakeCurationUpdatedStreamMessage
      *
      * @return void
      */
-    public function handle(Updated $event)
+    public function handle(Updated $event): void
     {
         \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'updated'));
     }

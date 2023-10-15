@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('rationales', function (Blueprint $table) {
             $table->increments('id');
@@ -30,7 +30,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('curations', function (Blueprint $table) {
             $table->dropForeign(['rationale_id']);

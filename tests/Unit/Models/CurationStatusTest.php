@@ -17,7 +17,7 @@ class CurationStatusTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_name()
+    public function has_fillable_name(): void
     {
         $curation = new CurationStatus();
         $curation->fill(['name' => 'beans']);

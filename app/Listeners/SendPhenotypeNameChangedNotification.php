@@ -21,7 +21,7 @@ class SendPhenotypeNameChangedNotification
      *
      * @return void
      */
-    public function handle(PhenotypeNameChanged $event)
+    public function handle(PhenotypeNameChanged $event): void
     {
         //
     }

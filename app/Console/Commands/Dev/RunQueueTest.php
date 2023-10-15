@@ -38,7 +38,7 @@ class RunQueueTest extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $startMsg = 'queue size at start: '.Queue::size();
         Log::debug($startMsg);

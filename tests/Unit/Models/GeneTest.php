@@ -15,7 +15,7 @@ class GeneTest extends TestCase
     /**
      * @test
      */
-    public function fires_GeneSymbolChanged_when_updated_and_gene_symbol_has_changed()
+    public function fires_GeneSymbolChanged_when_updated_and_gene_symbol_has_changed(): void
     {
         $gene = factory(Gene::class)->create(['gene_symbol' => 'BIRDC']);
 

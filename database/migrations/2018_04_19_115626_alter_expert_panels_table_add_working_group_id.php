@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('expert_panels', function (Blueprint $table) {
             $table->integer('working_group_id')->unsigned()->nullable()->after('created_at');
@@ -24,7 +24,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('expert_panels', function (Blueprint $table) {
             $table->dropForeign(['working_group_id']);

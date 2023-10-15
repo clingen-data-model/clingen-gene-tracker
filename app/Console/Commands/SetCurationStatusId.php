@@ -39,7 +39,7 @@ class SetCurationStatusId extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         $uploadedStatus = CurationStatus::find(config('project.curation-statuses.uploaded'));
 

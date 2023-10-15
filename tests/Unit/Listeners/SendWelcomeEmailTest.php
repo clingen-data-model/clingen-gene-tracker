@@ -23,7 +23,7 @@ class SendWelcomeEmailTest extends TestCase
      * @group mail
      * @group notifications
      */
-    public function sends_welcome_email_to_user()
+    public function sends_welcome_email_to_user(): void
     {
         $this->markTestSkipped('Unable to get to pass but works in real life.');
         Notification::fake();

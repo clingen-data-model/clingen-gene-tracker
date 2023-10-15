@@ -30,7 +30,7 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
-    public function does_nothing_if_version_data_lte_mondo_date_in_app_state()
+    public function does_nothing_if_version_data_lte_mondo_date_in_app_state(): void
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-06-01']);
         Artisan::call('mondo:update-data');
@@ -41,7 +41,7 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
-    public function imports_new_mondo_data_if_last_mondo_update_before_date_in_file()
+    public function imports_new_mondo_data_if_last_mondo_update_before_date_in_file(): void
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-05-01']);
         Artisan::call('mondo:update-data');
@@ -52,7 +52,7 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
-    public function sets_last_mondo_update_app_state()
+    public function sets_last_mondo_update_app_state(): void
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-05-01']);
         Artisan::call('mondo:update-data');

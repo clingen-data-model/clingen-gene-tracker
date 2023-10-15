@@ -35,7 +35,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curations_is_softDeletable()
+    public function curations_is_softDeletable(): void
     {
         $this->curation->delete();
 
@@ -49,7 +49,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_gene_symbol()
+    public function curation_has_fillable_gene_symbol(): void
     {
         $curation = new Curation();
         $curation->fill(['gene_symbol' => 'TEST-1']);
@@ -60,7 +60,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_modo_id()
+    public function curation_has_fillable_modo_id(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $curation->update(['mondo_id' => 1234567]);
@@ -71,7 +71,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_curation_type_id()
+    public function curation_has_fillable_curation_type_id(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $curation->update(['curation_type_id' => 1]);
@@ -82,7 +82,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_mondo_id()
+    public function curation_has_fillable_mondo_id(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $curation->update(['mondo_id' => 'MONDO:00012']);
@@ -93,7 +93,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_disease_entity_notes()
+    public function curation_has_fillable_disease_entity_notes(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $curation->update(['disease_entity_notes' => 'test beans monkeys']);
@@ -104,7 +104,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_pmids()
+    public function curation_has_fillable_pmids(): void
     {
         $this->curation->update(['pmids' => [12345, 123455, 1231523523]]);
 
@@ -114,7 +114,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_fillable_rationale_notes()
+    public function curation_has_fillable_rationale_notes(): void
     {
         $content = 'some notes about rationale.';
         $this->curation->update(['rationale_notes' => $content]);
@@ -124,7 +124,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_curator_relationship_to_users()
+    public function curation_has_curator_relationship_to_users(): void
     {
         $user = factory(\App\User::class)->create();
         $curation = factory(\App\Curation::class)->create([
@@ -137,7 +137,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_expertPanel_relationship_to_expert_panels()
+    public function curation_has_expertPanel_relationship_to_expert_panels(): void
     {
         $panel = factory(\App\ExpertPanel::class)->create();
         $curation = factory(\App\Curation::class)->create([
@@ -150,7 +150,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongsToMany_phenotypes()
+    public function curation_belongsToMany_phenotypes(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $phenotypes = factory(\App\Phenotype::class, 2)->create();
@@ -162,7 +162,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongsToMany_curation_status()
+    public function curation_belongsToMany_curation_status(): void
     {
         $curationStatuses = CurationStatus::limit(2)->get();
         $curation = factory(\App\Curation::class)->create();
@@ -179,7 +179,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_has_one_current_status()
+    public function curation_has_one_current_status(): void
     {
         $curationStatuses = CurationStatus::limit(2)->get();
         $curation = factory(\App\Curation::class)->create();
@@ -194,7 +194,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_can_get_current_status_date_attribute()
+    public function curation_can_get_current_status_date_attribute(): void
     {
         $curationStatuses = CurationStatus::limit(2)->get();
         $curation = factory(\App\Curation::class)->create();
@@ -211,7 +211,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongs_to_a_curation_type()
+    public function curation_belongs_to_a_curation_type(): void
     {
         $curationType = factory(\App\CurationType::class)->create();
         $curation = factory(\App\Curation::class)->create();
@@ -223,7 +223,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongs_to_many_rationales()
+    public function curation_belongs_to_many_rationales(): void
     {
         $rationale = factory(\App\Rationale::class)->create();
         $curation = factory(\App\Curation::class)->create();
@@ -236,7 +236,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_given_uploaded_status_when_created()
+    public function curation_given_uploaded_status_when_created(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $this->assertEquals($curation->fresh()->currentStatus->id, 1);
@@ -245,7 +245,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function gets_numeric_mondo_id_attribute()
+    public function gets_numeric_mondo_id_attribute(): void
     {
         $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO:1234']);
         $this->assertEquals(1234, $curation->numericMondoId);
@@ -257,7 +257,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_saved_dispatches_augment_hgnc_and_mondo()
+    public function curation_saved_dispatches_augment_hgnc_and_mondo(): void
     {
         \Event::fake();
         $curation = factory(Curation::class)->create(['gene_symbol' => 'BRCA1', 'mondo_id' => 'MONDO:0000473']);
@@ -268,7 +268,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongs_to_many_classifications()
+    public function curation_belongs_to_many_classifications(): void
     {
         $classifications = factory(Classification::class, 2)->create();
 
@@ -285,7 +285,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function curation_belongs_to_affiliation()
+    public function curation_belongs_to_affiliation(): void
     {
         $curation = factory(Curation::class)->create();
 
@@ -298,7 +298,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_scope_by_hgnc_and_mondo_ids()
+    public function can_scope_by_hgnc_and_mondo_ids(): void
     {
         $curation = factory(Curation::class)->create([
             'hgnc_id' => 17098,
@@ -312,7 +312,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_scope_where_curation_does_not_have_gdm_uuid()
+    public function can_scope_where_curation_does_not_have_gdm_uuid(): void
     {
         $curationWithUuid = factory(Curation::class)->create([
             'hgnc_id' => 17098,
@@ -326,7 +326,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_scope_where_curation_does_have_uuid()
+    public function can_scope_where_curation_does_have_uuid(): void
     {
         $curationWithUuid = factory(Curation::class)->create([
             'hgnc_id' => 17098,
@@ -340,7 +340,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function mondo_id_formatting_forced_when_set()
+    public function mondo_id_formatting_forced_when_set(): void
     {
         $curation = new Curation();
 
@@ -352,7 +352,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function trims_gene_symbol_when_set()
+    public function trims_gene_symbol_when_set(): void
     {
         $curation = new Curation();
         $curation->gene_symbol = ' BEANS ';
@@ -363,7 +363,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_add_an_upload_for_itself()
+    public function can_add_an_upload_for_itself(): void
     {
         $curation = factory(Curation::class)->create([]);
 
@@ -376,7 +376,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function can_remove_an_upload()
+    public function can_remove_an_upload(): void
     {
         $curation = factory(Curation::class)->create();
 
@@ -395,7 +395,7 @@ class CurationTest extends TestCase
      *
      * @group uuid
      */
-    public function adds_uuid_when_creating_if_none_exists()
+    public function adds_uuid_when_creating_if_none_exists(): void
     {
         $curation = factory(Curation::class)->make(['uuid' => null]);
         $this->assertNull($curation->uuid);
@@ -410,7 +410,7 @@ class CurationTest extends TestCase
      *
      * @group uuid
      */
-    public function can_find_a_curation_by_uuid()
+    public function can_find_a_curation_by_uuid(): void
     {
         $uuid = Uuid::uuid4()->toString();
         $curations = factory(Curation::class, 5)->create();
@@ -424,7 +424,7 @@ class CurationTest extends TestCase
      *
      * @group uuid
      */
-    public function can_find_a_curation_by_gdm_uuid()
+    public function can_find_a_curation_by_gdm_uuid(): void
     {
         $uuid = Uuid::uuid4()->toString();
         $curations = factory(Curation::class, 5)->create();
@@ -438,7 +438,7 @@ class CurationTest extends TestCase
      *
      * @group curation-ownership
      */
-    public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed()
+    public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed(): void
     {
         $ep1 = factory(ExpertPanel::class)->create();
         $curation = factory(Curation::class)->create(['expert_panel_id' => $ep1->id]);
@@ -452,7 +452,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
-    public function gets_phenotypes_not_included_in_curation()
+    public function gets_phenotypes_not_included_in_curation(): void
     {
         $gene = factory(Gene::class)->create(['hgnc_id' => 6636, 'gene_symbol' => 'LMNA']);
         $ph1 = factory(Phenotype::class)->create();

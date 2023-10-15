@@ -30,7 +30,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_returns_all_working_groups()
+    public function index_returns_all_working_groups(): void
     {
         $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user, 'api')
@@ -41,7 +41,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_includes_expert_panels_if_requested()
+    public function index_includes_expert_panels_if_requested(): void
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $response = $this->actingAs($this->user, 'api')
@@ -55,7 +55,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_returns_ok_response()
+    public function show_returns_ok_response(): void
     {
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/'.$this->group->id)
@@ -65,7 +65,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_returns_requested_group_info()
+    public function show_returns_requested_group_info(): void
     {
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/'.$this->group->id)
@@ -75,7 +75,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_includes_expert_panels_by_default()
+    public function show_includes_expert_panels_by_default(): void
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $this->group->load('expertPanels');
@@ -88,7 +88,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
-    public function show_includes_curations_for_expert_panels_by_default()
+    public function show_includes_curations_for_expert_panels_by_default(): void
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $curations = factory(\App\Curation::class, 2)->create([

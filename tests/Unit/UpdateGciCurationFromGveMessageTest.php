@@ -12,7 +12,7 @@ class UpdateGciCurationFromGveMessageTest extends TestCase
     /**
      * @test
      */
-    public function UpdateGciCurationFromGveMessage_listener_dispatches_UpdateGciCuratonFromMessage_job()
+    public function UpdateGciCurationFromGveMessage_listener_dispatches_UpdateGciCuratonFromMessage_job(): void
     {
         Bus::fake();
         $kafkaMessage = new \RdKafka\Message();

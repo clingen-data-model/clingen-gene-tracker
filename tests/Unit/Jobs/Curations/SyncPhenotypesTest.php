@@ -28,7 +28,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
-    public function adds_phenotypes_to_curation()
+    public function adds_phenotypes_to_curation(): void
     {
         $job = new SyncPhenotypes($this->curation, $this->phs);
         $job->handle();
@@ -41,7 +41,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
-    public function creates_new_phenotypes_and_adds_to_curation()
+    public function creates_new_phenotypes_and_adds_to_curation(): void
     {
         $newMims = collect([
             [
@@ -65,7 +65,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
-    public function removes_phenotypes_from_curation()
+    public function removes_phenotypes_from_curation(): void
     {
         $job = new SyncPhenotypes($this->curation, $this->phs);
         $job->handle();
@@ -80,7 +80,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
-    public function allows_multiple_phenotypes_with_the_same_mim_number_with_different_names()
+    public function allows_multiple_phenotypes_with_the_same_mim_number_with_different_names(): void
     {
         $newPheno = $this->phs->first();
         $newPheno['name'] = "Bob\'s yer uncle";

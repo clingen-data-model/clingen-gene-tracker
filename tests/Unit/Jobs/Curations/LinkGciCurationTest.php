@@ -49,7 +49,7 @@ class LinkGciCurationTest extends TestCase
     /**
      * @test
      */
-    public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match()
+    public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match(): void
     {
         Bus::dispatch(new LinkGciCuration($this->curation));
 
@@ -62,7 +62,7 @@ class LinkGciCurationTest extends TestCase
     /**
      * @test
      */
-    public function updates_curation_based_on_stream_messages()
+    public function updates_curation_based_on_stream_messages(): void
     {
         $ism = factory(IncomingStreamMessage::class)->create([
             'gdm_uuid' => $this->uuid->toString(),

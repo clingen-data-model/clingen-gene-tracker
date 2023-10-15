@@ -41,7 +41,7 @@ class FixStatusOrder extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->verbosity = $this->getOutput()->getVerbosity();
         $this->curationStatuses = CurationStatus::select('id')->get()->sortBy('id');

@@ -43,7 +43,7 @@ class UpdateMondoData extends Command
      *
      * @return mixed
      */
-    public function handle(ClientInterface $guzzleClient, OboParser $parser)
+    public function handle(ClientInterface $guzzleClient, OboParser $parser): void
     {
         $tmpFilePath = $this->option('file');
         if (! $this->option('file')) {

@@ -23,7 +23,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function adds_status_with_status_date_today_if_status_date_not_specified()
+    public function adds_status_with_status_date_today_if_status_date_not_specified(): void
     {
         $job = new AddStatus(
             $this->curation,
@@ -42,7 +42,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function adds_status_to_status_history_with_date_if_specified()
+    public function adds_status_to_status_history_with_date_if_specified(): void
     {
         $job = new AddStatus(
             $this->curation,
@@ -62,7 +62,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function does_not_add_status_if_new_status_matches_current_status()
+    public function does_not_add_status_if_new_status_matches_current_status(): void
     {
         Carbon::setTestNow('2020-01-15');
         AddStatus::dispatchSync(
@@ -82,7 +82,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function does_not_add_previously_added_status_if_date_matches_existing_status_date()
+    public function does_not_add_previously_added_status_if_date_matches_existing_status_date(): void
     {
         AddStatus::dispatchSync(
             $this->curation->fresh(),
@@ -104,7 +104,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function sets_curation_status_id_on_curation()
+    public function sets_curation_status_id_on_curation(): void
     {
         $job = new AddStatus(
             $this->curation,
@@ -123,7 +123,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
-    public function does_not_sets_curation_status_id_on_curation_if_status_date_greater_than_last_status_date()
+    public function does_not_sets_curation_status_id_on_curation_if_status_date_greater_than_last_status_date(): void
     {
         $job = new AddStatus(
             $this->curation,

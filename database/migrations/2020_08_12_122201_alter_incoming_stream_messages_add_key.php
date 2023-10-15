@@ -12,7 +12,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // $this->backupDuplicateMessagesForRoleback();
         $this->deleteDuplicateIncomingMessages();
@@ -34,7 +34,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         if (Schema::hasColumn('incoming_stream_messages', 'key')) {
             Schema::table('incoming_stream_messages', function (Blueprint $table) {

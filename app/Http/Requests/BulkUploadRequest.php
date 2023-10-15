@@ -11,7 +11,7 @@ class BulkUploadRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::user()->isCoordinator() || \Auth::user()->hasAnyRole('programmer|admin');
     }
@@ -21,7 +21,7 @@ class BulkUploadRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'expert_panel_id' => 'required|exists:expert_panels,id',

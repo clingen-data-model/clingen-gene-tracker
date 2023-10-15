@@ -26,7 +26,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_returns_422_when_classification_id_not_found()
+    public function store_returns_422_when_classification_id_not_found(): void
     {
         $this->json(
             'POST',
@@ -39,7 +39,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_returns_422_when_classifcation_date_invalid()
+    public function store_returns_422_when_classifcation_date_invalid(): void
     {
         $this->json(
             'POST',
@@ -55,7 +55,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_adds_new_classifcation_when_data_valid()
+    public function store_adds_new_classifcation_when_data_valid(): void
     {
         $this->json(
             'POST',
@@ -77,7 +77,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
-    public function update_updates_existing_classification_curation_record()
+    public function update_updates_existing_classification_curation_record(): void
     {
         $this->withoutExceptionHandling();
         $this->curation->classifications()->attach($this->classifications->first()->id);

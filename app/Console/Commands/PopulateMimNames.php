@@ -37,7 +37,7 @@ class PopulateMimNames extends Command
      *
      * @return mixed
      */
-    public function handle(OmimClient $omim)
+    public function handle(OmimClient $omim): void
     {
         $curations = Curation::with('phenotypes');
         $curations->each(function ($curation) use ($omim) {

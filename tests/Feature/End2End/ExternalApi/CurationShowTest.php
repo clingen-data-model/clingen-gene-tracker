@@ -31,7 +31,7 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
-    public function guest_cannot_get_a_precuration()
+    public function guest_cannot_get_a_precuration(): void
     {
         $this->makeExternalApiRequestAsGuest(
             method: 'GET',
@@ -43,7 +43,7 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
-    public function can_get_precuration_by_numeric_id()
+    public function can_get_precuration_by_numeric_id(): void
     {
         $this->makeRequest()
             ->assertStatus(200)
@@ -55,7 +55,7 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
-    public function can_get_precuration_by_uuid()
+    public function can_get_precuration_by_uuid(): void
     {
         $this->makeRequest($this->curation->uuid)
             ->assertStatus(200)
@@ -67,7 +67,7 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
-    public function can_get_precuration_by_gdm_uuid()
+    public function can_get_precuration_by_gdm_uuid(): void
     {
         $this->makeRequest($this->curation->gdm_uuid)
             ->assertStatus(200)
@@ -79,7 +79,7 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
-    public function responds_with_404_if_not_found()
+    public function responds_with_404_if_not_found(): void
     {
         $otherUuid = $this->faker()->uuid();
         $this->makeRequest($otherUuid)

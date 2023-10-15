@@ -10,7 +10,7 @@ class ApiDocumentationTest extends ExternalApiTest
     /**
      * @test
      */
-    public function guest_cannot_get_docs()
+    public function guest_cannot_get_docs(): void
     {
         $this->makeExternalApiRequestAsGuest('GET', '/api/v1/')
             ->assertStatus(401);
@@ -19,7 +19,7 @@ class ApiDocumentationTest extends ExternalApiTest
     /**
      * @test
      */
-    public function authed_client_can_get_docs()
+    public function authed_client_can_get_docs(): void
     {
         $response = $this->makeExternalApiRequest('GET', '/api/v1/')
             ->assertStatus(200)

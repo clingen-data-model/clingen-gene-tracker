@@ -38,7 +38,7 @@ class FixPhenotypeNames extends Command
      *
      * @return mixed
      */
-    public function handle(OmimClient $omimClient)
+    public function handle(OmimClient $omimClient): void
     {
         // turn off mail while we do this so we don't flood coordinators with email.
         config(['mail.driver' => 'log']);

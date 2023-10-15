@@ -37,7 +37,7 @@ class CreateStreamMessageForExistingCuration extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $curations = Curation::all();
         $bar = $this->output->createProgressBar($curations->count());

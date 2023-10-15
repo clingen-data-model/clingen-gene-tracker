@@ -23,7 +23,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_name()
+    public function has_fillable_name(): void
     {
         $this->workingGroup->fill(['name' => 'test group']);
         $this->workingGroup->save();
@@ -33,7 +33,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
-    public function uses_soft_deletes()
+    public function uses_soft_deletes(): void
     {
         $this->workingGroup->delete();
 
@@ -49,7 +49,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
-    public function is_revisionable_and_tracks_create()
+    public function is_revisionable_and_tracks_create(): void
     {
         $this->assertNotNull($this->workingGroup->revisionHistory);
         $this->assertEquals(1, $this->workingGroup->revisionHistory->count());
@@ -58,7 +58,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
-    public function has_many_expert_panels()
+    public function has_many_expert_panels(): void
     {
         $this->assertInstanceOf(HasMany::class, $this->workingGroup->expertPanels());
     }

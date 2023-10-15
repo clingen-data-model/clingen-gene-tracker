@@ -10,7 +10,7 @@ class ValidOmimIdTest extends TestCase
     /**
      * @test
      */
-    public function fails_when_not_a_valid_omim_id()
+    public function fails_when_not_a_valid_omim_id(): void
     {
         $rule = new ValidOmimId();
 
@@ -20,7 +20,7 @@ class ValidOmimIdTest extends TestCase
     /**
      * @test
      */
-    public function passes_when_valid_omim_id()
+    public function passes_when_valid_omim_id(): void
     {
         $rule = new ValidOmimId();
 

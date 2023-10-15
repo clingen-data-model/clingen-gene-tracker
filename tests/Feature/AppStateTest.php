@@ -14,7 +14,7 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
-    public function accessor_casts_to_int()
+    public function accessor_casts_to_int(): void
     {
         $state = $this->createState(['type' => 'int', 'value' => '21']);
         $this->assertIsInt($state->value);
@@ -28,7 +28,7 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
-    public function accessor_casts_to_date()
+    public function accessor_casts_to_date(): void
     {
         $state = $this->createState(['type' => 'date', 'value' => '2021-01-01 12:00:00']);
         $this->assertInstanceOf(Carbon::class, $state->value);
@@ -38,7 +38,7 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
-    public function accessor_casts_json_type()
+    public function accessor_casts_json_type(): void
     {
         $state = $this->createState(['type' => 'json', 'value' => '["a", "b", "c"]']);
         $this->assertIsArray($state->value);

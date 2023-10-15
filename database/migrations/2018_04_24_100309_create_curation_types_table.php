@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('curation_types', function (Blueprint $table) {
             $table->increments('id');
@@ -31,7 +31,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('curations', function (Blueprint $table) {
             $table->dropForeign(['curation_type_id']);

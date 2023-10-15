@@ -36,7 +36,7 @@ class ReplayGciEventsForCuration implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->curation->gdm_uuid) {
             throw new Exception('Curation '.$this->curation->id.' is not linked to a GDM.');

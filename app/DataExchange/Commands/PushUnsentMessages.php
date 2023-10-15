@@ -37,7 +37,7 @@ class PushUnsentMessages extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $query = StreamMessage::unsent();
 

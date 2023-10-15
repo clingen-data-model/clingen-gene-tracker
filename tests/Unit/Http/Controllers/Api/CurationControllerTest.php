@@ -32,7 +32,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_lists_all_curations()
+    public function index_lists_all_curations(): void
     {
         $curation = $this->curations->first();
         $curation->update([
@@ -65,7 +65,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function stores_new_curation()
+    public function stores_new_curation(): void
     {
         $data = [
             'gene_symbol' => 'BRCA1',
@@ -82,7 +82,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function requires_gene_symbol()
+    public function requires_gene_symbol(): void
     {
         $data = [
             'expert_panel' => $this->panel->id,
@@ -103,7 +103,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function checks_for_valid_gene_symbol()
+    public function checks_for_valid_gene_symbol(): void
     {
         $data = [
             'gene_symbol' => 'MLTN1',
@@ -123,7 +123,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function requires_expert_panel_id()
+    public function requires_expert_panel_id(): void
     {
         $data = [
             'gene_symbol' => 'BRCA1',
@@ -144,7 +144,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_does_not_include_phenotypes_when_not_requested()
+    public function index_does_not_include_phenotypes_when_not_requested(): void
     {
         $this->withoutExceptionHandling();
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
@@ -160,7 +160,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_includes_phenotypes_when_requested()
+    public function index_includes_phenotypes_when_requested(): void
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
@@ -176,7 +176,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_includes_status_by_default()
+    public function index_includes_status_by_default(): void
     {
         $this->withoutExceptionHandling();
         $status = factory(\App\CurationStatus::class)->create();
@@ -192,7 +192,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function curation_show_includes_phenotypes_by_default()
+    public function curation_show_includes_phenotypes_by_default(): void
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $this->curations->each(function ($t) use ($phenotypes) {
@@ -209,7 +209,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function curation_show_includes_rationales_by_default()
+    public function curation_show_includes_rationales_by_default(): void
     {
         $this->curations->first()->rationales()->attach($this->rationale->id);
         $this->actingAs($this->user, 'api')
@@ -220,7 +220,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function curation_show_includes_curationType_by_default()
+    public function curation_show_includes_curationType_by_default(): void
     {
         $this->curations->first()->curationType()->associate($this->curationType);
 
@@ -232,7 +232,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
-    public function store_saves_phenotypes_for_new_curation()
+    public function store_saves_phenotypes_for_new_curation(): void
     {
         $phenotype = factory(\App\Phenotype::class)->create();
         $curator = factory(\App\User::class)->create();

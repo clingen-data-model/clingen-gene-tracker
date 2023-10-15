@@ -35,7 +35,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function updates_phenotype_status_if_removed()
+    public function updates_phenotype_status_if_removed(): void
     {
         $this->bindRemoveResponse();
 
@@ -50,7 +50,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function updates_phenotype_status_and_moved_to_mim_number_if_moved()
+    public function updates_phenotype_status_and_moved_to_mim_number_if_moved(): void
     {
         $this->bindMovedResponse();
 
@@ -67,7 +67,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function creates_movedTo_phenotype_model_if_not_found()
+    public function creates_movedTo_phenotype_model_if_not_found(): void
     {
         Phenotype::findByMimNumber(607084)->forceDelete();
 
@@ -93,7 +93,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function coordinator_notified_when_phenotype_related_to_curation_is_removed()
+    public function coordinator_notified_when_phenotype_related_to_curation_is_removed(): void
     {
         $ep = $this->makeEpAndCoordinator();
         $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
@@ -109,7 +109,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function coordinator_notified_when_phenotype_related_to_curation_is_moved()
+    public function coordinator_notified_when_phenotype_related_to_curation_is_moved(): void
     {
         $ep = $this->makeEpAndCoordinator();
         $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
@@ -125,7 +125,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved()
+    public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved(): void
     {
         factory(Phenotype::class)->create([
             'mim_number' => 193510,
@@ -147,7 +147,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function curation_phenotype_removed_when_phenotype_related_to_curation_is_removed()
+    public function curation_phenotype_removed_when_phenotype_related_to_curation_is_removed(): void
     {
         $ep = $this->makeEpAndCoordinator();
         $curation = $this->makeCurationWithPhenotype($this->phenotypes->first(), ['expert_panel_id' => $ep->id]);
@@ -162,7 +162,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function updates_last_omim_moved_check_state()
+    public function updates_last_omim_moved_check_state(): void
     {
         AppState::findByName('last_omim_moved_check')->update(['value' => Carbon::yesterday()]);
         Carbon::setTestNow('2021-05-01 01:01:01');
@@ -178,7 +178,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function handles_moved_to_multiple_new_mim_numbers()
+    public function handles_moved_to_multiple_new_mim_numbers(): void
     {
         factory(Phenotype::class)->create([
             'mim_number' => 193510,
@@ -197,7 +197,7 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
-    public function handle_all_pages_if_paginated()
+    public function handle_all_pages_if_paginated(): void
     {
         factory(Phenotype::class)->create([
             'mim_number' => 193510,

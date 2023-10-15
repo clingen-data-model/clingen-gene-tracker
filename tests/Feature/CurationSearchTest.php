@@ -32,7 +32,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function implements_SearchService_interface()
+    public function implements_SearchService_interface(): void
     {
         $this->assertInstanceOf(SearchService::class, $this->search);
     }
@@ -40,7 +40,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function index_lists_curations_filtered_by_gene_symbol()
+    public function index_lists_curations_filtered_by_gene_symbol(): void
     {
         $this->withoutExceptionHandling();
         $testGene = 'BRCA1';
@@ -55,7 +55,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function can_filter_results_by_mondo_id()
+    public function can_filter_results_by_mondo_id(): void
     {
         factory(Disease::class)->create(['mondo_id' => 'MONDO:12345']);
         factory(Disease::class)->create(['mondo_id' => 'MONDO:98765']);
@@ -80,7 +80,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function can_filter_results_by_hgnc_id()
+    public function can_filter_results_by_hgnc_id(): void
     {
         $curation1 = $this->curations->shift();
         $curation1->update(['hgnc_id' => '12345']);
@@ -96,7 +96,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function can_filter_results_by_phenotype_mim_number()
+    public function can_filter_results_by_phenotype_mim_number(): void
     {
         [$ph1, $ph2, $ph3] = factory(Phenotype::class, 3)->create([]);
         [$curation1, $curation2, $restOfCurations] = $this->curations;
@@ -111,7 +111,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function can_eager_load_specified_relations()
+    public function can_eager_load_specified_relations(): void
     {
         $user = factory(User::class)->create();
         $this->curations->first()->expertPanel->addCoordinator($user);
@@ -124,7 +124,7 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
-    public function can_filter_by_specific_field()
+    public function can_filter_by_specific_field(): void
     {
         \DB::table('curations')->delete();
         $curation = factory(Curation::class)->create(['gene_symbol' => 'RETT']);

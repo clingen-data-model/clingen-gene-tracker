@@ -24,7 +24,7 @@ class ExpertPanelControllerTest extends TestCase
     /**
      * @test
      */
-    public function lists_all_expert_panels()
+    public function lists_all_expert_panels(): void
     {
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/expert-panels')
@@ -36,7 +36,7 @@ class ExpertPanelControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_includes_users_when_requested()
+    public function index_includes_users_when_requested(): void
     {
         \Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
         $this->panels->first()->users()->attach($this->user->id, ['is_curator' => true]);

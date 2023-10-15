@@ -35,7 +35,7 @@ class HgncClientProxy extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $client = app()->make(HgncClient::class);
         ['method' => $method, 'args' => $args] = $this->parseSignature($this->argument('methodsig'));

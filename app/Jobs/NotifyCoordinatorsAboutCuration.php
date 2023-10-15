@@ -37,7 +37,7 @@ class NotifyCoordinatorsAboutCuration implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->curation
             ->expertPanel

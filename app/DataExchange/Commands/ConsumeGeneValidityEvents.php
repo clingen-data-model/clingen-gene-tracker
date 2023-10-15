@@ -38,7 +38,7 @@ class ConsumeGeneValidityEvents extends Command
      *
      * @return mixed
      */
-    public function handle(MessageConsumer $consumer)
+    public function handle(MessageConsumer $consumer): void
     {
         if ($this->option('dry-run')) {
             app()->bind(GeneValidityCurationUpdateJob::class, DryRunUpdateFromGeneValidityMessage::class);

@@ -28,7 +28,7 @@ class MondoTermObsoletedNotificationTest extends TestCase
     /**
      * @test
      */
-    public function sends_notifiation_if_disease_made_obsolete()
+    public function sends_notifiation_if_disease_made_obsolete(): void
     {
         Notification::fake();
         $this->disease->update(['is_obsolete' => true]);
@@ -46,7 +46,7 @@ class MondoTermObsoletedNotificationTest extends TestCase
     /**
      * @test
      */
-    public function renders_obsoletion_mail_template()
+    public function renders_obsoletion_mail_template(): void
     {
         $view = View::make('email.curations.mondo_term_obsoleted', ['curation' => $this->curation, 'notifiable' => $this->user1]);
         $html = $view->render();

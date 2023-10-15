@@ -25,7 +25,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_returns_200()
+    public function index_returns_200(): void
     {
         $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
@@ -36,7 +36,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_lists_all_users()
+    public function index_lists_all_users(): void
     {
         $this->actingAs($this->user, 'api')
             ->call('GET', 'api/users')
@@ -47,7 +47,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
-    public function filters_users_by_role()
+    public function filters_users_by_role(): void
     {
         $curators = factory(\App\User::class, 2)->create()
             ->each(function ($user) {
@@ -65,7 +65,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_can_return_users_with_role()
+    public function index_can_return_users_with_role(): void
     {
         $this->withoutExceptionHandling();
         $curators = factory(\App\User::class, 2)->create()
@@ -81,7 +81,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_can_return_users_with_expert_panels()
+    public function index_can_return_users_with_expert_panels(): void
     {
         $this->withoutExceptionHandling();
         $curators = factory(\App\User::class, 2)->create();

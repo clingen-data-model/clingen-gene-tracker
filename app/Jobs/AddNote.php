@@ -37,7 +37,7 @@ class AddNote
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->subject
             ->notes()

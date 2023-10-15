@@ -48,7 +48,7 @@ class UpdateOmimData extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
         Log::info('Starting Omim genemap2 update...');
         if ($this->option('file')) {

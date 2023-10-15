@@ -27,7 +27,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_name()
+    public function has_fillable_name(): void
     {
         $this->panel->update(['name' => 'test name']);
         $this->assertEquals('test name', $this->panel->name);
@@ -36,7 +36,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_working_group_id()
+    public function has_fillable_working_group_id(): void
     {
         $wg = factory(\App\WorkingGroup::class)->create();
         $this->panel->update(['working_group_id' => $wg->id]);
@@ -46,7 +46,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function belongsTo_WorkingGroup()
+    public function belongsTo_WorkingGroup(): void
     {
         $this->assertInstanceOf(BelongsTo::class, $this->panel->workingGroup());
     }
@@ -54,7 +54,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function panel_hasMany_curations()
+    public function panel_hasMany_curations(): void
     {
         $this->panel->curations()->save(factory(\App\Curation::class)->create());
 
@@ -64,7 +64,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function panel_belongsToMany_users()
+    public function panel_belongsToMany_users(): void
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->panel->users());
     }
@@ -72,7 +72,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function panel_belongsToMany_curators()
+    public function panel_belongsToMany_curators(): void
     {
         $u = factory(User::class)->create();
         $u2 = factory(User::class)->create();
@@ -85,7 +85,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function panel_belongsToMany_coordinators()
+    public function panel_belongsToMany_coordinators(): void
     {
         $u = factory(User::class)->create();
         $u2 = factory(User::class)->create();
@@ -98,7 +98,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
-    public function can_add_coordinator_to_EP()
+    public function can_add_coordinator_to_EP(): void
     {
         $user = factory(User::class)->create();
         $this->panel->addCoordinator($user);

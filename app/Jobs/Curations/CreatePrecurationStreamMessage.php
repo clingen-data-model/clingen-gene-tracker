@@ -35,7 +35,7 @@ class CreatePrecurationStreamMessage implements ShouldQueue
      *
      * @return void
      */
-    public function handle(MessageFactoryInterface $factory)
+    public function handle(MessageFactoryInterface $factory): void
     {
         $job = new CreateStreamMessage(
             config('dx.topics.outgoing.precuration-events'),

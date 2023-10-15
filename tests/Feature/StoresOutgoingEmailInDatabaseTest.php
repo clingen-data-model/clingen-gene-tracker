@@ -16,7 +16,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
      *
      * @group mail
      */
-    public function stores_outgoing_mail_in_database()
+    public function stores_outgoing_mail_in_database(): void
     {
         Mail::raw('plain text message', function ($message) {
             $message->from(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com']);

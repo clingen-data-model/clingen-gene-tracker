@@ -32,7 +32,7 @@ class CurationExportControllerTest extends TestCase
     /**
      * @test
      */
-    public function it_can_download_a_csv()
+    public function it_can_download_a_csv(): void
     {
         $response = $this->call('get', route('curations.export.download'));
         $response->assertStatus(200);

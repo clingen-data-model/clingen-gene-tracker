@@ -36,7 +36,7 @@ class ClearEmailLog extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         Email::all()->each->delete();
     }

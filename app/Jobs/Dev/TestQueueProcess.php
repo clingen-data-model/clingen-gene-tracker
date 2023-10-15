@@ -29,7 +29,7 @@ class TestQueueProcess implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         sleep(5);
         \Log::debug('This message should have been written via the queue.');

@@ -22,7 +22,7 @@ class DiseaseTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_DiseaseNameChanged_when_nomenclature_changes()
+    public function dispatches_DiseaseNameChanged_when_nomenclature_changes(): void
     {
         $oldName = $this->disease->name;
 
@@ -37,7 +37,7 @@ class DiseaseTest extends TestCase
     /**
      * @test
      */
-    public function dispatches_MondoTermObsoleted_when_obsoleted_changes_from_0_to_1()
+    public function dispatches_MondoTermObsoleted_when_obsoleted_changes_from_0_to_1(): void
     {
         Event::fake(MondoTermObsoleted::class);
         $this->disease->update(['is_obsolete' => 1]);

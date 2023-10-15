@@ -38,7 +38,7 @@ class ImportGciAffiliations extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');
 

@@ -27,7 +27,7 @@ class NotifyCoordinatorsAboutCurationTest extends TestCase
     /**
      * @test
      */
-    public function only_notifies_active_coordinators()
+    public function only_notifies_active_coordinators(): void
     {
         $inactiveCoord = factory(User::class)->create(['deactivated_at' => Carbon::now()]);
         $this->curation->expertPanel->addCoordinator($inactiveCoord);

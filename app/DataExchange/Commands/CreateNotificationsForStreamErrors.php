@@ -40,7 +40,7 @@ class CreateNotificationsForStreamErrors extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $groupedErrors = StreamError::unsent()
             ->with('geneModel', 'diseaseModel', 'moiModel')

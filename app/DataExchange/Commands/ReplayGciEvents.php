@@ -40,7 +40,7 @@ class ReplayGciEvents extends Command
      *
      * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
-    public function handle()
+    public function handle(): int
     {
         $curations = collect();
         if ($this->argument('curation_id') == 'all') {

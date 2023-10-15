@@ -9,7 +9,7 @@ use App\Rules\ValidOmimId;
  */
 class CurationUpdateRequest extends CurationCreateRequest
 {
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules['page'] = 'required';
@@ -34,7 +34,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         return $data;
     }
 
-    public function messages()
+    public function messages(): array
     {
         $messages = [
             'curation_type_id.required' => 'A curation type is required to continue',

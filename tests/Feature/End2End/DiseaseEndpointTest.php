@@ -22,7 +22,7 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
-    public function gets_disease_data()
+    public function gets_disease_data(): void
     {
         $this->actingAs($this->user, 'api')
             ->json('GET', $this->baseUrl.$this->disease->mondo_id)
@@ -33,7 +33,7 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
-    public function validates_mondo_id_format()
+    public function validates_mondo_id_format(): void
     {
         $this->actingAs($this->user, 'api')
             ->json('GET', $this->baseUrl.'MONDO:')
@@ -43,7 +43,7 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
-    public function gets_mondo_ids_matching_string()
+    public function gets_mondo_ids_matching_string(): void
     {
         $d2 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:2234567',
@@ -69,7 +69,7 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
-    public function searches_name()
+    public function searches_name(): void
     {
         $d2 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:2234567',

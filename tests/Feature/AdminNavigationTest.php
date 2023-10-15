@@ -24,7 +24,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function programmers_can_see_dashboard()
+    public function programmers_can_see_dashboard(): void
     {
         $this->u->assignRole('programmer');
 
@@ -36,7 +36,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function admins_can_see_dashboard()
+    public function admins_can_see_dashboard(): void
     {
         $this->u->assignRole('admin');
 
@@ -48,7 +48,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function others_can_not_see_dashboard()
+    public function others_can_not_see_dashboard(): void
     {
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')
@@ -58,7 +58,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function programmers_can_see_users()
+    public function programmers_can_see_users(): void
     {
         $this->u->assignRole('programmer');
 
@@ -70,7 +70,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function admins_can_see_users()
+    public function admins_can_see_users(): void
     {
         $this->u->assignRole('admin');
 
@@ -82,7 +82,7 @@ class AdminNavigationTest extends TestCase
     /**
      * @test
      */
-    public function others_can_not_see_users()
+    public function others_can_not_see_users(): void
     {
         $this->actingAs($this->u)
             ->call('GET', '/admin/dashboard')

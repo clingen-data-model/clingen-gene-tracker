@@ -40,7 +40,7 @@ class ProduceBaselineGTEvents extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->truncateStreamMessages();
 

@@ -64,7 +64,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
-    public function stream_error_belongs_to_a_gene()
+    public function stream_error_belongs_to_a_gene(): void
     {
         $this->assertEquals('Dobbs', $this->streamError->geneModel->gene_symbol);
     }
@@ -72,7 +72,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
-    public function stream_error_belongs_to_a_disease()
+    public function stream_error_belongs_to_a_disease(): void
     {
         $this->assertEquals('Bob', $this->streamError->diseaseModel->name);
     }
@@ -80,7 +80,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
-    public function stream_error_belongs_to_an_moi()
+    public function stream_error_belongs_to_an_moi(): void
     {
         $this->assertEquals(ModeOfInheritance::findByHpId($this->streamError->moi)->name, $this->streamError->moiModel->name);
     }

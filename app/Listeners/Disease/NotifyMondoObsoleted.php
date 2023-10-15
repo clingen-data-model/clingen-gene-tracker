@@ -24,7 +24,7 @@ class NotifyMondoObsoleted
      *
      * @return void
      */
-    public function handle(MondoTermObsoleted $event)
+    public function handle(MondoTermObsoleted $event): void
     {
         \Log::debug(__METHOD__);
         $event->disease->load('curations', 'curations.expertPanel.coordinators');

@@ -41,7 +41,7 @@ class UpdateOmimMovedAndRemoved extends Command
      *
      * @return mixed
      */
-    public function handle(OmimClient $omimClient)
+    public function handle(OmimClient $omimClient): void
     {
         Log::info('Check for moved and removed omim phenotypes.');
         $this->info('Getting search results...');

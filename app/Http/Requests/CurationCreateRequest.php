@@ -12,7 +12,7 @@ class CurationCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return \Auth::check();
     }
@@ -22,7 +22,7 @@ class CurationCreateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $symbolRule = app()->make(ValidGeneSymbolRule::class);
 
@@ -34,7 +34,7 @@ class CurationCreateRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'rationale_other.required_if' => 'Please provide details about your rational',

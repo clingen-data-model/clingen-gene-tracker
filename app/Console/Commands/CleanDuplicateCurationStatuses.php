@@ -36,7 +36,7 @@ class CleanDuplicateCurationStatuses extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $cleaner = new Cleaner();
         $cleaner->clean();

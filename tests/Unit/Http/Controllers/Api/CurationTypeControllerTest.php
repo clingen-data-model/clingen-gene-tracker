@@ -25,7 +25,7 @@ class CurationTypeControllerTest extends TestCase
     /**
      * @test
      */
-    public function index_returns_all_curation_types()
+    public function index_returns_all_curation_types(): void
     {
         $types = CurationType::all();
         $response = $this->actingAs($this->u, 'api')

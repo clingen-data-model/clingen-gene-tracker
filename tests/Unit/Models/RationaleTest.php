@@ -23,7 +23,7 @@ class RationaleTest extends TestCase
     /**
      * @test
      */
-    public function has_fillable_name()
+    public function has_fillable_name(): void
     {
         $this->rationale->update(['name' => 'beans']);
 
@@ -33,7 +33,7 @@ class RationaleTest extends TestCase
     /**
      * @test
      */
-    public function rationale_has_many_curations()
+    public function rationale_has_many_curations(): void
     {
         $curation = factory(\App\Curation::class)->create();
         $this->rationale->curations()->save($curation);

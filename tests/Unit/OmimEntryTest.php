@@ -16,7 +16,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
-    public function gets_phenotypeMapList_if_entry_has_geneMap()
+    public function gets_phenotypeMapList_if_entry_has_geneMap(): void
     {
         $response = json_decode(file_get_contents(base_path('tests/files/omim_api/gene_phenotypes_search.json')));
         $rawEntry = $response->omim->searchResponse->entryList[0]->entry;
@@ -28,7 +28,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
-    public function gets_phenotypeMapList_if_entry_has_only_phenotypeMap()
+    public function gets_phenotypeMapList_if_entry_has_only_phenotypeMap(): void
     {
         $rawEntry = json_decode('{
             "prefix": "#",
@@ -70,7 +70,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
-    public function gets_moi_if_set()
+    public function gets_moi_if_set(): void
     {
         $rawEntry = json_decode('{
             "prefix": "#",
@@ -112,7 +112,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
-    public function throws_OmimResponseException_if_phenotypeMapList_is_empty()
+    public function throws_OmimResponseException_if_phenotypeMapList_is_empty(): void
     {
         $rawEntry = json_decode('{
             "prefix": "#",

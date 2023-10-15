@@ -45,7 +45,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_curation_with_gdm_uuid_if_found()
+    public function updates_curation_with_gdm_uuid_if_found(): void
     {
         $gdmTrio = [
             'hgnc_id' => 17098,
@@ -87,7 +87,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function adds_to_missing_list_if_curation_cannot_be_matched()
+    public function adds_to_missing_list_if_curation_cannot_be_matched(): void
     {
         $kafkaMessage = $this->makeMessage(file_get_contents($this->createMsgPath));
         $event = new Received($kafkaMessage);
@@ -108,7 +108,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_gdm_uuid_moi_and_affiliation_if_create_message()
+    public function updates_gdm_uuid_moi_and_affiliation_if_create_message(): void
     {
         $curation = $this->createDICER1();
 
@@ -130,7 +130,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_uuid_moi_affiliation_on_update()
+    public function updates_uuid_moi_affiliation_on_update(): void
     {
         $curation = $this->createDICER1();
 
@@ -154,7 +154,7 @@ class UpdateFromStreamMessageTest extends TestCase
      *
      * @test
      */
-    public function does_not_update_mondo_id_when_curation_not_linked_to_gdm()
+    public function does_not_update_mondo_id_when_curation_not_linked_to_gdm(): void
     {
         $curation = $this->createDICER1();
 
@@ -177,7 +177,7 @@ class UpdateFromStreamMessageTest extends TestCase
      * Assume a change in mondo id if curation has gdm_uuid
      * and event with gdm_uuid has different mondo than curation.
      */
-    public function updates_mondo_id_on_update_when_matched_by_gdm_uuid()
+    public function updates_mondo_id_on_update_when_matched_by_gdm_uuid(): void
     {
         $curation = $this->createDICER1();
 
@@ -200,7 +200,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function adds_status_on_update_message()
+    public function adds_status_on_update_message(): void
     {
         $curation = $this->createDICER1();
 
@@ -220,7 +220,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function does_not_create_duplicate_status()
+    public function does_not_create_duplicate_status(): void
     {
         $curation = $this->createDICER1();
         $curationStatus = CurationStatus::find(config('curations.statuses.approved'));
@@ -245,7 +245,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function unpublished_gci_status_maps_to_published_gt_status()
+    public function unpublished_gci_status_maps_to_published_gt_status(): void
     {
         $curation = $this->createDICER1();
 
@@ -267,7 +267,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_classification_if_updated()
+    public function updates_classification_if_updated(): void
     {
         $curation = $this->createDICER1();
 
@@ -287,7 +287,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function uses_status_name_and_date_if_oject()
+    public function uses_status_name_and_date_if_oject(): void
     {
         $curation = $this->createDICER1();
 
@@ -309,7 +309,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function sets_new_owner_if_transfer_message()
+    public function sets_new_owner_if_transfer_message(): void
     {
         Carbon::setTestNow('2021-05-04');
 
@@ -343,7 +343,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function stores_notes_on_curation_if_sent_in_transfer_message()
+    public function stores_notes_on_curation_if_sent_in_transfer_message(): void
     {
         Carbon::setTestNow('2021-05-04');
 
@@ -370,7 +370,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
-    public function updates_mondo_id_if_disease_change_message()
+    public function updates_mondo_id_if_disease_change_message(): void
     {
         $newDisease = factory(Disease::class)->create(['mondo_id' => 'MONDO:0012377']);
         $curation = $this->createDICER1();

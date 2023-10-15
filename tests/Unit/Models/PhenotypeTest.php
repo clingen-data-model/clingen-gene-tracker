@@ -20,7 +20,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_model_exists()
+    public function phenotype_model_exists(): void
     {
         $phenotype = new Phenotype();
         $this->assertTrue(true);
@@ -29,7 +29,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_has_fillable_mim_number()
+    public function phenotype_has_fillable_mim_number(): void
     {
         $phenotype = factory(Phenotype::class)->create();
         $phenotype->update(['mim_number' => 1234]);
@@ -40,7 +40,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_has_name()
+    public function phenotype_has_name(): void
     {
         $phenotype = factory(Phenotype::class)->create();
         $phenotype->update(['name' => 'bobism']);
@@ -51,7 +51,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function can_create_new_phenotype()
+    public function can_create_new_phenotype(): void
     {
         $phenotype = factory(Phenotype::class)->create([
             'mim_number' => 12345,
@@ -64,7 +64,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function mim_number_and_name_must_be_unique()
+    public function mim_number_and_name_must_be_unique(): void
     {
         $phenotype = factory(Phenotype::class)->create([
             'mim_number' => 12345,
@@ -81,7 +81,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function phenotype_has_many_curations_relationship()
+    public function phenotype_has_many_curations_relationship(): void
     {
         $phenotype = factory(Phenotype::class)->create();
         $curations = factory(Curation::class, 3)->create();
@@ -94,7 +94,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function omim_entry_cast_to_array()
+    public function omim_entry_cast_to_array(): void
     {
         $entry = [
             'prefix' => '#',
@@ -114,7 +114,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
-    public function can_find_by_mim_number()
+    public function can_find_by_mim_number(): void
     {
         $phenotype = factory(Phenotype::class)->create([]);
         $this->assertEquals($phenotype->id, Phenotype::findByMimNumber($phenotype->mim_number)->id);

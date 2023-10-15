@@ -34,7 +34,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['database'];
     }
@@ -45,7 +45,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->view('emails.curations.disease_name_changed', ['curation' => $this->curation, 'oldName' => $this->oldName]);
@@ -57,7 +57,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             'curation' => $this->curation,

@@ -19,7 +19,7 @@ class OboParserTest extends TestCase
     /**
      * @test
      */
-    public function it_gets_the_date_of_the_version()
+    public function it_gets_the_date_of_the_version(): void
     {
         $this->assertEquals('2021-06-01', $this->parser->getVersionDate());
     }
@@ -27,7 +27,7 @@ class OboParserTest extends TestCase
     /**
      * @test
      */
-    public function getNextTerm_gets_next_term()
+    public function getNextTerm_gets_next_term(): void
     {
         $testTerm1 = [
             'mondo_id' => 'MONDO:0000001',

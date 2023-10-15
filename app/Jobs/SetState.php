@@ -37,7 +37,7 @@ class SetState implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         StateVariable::updateOrCreate(
             ['name' => $this->name],

@@ -33,7 +33,7 @@ class AugmentWithHgncInfo
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if (
             $this->curation->isDirty('gene_symbol')

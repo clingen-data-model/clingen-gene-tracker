@@ -25,7 +25,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_can_be_instantiated()
+    public function it_can_be_instantiated(): void
     {
         $producer = app()->make(KafkaProducer::class);
         // $producer = new KafkaProducer(app()->make(\RdKafka\Producer::class));
@@ -35,7 +35,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
-    public function it_pushes_messages_to_a_topic()
+    public function it_pushes_messages_to_a_topic(): void
     {
         $message = 'test message';
 
@@ -51,7 +51,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
-    public function produce_throws_exception_when_topic_not_set()
+    public function produce_throws_exception_when_topic_not_set(): void
     {
         $producer = app()->make(KafkaProducer::class);
 

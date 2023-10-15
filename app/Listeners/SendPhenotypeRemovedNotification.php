@@ -24,7 +24,7 @@ class SendPhenotypeRemovedNotification
      *
      * @return void
      */
-    public function handle(OmimRemovedPhenotype $event)
+    public function handle(OmimRemovedPhenotype $event): void
     {
         $event->phenotype->curations->each(function ($curation) use ($event) {
             $notification = new NotifyCoordinatorsAboutCuration($curation, PhenotypeOmimEntryRemoved::class, $event->phenotype);

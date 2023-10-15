@@ -20,7 +20,7 @@ class MondoClientTest extends TestCase
     /**
      * @test
      */
-    public function app_resolves_abstract_MondoClient_with_Clients_MondoClient()
+    public function app_resolves_abstract_MondoClient_with_Clients_MondoClient(): void
     {
         $client = app()->make(MondoClientContract::class);
         $this->assertInstanceOf(MondoClient::class, $client);
@@ -29,7 +29,7 @@ class MondoClientTest extends TestCase
     /**
      * @test
      */
-    public function throws_new_HttpNotFoundException_when_no_results_for_mondo_id()
+    public function throws_new_HttpNotFoundException_when_no_results_for_mondo_id(): void
     {
         $mondoClient = $this->getClient([new Response(404, [])]);
 
@@ -40,7 +40,7 @@ class MondoClientTest extends TestCase
     /**
      * @test
      */
-    public function fetches_mondo_record_by_symbol_by_gene_symbol()
+    public function fetches_mondo_record_by_symbol_by_gene_symbol(): void
     {
         $json = file_get_contents(base_path('tests/files/mondo_api/arteritis.json'));
         $mondoClient = $this->getClient([new Response(200, [], $json)]);

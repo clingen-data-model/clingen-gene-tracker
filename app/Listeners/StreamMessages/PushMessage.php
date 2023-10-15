@@ -21,7 +21,7 @@ class PushMessage
      *
      * @return void
      */
-    public function handle(Created $event)
+    public function handle(Created $event): void
     {
         PushMessageJob::dispatch($event->streamMessage);
     }

@@ -29,7 +29,7 @@ class ImportOmimPhenotype
      *
      * @return void
      */
-    public function handle(OmimClient $omim)
+    public function handle(OmimClient $omim): void
     {
         $omimEntry = $omim->getEntry($this->mimNumber);
         $phenotype = Phenotype::firstOrCreate(

@@ -22,7 +22,7 @@ class StoreMailInDatabase
      *
      * @return void
      */
-    public function handle(MessageSent $event)
+    public function handle(MessageSent $event): void
     {
         Email::create([
             'from' => $event->message->getFrom(),

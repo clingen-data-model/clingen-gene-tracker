@@ -23,7 +23,7 @@ class SendPhenotypeMovedNotification
      *
      * @return void
      */
-    public function handle(OmimMovedPhenotype $event)
+    public function handle(OmimMovedPhenotype $event): void
     {
         \Log::debug('entry moved: '.$event->phenotype->name.' to '.$event->phenotype->mim_number);
         $event->phenotype

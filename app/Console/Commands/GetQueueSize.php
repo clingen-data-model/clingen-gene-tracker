@@ -36,7 +36,7 @@ class GetQueueSize extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->info('Queue Size: '.Queue::size());
     }

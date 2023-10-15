@@ -29,7 +29,7 @@ class UpdateFromStreamMessage
      *
      * @return void
      */
-    public function handle(Received $event)
+    public function handle(Received $event): void
     {
         $gciMessage = new GciMessage($event->message->payload);
 

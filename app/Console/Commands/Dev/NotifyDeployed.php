@@ -37,7 +37,7 @@ class NotifyDeployed extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $user = User::find(1);
         if ($user) {

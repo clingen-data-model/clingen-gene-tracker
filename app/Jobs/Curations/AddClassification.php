@@ -35,7 +35,7 @@ class AddClassification
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         if ($this->isCurrentClassification() || $this->isExistingDatedClassification()) {
             return;

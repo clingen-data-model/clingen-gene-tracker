@@ -18,7 +18,7 @@ class UpdateClassificationTest extends TestCase
     /**
      * @test
      */
-    public function updates_a_classification_associated_with_a_curation()
+    public function updates_a_classification_associated_with_a_curation(): void
     {
         $classification = factory(Classification::class)->create();
         $curation = factory(Curation::class)->create();
