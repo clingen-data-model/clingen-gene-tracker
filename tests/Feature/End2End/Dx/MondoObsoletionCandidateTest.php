@@ -102,7 +102,7 @@ class MondoObsoletionCandidateTest extends TestCase
         $notifications = AppNotification::orderBy('created_at')->limit(1)->get();
 
         // Make the view.
-        $view = View::make($notifications->first()->data['template'], compact('notifications'));
+        $view = view($notifications->first()->data['template'], compact('notifications'));
         $html = $view->render();
 
         $this->assertStringContainsString($this->obMsg->content->obsoletion_date, $html);

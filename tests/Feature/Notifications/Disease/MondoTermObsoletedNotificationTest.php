@@ -48,7 +48,7 @@ class MondoTermObsoletedNotificationTest extends TestCase
      */
     public function renders_obsoletion_mail_template(): void
     {
-        $view = View::make('email.curations.mondo_term_obsoleted', ['curation' => $this->curation, 'notifiable' => $this->user1]);
+        $view = view('email.curations.mondo_term_obsoleted', ['curation' => $this->curation, 'notifiable' => $this->user1]);
         $html = $view->render();
 
         $this->assertStringContainsString($this->curation->expertPanel->name, $html);

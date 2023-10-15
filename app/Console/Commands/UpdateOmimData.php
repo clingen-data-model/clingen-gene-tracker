@@ -53,7 +53,13 @@ class UpdateOmimData extends Command
             if (! file_exists($this->option('file'))) {
                 $this->error('File not found. '.$this->option('file').' does not exist');
 
-                return;
+       #         if (! file_exists($this->option('file'))) {
+        #            $this->error('File not found. '.$this->option('file').' does not exist');
+        #            return 1;
+        #        }
+                
+
+                return 1;
             }
             $testGeneMap = file_get_contents($this->option('file'));
             $httpClient = $this->getGuzzleClient([new Response(200, [], $testGeneMap)]);
@@ -83,7 +89,7 @@ class UpdateOmimData extends Command
                 if ($this->lineIsDateGenerated($line)) {
                     $newDateGenerated = $this->getGeneratedDate($line);
                     if (! is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
-                        return;
+                        return 1;
                     }
                 }
 

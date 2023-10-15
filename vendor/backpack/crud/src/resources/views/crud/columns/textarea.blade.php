@@ -1,5 +1,4 @@
 {{-- regular object attribute --}}
-
 @php
     $column['value'] = $column['value'] ?? data_get($entry, $column['name']);
     $column['escaped'] = $column['escaped'] ?? true;
@@ -9,10 +8,6 @@
 
     if($column['value'] instanceof \Closure) {
         $column['value'] = $column['value']($entry);
-    }
-
-    if(is_array($column['value'])) {
-        $column['value'] = json_encode($column['value']);
     }
 
     if(!empty($column['value'])) {
@@ -29,5 +24,3 @@
         @endif
     @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
 </span>
-
-
