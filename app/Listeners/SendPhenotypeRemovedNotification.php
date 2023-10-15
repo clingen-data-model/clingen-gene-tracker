@@ -21,8 +21,6 @@ class SendPhenotypeRemovedNotification
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(OmimRemovedPhenotype $event): void
     {

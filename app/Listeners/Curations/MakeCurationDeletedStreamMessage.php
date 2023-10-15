@@ -20,8 +20,6 @@ class MakeCurationDeletedStreamMessage
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(Deleted $event): void
     {

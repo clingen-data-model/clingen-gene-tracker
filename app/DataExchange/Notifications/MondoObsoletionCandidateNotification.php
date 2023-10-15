@@ -25,7 +25,6 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
      */
     public function via($notifiable): array
     {

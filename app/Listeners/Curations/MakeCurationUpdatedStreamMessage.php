@@ -20,8 +20,6 @@ class MakeCurationUpdatedStreamMessage
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(Updated $event): void
     {

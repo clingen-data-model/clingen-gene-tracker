@@ -19,8 +19,6 @@ class ModeOfInheritance extends Model
 
     /**
      * Get the parent that owns the ModeOfInheritance
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent(): BelongsTo
     {

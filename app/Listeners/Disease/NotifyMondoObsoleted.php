@@ -21,8 +21,6 @@ class NotifyMondoObsoleted
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(MondoTermObsoleted $event): void
     {

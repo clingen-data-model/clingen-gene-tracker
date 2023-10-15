@@ -9,8 +9,6 @@ trait HasNotes
 {
     /**
      * Get the notes that owns the HasNotes
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function notes(): MorphMany
     {

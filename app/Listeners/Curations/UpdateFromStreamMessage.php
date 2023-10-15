@@ -26,8 +26,6 @@ class UpdateFromStreamMessage
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(Received $event): void
     {

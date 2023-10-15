@@ -43,8 +43,6 @@ trait CreateApiClientTokenOperation
 
     /**
      * Show the view for performing the operation.
-     *
-     * @return Response
      */
     public function createapiclienttoken(): View
     {

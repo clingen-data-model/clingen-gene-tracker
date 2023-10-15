@@ -20,9 +20,6 @@ class UpdateGciCurationFromGveMessage
 
     /**
      * Handle the event.
-     *
-     * @param  App\DataExchange\Events\Received  $event
-     * @return void
      */
     public function handle(Received $event): void
     {

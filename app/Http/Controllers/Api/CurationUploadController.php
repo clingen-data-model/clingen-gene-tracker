@@ -53,7 +53,6 @@ class CurationUploadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateUploadRequest $request, $curationId)
@@ -83,8 +82,6 @@ class CurationUploadController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $curationId
-     * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
     public function show(int $curationId, int $uploadId)
@@ -114,8 +111,6 @@ class CurationUploadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $curationId
-     * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, int $curationId, int $uploadId)
@@ -133,10 +128,6 @@ class CurationUploadController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  int  $curationId
-     * @param  int  $uploadId
-     * @return \Illuminate\Http\Response
      */
     public function destroy(int $curationId, int $uploadId): Response
     {

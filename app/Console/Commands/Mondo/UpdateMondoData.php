@@ -40,8 +40,6 @@ class UpdateMondoData extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(ClientInterface $guzzleClient, OboParser $parser): void
     {

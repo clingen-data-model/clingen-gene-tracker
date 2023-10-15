@@ -21,8 +21,6 @@ class NotifyDiseaseNameChanged
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(DiseaseNameChanged $event): void
     {

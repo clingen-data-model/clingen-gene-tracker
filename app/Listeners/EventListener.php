@@ -18,8 +18,6 @@ class EventListener
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(Event $event): void
     {

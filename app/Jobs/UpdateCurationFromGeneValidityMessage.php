@@ -48,8 +48,6 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {

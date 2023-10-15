@@ -18,8 +18,6 @@ class UpdateLinkedPhenotype
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(OmimMovedPhenotype $event): void
     {

@@ -18,8 +18,6 @@ class UpdateCurations
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(GeneSymbolChanged $event): void
     {

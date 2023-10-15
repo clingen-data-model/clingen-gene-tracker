@@ -102,8 +102,6 @@ class ApiClientCrudController extends CrudController
      * Define what happens when the List operation is loaded.
      *
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
-     *
-     * @return void
      */
     protected function setupListOperation(): void
     {
@@ -122,8 +120,6 @@ class ApiClientCrudController extends CrudController
      * Define what happens when the Create operation is loaded.
      *
      * @see https://backpackforlaravel.com/docs/crud-operation-create
-     *
-     * @return void
      */
     protected function setupCreateOperation(): void
     {
@@ -143,8 +139,6 @@ class ApiClientCrudController extends CrudController
      * Define what happens when the Update operation is loaded.
      *
      * @see https://backpackforlaravel.com/docs/crud-operation-update
-     *
-     * @return void
      */
     protected function setupUpdateOperation(): void
     {

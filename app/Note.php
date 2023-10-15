@@ -34,8 +34,6 @@ class Note extends Model
 
     /**
      * Get the author that owns the Note
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function author(): MorphTo
     {

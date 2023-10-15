@@ -9,8 +9,6 @@ class CreateTestLogger
 {
     /**
      * Create a custom Monolog instance
-     *
-     * @return \Monolog\Logger
      */
     public function __invoke(array $config): Logger
     {

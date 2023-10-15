@@ -35,8 +35,6 @@ class DataExchangeServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -94,7 +92,6 @@ class DataExchangeServiceProvider extends ServiceProvider
      * Register all of the commands in the given directory.
      *
      * @param  array|string  $paths
-     * @return void
      */
     protected function loadCommands($paths): void
     {

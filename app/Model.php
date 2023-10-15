@@ -12,8 +12,6 @@ class Model extends BaseModel
 
     /**
      * Prepare a date for array / JSON serialization.
-     *
-     * @return string
      */
     protected function serializeDate(DateTimeInterface $date): string
     {

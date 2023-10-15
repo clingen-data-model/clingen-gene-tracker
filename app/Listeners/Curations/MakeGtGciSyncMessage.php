@@ -23,9 +23,6 @@ class MakeGtGciSyncMessage
 
     /**
      * Handle the event.
-     *
-     * @param  Updated  $event
-     * @return void
      */
     public function handle(CurationEvent $event): void
     {

@@ -20,8 +20,6 @@ class AugmentWithHgncInfo
 
     /**
      * Handle the event.
-     *
-     * @return void
      */
     public function handle(Saving $event): void
     {

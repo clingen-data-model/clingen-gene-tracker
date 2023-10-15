@@ -26,8 +26,6 @@ class ImportOmimPhenotype
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(OmimClient $omim): void
     {

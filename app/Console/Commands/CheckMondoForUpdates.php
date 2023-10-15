@@ -42,8 +42,6 @@ class CheckMondoForUpdates extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(MondoClient $mondoClient): void
     {
