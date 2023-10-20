@@ -26,7 +26,7 @@ class CurationClassificationController extends Controller
 
         AddClassification::dispatchSync($curation, $classification, $request->classification_date);
 
-        return $curation->classifications()->orderBy('classification_curation.created_at', 'desc')->first();
+        return $curation->classifications()->orderByDesc('classification_curation.created_at')->first();
     }
 
     public function show($curationId, $curationClassificationId)
@@ -45,7 +45,7 @@ class CurationClassificationController extends Controller
 
         return $curation->classifications()
             ->where('classification_curation.id', $curationClassificationId)
-            ->orderBy('classification_curation.updated_at', 'desc')
+            ->orderByDesc('classification_curation.updated_at')
             ->first();
     }
 

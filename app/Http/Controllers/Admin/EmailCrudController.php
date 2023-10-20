@@ -48,7 +48,7 @@ class EmailCrudController extends CrudController
         $this->crud->setColumnsDetails(['from', 'to'], ['type' => 'json_email']);
         $this->crud->addColumn(['type' => 'datetime', 'name' => 'created_at', 'label' => 'Sent'])->makeFirstColumn();
 
-        $this->crud->orderBy('created_at', 'DESC');
+        $this->crud->orderByDesc('created_at');
     }
 
     public function show($id)
