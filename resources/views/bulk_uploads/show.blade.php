@@ -16,7 +16,7 @@
                 <div class="d-flex justify-content-between">
 
                     <form action="{{route('bulk-uploads.upload')}}" method="POST" enctype="multipart/form-data" style="width: 65%" class="pr-2">
-                        {{csrf_field()}}
+                        @csrf
                         <div class="form-group form-inline">
                             <label for="expert_panel_id">Expert Panel:</label>
                             &nbsp;

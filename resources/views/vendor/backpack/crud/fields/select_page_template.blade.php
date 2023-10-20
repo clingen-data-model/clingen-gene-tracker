@@ -67,7 +67,7 @@
 
             jQuery(document).ready(function($) {
                 $("#select_template").change(function(e) {
-                    var select_template_confirmation = confirm("@lang('backpack::pagemanager.change_template_confirmation')");
+                    var select_template_confirmation = confirm("{{ __('backpack::pagemanager.change_template_confirmation') }}");
                     if (select_template_confirmation == true) {
                         redirect_to_new_page_with_template_parameter();
                     } else {

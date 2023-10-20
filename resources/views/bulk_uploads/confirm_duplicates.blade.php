@@ -27,7 +27,7 @@
         </table>
     </small>
     <form action="/bulk-uploads" method="POST">
-        {{csrf_field()}}
+        @csrf
         <input type="hidden" name="path" value="{{$path}}">
         <input type="hidden" name="expert_panel_id" value="{{$expert_panel_id}}">
 

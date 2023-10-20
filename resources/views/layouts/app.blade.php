@@ -141,7 +141,7 @@
         {{-- @include('partials.version_info'); --}}
     <!-- Scripts -->
     <script>
-        window.user = {!! json_encode($user) !!}.user
+        window.user = @json($user).user
         window.maxUploadSize = '{{getMaxUploadSizeForHumans()}}'
         window.supportedMimes = {!! json_encode(config('project.supported-mimes')) !!}
     </script>

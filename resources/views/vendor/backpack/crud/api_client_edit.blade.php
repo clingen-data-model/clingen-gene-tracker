@@ -38,7 +38,7 @@
 				@endif
 		  		>
 		  {!! csrf_field() !!}
-		  {!! method_field('PUT') !!}
+		  @method('PUT')
 
 		  	@if ($crud->model->translationEnabled())
 		    <div class="mb-2 text-right">
