@@ -11,7 +11,7 @@ class StoreCurationCurationStatusRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
 'curation_status_id' => [
