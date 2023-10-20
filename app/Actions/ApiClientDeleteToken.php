@@ -21,7 +21,7 @@ class ApiClientDeleteToken
     {
         $this->handle($tokenId);
 
-        return response('api token deleted', 200);
+        return response('api token deleted');
     }
 
     public function authorize(ActionRequest $request): bool

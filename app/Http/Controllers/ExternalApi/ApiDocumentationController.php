@@ -14,6 +14,6 @@ class ApiDocumentationController extends Controller
     {
         $openapi = \OpenApi\Generator::scan([app_path()]);
 
-        return response($openapi->toYaml(), 200, ['Content-type' => 'application/x-yaml']);
+        return response($openapi->toYaml())->withHeaders(['Content-type' => 'application/x-yaml']);
     }
 }

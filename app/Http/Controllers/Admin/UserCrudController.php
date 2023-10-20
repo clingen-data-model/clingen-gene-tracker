@@ -140,12 +140,12 @@ class UserCrudController extends CrudController
 
             \Alert::add('success', 'User '.$user->name.' deactivated successfully')->flash();
 
-            return Redirect::back();
+            return redirect()->back();
         }
 
         \Alert::add('error', 'Logged in user does not hae access to do deactivate users')->flash();
 
-        return Redirect::back();
+        return redirect()->back();
     }
 
     public function reactivate(Request $request): RedirectResponse
@@ -158,12 +158,12 @@ class UserCrudController extends CrudController
 
             \Alert::add('success', 'User '.$user->name.' reactivated successfully')->flash();
 
-            return Redirect::back();
+            return redirect()->back();
         }
 
         \Alert::add('error', 'Logged in user does not hae access to do reactivate users')->flash();
 
-        return Redirect::back();
+        return redirect()->back();
     }
 
     private function processExpertPanels(Request $request)

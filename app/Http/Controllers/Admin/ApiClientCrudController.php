@@ -90,7 +90,7 @@ class ApiClientCrudController extends CrudController
             return $redirect;
         }
 
-        return Redirect::back()->withErrors(['msg' => 'You don\'t have permission to generate an api client token.']);
+        return redirect()->back()->withErrors(['msg' => 'You don\'t have permission to generate an api client token.']);
     }
 
     public function deleteToken(Request $request)

@@ -13,6 +13,6 @@ class CurationByGdmController extends Controller
             return response('curation not found', 404);
         }
 
-        return response()->redirectTo('/#/curations/'.$curation->id);
+        return redirect()->to('/#/curations/'.$curation->id);
     }
 }

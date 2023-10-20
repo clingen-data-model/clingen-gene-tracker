@@ -98,11 +98,11 @@ class CurationUploadController extends Controller
         $upload->load('category');
 
         if (! Auth::user()->can('view', $upload)) {
-            return response('', 403);
+            return response()->noContent(403);
         }
 
         if (! file_exists(storage_path('app/'.$upload->file_path))) {
-            return response(null, 404);
+            return response()->noContent(404);
         }
 
         return Storage::download($upload->file_path);
@@ -117,7 +117,7 @@ class CurationUploadController extends Controller
     {
         $upload = Upload::find($uploadId);
         if (! Auth::user()->can('update', $upload)) {
-            return response(null, 403);
+            return response()->noContent(403);
         }
 
         $upload->update($request->except('curation_id'));
@@ -133,11 +133,11 @@ class CurationUploadController extends Controller
     {
         $upload = Upload::find($uploadId);
         if (! Auth::user()->can('delete', $upload)) {
-            return response(null, 403);
+            return response()->noContent(403);
         }
 
         $upload->delete();
 
-        return response(null, 204);
+        return response()->noContent();
     }
 }
