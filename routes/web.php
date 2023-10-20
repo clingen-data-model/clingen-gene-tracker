@@ -57,6 +57,4 @@ Route::get('admin/password/reset/{token}', [Auth\ResetPasswordController::class,
 
 Route::get('/admin/login', [Auth\LoginController::class, 'showLoginForm']);
 
-Route::middleware(['auth:api-external'])->get('api-v1-docs', function () {
-    return view('swagger');
-});
+Route::view('api-v1-docs', 'swagger')->middleware(['auth:api-external']);
