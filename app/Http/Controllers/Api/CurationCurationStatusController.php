@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\UpdateCurationCurationStatusRequest;
+use App\Http\Requests\Api\StoreCurationCurationStatusRequest;
 use App\Curation;
 use App\CurationStatus;
 use App\Http\Controllers\Controller;
@@ -30,12 +32,8 @@ class CurationCurationStatusController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $curationId)
+    public function store(StoreCurationCurationStatusRequest $request, $curationId)
     {
-        $request->validate([
-            'curation_status_id' => 'required|exists:curation_statuses,id',
-            'status_date' => 'nullable|date_format:Y-m-d',
-        ]);
 
         $curation = Curation::findOrFail($curationId);
         $status = CurationStatus::find($request->curation_status_id);
@@ -67,11 +65,8 @@ class CurationCurationStatusController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $curationId, $curationCurationStatusId)
+    public function update(UpdateCurationCurationStatusRequest $request, $curationId, $curationCurationStatusId)
     {
-        $request->validate([
-            'status_date' => 'date_format:Y-m-d',
-        ]);
         $curation = Curation::findOrFail($curationId);
 
         $relatedStatus = $curation->curationStatuses
