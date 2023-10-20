@@ -54,7 +54,7 @@ class Upload extends Model
             return $query->where('curation_id', $user);
         }
 
-        if (is_object($user) && get_class($user) == User::class) {
+        if (is_object($user) && $user::class == User::class) {
             return $query->where('curation_id', $user->id);
         }
     }
@@ -65,7 +65,7 @@ class Upload extends Model
             return $query->where('category_id', $category);
         }
 
-        if (is_object($category) && get_class($category) == UploadCategory::class) {
+        if (is_object($category) && $category::class == UploadCategory::class) {
             return $query->where('category_id', $category->id);
         }
     }

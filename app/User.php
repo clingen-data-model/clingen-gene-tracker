@@ -135,7 +135,7 @@ class User extends Authenticatable
                 return $ep->id == $panel;
             });
         }
-        if (is_object($panel) && get_class($panel) == ExpertPanel::class) {
+        if (is_object($panel) && $panel::class == ExpertPanel::class) {
             return $this->expertPanels->contains(function ($ep) use ($panel) {
                 return $ep->id = $panel->id;
             });

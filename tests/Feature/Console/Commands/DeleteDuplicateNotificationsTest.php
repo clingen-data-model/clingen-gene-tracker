@@ -29,7 +29,7 @@ class DeleteDuplicateNotificationsTest extends TestCase
         foreach ([$this->u1, $this->u2] as $user) {
             $this->notifications->push(factory(DatabaseNotification::class, 10)->create([
                 'notifiable_id' => $user->id,
-                'notifiable_type' => get_class($user),
+                'notifiable_type' => $user::class,
                 'data' => [
                     'curation' => ['id' => 1],
                     'phenotype' => ['id' => 1],
@@ -37,7 +37,7 @@ class DeleteDuplicateNotificationsTest extends TestCase
             ]));
             $this->notifications->push(factory(DatabaseNotification::class, 2)->create([
                 'notifiable_id' => $user->id,
-                'notifiable_type' => get_class($user),
+                'notifiable_type' => $user::class,
                 'type' => PhenotypeOmimEntryRemoved::class,
                 'data' => [
                     'curation' => ['id' => 1],
@@ -47,7 +47,7 @@ class DeleteDuplicateNotificationsTest extends TestCase
             $this->notifications->push(factory(DatabaseNotification::class)->create(
                 [
                     'notifiable_id' => $user->id,
-                    'notifiable_type' => get_class($user),
+                    'notifiable_type' => $user::class,
                     'data' => [
                         'curation' => ['id' => 2],
                         'phenotype' => ['id' => 1],

@@ -148,7 +148,7 @@ class CurationTransferTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseHas('notes', [
-            'subject_type' => get_class($this->curation),
+            'subject_type' => $this->curation::class,
             'subject_id' => $this->curation->id,
             'content' => 'They fuck you up your mum and dad; They do not mean to, but they do.',
             'topic' => 'curation transfer',
@@ -165,7 +165,7 @@ class CurationTransferTest extends TestCase
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('notes', [
-            'subject_type' => get_class($this->curation),
+            'subject_type' => $this->curation::class,
             'subject_id' => $this->curation->id,
         ]);
     }

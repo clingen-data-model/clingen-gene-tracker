@@ -19,7 +19,7 @@ class OmimClient implements OmimClientContract
 
     public function __construct($client = null)
     {
-        if ($client && get_class($client) != Client::class) {
+        if ($client && $client::class != Client::class) {
             throw new Exception('Bad client exception');
         }
 
