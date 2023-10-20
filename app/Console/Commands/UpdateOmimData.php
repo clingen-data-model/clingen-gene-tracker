@@ -53,11 +53,10 @@ class UpdateOmimData extends Command
             if (! file_exists($this->option('file'))) {
                 $this->error('File not found. '.$this->option('file').' does not exist');
 
-       #         if (! file_exists($this->option('file'))) {
-        #            $this->error('File not found. '.$this->option('file').' does not exist');
-        #            return 1;
-        #        }
-                
+                //         if (! file_exists($this->option('file'))) {
+                //            $this->error('File not found. '.$this->option('file').' does not exist');
+                //            return 1;
+                //        }
 
                 return 1;
             }

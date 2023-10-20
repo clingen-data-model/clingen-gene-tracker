@@ -6,7 +6,6 @@ use App\Notifications\DigestibleNotificationInterface;
 use App\Notifications\Disease\MondoTermObsoleteNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\View;
 use Tests\TestCase;
 use Tests\Traits\SetsUpDiseaseWithCuration;
 

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-#use App\Logging\ContainerRoleProcessor;
+//use App\Logging\ContainerRoleProcessor;
 use App\Rules\ValidGeneSymbolRule;
 use App\Rules\ValidHgncGeneSymbol;
 use GuzzleHttp\Client;
@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
- #       Log::pushProcessor(new ContainerRoleProcessor());
+        //       Log::pushProcessor(new ContainerRoleProcessor());
 
         date_default_timezone_set('America/New_York');
         if ($this->app->environment('production')) {

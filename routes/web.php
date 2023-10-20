@@ -8,7 +8,6 @@ use App\Http\Controllers\CurationExportController;
 use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
 
 /*
 |--------------------------------------------------------------------------
