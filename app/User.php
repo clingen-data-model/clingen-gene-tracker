@@ -65,7 +65,7 @@ class User extends Authenticatable
             function ($model) {
                 if (is_null($model->password)) {
                     $model->password = 'tester';
-                    if (env('production')) {
+                    if (config('settings.production')) {
                         $model->password = uniqid();
                     }
                 }
