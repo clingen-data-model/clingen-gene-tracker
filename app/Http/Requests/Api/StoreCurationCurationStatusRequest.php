@@ -14,8 +14,14 @@ class StoreCurationCurationStatusRequest extends FormRequest
     public function rules()
     {
         return [
-'curation_status_id' => 'required|exists:curation_statuses,id',
-'status_date'        => 'nullable|date_format:Y-m-d',
+'curation_status_id' => [
+                'required',
+                'exists:curation_statuses,id',
+            ],
+'status_date'        => [
+                'nullable',
+                'date_format:Y-m-d',
+            ],
 ];
     }
 }

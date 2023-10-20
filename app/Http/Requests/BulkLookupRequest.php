@@ -20,7 +20,9 @@ class BulkLookupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gene_symbol' => 'required',
+            'gene_symbol' => [
+                'required',
+            ],
         ];
     }
 

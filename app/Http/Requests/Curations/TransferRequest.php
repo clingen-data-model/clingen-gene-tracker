@@ -20,8 +20,14 @@ class TransferRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'expert_panel_id' => 'required|exists:expert_panels,id',
-            'start_date' => 'required|date',
+            'expert_panel_id' => [
+                'required',
+                'exists:expert_panels,id',
+            ],
+            'start_date' => [
+                'required',
+                'date',
+            ],
         ];
     }
 

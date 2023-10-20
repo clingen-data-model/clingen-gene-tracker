@@ -22,9 +22,19 @@ class ExpertPanelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:5|max:255',
-            'affilation_id' => 'nullable|exists:affiliations,id',
-            'working_group_id' => 'nullable|exists:working_groups,id',
+            'name' => [
+                'required',
+                'min:5',
+                'max:255',
+            ],
+            'affilation_id' => [
+                'nullable',
+                'exists:affiliations,id',
+            ],
+            'working_group_id' => [
+                'nullable',
+                'exists:working_groups,id',
+            ],
         ];
     }
 

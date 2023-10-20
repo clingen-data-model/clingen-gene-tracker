@@ -20,12 +20,24 @@ class CurationUploadIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'where.curation_id' => 'nullable',
-            'where.upload_category_id' => 'nullable',
-            'sort.field' => 'nullable',
-            'sort.dir' => 'nullable',
-            'with' => 'nullable',
-            'with_deleted' => 'nullable',
+            'where.curation_id' => [
+                'nullable',
+            ],
+            'where.upload_category_id' => [
+                'nullable',
+            ],
+            'sort.field' => [
+                'nullable',
+            ],
+            'sort.dir' => [
+                'nullable',
+            ],
+            'with' => [
+                'nullable',
+            ],
+            'with_deleted' => [
+                'nullable',
+            ],
         ];
     }
 }

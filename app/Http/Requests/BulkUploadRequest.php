@@ -21,8 +21,13 @@ class BulkUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'expert_panel_id' => 'required|exists:expert_panels,id',
-            'bulk_curations' => 'required_without:path',
+            'expert_panel_id' => [
+                'required',
+                'exists:expert_panels,id',
+            ],
+            'bulk_curations' => [
+                'required_without:path',
+            ],
         ];
     }
 }

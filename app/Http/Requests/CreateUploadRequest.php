@@ -22,11 +22,29 @@ class CreateUploadRequest extends FormRequest
         $mimes = config('project.supported-mimes');
 
         return [
-            'name' => 'nullable|string|max:255',
-            'file' => 'required|file|max:'.getMaxUploadSize().'|mimes:'.implode(',', $mimes),
-            'curation_id' => 'required|exists:curations,id',
-            'upload_category_id' => 'nullable|exists:upload_categories,id',
-            'notes' => 'nullable|max:65535',
+            'name' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'file' => [
+                'required',
+                'file',
+                'max:'.getMaxUploadSize(),
+                'mimes:'.implode(',', $mimes),
+            ],
+            'curation_id' => [
+                'required',
+                'exists:curations,id',
+            ],
+            'upload_category_id' => [
+                'nullable',
+                'exists:upload_categories,id',
+            ],
+            'notes' => [
+                'nullable',
+                'max:65535',
+            ],
         ];
     }
 }

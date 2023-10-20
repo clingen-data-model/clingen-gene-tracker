@@ -20,8 +20,13 @@ class CurationClassificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'classification_id' => 'required|exists:classifications,id',
-            'classification_date' => 'date_format:Y-m-d',
+            'classification_id' => [
+                'required',
+                'exists:classifications,id',
+            ],
+            'classification_date' => [
+                'date_format:Y-m-d',
+            ],
         ];
     }
 }

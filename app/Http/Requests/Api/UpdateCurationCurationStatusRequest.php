@@ -13,6 +13,8 @@ class UpdateCurationCurationStatusRequest extends FormRequest
      */
     public function rules()
     {
-        return ['status_date' => 'date_format:Y-m-d'];
+        return ['status_date' => [
+                'date_format:Y-m-d',
+            ],];
     }
 }
