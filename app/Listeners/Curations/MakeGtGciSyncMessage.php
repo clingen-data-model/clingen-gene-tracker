@@ -2,11 +2,11 @@
 
 namespace App\Listeners\Curations;
 
-use Illuminate\Support\Facades\Log;
 use App\Curation;
 use App\Events\Curation\CurationEvent;
 use App\Jobs\Curations\CreateStreamMessage;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class MakeGtGciSyncMessage
 {

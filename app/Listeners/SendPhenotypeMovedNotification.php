@@ -2,10 +2,10 @@
 
 namespace App\Listeners;
 
-use Illuminate\Support\Facades\Log;
 use App\Events\Phenotypes\OmimMovedPhenotype;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\PhenotypeOmimEntryMoved;
+use Illuminate\Support\Facades\Log;
 
 class SendPhenotypeMovedNotification
 {

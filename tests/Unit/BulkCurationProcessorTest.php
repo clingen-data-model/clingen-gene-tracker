@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Facades\DB;
 use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\OmimEntryContract;
 use App\Clients\OmimClient;
@@ -13,6 +12,7 @@ use App\ExpertPanel;
 use App\Services\BulkCurationProcessor;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Tests\TestCase;
 

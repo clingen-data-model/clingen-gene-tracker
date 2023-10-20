@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Facades\Cache;
 use App\Clients\Omim\OmimEntry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 use Tests\Traits\GetsOmimClient;
 

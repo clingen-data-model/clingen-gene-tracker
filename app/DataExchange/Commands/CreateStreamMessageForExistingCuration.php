@@ -2,10 +2,10 @@
 
 namespace App\DataExchange\Commands;
 
-use Illuminate\Support\Facades\Bus;
 use App\Curation;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Bus;
 
 class CreateStreamMessageForExistingCuration extends Command
 {

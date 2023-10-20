@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\ExpertPanel;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**

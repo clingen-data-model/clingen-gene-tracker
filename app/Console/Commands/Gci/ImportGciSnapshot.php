@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Gci;
 
-use Illuminate\Support\Arr;
 use App\Affiliation;
 use App\Classification;
 use App\Curation;
@@ -13,6 +12,7 @@ use App\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 
 class ImportGciSnapshot extends Command
 {

@@ -2,9 +2,9 @@
 
 namespace App\Actions;
 
-use Illuminate\Support\Arr;
 use App\ApiClient;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Ramsey\Uuid\Uuid;

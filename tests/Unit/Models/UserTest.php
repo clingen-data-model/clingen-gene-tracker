@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Models;
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Event;
 use App\Events\User\Created;
 use App\ExpertPanel;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**

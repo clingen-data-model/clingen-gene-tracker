@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
-use Illuminate\Support\Facades\Event;
 use App\Classification;
 use App\Curation;
 use App\Jobs\Curations\AddClassification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 /**

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\Api\UpdateCurationCurationStatusRequest;
-use App\Http\Requests\Api\StoreCurationCurationStatusRequest;
 use App\Curation;
 use App\CurationStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreCurationCurationStatusRequest;
+use App\Http\Requests\Api\UpdateCurationCurationStatusRequest;
 use App\Jobs\Curations\AddStatus;
 use App\Jobs\Curations\UpdateCurrentStatus;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 
 class CurationCurationStatusController extends Controller

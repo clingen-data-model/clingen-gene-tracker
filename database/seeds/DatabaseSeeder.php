@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\DB;
 use Database\Seeders\App\CurationStatusesTableSeeder;
 use Database\Seeders\App\CurationTypesTableSeeder;
 use Database\Seeders\App\RationalesTableSeeder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {

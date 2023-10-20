@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\WorkingGroup;
+use Illuminate\Support\Facades\DB;
 
 class OrgChartController extends Controller
 {

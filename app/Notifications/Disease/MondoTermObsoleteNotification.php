@@ -2,11 +2,11 @@
 
 namespace App\Notifications\Disease;
 
-use Illuminate\Support\Facades\Log;
 use App\Curation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class MondoTermObsoleteNotification extends Notification
 {

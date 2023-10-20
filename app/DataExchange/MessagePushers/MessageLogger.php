@@ -2,8 +2,8 @@
 
 namespace App\DataExchange\MessagePushers;
 
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessagePusher;
+use Illuminate\Support\Facades\Log;
 use Ramsey\Uuid\Uuid;
 
 class MessageLogger implements MessagePusher

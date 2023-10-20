@@ -2,11 +2,11 @@
 
 namespace App\Jobs\Curations;
 
-use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\Mail\Curations\TransferNotification;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class SetOwner

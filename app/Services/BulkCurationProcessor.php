@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use App\Clients\OmimClient;
 use App\Curation;
 use App\CurationStatus;
@@ -23,6 +21,8 @@ use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 

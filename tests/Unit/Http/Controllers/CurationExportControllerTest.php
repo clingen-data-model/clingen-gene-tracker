@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\ExpertPanel;
 use App\User;
 use App\WorkingGroup;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class CurationExportControllerTest extends TestCase

@@ -2,7 +2,6 @@
 
 namespace App\DataExchange;
 
-use Illuminate\Support\Facades\Log;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Contracts\MessagePusher;
@@ -18,6 +17,7 @@ use App\Listeners\UpdateGciCurationFromGveMessage;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;

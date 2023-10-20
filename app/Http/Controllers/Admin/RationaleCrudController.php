@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RationaleRequest as StoreRequest;
-// VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\RationaleRequest as UpdateRequest;
+// VALIDATION: change the requests to match your own file names if you need form validation
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class RationaleCrudController extends CrudController
 {

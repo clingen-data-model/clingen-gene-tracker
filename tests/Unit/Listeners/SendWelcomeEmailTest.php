@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Listeners;
 
-use Illuminate\Support\Facades\Event;
 use App\Events\User\Created;
 use App\Listeners\SendWelcomeEmail;
 use App\Notifications\users\Welcome;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 

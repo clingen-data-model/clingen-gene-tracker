@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Illuminate\Support\Facades\Log;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Curation;
 use App\Gci\GciMessage;
@@ -14,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class ReplayGciEventsForCuration implements ShouldQueue
 {

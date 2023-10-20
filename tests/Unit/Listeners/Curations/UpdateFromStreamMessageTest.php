@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Listeners\Curations;
 
-use Illuminate\Support\Facades\DB;
 use App\Affiliation;
 use App\Curation;
 use App\CurationStatus;
@@ -16,6 +15,7 @@ use App\ModeOfInheritance;
 use App\StreamError;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 

@@ -2,11 +2,11 @@
 
 namespace App\Listeners\Disease;
 
-use Illuminate\Support\Facades\Log;
 use App\Events\Disease\MondoTermObsoleted;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Disease\MondoTermObsoleteNotification;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 
 class NotifyMondoObsoleted
 {

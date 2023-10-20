@@ -2,10 +2,10 @@
 
 namespace App\DataExchange\Actions;
 
-use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
 class ConsumeMondoNotifications

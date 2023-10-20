@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Log;
 use App\Contracts\Notable;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
@@ -17,6 +16,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 /**

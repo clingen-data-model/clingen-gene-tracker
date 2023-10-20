@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Support\Facades\Log;
 use App\Contracts\MondoClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
@@ -10,6 +9,7 @@ use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\MondoIdNotFound;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class CheckMondoForUpdates extends Command
 {

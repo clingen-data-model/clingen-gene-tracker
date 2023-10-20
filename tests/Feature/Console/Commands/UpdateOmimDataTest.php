@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use Illuminate\Support\Facades\DB;
 use App\AppState;
 use App\Console\Commands\UpdateOmimData;
 use App\Events\Phenotypes\PhenotypeAddedForGene;
@@ -12,6 +11,7 @@ use Carbon\Carbon;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\MocksGuzzleRequests;

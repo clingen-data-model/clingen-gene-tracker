@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Auth;
 use App\CurationStatus;
 use App\Http\Requests\CurationStatusRequest as StoreRequest;
 use App\Http\Requests\CurationStatusRequest as UpdateRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class CurationStatusCrudController extends CrudController
 {

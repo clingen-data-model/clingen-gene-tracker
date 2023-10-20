@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-use Illuminate\Support\Facades\Event;
 use App\Affiliation;
 use App\Classification;
 use App\Curation;
@@ -16,6 +15,7 @@ use App\Upload;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 

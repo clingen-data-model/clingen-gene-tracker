@@ -2,8 +2,8 @@
 
 namespace App\Clients\Omim;
 
-use Illuminate\Support\Str;
 use App\Exceptions\OmimResponseException;
+use Illuminate\Support\Str;
 
 /**
  * Value object for an OMIM API entry.

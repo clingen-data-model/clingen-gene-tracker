@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
 use App\Exceptions\BulkUploads\InvalidFileException;
 use App\Exceptions\DuplicateBulkCurationException;
 use App\Http\Requests\BulkUploadRequest;
 use App\Services\BulkCurationProcessor;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class BulkUploadController extends Controller

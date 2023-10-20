@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use Illuminate\Support\Facades\Auth;
 use App\Contracts\Notable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Auth;
 
 class AddNote
 {

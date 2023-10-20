@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\DB;
 use App\Contracts\SearchService;
 use App\Curation;
 use App\Disease;
@@ -10,6 +9,7 @@ use App\ExpertPanel;
 use App\Phenotype;
 use App\Services\Curations\CurationSearchService;
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**

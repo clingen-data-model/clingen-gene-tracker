@@ -2,13 +2,13 @@
 
 namespace App\Hgnc;
 
-use Illuminate\Support\Facades\Cache;
 use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
 use App\Exceptions\HttpUnexpectedResponseException;
 use App\Hgnc\HgncClientContract as HgncClientContract;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
+use Illuminate\Support\Facades\Cache;
 
 class HgncClient implements HgncClientContract
 {

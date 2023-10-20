@@ -2,7 +2,6 @@
 
 namespace App\DataExchange\Jobs;
 
-use Illuminate\Support\Facades\Log;
 use App\Affiliation;
 use App\Curation;
 use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
@@ -13,6 +12,7 @@ use App\Gci\GciMessage;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJob
 {

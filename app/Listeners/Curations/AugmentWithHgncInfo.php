@@ -2,10 +2,10 @@
 
 namespace App\Listeners\Curations;
 
-use Illuminate\Support\Facades\Log;
 use App\Events\Curation\Saving;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
+use Illuminate\Support\Facades\Log;
 
 class AugmentWithHgncInfo
 {

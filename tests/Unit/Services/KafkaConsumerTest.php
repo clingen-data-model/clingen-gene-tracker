@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Services;
 
-use Illuminate\Support\Facades\Event;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Events\Received;
 use App\DataExchange\Kafka\KafkaConsumer;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 /**

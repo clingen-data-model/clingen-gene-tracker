@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\WorkingGroupRequest as StoreRequest;
 use App\Http\Requests\WorkingGroupRequest as UpdateRequest;
 use App\WorkingGroup;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class WorkingGroupCrudController extends CrudController
 {

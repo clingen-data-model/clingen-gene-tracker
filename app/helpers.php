@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Log;
 use App\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 if (! function_exists('site_title')) {

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\HealthCheck;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class DbHealthCheck extends Command
 {

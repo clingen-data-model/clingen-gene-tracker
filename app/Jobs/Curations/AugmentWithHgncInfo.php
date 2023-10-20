@@ -2,13 +2,13 @@
 
 namespace App\Jobs\Curations;
 
-use Illuminate\Support\Facades\Log;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
 use App\Gene;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\GeneSymbolUpdated;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 
 class AugmentWithHgncInfo
 {

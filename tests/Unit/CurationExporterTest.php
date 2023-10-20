@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\CurationExporter;
 use App\CurationStatus;
@@ -12,6 +11,7 @@ use App\User;
 use App\WorkingGroup;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class CurationExporterTest extends TestCase

@@ -2,10 +2,10 @@
 
 namespace App\Gci\Actions;
 
-use Illuminate\Support\Facades\Log;
 use App\Affiliation;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsCommand;
 
 class AffiliationsUpdate

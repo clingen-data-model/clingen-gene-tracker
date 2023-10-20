@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Mondo;
 
-use Illuminate\Support\Facades\Log;
 use App\AppState;
 use App\Disease;
 use App\Mondo\OboParser;
@@ -10,6 +9,7 @@ use Carbon\Carbon;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMondoData extends Command
 {
