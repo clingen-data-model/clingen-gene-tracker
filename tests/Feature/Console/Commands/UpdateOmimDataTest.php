@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Console\Commands;
 
+use Illuminate\Support\Facades\DB;
 use App\AppState;
 use App\Console\Commands\UpdateOmimData;
 use App\Events\Phenotypes\PhenotypeAddedForGene;
@@ -45,7 +46,7 @@ class UpdateOmimDataTest extends TestCase
     {
         $this->artisan('omim:update-data');
         $this->assertEquals(24, Phenotype::count());
-        $this->assertEquals(12, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
+        $this->assertEquals(12, DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
 
     /**
@@ -68,7 +69,7 @@ class UpdateOmimDataTest extends TestCase
         AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-28')]);
         $this->artisan('omim:update-data');
         $this->assertEquals(24, Phenotype::count());
-        $this->assertEquals(12, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
+        $this->assertEquals(12, DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
 
     /**
@@ -132,7 +133,7 @@ class UpdateOmimDataTest extends TestCase
         AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-29')]);
         $this->artisan('omim:update-data');
         $this->assertEquals(0, Phenotype::count());
-        $this->assertEquals(0, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
+        $this->assertEquals(0, DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
     }
 
     /**

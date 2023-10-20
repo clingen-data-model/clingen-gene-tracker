@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\BulkUploads\InvalidFileException;
 use App\Exceptions\DuplicateBulkCurationException;
 use App\Http\Requests\BulkUploadRequest;
@@ -29,16 +30,16 @@ class BulkUploadController extends Controller
 
             try {
                 $newCurations = $this->processor->processFile(storage_path('app/'.$path), $request->expert_panel_id);
-                \Log::debug('got new curations');
+                Log::debug('got new curations');
 
                 return view('bulk_uploads.show', compact('newCurations'));
             } catch (InvalidFileException $e) {
-                \Log::debug('Invalid bulk file: '.$e->getMessage());
+                Log::debug('Invalid bulk file: '.$e->getMessage());
                 $errors = $e->getValidationErrors();
 
                 return view('bulk_uploads.show', compact('errors'));
             } catch (DuplicateBulkCurationException $e) {
-                \Log::debug('Duplicate Bulk Curations: '.$e->getMessage());
+                Log::debug('Duplicate Bulk Curations: '.$e->getMessage());
                 $duplicates = $e->duplicates;
                 $expert_panel_id = $request->expert_panel_id;
 

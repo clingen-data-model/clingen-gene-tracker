@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Mondo;
 
+use Illuminate\Support\Facades\Log;
 use App\AppState;
 use App\Disease;
 use App\Mondo\OboParser;
@@ -66,7 +67,7 @@ class UpdateMondoData extends Command
 
         $this->info('Deleting mondo temp file');
         unlink($tmpFilePath);
-        \Log::info('Finished updating MonDO data.');
+        Log::info('Finished updating MonDO data.');
     }
 
     private function downloadOboFile(ClientInterface $guzzleClient)

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use Illuminate\Support\Facades\Event;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Events\Received;
 use App\DataExchange\Kafka\KafkaConsumer;
@@ -113,13 +114,13 @@ class KafkaConsumerTest extends TestCase
         $mkRdConsumer->shouldReceive('consume')
             ->andReturn($message, $eofMessage);
 
-        \Event::fake([Received::class]);
+        Event::fake([Received::class]);
 
         $appConsumer = new KafkaConsumer($mkRdConsumer, app()->make(Dispatcher::class));
         $appConsumer->addTopic('test');
 
         $appConsumer->consume();
-        \Event::assertDispatched(Received::class, function ($event) use ($message) {
+        Event::assertDispatched(Received::class, function ($event) use ($message) {
             return $event->message == $message;
         });
     }
@@ -140,7 +141,7 @@ class KafkaConsumerTest extends TestCase
         $mkRdConsumer->shouldReceive('consume')
             ->andReturn($message, $message2, $eofMessage);
 
-        \Event::fake([Received::class]);
+        Event::fake([Received::class]);
 
         $appConsumer = new KafkaConsumer($mkRdConsumer, app()->make(Dispatcher::class));
         $appConsumer->addTopic('test');

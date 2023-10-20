@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\MessagePushers;
 
+use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessagePusher;
 use Ramsey\Uuid\Uuid;
 
@@ -17,6 +18,6 @@ class MessageLogger implements MessagePusher
     public function push(string $message, $uuid = null)
     {
         $uuid = $uuid ?? Uuid::uuid4()->toString();
-        \Log::info('Message Pushed', ['topic' => $this->topic, 'message' => $message, 'key' => $uuid]);
+        Log::info('Message Pushed', ['topic' => $this->topic, 'message' => $message, 'key' => $uuid]);
     }
 }

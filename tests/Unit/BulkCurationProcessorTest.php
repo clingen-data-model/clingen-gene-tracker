@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\DB;
 use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\OmimEntryContract;
 use App\Clients\OmimClient;
@@ -94,14 +95,14 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function returns_validation_errors_if_file_has_invalid_rows(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
 
         try {
             $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad.xlsx'), 1);
             $this->fail('InvalidRowException not thrown for data with bad rows');
         } catch (InvalidFileException $e) {
             $this->assertEquals(4, count($e->getValidationErrors()));
-            $this->assertEquals(0, \DB::table('curations')->count());
+            $this->assertEquals(0, DB::table('curations')->count());
         }
     }
 
@@ -110,10 +111,10 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function adds_new_curations_for_valid_file(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         $curations = $this->svc->processFile(base_path('tests/files/bulk_curation_upload_good.xlsx'), $this->ep->id);
 
-        $this->assertEquals(3, \DB::table('curations')->count());
+        $this->assertEquals(3, DB::table('curations')->count());
     }
 
     /**
@@ -121,7 +122,7 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function creates_curation_from_valid_row_data(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         $curation = $this->svc->processRow($this->data, $this->ep->id);
         $this->assertInstanceOf(Curation::class, $curation);
         $this->assertDatabaseHas(
@@ -255,14 +256,14 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function validates_column_headers_before_processing(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
 
         try {
             $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad_header.xlsx'), 1);
             $this->fail('InvalidRowException not thrown for data with bad rows');
         } catch (InvalidFileException $e) {
             $this->assertEquals(2, count($e->getValidationErrors()));
-            $this->assertEquals(0, \DB::table('curations')->count());
+            $this->assertEquals(0, DB::table('curations')->count());
         }
     }
 
@@ -271,14 +272,14 @@ class BulkCurationProcessorTest extends TestCase
      */
     public function validates_file_has_Curations_sheet(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
 
         try {
             $this->svc->processFile(base_path('tests/files/bulk_curation_upload_bad_file.xlsx'), 1);
             $this->fail('InvalidFileException not thrown for bad file.');
         } catch (InvalidFileException $e) {
             $this->assertEquals(1, count($e->getValidationErrors()));
-            $this->assertEquals(0, \DB::table('curations')->count());
+            $this->assertEquals(0, DB::table('curations')->count());
         }
     }
 }

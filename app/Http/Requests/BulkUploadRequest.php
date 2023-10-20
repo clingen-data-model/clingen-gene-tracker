@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BulkUploadRequest extends FormRequest
@@ -11,7 +12,7 @@ class BulkUploadRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \Auth::user()->isCoordinator() || \Auth::user()->hasAnyRole('programmer|admin');
+        return Auth::user()->isCoordinator() || Auth::user()->hasAnyRole('programmer|admin');
     }
 
     /**

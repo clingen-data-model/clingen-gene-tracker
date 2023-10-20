@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Facades\Log;
 use App\Notifications\CurationNotificationsDigest;
 use App\User;
 use Carbon\Carbon;
@@ -67,6 +68,6 @@ class SendNotificationDigest extends Command
             $bar->advance();
         });
         $bar->finish();
-        \Log::info('Sent notification digests.');
+        Log::info('Sent notification digests.');
     }
 }

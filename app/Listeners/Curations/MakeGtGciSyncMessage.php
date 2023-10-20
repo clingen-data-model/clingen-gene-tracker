@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Curations;
 
+use Illuminate\Support\Facades\Log;
 use App\Curation;
 use App\Events\Curation\CurationEvent;
 use App\Jobs\Curations\CreateStreamMessage;
@@ -26,32 +27,32 @@ class MakeGtGciSyncMessage
      */
     public function handle(CurationEvent $event): void
     {
-        // \Log::debug('  '.__METHOD__);
+        // Log::debug('  '.__METHOD__);
         if ($this->linkedToGciRecord($event->curation)) {
-            // \Log::debug('  already linked to gci record');
+            // Log::debug('  already linked to gci record');
             return;
         }
 
         if (! $this->hasGeneDiseaseMoi($event->curation)) {
-            // \Log::debug('  does not yet have gene, disease, or moi: ', $event->curation->only('gene_symbol', 'moi_id', 'mondo_id'));
+            // Log::debug('  does not yet have gene, disease, or moi: ', $event->curation->only('gene_symbol', 'moi_id', 'mondo_id'));
             return;
         }
 
         if (! $this->precurationCompleted($event->curation)) {
             return;
         }
-        \Log::info(' has precuration-complete status');
+        Log::info(' has precuration-complete status');
 
         if (
             $this->statusWasChanged($event->curation)
             || $this->moiChanged($event->curation)
             || $this->diseaseChanged($event->curation)
         ) {
-            // \Log::debug('  meets criteria');
+            // Log::debug('  meets criteria');
             $eventType = 'precuration_completed';
-            // \Log::debug('  $this->moiUpdated($event->curation)', [$this->moiUpdated($event->curation)]);
+            // Log::debug('  $this->moiUpdated($event->curation)', [$this->moiUpdated($event->curation)]);
             if ($this->moiUpdated($event->curation) || $this->diseaseUpdated($event->curation)) {
-                // \Log::debug('  moi or mondo updated.');
+                // Log::debug('  moi or mondo updated.');
                 $eventType = 'gdm_updated';
             }
             Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, $eventType));
@@ -84,7 +85,7 @@ class MakeGtGciSyncMessage
 
     private function precurationCompleted(Curation $curation)
     {
-        // \Log::debug('  $curation->curation_status_id: '.$curation->curation_status_id);
+        // Log::debug('  $curation->curation_status_id: '.$curation->curation_status_id);
         return $curation->curation_status_id == config('curations.statuses.precuration-complete');
     }
 
@@ -95,7 +96,7 @@ class MakeGtGciSyncMessage
 
     private function moiChanged(Curation $curation)
     {
-        // \Log::debug('  $curation->isDirty(moi_id)', [$curation->isDirty('moi_id')]);
+        // Log::debug('  $curation->isDirty(moi_id)', [$curation->isDirty('moi_id')]);
         return $curation->isDirty('moi_id');
     }
 
@@ -106,7 +107,7 @@ class MakeGtGciSyncMessage
 
     private function moiUpdated(Curation $curation)
     {
-        // \Log::debug('  moiUpdated?: ', ['new' => $curation->moi_id, 'original' => $curation->getOriginal('moi_id')]);
+        // Log::debug('  moiUpdated?: ', ['new' => $curation->moi_id, 'original' => $curation->getOriginal('moi_id')]);
         if (is_null($curation->getOriginal('moi_id'))) {
             return false;
         }
@@ -120,7 +121,7 @@ class MakeGtGciSyncMessage
 
     private function diseaseUpdated(Curation $curation)
     {
-        // \Log::debug('  new mondo_id, ', ['new' => $curation->mondo_id, 'original' => $curation->getOriginal('mondo_id')]);
+        // Log::debug('  new mondo_id, ', ['new' => $curation->mondo_id, 'original' => $curation->getOriginal('mondo_id')]);
         if (is_null($curation->getOriginal('mondo_id'))) {
             return false;
         }

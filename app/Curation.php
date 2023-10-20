@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Log;
 use App\Contracts\Notable;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
@@ -217,7 +218,7 @@ class Curation extends Model implements Notable
                     return $step['file'].':'.$step['line'];
                 })->toArray();
 
-                \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace);
+                Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace);
             }
         }
         $this->attributes['expert_panel_id'] = $value;

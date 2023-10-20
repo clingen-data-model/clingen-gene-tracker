@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Facades\Log;
 use App\Contracts\MondoClient;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
@@ -46,7 +47,7 @@ class CheckMondoForUpdates extends Command
     public function handle(MondoClient $mondoClient): void
     {
         $printRequests = $this->option('print-requests');
-        \Log::info('Checking MonDO for updates.');
+        Log::info('Checking MonDO for updates.');
         $curations = Curation::query()
             ->with('expertPanel')
             ->get()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class TimeoutTestController extends Controller
 
         $output = $request->all();
         if ($request->has('use_db')) {
-            $users = \DB::table('users')->take(100)->get();
+            $users = DB::table('users')->take(100)->get();
             $output['users'] = $users;
             $timer->addEvent('TimeoutTestController: Queried database for users.');
         }

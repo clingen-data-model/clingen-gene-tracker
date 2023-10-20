@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\Cache;
 use App\Clients\Omim\OmimEntry;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
@@ -124,7 +125,7 @@ class OmimClientTest extends TestCase
         ]);
 
         $response = $omim->fetch('test/found', []);
-        $this->assertTrue(\Cache::has(sha1('test/found?')));
+        $this->assertTrue(Cache::has(sha1('test/found?')));
         $this->assertEquals($foundJson, $response);
     }
 }

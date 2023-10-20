@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use App\Clients\OmimClient;
 use App\Curation;
 use App\CurationStatus;
@@ -361,7 +363,7 @@ class BulkCurationProcessor
             'curator_email.exists' => 'The curator email specified was not found in the system',
         ];
 
-        $validator = \Validator::make(
+        $validator = Validator::make(
             $rowData,
             $validationRules,
             $messages
@@ -423,7 +425,7 @@ class BulkCurationProcessor
             $data = $this->collateRow($header, $row);
 
             if ($this->rowIsEmpty($data)) {
-                \Log::debug(__METHOD__.': row is empty');
+                Log::debug(__METHOD__.': row is empty');
 
                 continue;
             }

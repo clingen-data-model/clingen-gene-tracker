@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RationaleRequest extends FormRequest
@@ -12,7 +13,7 @@ class RationaleRequest extends FormRequest
     public function authorize(): bool
     {
         // only allow updates if the user is logged in
-        return \Auth::check();
+        return Auth::check();
     }
 
     /**

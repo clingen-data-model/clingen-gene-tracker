@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Illuminate\Support\Facades\Log;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Curation;
 use App\Gci\GciMessage;
@@ -57,6 +58,6 @@ class ReplayGciEventsForCuration implements ShouldQueue
                 Bus::dispatch($job);
             });
 
-        \Log::info('Replayed '.$isms->count().' gene_validity_events_messages for curation '.$this->curation->id);
+        Log::info('Replayed '.$isms->count().' gene_validity_events_messages for curation '.$this->curation->id);
     }
 }

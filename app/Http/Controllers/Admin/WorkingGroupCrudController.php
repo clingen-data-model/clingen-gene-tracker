@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\WorkingGroupRequest as StoreRequest;
 use App\Http\Requests\WorkingGroupRequest as UpdateRequest;
 use App\WorkingGroup;
@@ -35,18 +36,18 @@ class WorkingGroupCrudController extends CrudController
 
         // ------ CRUD ACCESS
         $this->crud->denyAccess(['list', 'create', 'update', 'reorder', 'delete']);
-        if (\Auth::user()->hasPermissionTo('list working-groups')) {
+        if (Auth::user()->hasPermissionTo('list working-groups')) {
             $this->crud->allowAccess('list');
         }
-        if (\Auth::user()->hasPermissionTo('create working-groups')) {
+        if (Auth::user()->hasPermissionTo('create working-groups')) {
             $this->crud->allowAccess('create');
         }
 
-        if (\Auth::user()->hasPermissionTo('update working-groups')) {
+        if (Auth::user()->hasPermissionTo('update working-groups')) {
             $this->crud->allowAccess('update');
         }
 
-        if (\Auth::user()->hasPermissionTo('delete working-groups')) {
+        if (Auth::user()->hasPermissionTo('delete working-groups')) {
             $this->crud->allowAccess('delete');
         }
     }

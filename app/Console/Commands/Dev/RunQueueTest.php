@@ -5,7 +5,7 @@ namespace App\Console\Commands\Dev;
 use App\Jobs\Dev\TestQueueProcess;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Queue;
+use Illuminate\Support\Facades\Queue;
 
 class RunQueueTest extends Command
 {

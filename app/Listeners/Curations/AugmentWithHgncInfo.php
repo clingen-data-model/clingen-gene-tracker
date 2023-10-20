@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Curations;
 
+use Illuminate\Support\Facades\Log;
 use App\Events\Curation\Saving;
 use App\Exceptions\HttpNotFoundException;
 use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
@@ -31,7 +32,7 @@ class AugmentWithHgncInfo
             try {
                 HgncInfoJob::dispatchSync($event->curation);
             } catch (HttpNotFoundException $e) {
-                \Log::warning($e->getMessage());
+                Log::warning($e->getMessage());
             }
         }
     }

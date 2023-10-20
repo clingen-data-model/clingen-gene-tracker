@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\WorkingGroup;
 
@@ -23,7 +24,7 @@ class OrgChartController extends Controller
         //             ])
         //             ->get();
 
-        $results = \DB::select('select wg.name as cdwg, ep.id as ep_id, ep.name as \'ep_name\', a.clingen_id as affiliation_subgroup_id, ap.clingen_id as affiliation_id, a.name as affiliation_subgroup_name, ap.name as affiliation_name
+        $results = DB::select('select wg.name as cdwg, ep.id as ep_id, ep.name as \'ep_name\', a.clingen_id as affiliation_subgroup_id, ap.clingen_id as affiliation_id, a.name as affiliation_subgroup_name, ap.name as affiliation_name
         from  expert_panels ep
             left join working_groups wg on ep.working_group_id = wg.id
             left join affiliations a on ep.affiliation_id = a.id

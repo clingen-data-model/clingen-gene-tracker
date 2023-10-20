@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\Commands;
 
+use Illuminate\Support\Facades\Bus;
 use App\Curation;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
 use Illuminate\Console\Command;
@@ -41,7 +42,7 @@ class CreateStreamMessageForExistingCuration extends Command
         $bar = $this->output->createProgressBar($curations->count());
 
         $curations->each(function ($curation) use ($bar) {
-            \Bus::dispatch(new CreatePrecurationStreamMessage($curation, 'created'));
+            Bus::dispatch(new CreatePrecurationStreamMessage($curation, 'created'));
             $bar->advance();
         });
         echo "\n";

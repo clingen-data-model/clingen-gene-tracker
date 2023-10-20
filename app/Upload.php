@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -27,8 +28,8 @@ class Upload extends Model
         parent::boot();
 
         static::creating(function ($upload) {
-            if (! $upload->uploader_id && \Auth::user()) {
-                $upload->uploader_id = \Auth::user()->id;
+            if (! $upload->uploader_id && Auth::user()) {
+                $upload->uploader_id = Auth::user()->id;
             }
         });
     }

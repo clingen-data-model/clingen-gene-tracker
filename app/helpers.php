@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use App\Model;
 use Illuminate\Support\Str;
 
@@ -55,7 +56,7 @@ if (! function_exists('logDebug')) {
     function logDebug($message, $data = [])
     {
         if (config('app.log_debug', false)) {
-            \Log::debug('request: '.spl_object_hash(request())."\ttime: ".microtime(true)."\t".$message, $data);
+            Log::debug('request: '.spl_object_hash(request())."\ttime: ".microtime(true)."\t".$message, $data);
         }
     }
 }

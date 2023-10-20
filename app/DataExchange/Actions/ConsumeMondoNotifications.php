@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\Actions;
 
+use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use Illuminate\Console\Command;
@@ -57,6 +58,6 @@ class ConsumeMondoNotifications
         }
 
         $this->consumer->consumePresentMessages($callback);
-        \Log::debug('consumed mondo_notifications topic');
+        Log::debug('consumed mondo_notifications topic');
     }
 }

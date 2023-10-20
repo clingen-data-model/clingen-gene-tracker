@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Curations;
 
+use Illuminate\Support\Facades\Bus;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\Events\Curation\Created;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
@@ -25,6 +26,6 @@ class MakeCurationCreatedStreamMessage
      */
     public function handle(Created $event): void
     {
-        \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'created'));
+        Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'created'));
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Models;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Event;
 use App\Events\User\Created;
 use App\ExpertPanel;
 use App\User;
@@ -28,9 +30,9 @@ class UserTest extends TestCase
      */
     public function fires_UserCreated_event_when_created(): void
     {
-        \Event::fake();
+        Event::fake();
         $user = factory(\App\User::class)->create();
-        \Event::assertDispatched(Created::class, function ($e) {
+        Event::assertDispatched(Created::class, function ($e) {
             return $e->user->id = $this->user->id;
         });
     }
@@ -63,7 +65,7 @@ class UserTest extends TestCase
             'password' => 'secret',
         ]);
 
-        $this->assertTrue(\Hash::check('secret', $u->password));
+        $this->assertTrue(Hash::check('secret', $u->password));
     }
 
     /**
@@ -76,7 +78,7 @@ class UserTest extends TestCase
         ]);
 
         $this->assertNotEquals('test', $u->password);
-        $this->assertTrue(\Hash::check('test', $u->password));
+        $this->assertTrue(Hash::check('test', $u->password));
     }
 
     /**

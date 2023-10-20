@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\Jobs;
 
+use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Exceptions\StreamingServiceDisabledException;
 use App\DataExchange\Exceptions\StreamingServiceException;
@@ -44,7 +45,7 @@ class PushMessage implements ShouldQueue
             ]);
         } catch (StreamingServiceDisabledException $e) {
             if (config('dx.warn-disabled', true)) {
-                \Log::warning($e->getMessage());
+                Log::warning($e->getMessage());
             }
         } catch (StreamingServiceException $e) {
             report($e);

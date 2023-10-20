@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Curations;
 
+use Illuminate\Support\Facades\Bus;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
 use App\Events\Curation\Deleted;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
@@ -23,6 +24,6 @@ class MakeCurationDeletedStreamMessage
      */
     public function handle(Deleted $event): void
     {
-        \Bus::dispatchSync(new CreatePrecurationStreamMessage($event->curation, 'deleted'));
+        Bus::dispatchSync(new CreatePrecurationStreamMessage($event->curation, 'deleted'));
     }
 }

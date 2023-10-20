@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\CurationStatus;
 use App\Http\Requests\CurationStatusRequest as StoreRequest;
 use App\Http\Requests\CurationStatusRequest as UpdateRequest;
@@ -19,7 +20,7 @@ class CurationStatusCrudController extends CrudController
      */
     public function setUp(): void
     {
-        $this->user = \Auth::user();
+        $this->user = Auth::user();
 
         /*
         |--------------------------------------------------------------------------

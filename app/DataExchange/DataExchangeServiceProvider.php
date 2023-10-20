@@ -2,6 +2,7 @@
 
 namespace App\DataExchange;
 
+use Illuminate\Support\Facades\Log;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\DataExchange\Contracts\MessagePusher;
@@ -60,7 +61,7 @@ class DataExchangeServiceProvider extends ServiceProvider
                 return new MessageLogger();
             }
 
-            \Log::warning('No DataExchange driver set.  Defaulting to log driver');
+            Log::warning('No DataExchange driver set.  Defaulting to log driver');
 
             return new MessageLogger();
         });

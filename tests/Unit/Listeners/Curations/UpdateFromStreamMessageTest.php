@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Listeners\Curations;
 
+use Illuminate\Support\Facades\DB;
 use App\Affiliation;
 use App\Curation;
 use App\CurationStatus;
@@ -239,7 +240,7 @@ class UpdateFromStreamMessageTest extends TestCase
         ];
         $this->assertDatabaseHas('curation_curation_status', $expected);
 
-        $this->assertEquals(1, \DB::table('curation_curation_status')->where($expected)->count());
+        $this->assertEquals(1, DB::table('curation_curation_status')->where($expected)->count());
     }
 
     /**

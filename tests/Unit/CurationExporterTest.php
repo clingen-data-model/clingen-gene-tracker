@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\CurationExporter;
 use App\CurationStatus;
@@ -20,7 +21,7 @@ class CurationExporterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         $programmer = factory(User::class)->create()->assignRole('programmer');
         $this->actingAs($programmer);
         $this->groups = factory(WorkingGroup::class, 3)->create();

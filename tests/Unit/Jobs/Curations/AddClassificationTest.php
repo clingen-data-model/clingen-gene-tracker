@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
+use Illuminate\Support\Facades\Event;
 use App\Classification;
 use App\Curation;
 use App\Jobs\Curations\AddClassification;
@@ -21,7 +22,7 @@ class AddClassificationTest extends TestCase
      */
     public function adds_a_classification_to_a_curation(): void
     {
-        \Event::fake();
+        Event::fake();
         $classification = factory(Classification::class)->create([]);
         $curation = factory(Curation::class)->create();
         $job = new AddClassification($curation, $classification, '2019-12-25');
@@ -39,7 +40,7 @@ class AddClassificationTest extends TestCase
      */
     public function does_not_add_current_classification_again(): void
     {
-        \Event::fake();
+        Event::fake();
         $classification = factory(Classification::class)->create([]);
         $curation = factory(Curation::class)->create();
         $job = new AddClassification($curation, $classification, '2019-12-25');
@@ -68,7 +69,7 @@ class AddClassificationTest extends TestCase
      */
     public function does_not_add_previously_added_classification_if_date_matches_existing_classification_date(): void
     {
-        \Event::fake();
+        Event::fake();
         $classification = factory(Classification::class)->create([]);
         $curation = factory(Curation::class)->create();
         $job = new AddClassification($curation, $classification, '2020-02-25');

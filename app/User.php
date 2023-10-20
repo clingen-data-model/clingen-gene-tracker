@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use App\Events\User\Created;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -112,7 +114,7 @@ class User extends Authenticatable
     {
         if (is_null($this->deactivated_at)) {
             return '<a class="btn btn-xs btn-default" '
-                .'href="'.\Request::root().'/admin/user/'.$this->id.'/deactivate" '
+                .'href="'.Request::root().'/admin/user/'.$this->id.'/deactivate" '
                 .'data-toggle="tooltip" '
                 .'title="Deactivate this user" '
                 .'onClick="return confirm(\'Are you sure?\');">'
@@ -178,7 +180,7 @@ class User extends Authenticatable
 
     public function canBeImpersonated()
     {
-        if (\Auth::user()->hasRole('admin')) {
+        if (Auth::user()->hasRole('admin')) {
             return ! $this->hasRole('programmer|admin');
         }
 

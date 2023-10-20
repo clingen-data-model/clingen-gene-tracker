@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CurationTypeRequest as StoreRequest;
 // VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\CurationTypeRequest as UpdateRequest;
@@ -38,23 +39,23 @@ class CurationTypeCrudController extends CrudController
 
         $this->crud->denyAccess(['list', 'create', 'update', 'delete']);
 
-        if (\Auth::user()->hasPermissionTo('create curation-types')) {
+        if (Auth::user()->hasPermissionTo('create curation-types')) {
             $this->crud->allowAccess(['list']);
         }
 
-        if (\Auth::user()->hasPermissionTo('create curation-types')) {
+        if (Auth::user()->hasPermissionTo('create curation-types')) {
             $this->crud->allowAccess(['create']);
         } else {
             $this->crud->removeButton('add');
         }
 
-        if (\Auth::user()->hasPermissionTo('update curation-types')) {
+        if (Auth::user()->hasPermissionTo('update curation-types')) {
             $this->crud->allowAccess(['update']);
         } else {
             $this->crud->removeButton('edit');
         }
 
-        if (\Auth::user()->hasPermissionTo('delete curation-types')) {
+        if (Auth::user()->hasPermissionTo('delete curation-types')) {
             $this->crud->allowAccess(['delete']);
         } else {
             $this->crud->removeButton('delete');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RationaleRequest as StoreRequest;
 // VALIDATION: change the requests to match your own file names if you need form validation
 use App\Http\Requests\RationaleRequest as UpdateRequest;
@@ -26,16 +27,16 @@ class RationaleCrudController extends CrudController
         $this->crud->setEntityNameStrings('rationale', 'rationales');
 
         $this->crud->denyAccess(['list', 'create', 'update', 'delete']);
-        if (\Auth::user()->hasPermissionTo('list users')) {
+        if (Auth::user()->hasPermissionTo('list users')) {
             $this->crud->allowAccess(['list']);
         }
-        if (\Auth::user()->hasPermissionTo('create users')) {
+        if (Auth::user()->hasPermissionTo('create users')) {
             $this->crud->allowAccess(['create']);
         }
-        if (\Auth::user()->hasPermissionTo('update users')) {
+        if (Auth::user()->hasPermissionTo('update users')) {
             $this->crud->allowAccess(['update']);
         }
-        if (\Auth::user()->hasPermissionTo('delete users')) {
+        if (Auth::user()->hasPermissionTo('delete users')) {
             $this->crud->allowAccess(['delete']);
         }
 

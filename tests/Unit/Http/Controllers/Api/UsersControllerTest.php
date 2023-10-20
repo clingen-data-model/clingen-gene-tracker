@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -18,7 +19,7 @@ class UsersControllerTest extends TestCase
         parent::setUp();
         $this->users = factory(\App\User::class, 10)->create();
         $this->user = factory(\App\User::class)->create();
-        \Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
+        Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
         $this->user->assignRole('programmer');
     }
 

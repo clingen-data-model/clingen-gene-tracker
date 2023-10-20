@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\ExpertPanel;
 use App\User;
@@ -45,7 +46,7 @@ class BulkCurationUploadTest extends TestCase
      */
     public function bulkUploadHandler_creates_curations_from_file(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
 
         $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user)
@@ -61,7 +62,7 @@ class BulkCurationUploadTest extends TestCase
             ])
             ->assertOk();
 
-        $this->assertEquals(3, \DB::table('curations')->count());
+        $this->assertEquals(3, DB::table('curations')->count());
     }
 
     /**
@@ -88,7 +89,7 @@ class BulkCurationUploadTest extends TestCase
      */
     public function confirms_duplicates_before_saving_file(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         factory(Curation::class)->create(['gene_symbol' => 'MYL2']);
 
         $response = $this->actingAs($this->user)
@@ -118,6 +119,6 @@ class BulkCurationUploadTest extends TestCase
             ])
             ->assertOk();
 
-        $this->assertEquals(4, \DB::table('curations')->count());
+        $this->assertEquals(4, DB::table('curations')->count());
     }
 }

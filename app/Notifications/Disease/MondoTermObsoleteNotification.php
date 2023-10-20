@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Disease;
 
+use Illuminate\Support\Facades\Log;
 use App\Curation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -20,7 +21,7 @@ class MondoTermObsoleteNotification extends Notification
      */
     public function __construct(Curation $curation)
     {
-        \Log::debug(__METHOD__);
+        Log::debug(__METHOD__);
         $this->curation = $curation;
     }
 
@@ -31,7 +32,7 @@ class MondoTermObsoleteNotification extends Notification
      */
     public function via($notifiable): array
     {
-        \Log::debug('via [mail]');
+        Log::debug('via [mail]');
 
         return ['mail'];
     }
@@ -44,7 +45,7 @@ class MondoTermObsoleteNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         $view = 'email.curations.mondo_term_obsoleted';
-        \Log::debug($view);
+        Log::debug($view);
 
         return (new MailMessage)->view($view, ['curation' => $this->curation, 'notifiable' => $notifiable]);
     }

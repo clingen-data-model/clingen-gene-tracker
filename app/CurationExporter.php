@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class CurationExporter
@@ -29,15 +30,15 @@ class CurationExporter
             });
         }
 
-        if (\Auth::user()->hasAnyRole(['programmer', 'admin'])) {
+        if (Auth::user()->hasAnyRole(['programmer', 'admin'])) {
             return $query;
         }
 
-        if (\Auth::user()->isCoordinator()) {
+        if (Auth::user()->isCoordinator()) {
             return $query;
         }
 
-        $query->where('curator_id', \Auth::user()->id);
+        $query->where('curator_id', Auth::user()->id);
 
         return $query;
     }

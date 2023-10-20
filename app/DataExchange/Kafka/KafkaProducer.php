@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\Kafka;
 
+use Illuminate\Support\Facades\Log;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Exceptions\StreamingServiceException;
 use Ramsey\Uuid\Uuid;
@@ -29,9 +30,9 @@ class KafkaProducer implements MessagePusher
 
         while ($this->rdKafkaProducer->getOutQLen() > 0) {
             $this->rdKafkaProducer->poll(50);
-            \Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
+            Log::debug('polling b/c $this->rdKafkaProducer->getOutQLen(): '.$this->rdKafkaProducer->getOutQLen());
         }
-        \Log::debug('q len is 0.  finishing up.');
+        Log::debug('q len is 0.  finishing up.');
         // } catch (\Throwable $e) {
         //     report($e);
         // }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Curations;
 
+use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\Mail\Curations\TransferNotification;
 use Carbon\Carbon;
@@ -34,7 +35,7 @@ class SetOwner
             ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)
             || $this->curation->isDirty('expert_panel_id')
         ) {
-            \DB::transaction(function () {
+            DB::transaction(function () {
                 $originalOwner = $this->curation->expertPanel;
 
                 $this->setEndOfOwnership();

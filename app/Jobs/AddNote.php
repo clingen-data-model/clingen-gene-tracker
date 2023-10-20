@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Illuminate\Support\Facades\Auth;
 use App\Contracts\Notable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,7 +30,7 @@ class AddNote
         $this->subject = $subject;
         $this->content = $content;
         $this->topic = $topic;
-        $this->author = $author ?? \Auth::user();
+        $this->author = $author ?? Auth::user();
     }
 
     /**

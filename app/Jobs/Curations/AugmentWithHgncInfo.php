@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Curations;
 
+use Illuminate\Support\Facades\Log;
 use App\Curation;
 use App\Exceptions\HttpNotFoundException;
 use App\Gene;
@@ -44,7 +45,7 @@ class AugmentWithHgncInfo
                 try {
                     $this->updateCurationWithPrevSymbol();
                 } catch (HttpNotFoundException $e) {
-                    \Log::warning($e->getMessage());
+                    Log::warning($e->getMessage());
                 }
             }
         }

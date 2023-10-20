@@ -2,6 +2,7 @@
 
 namespace App\Gci\Actions;
 
+use Illuminate\Support\Facades\Log;
 use App\Affiliation;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -49,6 +50,6 @@ class AffiliationsUpdate
                     }
                 }
             });
-        \Log::info('Affiliations synced from GCI/VCI api.');
+        Log::info('Affiliations synced from GCI/VCI api.');
     }
 }

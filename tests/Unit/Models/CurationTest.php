@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use Illuminate\Support\Facades\Event;
 use App\Affiliation;
 use App\Classification;
 use App\Curation;
@@ -259,10 +260,10 @@ class CurationTest extends TestCase
      */
     public function curation_saved_dispatches_augment_hgnc_and_mondo(): void
     {
-        \Event::fake();
+        Event::fake();
         $curation = factory(Curation::class)->create(['gene_symbol' => 'BRCA1', 'mondo_id' => 'MONDO:0000473']);
 
-        \Event::assertDispatched(Saved::class);
+        Event::assertDispatched(Saved::class);
     }
 
     /**

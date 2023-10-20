@@ -2,6 +2,7 @@
 
 namespace App\DataExchange\Jobs;
 
+use Illuminate\Support\Facades\Log;
 use App\Affiliation;
 use App\Curation;
 use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
@@ -54,7 +55,7 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
 
         try {
             if ($this->gciMessage->status == 'created') {
-                \Log::debug($updateSummary);
+                Log::debug($updateSummary);
 
                 return;
             }
@@ -69,9 +70,9 @@ class DryRunUpdateFromGeneValidityMessage implements GeneValidityCurationUpdateJ
                 'classification_date' => $this->gciMessage->messageDate->format('Y-m-d H:i:s'),
             ];
         } catch (GciSyncException $gciSyncException) {
-            \Log::error($gciSyncException);
+            Log::error($gciSyncException);
         }
 
-        \Log::debug($updateSummary);
+        Log::debug($updateSummary);
     }
 }

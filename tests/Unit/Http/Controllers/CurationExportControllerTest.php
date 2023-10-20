@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Curation;
 use App\ExpertPanel;
 use App\User;
@@ -13,7 +14,7 @@ class CurationExportControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         $this->user = factory(User::class)->create();
         $this->groups = factory(WorkingGroup::class, 3)->create();
         $this->panels = collect();

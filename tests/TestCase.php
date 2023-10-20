@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use App\Curation;
 use App\DataExchange\Contracts\MessagePusher;
 use App\Rules\ValidGeneSymbolRule;
@@ -24,7 +26,7 @@ abstract class TestCase extends BaseTestCase
         $mock = Mockery::mock(MessagePusher::class)->shouldIgnoreMissing();
         $this->instance(MessagePusher::class, $mock);
         if ($this->fakeCurationSavedEvent) {
-            \Event::fake([
+            Event::fake([
                 \App\Events\Curation\Saved::class,
             ]);
         }
@@ -58,7 +60,7 @@ abstract class TestCase extends BaseTestCase
             throw new \Exception('A valid JSON string was not provided.');
         }
 
-        return \DB::raw("CAST('{$json}' AS JSON)");
+        return DB::raw("CAST('{$json}' AS JSON)");
     }
 
     protected function assumeGeneSymbolValid()

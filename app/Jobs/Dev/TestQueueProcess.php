@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Dev;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,6 +31,6 @@ class TestQueueProcess implements ShouldQueue
     public function handle(): void
     {
         sleep(5);
-        \Log::debug('This message should have been written via the queue.');
+        Log::debug('This message should have been written via the queue.');
     }
 }

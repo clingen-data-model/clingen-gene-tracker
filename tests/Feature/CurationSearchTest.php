@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\DB;
 use App\Contracts\SearchService;
 use App\Curation;
 use App\Disease;
@@ -126,7 +127,7 @@ class CurationSearchTest extends TestCase
      */
     public function can_filter_by_specific_field(): void
     {
-        \DB::table('curations')->delete();
+        DB::table('curations')->delete();
         $curation = factory(Curation::class)->create(['gene_symbol' => 'RETT']);
         $ep = factory(ExpertPanel::class)->create(['name' => 'retina']);
         $epCuration = factory(Curation::class)->create(['expert_panel_id' => $ep->id]);

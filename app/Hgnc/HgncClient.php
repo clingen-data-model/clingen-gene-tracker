@@ -2,6 +2,7 @@
 
 namespace App\Hgnc;
 
+use Illuminate\Support\Facades\Cache;
 use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
 use App\Exceptions\HttpUnexpectedResponseException;
@@ -22,7 +23,7 @@ class HgncClient implements HgncClientContract
     {
         $url = '/fetch/'.$key.'/'.$value;
         try {
-            return \Cache::remember('hgnc:'.$url, 120, function () use ($url, $key, $value) {
+            return Cache::remember('hgnc:'.$url, 120, function () use ($url, $key, $value) {
                 $response = $this->guzzleClient->request('GET', $url);
                 $responseObj = json_decode($response->getBody()->getContents());
                 if ($responseObj->response->numFound == 0) {

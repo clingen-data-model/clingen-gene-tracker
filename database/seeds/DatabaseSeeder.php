@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\DB;
 use Database\Seeders\App\CurationStatusesTableSeeder;
 use Database\Seeders\App\CurationTypesTableSeeder;
 use Database\Seeders\App\RationalesTableSeeder;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AffiliationsTableSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
 
-        if (\DB::getDatabaseName() == 'testing') {
+        if (DB::getDatabaseName() == 'testing') {
             $this->call(WorkingGroupsTableSeeder::class);
             $this->call(ExpertPanelsTableSeeder::class);
             $this->call(UsersTableSeeder::class);
