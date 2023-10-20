@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use Illuminate\Support\Arr;
 use App\ApiClient;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
@@ -34,7 +35,7 @@ class ApiClientCreate
         ]);
 
         if ($validator->fails()) {
-            $errors = array_flatten($validator->errors()->getMessages());
+            $errors = Arr::flatten($validator->errors()->getMessages());
             foreach ($errors as $msg) {
                 $command->error($msg);
             }

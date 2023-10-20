@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Gci;
 
+use Illuminate\Support\Arr;
 use App\Affiliation;
 use App\Classification;
 use App\Curation;
@@ -161,7 +162,7 @@ class ImportGciSnapshot extends Command
     {
         echo "\n";
         foreach ($errors as $type => $contents) {
-            $errors[$type] = array_flatten($contents, 1);
+            $errors[$type] = Arr::flatten($contents, 1);
             $errors['missing'] = array_filter($errors['missing'], function ($item) {
                 return ! empty($item['affiliation']);
             });

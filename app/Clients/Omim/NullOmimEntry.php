@@ -2,6 +2,8 @@
 
 namespace App\Clients\Omim;
 
+use Illuminate\Support\Str;
+
 class NullOmimEntry implements OmimEntryContract
 {
     public function getPhenotypeMapList()
@@ -31,8 +33,8 @@ class NullOmimEntry implements OmimEntryContract
 
     public function __get($key)
     {
-        if (method_exists($this, 'get'.ucfirst(camel_case($key)))) {
-            $methodName = 'get'.ucfirst(camel_case($key));
+        if (method_exists($this, 'get'.ucfirst(Str::camel($key)))) {
+            $methodName = 'get'.ucfirst(Str::camel($key));
 
             return $this->$methodName();
         }
