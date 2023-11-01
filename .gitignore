@@ -8,6 +8,7 @@ auth.json
 /.openshift/secrets
 /node_modules
 /public/hot
+/public/build
 /public/storage
 /storage/*.key
 /vendor
