@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap';
 import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
@@ -16,7 +16,8 @@ import './filters.js';
 
 // console.log(configs);
 
-window.Vue = require('vue')
+import Vue from 'vue'
+window.Vue = Vue
 window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'

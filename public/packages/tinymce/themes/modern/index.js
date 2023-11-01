@@ -4,4 +4,4 @@
 //     require('tinymce/themes/modern')
 //   ES2015:
 //     import 'tinymce/themes/modern'
-require('./theme.js');
+import './theme.js';
