@@ -1,6 +1,7 @@
 version: "3"
 services: 
     app:
+        platform: linux/x86_64
         build: .
         image: ${DOCKER_NAME}-app
         container_name: ${DOCKER_NAME}-app
@@ -23,6 +24,7 @@ services:
             CONTAINER_ENV: local
 
     database:
+        platform: linux/x86_64
         container_name: ${DOCKER_NAME}-db
         image: mysql:5.7
         ports:
@@ -36,6 +38,7 @@ services:
             - MYSQL_USER=gene_tracker
             - MYSQL_PASSWORD=password
     redis:
+        platform: linux/x86_64
         container_name: ${DOCKER_NAME}-redis
         image: centos/redis-5-centos7
         ports:
