@@ -29,15 +29,14 @@ class DatabaseSeeder extends Seeder
         $this->call(AffiliationsTableSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
         
-        if (\DB::getDatabaseName() == 'testing') {
+        if ($this->isTesting() || $this->isLocal()) {
             $this->call(WorkingGroupsTableSeeder::class);
             $this->call(ExpertPanelsTableSeeder::class);
             $this->call(UsersTableSeeder::class);
-            $this->call(TestGeneSeeder::class);
         }
 
-        if (app()->environment('local')) {
-            $this->call(UsersTableSeeder::class);
+        if ($this->isTesting()) {
+            $this->call(TestGeneSeeder::class);
         }
 
         $this->call(CurationStatusesTableSeeder::class);
@@ -45,5 +44,16 @@ class DatabaseSeeder extends Seeder
         $this->call(RationalesTableSeeder::class);
         $this->call(CurationsTableSeeder::class);
         $this->call(AppStatesTableSeeder::class);
+    }
+
+
+    private function isTesting() 
+    {
+        return \DB::getDatabaseName() == 'testing';
+    }
+
+    private function isLocal()
+    {
+        return \DB::getDatabaseName() == 'local';
     }
 }
