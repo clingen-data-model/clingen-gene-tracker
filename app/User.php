@@ -222,6 +222,8 @@ class User extends Authenticatable
         return config('logging.channels.slack.url');
     }
 
+    protected function getDefaultGuardName(): string { return 'web'; }
+
     /**
      * SCOPES
      */
