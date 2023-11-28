@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/textcolor')
 //   ES2015:
 //     import 'tinymce/plugins/textcolor'
-import './plugin.js';
+require('./plugin.js');

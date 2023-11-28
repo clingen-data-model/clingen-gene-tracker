@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/help')
 //   ES2015:
 //     import 'tinymce/plugins/help'
-import './plugin.js';
+require('./plugin.js');

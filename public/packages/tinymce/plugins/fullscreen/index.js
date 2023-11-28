@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/fullscreen')
 //   ES2015:
 //     import 'tinymce/plugins/fullscreen'
-import './plugin.js';
+require('./plugin.js');

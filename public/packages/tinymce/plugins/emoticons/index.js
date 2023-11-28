@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/emoticons')
 //   ES2015:
 //     import 'tinymce/plugins/emoticons'
-import './plugin.js';
+require('./plugin.js');

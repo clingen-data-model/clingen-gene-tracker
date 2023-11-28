@@ -4,4 +4,4 @@
 //     require('tinymce/icons/default')
 //   ES2015:
 //     import 'tinymce/icons/default'
-import './icons.js';
+require('./icons.js');

@@ -4,4 +4,4 @@
 //     require('tinymce/themes/silver')
 //   ES2015:
 //     import 'tinymce/themes/silver'
-import './theme.js';
+require('./theme.js');

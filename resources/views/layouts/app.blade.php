@@ -28,7 +28,7 @@
         onload="this.rel = 'stylesheet'"
     >
 
-    @vite('resources/css/app.css')
+    <link href="{{ mix('css/app.css') }}" rel="preload stylesheet" as="style">
 
 
 
@@ -145,7 +145,7 @@
         window.maxUploadSize = '{{getMaxUploadSizeForHumans()}}'
         window.supportedMimes = {!! json_encode(config('project.supported-mimes')) !!}
     </script>
-    @vite('resources/js/app.js')
+    <script src="{{ mix('js/app.js') }}"></script>
 
     @stack('scripts')
 </body>

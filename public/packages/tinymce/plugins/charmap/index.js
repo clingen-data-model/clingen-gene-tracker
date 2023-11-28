@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/charmap')
 //   ES2015:
 //     import 'tinymce/plugins/charmap'
-import './plugin.js';
+require('./plugin.js');

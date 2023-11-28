@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/autoresize')
 //   ES2015:
 //     import 'tinymce/plugins/autoresize'
-import './plugin.js';
+require('./plugin.js');

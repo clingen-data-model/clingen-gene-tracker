@@ -4,4 +4,4 @@
 //     require('tinymce/themes/mobile')
 //   ES2015:
 //     import 'tinymce/themes/mobile'
-import './theme.js';
+require('./theme.js');

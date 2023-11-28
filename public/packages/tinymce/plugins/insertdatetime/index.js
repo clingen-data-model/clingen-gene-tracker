@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/insertdatetime')
 //   ES2015:
 //     import 'tinymce/plugins/insertdatetime'
-import './plugin.js';
+require('./plugin.js');

@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/fullpage')
 //   ES2015:
 //     import 'tinymce/plugins/fullpage'
-import './plugin.js';
+require('./plugin.js');

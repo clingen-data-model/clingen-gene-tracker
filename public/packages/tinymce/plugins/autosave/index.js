@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/autosave')
 //   ES2015:
 //     import 'tinymce/plugins/autosave'
-import './plugin.js';
+require('./plugin.js');

@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/bbcode')
 //   ES2015:
 //     import 'tinymce/plugins/bbcode'
-import './plugin.js';
+require('./plugin.js');

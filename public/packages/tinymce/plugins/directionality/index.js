@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/directionality')
 //   ES2015:
 //     import 'tinymce/plugins/directionality'
-import './plugin.js';
+require('./plugin.js');

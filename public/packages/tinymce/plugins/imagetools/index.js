@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/imagetools')
 //   ES2015:
 //     import 'tinymce/plugins/imagetools'
-import './plugin.js';
+require('./plugin.js');

@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/legacyoutput')
 //   ES2015:
 //     import 'tinymce/plugins/legacyoutput'
-import './plugin.js';
+require('./plugin.js');

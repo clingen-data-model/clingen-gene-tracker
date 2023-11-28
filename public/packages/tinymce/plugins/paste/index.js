@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/paste')
 //   ES2015:
 //     import 'tinymce/plugins/paste'
-import './plugin.js';
+require('./plugin.js');

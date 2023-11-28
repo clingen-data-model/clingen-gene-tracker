@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/anchor')
 //   ES2015:
 //     import 'tinymce/plugins/anchor'
-import './plugin.js';
+require('./plugin.js');

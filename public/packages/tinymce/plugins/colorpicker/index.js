@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/colorpicker')
 //   ES2015:
 //     import 'tinymce/plugins/colorpicker'
-import './plugin.js';
+require('./plugin.js');

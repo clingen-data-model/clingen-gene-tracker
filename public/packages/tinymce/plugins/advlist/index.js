@@ -4,4 +4,4 @@
 //     require('tinymce/plugins/advlist')
 //   ES2015:
 //     import 'tinymce/plugins/advlist'
-import './plugin.js';
+require('./plugin.js');
