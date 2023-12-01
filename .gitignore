@@ -1,4 +1,5 @@
 .env
+auth.json
 .DS_Store
 .push.settings.jsonc
 .phpunit.result.cache
