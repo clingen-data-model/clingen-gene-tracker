@@ -1,0 +1,96 @@
+<?php
+
+namespace App;
+
+use App\Events\Genes\GeneSymbolChanged;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
+
+/**
+ * Do I treat this like an aggregateRoot or a Repository or is it a conflation of the two?
+ *  * AggregateRoot:
+ *      *.
+ */
+class Gene extends Model
+{
+    use SoftDeletes;
+    use RevisionableTrait;
+
+    public $incrementing = false;
+
+    protected $primaryKey = 'hgnc_id';
+
+    public $fillable = [
+        'gene_symbol',
+        'hgnc_id',
+        'omim_id',
+        'ncbi_gene_id',
+        'hgnc_name',
+        'hgnc_status',
+        'previous_symbols',
+        'alias_symbols',
+        'date_approved',
+        'date_modified',
+        'date_symbol_changed',
+        'date_name_changed',
+    ];
+
+    protected $casts = [
+        'date_modified' => 'datetime',
+        'date_approved' => 'datetime',
+        'previous_symbols' => 'array',
+        'alias_symbols' => 'array',
+    ];
+
+    public $revisionCreationsEnabled = true;
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($model) {
+            if ($model->isDirty('gene_symbol')) {
+                event(new GeneSymbolChanged($model, $model->getOriginal('gene_symbol')));
+            }
+        });
+    }
+
+    // Relations
+    /**
+     * The phenotypes that belong to the Gene
+     */
+    public function phenotypes(): BelongsToMany
+    {
+        return $this->belongsToMany(Phenotype::class, 'gene_phenotype', 'hgnc_id', 'phenotype_id')
+            ->withTimestamps();
+    }
+
+    public function curations()
+    {
+        return $this->hasMany(Curation::class, 'hgnc_id', 'hgnc_id');
+    }
+
+    // Access methods
+
+    public static function findBySymbol(string $symbol)
+    {
+        return static::where('gene_symbol', $symbol)->first();
+    }
+
+    public static function findByOmimId(int $id)
+    {
+        return static::where('omim_id', $id)->first();
+    }
+
+    public static function findByPreviousSymbol(string $symbol)
+    {
+        return static::whereJsonContains('previous_symbols', $symbol)->first();
+    }
+
+    // Domain methods
+    public function addPhenotype(Phenotype $phenotype)
+    {
+        $this->phenotypes()->attach($phenotype);
+    }
+}

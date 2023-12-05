@@ -1,0 +1,85 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class GciCuration extends Model
+{
+    public $fillable = [
+        'gdm_uuid',
+        'hgnc_id',
+        'mondo_id',
+        'moi_id',
+        'classification_id',
+        'status_id',
+        'affiliation_id',
+        'creator_uuid',
+        'creator_email',
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
+     * Get the status that owns the GciCuration
+     */
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(CurationStatus::class, 'status_id', 'id');
+    }
+
+    /**
+     * Get the classification that owns the GciCuration
+     */
+    public function classification(): BelongsTo
+    {
+        return $this->belongsTo(Classification::class, 'classification_id', 'id');
+    }
+
+    /**
+     * Get the affiliation that owns the GciCuration
+     */
+    public function affiliation(): BelongsTo
+    {
+        return $this->belongsTo(Affiliation::class, 'affiliation_id', 'id');
+    }
+
+    /**
+     * Get the moi that owns the GciCuration
+     */
+    public function moi(): BelongsTo
+    {
+        return $this->belongsTo(ModeOfInheritance::class, 'moi_id', 'id');
+    }
+
+    /**
+     * Get the gene that owns the GciCuration
+     */
+    public function gene(): BelongsTo
+    {
+        return $this->belongsTo(Gene::class, 'hgnc_id', 'hgnc_id');
+    }
+
+    /**
+     * Get the curation associated with the GciCuration
+     */
+    public function curation(): HasOne
+    {
+        return $this->hasOne(Curation::class, 'gdm_uuid', 'gdm_uuid');
+    }
+
+    /**
+     * Get all of the incomingStreamMessages for the GciCuration
+     */
+    public function incomingStreamMessages(): HasMany
+    {
+        return $this->hasMany(IncomingStreamMessage::class, 'gdm_uuid', 'gdm_uuid');
+    }
+
+    public static function findByUuid($uuid)
+    {
+        return static::where('gdm_uuid', $uuid)->first();
+    }
+}

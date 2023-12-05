@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('phenotypes', function (Blueprint $table) {
+            $table->enum('omim_status', ['live', 'moved', 'removed'])->default('live')->after('name');
+            $table->json('moved_to_mim_number')->nullable()->after('omim_status');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('phenotypes', function (Blueprint $table) {
+            $table->dropForeign('moved_to_mim_number_foreign');
+            $table->dropColumn('moved_to_mim_number');
+            $table->dropColumn('omim_status');
+        });
+    }
+};

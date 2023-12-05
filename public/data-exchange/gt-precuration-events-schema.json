@@ -1,0 +1,215 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "$id": "https://gene-tracker.clinicalgenome.org/gene-tracker-precuration-snapshot-events-schema.json",
+    "title": "GeneTracker Event",
+    "description": "A message published to the GeneTracker curation stream.",
+    "type": "object",
+    "properties": {
+        "key": {
+            "type": "string",
+            "pattern": "^\\w{6}(-\\w{4}){3}-\\w{12}$"
+        },
+        "event_type": {
+            "description": "The type of event described this message.",
+            "type": "string",
+            "title": "Type of curation event",
+            "enum": ["created", "updated", "deleted"]
+        },
+        "schema_version": { "type": "integer" },
+        "data": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "An unique, numeric identifier for the pre-curation assigned by the GeneTracker.  Numeric IDs are assigned sequentially as pre-curation records are created.",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "uuid": {
+                    "description": "An unique, arbitrary identifier for the pre-curation assigned by the GeneTracker.",
+                    "type": "string",
+                    "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
+                },
+                "gdm_uuid": {
+                    "description": "An unique, arbitrary identifier for the GDM (curation) assigned by the GCI.",
+                    "type": "string",
+                    "pattern": "^\\w{8}-(\\w{4}-){3}\\w{12}$"
+                },
+                "gene": {
+                    "description": "The gene being (pre)curated.",
+                    "type": "object",
+                    "properties": {
+                        "hgnc_id": {
+                            "type": "string",
+                            "pattern": "^HGNC:[0-9]*$"
+                        },
+                        "symbol": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["hgnc_id", "symbol"]
+                },
+                "disease_entity": {
+                    "description": "Disease identified in the (pre)curation.",
+                    "type": "object",
+                    "properties": {
+                        "mondo_id": {
+                            "type": "string",
+                            "pattern": "^MONDO:[0-9]{7}"
+                        },
+                        "notes": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "mode_of_inheritance": {
+                    "description": "Mode of inheritance identified in the (pre)curation.",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "hp_id": {
+                            "type": "string",
+                            "format": "^HP:[0-9]{7}"
+                        }
+                    }
+                },
+                "group": {
+                    "description": "The ClinGen group who currently owns the (pre)curation record.",
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                        },
+                        "name": { "type": "string" },
+                        "type": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                                },
+                                "name": { "type": "string" }
+                            }
+                        },
+                        "affiliation_id": { "type": "string" },
+                        "uri": { "type": "string", "format": "uri" }
+                    }
+                },
+                "curator": {
+                    "description": "The GT user who is primarily responsible for carrying out the curation.",
+                    "type": "object",
+                    "properties": {
+                        "clingen_id": {
+                            "type": "string",
+                            "pattern": "^\\w{6}-(\\w{4}-){3}\\w{12}"
+                        },
+                        "name": { "type": "string" },
+                        "email": {
+                            "type": "string",
+                            "format": "email"
+                        }
+                    }
+                },
+                "status": {
+                    "description": "The current status of the gene-diease (pre)curation.",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "enum": [
+                                "uploaded",
+                                "precuration",
+                                "disease entity assigned",
+                                "precuration complete",
+                                "curation provisional",
+                                "curation approved",
+                                "retired assignment",
+                                "published"
+                            ],
+                            "uniqueItems": false
+                        },
+                        "effective_date": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    "required": ["name", "effective_date"]
+                },
+                "rationale": {
+                    "description": "The rationale applied to justify disease lumping/splitting decisions related to this (pre)curation.",
+                    "type": "object",
+                    "properties": {
+                        "pmids": {
+                            "descriptions": "PubMed identifiers for sources supporting the lumping/splitting rationale. ",
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "uniqueItems": true
+                            }
+                        },
+                        "rationales": {
+                            "type": "array",
+                            "items": {
+                                "descriptions": "Categories of rationale defined Gene Curation Working Group",                                
+                                "type": "string",
+                                "enum": [
+                                    "Assertion",
+                                    "Inheritance pattern",
+                                    "Insufficient evidence for single disease entity",
+                                    "Molecular mechanism",
+                                    "Other",
+                                    "Phenotypic Variability",
+                                    "To dispute asserted entity"
+                                ]
+                            }
+                        },
+                        "notes": { "type": "string" }
+                    }
+                },
+                "curation_type": {
+                    "description": "Category to indicate the kind of curation in terms of lumping/splitting of disease entities.",
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "enum": [
+                                "single-omim",
+                                "single-new",
+                                "isolated-phenotype",
+                                "lumped"
+                            ]
+                        },
+                        "description": { "type": "string" }
+                    }
+                },
+                "omim_phenotypes": {
+                    "description": "The list of OMIM phenotypes that describe the disease entity for this curation.",
+                    "type": "object",
+                    "properties": {
+                        "included": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        },
+                        "excluded": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^\\d{7}$"
+                            }
+                        }
+                    }
+                },
+                "notes": {
+                    "type": "string"
+                }
+            },
+            "required": ["id", "uuid", "gene", "group"]
+        }
+    },
+    "required": ["key", "event_type", "schema_version", "data"]
+}

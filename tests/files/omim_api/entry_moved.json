@@ -1,0 +1,18 @@
+{
+    "omim": {
+      "version": "1.0",
+      "entryList": [
+        {
+          "entry": {
+            "prefix": "^",
+            "mimNumber": 139145,
+            "titles": {
+              "preferredTitle": "MOVED TO 139139"
+            },
+            "status": "moved",
+            "movedTo": "139139"
+          }
+        }
+      ]
+    }
+  }

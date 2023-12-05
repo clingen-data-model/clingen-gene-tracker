@@ -1,0 +1,26 @@
+{
+    "omim": {
+        "version": "1.0",
+        "searchResponse": {
+            "startIndex": 0,
+            "endIndex": 0,
+            "totalResults": 1,
+            "entryList": [{
+                "entry": {
+                    "prefix": "^",
+                    "mimNumber": 115195,
+                    "titles": {
+                        "preferredTitle": "MOVED TO 607084"
+                    },
+                    "status": "moved",
+                    "movedTo": "607084",
+                    "epochCreated": 518227200,
+                    "dateCreated": "Wed, 04 Jun 1986 00:00:00 UTC",
+                    "epochUpdated": 1273017600,
+                    "dateUpdated": "Wed, 05 May 2010 00:00:00 UTC",
+                    "matches": "removed"
+                }
+            }]
+        }
+    }
+}

@@ -1,0 +1,124 @@
+<?php
+
+namespace App\DataExchange;
+
+use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\MessageConsumer;
+use App\DataExchange\Contracts\MessagePusher;
+use App\DataExchange\Kafka\KafkaConfig;
+use App\DataExchange\Kafka\KafkaConsumer;
+use App\DataExchange\Kafka\KafkaProducer;
+use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
+use App\DataExchange\MessagePushers\DisabledPusher;
+use App\DataExchange\MessagePushers\MessageLogger;
+use App\Jobs\UpdateCurationFromGeneValidityMessage;
+use App\Listeners\UpdateGciCurationFromGveMessage;
+use Illuminate\Console\Command;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use Symfony\Component\Finder\Finder;
+
+class DataExchangeServiceProvider extends ServiceProvider
+{
+    protected $listen = [
+        \App\DataExchange\Events\Created::class => [
+            \App\Listeners\StreamMessages\PushMessage::class,
+        ],
+        \App\DataExchange\Events\Received::class => [
+            \App\Listeners\Curations\UpdateFromStreamMessage::class,
+            UpdateGciCurationFromGveMessage::class,
+        ],
+    ];
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        parent::boot();
+
+        if ($this->app->runningInConsole()) {
+            $this->loadCommands(__DIR__.'/Commands');
+        }
+
+        $this->bindInstances();
+    }
+
+    protected function bindInstances()
+    {
+        $this->app->bind(MessagePusher::class, function () {
+            if (! config('dx.push-enable')) {
+                return new DisabledPusher();
+            }
+            if (config('dx.driver') == 'kafka') {
+                return $this->app->make(KafkaProducer::class);
+            }
+            if (config('dx.driver') == 'log') {
+                return new MessageLogger();
+            }
+
+            \Log::warning('No DataExchange driver set.  Defaulting to log driver');
+
+            return new MessageLogger();
+        });
+
+        $this->app->bind(\RdKafka\Producer::class, function () {
+            $kafkaConfig = $this->app->make(KafkaConfig::class);
+            $kafkaConfig->setDeliveryReportCallback();
+
+            return new \RdKafka\Producer($kafkaConfig->getConfig());
+        });
+
+        $this->app->bind(\RdKafka\KafkaConsumer::class, function () {
+            $kafkaConfig = $this->app->make(KafkaConfig::class);
+            $kafkaConfig->set('auto.offset.reset', 'smallest');
+            $kafkaConfig->setGroup();
+
+            return new \RdKafka\KafkaConsumer($kafkaConfig->getConfig());
+        });
+
+        $this->app->bind(MessageConsumer::class, function () {
+            return $this->app->make(KafkaConsumer::class);
+        });
+
+        $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
+        $this->app->bind(MessageFactoryInterface::class, PrecurationV1MessageFactory::class);
+    }
+
+    /**
+     * Register all of the commands in the given directory.
+     *
+     * @param  array|string  $paths
+     */
+    protected function loadCommands($paths): void
+    {
+        $paths = array_unique(Arr::wrap($paths));
+        $paths = array_filter($paths, function ($path) {
+            return is_dir($path);
+        });
+
+        if (empty($paths)) {
+            return;
+        }
+
+        $namespace = $this->app->getNamespace();
+
+        $commands = [];
+        foreach ((new Finder)->in($paths)->files() as $command) {
+            $command = $namespace.str_replace(
+                ['/', '.php'],
+                ['\\', ''],
+                Str::after($command->getPathname(), realpath(app_path()).DIRECTORY_SEPARATOR)
+            );
+
+            if (is_subclass_of($command, Command::class) &&
+                ! (new ReflectionClass($command))->isAbstract()) {
+                $commands[] = $command;
+            }
+        }
+        $this->commands($commands);
+    }
+}

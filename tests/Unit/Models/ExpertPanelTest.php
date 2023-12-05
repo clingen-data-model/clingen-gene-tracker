@@ -1,0 +1,109 @@
+<?php
+
+namespace Tests\Unit\Models;
+
+use App\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
+
+/**
+ * @group models
+ * @group expert-panels
+ */
+class ExpertPanelTest extends TestCase
+{
+    use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->panel = factory(\App\ExpertPanel::class)->create();
+    }
+
+    /**
+     * @test
+     */
+    public function has_fillable_name(): void
+    {
+        $this->panel->update(['name' => 'test name']);
+        $this->assertEquals('test name', $this->panel->name);
+    }
+
+    /**
+     * @test
+     */
+    public function has_fillable_working_group_id(): void
+    {
+        $wg = factory(\App\WorkingGroup::class)->create();
+        $this->panel->update(['working_group_id' => $wg->id]);
+        $this->assertEquals($wg->id, $this->panel->working_group_id);
+    }
+
+    /**
+     * @test
+     */
+    public function belongsTo_WorkingGroup(): void
+    {
+        $this->assertInstanceOf(BelongsTo::class, $this->panel->workingGroup());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_hasMany_curations(): void
+    {
+        $this->panel->curations()->save(factory(\App\Curation::class)->create());
+
+        $this->assertInstanceOf(HasMany::class, $this->panel->curations());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_users(): void
+    {
+        $this->assertInstanceOf(BelongsToMany::class, $this->panel->users());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_curators(): void
+    {
+        $u = factory(User::class)->create();
+        $u2 = factory(User::class)->create();
+        $this->panel->users()->sync([$u->id => ['is_curator' => true], $u2->id => ['is_curator' => false]]);
+        $panel = $this->panel->fresh();
+
+        $this->assertEquals(1, $panel->fresh()->curators->count());
+    }
+
+    /**
+     * @test
+     */
+    public function panel_belongsToMany_coordinators(): void
+    {
+        $u = factory(User::class)->create();
+        $u2 = factory(User::class)->create();
+        $this->panel->users()->sync([$u->id => ['is_coordinator' => true], $u2->id => ['is_coordinator' => false]]);
+        $panel = $this->panel->fresh();
+
+        $this->assertEquals(1, $panel->fresh()->coordinators->count());
+    }
+
+    /**
+     * @test
+     */
+    public function can_add_coordinator_to_EP(): void
+    {
+        $user = factory(User::class)->create();
+        $this->panel->addCoordinator($user);
+
+        $this->assertContains($user->id, $this->panel->coordinators->pluck('id')->toArray());
+        $this->assertEquals(1, $this->panel->coordinators->first()->pivot->is_coordinator);
+    }
+}

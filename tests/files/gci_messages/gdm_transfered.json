@@ -1,0 +1,95 @@
+{
+    "content": {
+        "event_type": "transfer",
+        "date": "2022-07-07T20:55:59.860Z",
+        "transfer_from": {
+            "id": "10001",
+            "name": "Test Affiliation 1",
+            "gcep_id": "40001",
+            "gcep_name": "Test GCEP 1"
+        },
+        "transfer_to": {
+            "id": "10002",
+            "name": "Test Affiliation 2",
+            "gcep_id": "40002",
+            "gcep_name": "Test GCEP 2"
+        },
+        "notes": "I am a test note."
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Heather Baudet",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10007",
+            "name": "Hearing Loss",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "unpublisher"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "transfer executor"
+            ]
+        }
+    ],
+    "date": "2022-07-07T20:55:59.860Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_9"
+    },
+    "iri": "c145d576-8f3a-41cd-acb4-9cb3f7b211a8",
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "10007",
+            "name": "Hearing Loss"
+        }
+    },
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9"
+}

@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('affiliations', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->unique();
+            $table->string('short_name')->unique()->nullable();
+            $table->unsignedBigInteger('affiliation_type_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->unsignedBigInteger('clingen_id')->unique();
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('affiliation_type_id')->references('id')->on('affiliation_types');
+            $table->foreign('parent_id')->references('id')->on('affiliations');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('affiliations');
+    }
+};

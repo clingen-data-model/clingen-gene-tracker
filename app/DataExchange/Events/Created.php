@@ -1,0 +1,36 @@
+<?php
+
+namespace App\DataExchange\Events;
+
+use App\StreamMessage;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class Created
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $streamMessage;
+
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct(StreamMessage $streamMessage)
+    {
+        $this->streamMessage = $streamMessage;
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('channel-name');
+    }
+}

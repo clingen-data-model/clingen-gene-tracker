@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+
+class UploadResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
+    {
+        $data = parent::toArray($request);
+        $data['file_url'] = url(Storage::url('curator_uploads/'.$this->id.'/file'));
+        $data['category'] = new DefaultResource($this->whenLoaded('category'));
+        $data['uploader'] = new DefaultResource($this->whenLoaded('uploader'));
+
+        return $data;
+    }
+}

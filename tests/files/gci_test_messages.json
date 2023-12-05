@@ -1,0 +1,6704 @@
+[{
+    "status": "created",
+    "date": "2019-12-11T19:28:49.728987+00:00",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        }
+    ],
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    }
+},
+{
+    "date": "2019-12-11T19:32:24.151Z",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "provisionally approved",
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0011111"
+        }
+    }
+},
+{
+    "status": "approved",
+    "date": "2019-12-11T19:37:01.371Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Limited"
+    },
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        }
+    ],
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    }
+},
+{
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "publisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "date": "2019-12-11T19:42:17.120Z",
+    "status": "published",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": ""
+    }
+},
+{
+    "report_id": "2f0f099d-832f-48b3-afe0-99ac8b143169",
+    "performed_by": {
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "unpublisher"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "date": "2019-12-11T19:45:54.398Z",
+    "status": "unpublished",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": ""
+    }
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "99999",
+            "name": "ClinGen Curator Test Affiliation 2"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:1674"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:04:08.665612+00:00",
+    "status": "created",
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        }
+    ]
+},
+{
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 2",
+            "id": "99999"
+        },
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:1674",
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113"
+        }
+    },
+    "date": "2019-12-16T20:05:00.686Z",
+    "status": "provisionally approved"
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 2",
+            "id": "99999"
+        },
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+    },
+    "status": "approved",
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:06:17.346Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:1674",
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113"
+        }
+    },
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": []
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person X",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ]
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "99999",
+            "name": "ClinGen Curator Test Affiliation 2"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:1674"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:07:21.293Z",
+    "status": "provisionally approved",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        }
+    ]
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "99999",
+            "name": "ClinGen Curator Test Affiliation 2"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:1674"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:07:52.070Z",
+    "status": "approved",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person Y"
+        }
+    ]
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "99999",
+            "name": "ClinGen Curator Test Affiliation 2"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:1674"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification"
+    },
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:13:35.084Z",
+    "status": "provisionally approved",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person Y"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        }
+    ]
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "99999",
+            "name": "ClinGen Curator Test Affiliation 2"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012654",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:1674"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification"
+    },
+    "report_id": "f61a9c86-4fe5-4942-86a4-4534415d0f55",
+    "date": "2019-12-16T20:13:43.193Z",
+    "status": "approved",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person Y"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        }
+    ]
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "report_id": "64790d38-a7ef-4b6b-a2be-d18bdba07248",
+    "date": "2019-12-17T17:47:06.579842+00:00",
+    "status": "created",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        }
+    ]
+},
+{
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        }
+    ],
+    "report_id": "64790d38-a7ef-4b6b-a2be-d18bdba07248",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+    },
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2019-12-17T17:47:14.666Z",
+    "status": "provisionally approved"
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung"
+    },
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification"
+    },
+    "report_id": "64790d38-a7ef-4b6b-a2be-d18bdba07248",
+    "date": "2019-12-17T17:47:21.372Z",
+    "status": "approved",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        }
+    ]
+},
+{
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        }
+    ],
+    "report_id": "64790d38-a7ef-4b6b-a2be-d18bdba07248",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+    },
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2019-12-17T17:47:26.760Z",
+    "status": "published"
+},
+{
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:1674",
+            "condition": "MONDO:0011111"
+        },
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "email": "gcheung@stanford.edu",
+        "name": "Gloria Cheung"
+    },
+    "date": "2020-01-07T22:58:09.545880+00:00",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "status": "created"
+},
+{
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": []
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:1674",
+            "condition": "MONDO:0011111"
+        },
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "email": "gcheung@stanford.edu",
+        "name": "Gloria Cheung"
+    },
+    "date": "2020-01-08T18:15:08.032Z",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "status": "provisional approved"
+},
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:1674"
+        }
+    },
+    "status": "approved",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Epilepsy GCEP"
+        },
+        {
+            "id": "10002",
+            "name": "Cardiomyopathy",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10004",
+            "name": "Familial Hypercholesterolemia",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "date": "2020-01-08T18:16:30.497Z"
+},
+{
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "date": "2020-01-08T18:27:32.558Z",
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        }
+    },
+    "status": "published",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:1674",
+            "mode_of_inheritance": "HP:0000007"
+        },
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_6"
+    },
+    "contributors": [
+        {
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": []
+        },
+        {
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Epilepsy GCEP",
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "40005"
+        },
+        {
+            "name": "Cardiomyopathy",
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "10002"
+        },
+        {
+            "name": "Familial Hypercholesterolemia",
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "10004"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "publisher"
+            ]
+        }
+    ]
+},
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:1674"
+        }
+    },
+    "status": "unpublished",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "id": "40005",
+            "name": "Epilepsy GCEP",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10002",
+            "name": "Cardiomyopathy",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10004",
+            "name": "Familial Hypercholesterolemia",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "unpublisher"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "date": "2020-01-08T18:46:37.584Z"
+},
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:17098"
+        }
+    },
+    "status": "created",
+    "report_id": "c8f6962b-cb16-4dc2-b5d2-ee79906412d9",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "date": "2020-01-08T19:20:11.407358+00:00"
+},
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:17098"
+        }
+    },
+    "status": "provisional approved",
+    "report_id": "c8f6962b-cb16-4dc2-b5d2-ee79906412d9",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "date": "2020-01-08T19:22:13.438Z"
+},
+{
+    "report_id": "c8f6962b-cb16-4dc2-b5d2-ee79906412d9",
+    "date": "2020-01-08T19:22:23.180Z",
+    "performed_by": {
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        }
+    },
+    "status": "approved",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "contributors": [
+        {
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ]
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "report_id": "7736aeb0-2fbb-4a18-b82e-f3fddbb4070e",
+    "date": "2020-01-15T00:02:25.829362+00:00",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "status": "created"
+},
+{
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "40005",
+            "name": "Epilepsy GCEP",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10002",
+            "name": "Cardiomyopathy",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "id": "10004",
+            "name": "Familial Hypercholesterolemia",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "publisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:1674"
+        }
+    },
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        }
+    },
+    "status": "published",
+    "date": "2020-01-23T22:01:23.355Z",
+    "report_id": "0c861e10-78a7-4ebc-ac57-853fb16f94c9"
+},
+{
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012222",
+            "gene": "HGNC:17098"
+        }
+    },
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        }
+    },
+    "status": "created",
+    "date": "2020-01-23T22:02:07.729Z",
+    "report_id": "a72a708d-4a92-4ac9-925d-f065d8c8a1a7"
+},
+{
+    "date": "2020-01-24T16:19:24.837Z",
+    "status": "created",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        }
+    },
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "condition": "MONDO:0006735",
+            "mode_of_inheritance": "HP:0000007"
+        }
+    }
+},
+{
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        }
+    ],
+    "status": "provisionally_approved",
+    "date": "2020-01-24T16:24:09.370Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0006735"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator"
+    }
+},
+{
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person B"
+        }
+    ],
+    "status": "approved",
+    "date": "2020-01-24T16:24:25.861Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0006735"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator"
+    }
+},
+{
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person B"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "publisher"
+            ],
+            "name": "ClinGen Test Curator"
+        }
+    ],
+    "status": "published",
+    "date": "2020-01-24T16:27:56.180Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0006735"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator"
+    }
+},
+{
+    "date": "2020-01-24T16:38:16.621Z",
+    "status": "unpublished",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        }
+    },
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person B"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "unpublisher"
+            ]
+        }
+    ],
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Reported Evidence",
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "condition": "MONDO:0006735",
+            "mode_of_inheritance": "HP:0000007"
+        }
+    }
+},
+{
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person B"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "publisher"
+            ],
+            "name": "ClinGen Test Curator"
+        }
+    ],
+    "status": "published",
+    "date": "2020-01-24T16:55:42.223Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0006735"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Reported Evidence"
+    },
+    "report_id": "5df4d629-c93a-4936-b5d6-cb950247ff9f",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "name": "ClinGen Test Curator"
+    }
+},
+{
+    "performed_by": {
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "report_id": "9f33be5b-662d-420d-8583-53feface37fb",
+    "status": "created",
+    "contributors": [
+        {
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:11998",
+            "condition": "MONDO:0016587"
+        },
+        "evidence_level": "",
+        "gene_validity_sop": ""
+    },
+    "date": "2020-01-30T22:29:55.695Z"
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Reported Evidence",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:11998",
+            "condition": "MONDO:0016587"
+        }
+    },
+    "status": "provisionally_approved",
+    "date": "2020-01-30T22:32:20.224Z",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator"
+    },
+    "report_id": "9f33be5b-662d-420d-8583-53feface37fb",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator"
+        }
+    ]
+},
+{
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "name": "ClinGen Test Curator"
+    },
+    "report_id": "9f33be5b-662d-420d-8583-53feface37fb",
+    "date": "2020-01-30T22:32:38.208Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007"
+        },
+        "evidence_level": "No Reported Evidence",
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        }
+    ],
+    "status": "approved"
+},
+{
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "name": "ClinGen Test Curator"
+    },
+    "report_id": "9f33be5b-662d-420d-8583-53feface37fb",
+    "date": "2020-01-30T22:32:54.369Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007"
+        },
+        "evidence_level": "No Reported Evidence",
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "publisher"
+            ]
+        }
+    ],
+    "status": "published"
+},
+{
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "name": "ClinGen Test Curator"
+    },
+    "report_id": "9f33be5b-662d-420d-8583-53feface37fb",
+    "date": "2020-01-30T22:34:44.914Z",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0000007"
+        },
+        "evidence_level": "No Reported Evidence",
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "unpublisher"
+            ]
+        }
+    ],
+    "status": "unpublished"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000797"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "report_id": "9372f407-355e-4c93-880f-3ddfaa74c812",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Matt Wright",
+            "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+            "email": "wrightmw@stanford.edu"
+        }
+    ],
+    "status": "created",
+    "date": "2020-01-31T05:28:58.731Z",
+    "performed_by": {
+        "name": "Matt Wright",
+        "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+        "email": "wrightmw@stanford.edu",
+        "on_behalf_of": {
+            "name": "Thrombosis",
+            "id": "10064"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0000800",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "evidence_level": ""
+    },
+    "performed_by": {
+        "name": "Matt Wright",
+        "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+        "email": "wrightmw@stanford.edu",
+        "on_behalf_of": {
+            "name": "Thrombosis",
+            "id": "10064"
+        }
+    },
+    "date": "2020-01-31T05:29:32.810Z",
+    "status": "created",
+    "contributors": [
+        {
+            "name": "Matt Wright",
+            "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+            "email": "wrightmw@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "report_id": "2d04ba00-a053-4f04-9227-03584b899127"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000804"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "report_id": "06ec7846-800b-443b-a0fa-5073b046b47b",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        }
+    ],
+    "status": "created",
+    "date": "2020-01-31T17:41:04.560Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000804",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "evidence_level": "Strong"
+    },
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    },
+    "date": "2020-01-31T17:47:04.678Z",
+    "status": "provisionally_approved",
+    "contributors": [
+        {
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "report_id": "06ec7846-800b-443b-a0fa-5073b046b47b"
+},
+{
+    "date": "2020-01-31T17:47:15.091Z",
+    "contributors": [
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Strong",
+        "genetic_condition": {
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_5"
+    },
+    "performed_by": {
+        "email": "christip@stanford.edu",
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    },
+    "report_id": "06ec7846-800b-443b-a0fa-5073b046b47b",
+    "status": "approved"
+},
+{
+    "date": "2020-01-31T17:49:00.464Z",
+    "contributors": [
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Strong",
+        "genetic_condition": {
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "email": "christip@stanford.edu",
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    },
+    "report_id": "06ec7846-800b-443b-a0fa-5073b046b47b",
+    "status": "provisionally_approved"
+},
+{
+    "date": "2020-01-31T17:49:11.863Z",
+    "contributors": [
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Strong",
+        "genetic_condition": {
+            "condition": "MONDO:0000804",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "christip@stanford.edu",
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    },
+    "report_id": "06ec7846-800b-443b-a0fa-5073b046b47b",
+    "status": "approved"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        }
+    ],
+    "status": "created",
+    "date": "2020-01-31T17:51:08.712Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Strong"
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "date": "2020-01-31T17:53:15.648Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "evidence_level": "Strong"
+    },
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Phenylketonuria",
+            "id": "10015"
+        }
+    },
+    "date": "2020-01-31T17:53:29.225Z",
+    "status": "approved",
+    "contributors": [
+        {
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Strong"
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Amanda Thomas"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "date": "2020-01-31T18:11:22.606Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Aminoacidopathy",
+            "id": "10011"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Strong"
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Amanda Thomas"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Aminoacidopathy"
+        }
+    ],
+    "status": "approved",
+    "date": "2020-01-31T18:11:31.327Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Aminoacidopathy",
+            "id": "10011"
+        }
+    }
+},
+{
+    "date": "2020-01-31T18:11:37.291Z",
+    "contributors": [
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Aminoacidopathy",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Amanda Thomas",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "publisher"
+            ]
+        },
+        {
+            "name": "Christine Preston",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "roles": [
+                "publisher"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Strong",
+        "genetic_condition": {
+            "condition": "MONDO:0000801",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "christip@stanford.edu",
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "on_behalf_of": {
+            "name": "Aminoacidopathy",
+            "id": "10011"
+        }
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "status": "published"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0000801"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Strong"
+    },
+    "report_id": "23d23318-c02b-4339-9c71-301814de58e5",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Aminoacidopathy"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Amanda Thomas"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Christine Preston"
+        },
+        {
+            "roles": [
+                "unpublisher"
+            ],
+            "name": "Christine Preston",
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu"
+        }
+    ],
+    "status": "unpublished",
+    "date": "2020-01-31T18:11:37.291Z",
+    "performed_by": {
+        "name": "Christine Preston",
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "on_behalf_of": {
+            "name": "Aminoacidopathy",
+            "id": "10011"
+        }
+    }
+},
+{
+    "date": "2020-01-31T18:11:46.768Z",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0012222",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "name": "Gloria Cheung",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        }
+    },
+    "report_id": "dc84ff02-4e70-436e-966a-468c38f1cdc2",
+    "status": "created"
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0012222",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "evidence_level": "No Classification"
+    },
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        }
+    },
+    "date": "2020-01-31T18:12:01.597Z",
+    "status": "provisionally_approved",
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "report_id": "dc84ff02-4e70-436e-966a-468c38f1cdc2"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0012222"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "evidence_level": "No Classification"
+    },
+    "report_id": "dc84ff02-4e70-436e-966a-468c38f1cdc2",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy GCEP"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "KCNQ1",
+            "id": "10001"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    ],
+    "status": "approved",
+    "date": "2020-01-31T18:12:20.621Z",
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        }
+    }
+},
+{
+    "date": "2020-01-31T18:24:35.183Z",
+    "contributors": [
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "email": "markmand@stanford.edu",
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "on_behalf_of": {
+            "name": "Cardiomyopathy",
+            "id": "10002"
+        }
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "status": "created"
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0016587",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "evidence_level": "No Classification"
+    },
+    "performed_by": {
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "email": "markmand@stanford.edu",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    },
+    "date": "2020-01-31T18:29:40.869Z",
+    "status": "provisionally_approved",
+    "contributors": [
+        {
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "email": "markmand@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "email": "markmand@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca"
+},
+{
+    "date": "2020-01-31T18:30:09.644Z",
+    "contributors": [
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Courtney Thaxton",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "markmand@stanford.edu",
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "status": "approved"
+},
+{
+    "date": "2020-01-31T18:30:35.691Z",
+    "contributors": [
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Courtney Thaxton",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "publisher"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "markmand@stanford.edu",
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "status": "published"
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0032113",
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0016587"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Classification"
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "email": "markmand@stanford.edu"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Mark Mandell"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Courtney Thaxton"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Mark Mandell"
+        },
+        {
+            "roles": [
+                "unpublisher"
+            ],
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "email": "markmand@stanford.edu"
+        }
+    ],
+    "status": "unpublished",
+    "date": "2020-01-31T18:31:37.391Z",
+    "performed_by": {
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "email": "markmand@stanford.edu",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    }
+},
+{
+    "date": "2020-01-31T18:31:48.372Z",
+    "contributors": [
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Courtney Thaxton",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "publisher"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "markmand@stanford.edu",
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "status": "published"
+},
+{
+    "date": "2020-01-31T18:31:58.322Z",
+    "contributors": [
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Courtney Thaxton",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Mark Mandell",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "markmand@stanford.edu",
+            "name": "Mark Mandell",
+            "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+            "roles": [
+                "unpublisher"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0032113"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    },
+    "performed_by": {
+        "email": "markmand@stanford.edu",
+        "name": "Mark Mandell",
+        "id": "bc5cc0ae-0bc2-420d-b954-aa0de6097de0",
+        "on_behalf_of": {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003"
+        }
+    },
+    "report_id": "d915faad-8b70-4492-8de6-94fb5feeb0ca",
+    "status": "unpublished"
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0000809"
+        }
+    },
+    "date": "2020-02-03T21:53:29.448Z",
+    "performed_by": {
+        "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+        "email": "christip@stanford.edu",
+        "name": "Christine Preston",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        }
+    },
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "id": "269ec5b3-28c4-4197-a5e9-2d3e4a232ace",
+            "email": "christip@stanford.edu",
+            "name": "Christine Preston"
+        }
+    ],
+    "report_id": "24f50be1-fa98-472d-bc59-9022f22d468b",
+    "status": "created"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:49:31.938Z",
+    "status": "created"
+},
+{
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012000",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Limited"
+    },
+    "date": "2020-02-04T00:50:02.015Z",
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        }
+    ],
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "bwulf@stanford.edu",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+        "name": "Bryan Wulf"
+    },
+    "status": "provisionally_approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:04.933Z",
+    "status": "approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:18.410Z",
+    "status": "provisionally_approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:21.072Z",
+    "status": "approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:30.888Z",
+    "status": "provisionally_approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:33.696Z",
+    "status": "approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:42.163Z",
+    "status": "provisionally_approved"
+},
+{
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "name": "Bryan Wulf",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012000"
+        }
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "performed_by": {
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "Bryan Wulf",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "date": "2020-02-04T00:50:44.913Z",
+    "status": "approved"
+},
+{
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012000",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Limited"
+    },
+    "date": "2020-02-04T00:50:55.746Z",
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        }
+    ],
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "bwulf@stanford.edu",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+        "name": "Bryan Wulf"
+    },
+    "status": "provisionally_approved"
+},
+{
+    "performed_by": {
+        "name": "Bryan Wulf",
+        "email": "bwulf@stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+    },
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "status": "approved",
+    "date": "2020-02-04T00:50:58.899Z",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "Bryan Wulf",
+            "email": "bwulf@stanford.edu",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf",
+            "email": "bwulf@stanford.edu",
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0"
+        },
+        {
+            "name": "Bryan Wulf",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0012000",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:6769"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    }
+},
+{
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012000",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": "Limited"
+    },
+    "date": "2020-02-04T00:55:37.586Z",
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        }
+    ],
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "bwulf@stanford.edu",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+        "name": "Bryan Wulf"
+    },
+    "status": "provisionally_approved"
+},
+{
+    "report_id": "bf8932e6-3a17-49a7-ab2f-d92f7109cb16",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012000",
+            "gene": "HGNC:6769",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Limited"
+    },
+    "date": "2020-02-04T00:55:41.264Z",
+    "contributors": [
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Bryan Wulf"
+        },
+        {
+            "email": "bwulf@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+            "name": "Bryan Wulf"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Bryan Wulf"
+        }
+    ],
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "bwulf@stanford.edu",
+        "id": "b1f1a7c4-8987-4177-bcd0-c8a94f3b2df0",
+        "name": "Bryan Wulf"
+    },
+    "status": "approved"
+},
+{
+    "report_id": "1868e617-2bf7-4e2f-b8f8-6ecf7c66a9d8",
+    "date": "2020-02-04T20:14:48.484Z",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "gene": "HGNC:11998",
+            "mode_of_inheritance": "HP:0001417",
+            "condition": "MONDO:0016587"
+        },
+        "evidence_level": "",
+        "gene_validity_sop": ""
+    },
+    "status": "created",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    }
+},
+{
+    "contributors": [
+        {
+            "email": "",
+            "name": "",
+            "id": "",
+            "roles": []
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy GCEP",
+            "id": "40003",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "KCNQ1",
+            "id": "10001",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy",
+            "id": "10003",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "name": "Gloria Cheung",
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "gene_validity_evidence_level": {
+        "evidence_level": "Limited",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0012222"
+        }
+    },
+    "report_id": "dc84ff02-4e70-436e-966a-468c38f1cdc2",
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "name": "Gloria Cheung",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2"
+    },
+    "date": "2020-02-04T20:41:27.707Z",
+    "status": "provisionally_approved"
+},
+{
+    "report_id": "dc84ff02-4e70-436e-966a-468c38f1cdc2",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0012222",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Limited"
+    },
+    "date": "2020-02-04T20:41:38.844Z",
+    "contributors": [
+        {
+            "email": "",
+            "roles": [],
+            "id": "",
+            "name": ""
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "40003",
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy GCEP"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "10001",
+            "name": "KCNQ1"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "10003",
+            "name": "Arrythmogenic Right Ventricular Cardiomyopathy"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person B"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "id": "10006",
+            "name": "Intellectual Disability and Autism"
+        }
+    ],
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "gcheung@stanford.edu",
+        "id": "7f44dfc4-c4fa-449e-9184-7c7d5cdfeba2",
+        "name": "Gloria Cheung"
+    },
+    "status": "approved"
+},
+{
+    "report_id": "df7e5e1c-ff7b-465d-85f7-f6abd23b29d7",
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:6769",
+            "condition": "MONDO:0016587",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "evidence_level": ""
+    },
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "Limb Girdle Muscular Dystrophy GCEP",
+            "id": "10061"
+        },
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "date": "2020-02-07T15:12:56.169Z",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ]
+},
+{
+    "date": "2020-02-10T17:35:41.955Z",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "email": "tomohiko.ai@osumc.edu",
+            "name": "Tomohiko Ai",
+            "id": "9d58d463-2ef5-4af2-b4bc-256a2075d3e2"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "Dilated Cardiomyopathy GCEP",
+            "id": "10035"
+        },
+        "email": "tomohiko.ai@osumc.edu",
+        "name": "Tomohiko Ai",
+        "id": "9d58d463-2ef5-4af2-b4bc-256a2075d3e2"
+    },
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "gene": "HGNC:11610",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0005021"
+        },
+        "gene_validity_sop": ""
+    },
+    "report_id": "033773d1-899d-4370-8d5e-a4032b5fb17c"
+},
+{
+    "report_id": "f3a64e0d-2451-4e3e-8c45-d35646029cf7",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        }
+    },
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "condition": "MONDO:0020693",
+            "gene": "HGNC:8926",
+            "mode_of_inheritance": "HP:0001417"
+        },
+        "evidence_level": ""
+    },
+    "date": "2020-02-10T18:06:49.050Z",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ]
+},
+{
+    "date": "2020-02-12T15:59:58.602Z",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "gene": "HGNC:16877",
+            "mode_of_inheritance": "HP:0000007",
+            "condition": "MONDO:0016587"
+        },
+        "gene_validity_sop": ""
+    },
+    "report_id": "fe976dc1-4bbe-4156-90f3-f4c5aa37bd2f"
+},
+{
+    "report_id": "98d97b0e-4840-4ddc-b05e-1769929368f3",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        }
+    },
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "condition": "MONDO:0015626",
+            "gene": "HGNC:20731",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "evidence_level": ""
+    },
+    "date": "2020-02-13T17:31:52.439Z",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ]
+},
+{
+    "contributors": [
+        {
+            "roles": [],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "roles": [
+                "creator"
+            ],
+            "id": "04442cec-6ab7-40d0-af26-1e5fefd535eb",
+            "name": "Selina Dwight",
+            "email": "selinad@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "report_id": "7f9988fa-16d9-11e5-ba73-60f81dc5b05a",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+        "name": "Shaung Cheng",
+        "email": "shaungc@stanford.edu"
+    },
+    "date": "2020-02-18T19:48:26.915Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0000214",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        },
+        "gene_validity_sop": ""
+    }
+},
+{
+    "status": "created",
+    "report_id": "7cc534a8-08d9-480f-b1af-f0f3465f60a9",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "performed_by": {
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        }
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:7773",
+            "condition": "MONDO:0007039"
+        }
+    },
+    "date": "2020-02-18T21:07:51.056Z"
+},
+{
+    "report_id": "2b6ec832-2244-4011-a96f-a15296d8fa2d",
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "status": "created",
+    "date": "2020-02-19T23:49:07.630Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0000789",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "evidence_level": ""
+    },
+    "performed_by": {
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    }
+},
+{
+    "contributors": [
+        {
+            "roles": [
+                "creator"
+            ],
+            "id": "11321b81-d382-4386-b460-031e260f3d92",
+            "name": "Francesco Mazzarotto",
+            "email": "f.mazzarotto@imperial.ac.uk"
+        }
+    ],
+    "status": "created",
+    "report_id": "ec39c0ba-58c7-48dd-8095-80cf80427e58",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "10035",
+            "name": "Dilated Cardiomyopathy GCEP"
+        },
+        "id": "11321b81-d382-4386-b460-031e260f3d92",
+        "name": "Francesco Mazzarotto",
+        "email": "f.mazzarotto@imperial.ac.uk"
+    },
+    "date": "2020-02-20T10:39:31.051Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0005021",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:12665"
+        },
+        "gene_validity_sop": ""
+    }
+},
+{
+    "contributors": [
+        {
+            "roles": [],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "roles": [
+                "creator"
+            ],
+            "id": "d84302eb-ce02-49c2-9ec0-dac58f490bdf",
+            "name": "ClinGen Gene Curator",
+            "email": "someuser2@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "report_id": "ef9a6fa1-16d9-11e5-9918-60f81dc5b05a",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+        "name": "Shaung Cheng",
+        "email": "shaungc@stanford.edu"
+    },
+    "date": "2020-02-21T19:37:31.199Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Definitive",
+        "genetic_condition": {
+            "condition": "MONDO:0019181",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:338"
+        },
+        "gene_validity_sop": ""
+    }
+},
+{
+    "status": "approved",
+    "report_id": "ef9a6fa1-16d9-11e5-9918-60f81dc5b05a",
+    "contributors": [
+        {
+            "roles": [],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Gene Curator",
+            "id": "d84302eb-ce02-49c2-9ec0-dac58f490bdf",
+            "email": "someuser2@stanford.edu"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Shaung Cheng"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        }
+    ],
+    "performed_by": {
+        "name": "Shaung Cheng",
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+        "email": "shaungc@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        }
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Definitive",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:338",
+            "condition": "MONDO:0019181"
+        }
+    },
+    "date": "2020-02-21T19:38:05.147Z"
+},
+{
+    "contributors": [
+        {
+            "roles": [],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "roles": [
+                "creator"
+            ],
+            "id": "d84302eb-ce02-49c2-9ec0-dac58f490bdf",
+            "name": "ClinGen Gene Curator",
+            "email": "someuser2@stanford.edu"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Shaung Cheng"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Shaung Cheng"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "email": "shaungc@stanford.edu"
+        }
+    ],
+    "status": "published",
+    "report_id": "ef9a6fa1-16d9-11e5-9918-60f81dc5b05a",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+        "name": "Shaung Cheng",
+        "email": "shaungc@stanford.edu"
+    },
+    "date": "2020-02-21T20:42:30.365Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "Definitive",
+        "genetic_condition": {
+            "condition": "MONDO:0019181",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:338"
+        },
+        "gene_validity_sop": "cg:gene_validity_sop_7"
+    }
+},
+{
+    "date": "2020-02-22T00:47:29.662Z",
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "genetic_condition": {
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0011111"
+        },
+        "gene_validity_sop": ""
+    },
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "report_id": "3f4f986b-b877-4314-847e-d704ad818bfe",
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        }
+    },
+    "status": "created"
+},
+{
+    "performed_by": {
+        "name": "Petros Kountouris",
+        "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+        "on_behalf_of": {
+            "name": "Hemoglobinopathy",
+            "id": "10052"
+        },
+        "email": "petrosk@cing.ac.cy"
+    },
+    "contributors": [
+        {
+            "name": "Petros Kountouris",
+            "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+            "roles": [
+                "creator"
+            ],
+            "email": "petrosk@cing.ac.cy"
+        }
+    ],
+    "report_id": "de531ef2-9215-4836-bed4-143e580d4fcb",
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0019402",
+            "gene": "HGNC:4827",
+            "mode_of_inheritance": "HP:0000007"
+        }
+    },
+    "date": "2020-02-24T08:42:08.380Z"
+},
+{
+    "report_id": "11c91e4e-a48e-445f-a519-37272243537b",
+    "date": "2020-02-24T08:43:16.015Z",
+    "contributors": [
+        {
+            "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+            "name": "Petros Kountouris",
+            "roles": [
+                "creator"
+            ],
+            "email": "petrosk@cing.ac.cy"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+        "name": "Petros Kountouris",
+        "on_behalf_of": {
+            "id": "10052",
+            "name": "Hemoglobinopathy"
+        },
+        "email": "petrosk@cing.ac.cy"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0011399",
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:4823"
+        }
+    }
+},
+{
+    "performed_by": {
+        "email": "petrosk@cing.ac.cy",
+        "on_behalf_of": {
+            "name": "Hemoglobinopathy",
+            "id": "10052"
+        },
+        "name": "Petros Kountouris",
+        "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e"
+    },
+    "status": "created",
+    "report_id": "a95b0b4f-2afc-4a32-96ee-a6a6c51ec9b4",
+    "contributors": [
+        {
+            "email": "petrosk@cing.ac.cy",
+            "roles": [
+                "creator"
+            ],
+            "name": "Petros Kountouris",
+            "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e"
+        }
+    ],
+    "date": "2020-02-24T08:43:38.204Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:4824",
+            "condition": "MONDO:0011399"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Petros Kountouris",
+        "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+        "on_behalf_of": {
+            "name": "Hemoglobinopathy",
+            "id": "10052"
+        },
+        "email": "petrosk@cing.ac.cy"
+    },
+    "contributors": [
+        {
+            "name": "Petros Kountouris",
+            "id": "52097f3a-4c50-4288-9ec9-870f53f2ac9e",
+            "roles": [
+                "creator"
+            ],
+            "email": "petrosk@cing.ac.cy"
+        }
+    ],
+    "report_id": "a8d07ea9-ade3-453b-8675-28540a3fe07b",
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0011382",
+            "gene": "HGNC:4827",
+            "mode_of_inheritance": "HP:0000007"
+        }
+    },
+    "date": "2020-02-24T08:50:15.236Z"
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "created",
+    "report_id": "cd87e330-f048-45fb-88b1-2eb97656ed3c",
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "date": "2020-02-24T15:47:12.585Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:19125",
+            "condition": "MONDO:0015626"
+        }
+    }
+},
+{
+    "report_id": "f9f6fb7c-53d4-423d-9660-6ba4b34aff25",
+    "date": "2020-02-25T18:06:20.809Z",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "10007",
+            "name": "Hearing Loss GCEP"
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:144"
+        }
+    }
+},
+{
+    "report_id": "2b6ec832-2244-4011-a96f-a15296d8fa2d",
+    "date": "2020-02-25T18:24:23.300Z",
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0000789",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        }
+    }
+},
+{
+    "report_id": "2b6ec832-2244-4011-a96f-a15296d8fa2d",
+    "date": "2020-02-25T18:24:30.704Z",
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "status": "approved",
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0000789",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "publisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "report_id": "2b6ec832-2244-4011-a96f-a15296d8fa2d",
+    "status": "published",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0000789",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:24:37.892Z"
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "status": "created",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:27:41.718Z"
+},
+{
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "date": "2020-02-25T18:39:32.853Z",
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "status": "approved",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:39:43.975Z"
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "publisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "status": "published",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:39:51.359Z"
+},
+{
+    "performed_by": {
+        "email": "gcheung@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+    },
+    "status": "provisionally_approved",
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "contributors": [
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        },
+        {
+            "roles": [
+                "approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person A"
+        },
+        {
+            "roles": [
+                "publisher"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung"
+        },
+        {
+            "email": "gcheung@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed"
+        }
+    ],
+    "date": "2020-02-25T18:40:29.308Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0011111"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "publisher"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "approver"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Person B",
+            "roles": [
+                "secondary approver"
+            ]
+        }
+    ],
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "status": "approved",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:40:37.556Z"
+},
+{
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "date": "2020-02-25T18:40:41.774Z",
+    "contributors": [
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person B",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "publisher"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "name": "Gloria Cheung",
+            "roles": [
+                "unpublisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "status": "unpublished",
+    "performed_by": {
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "name": "Gloria Cheung",
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Gloria Cheung",
+        "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "gcheung@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "creator"
+            ],
+            "email": "gcheung@stanford.edu"
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person B",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "approver"
+            ]
+        },
+        {
+            "name": "Person A",
+            "roles": [
+                "secondary approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "publisher"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "roles": [
+                "provisional approver"
+            ]
+        },
+        {
+            "name": "Gloria Cheung",
+            "id": "add95449-476e-443f-9d01-4bbd7766eeed",
+            "roles": [
+                "publisher"
+            ],
+            "email": "gcheung@stanford.edu"
+        }
+    ],
+    "report_id": "a32d57f5-100c-4a82-8761-931d27a42076",
+    "status": "published",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_6",
+        "evidence_level": "Limited",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-25T18:40:41.774Z"
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "provisionally_approved",
+    "report_id": "7f9988fa-16d9-11e5-ba73-60f81dc5b05a",
+    "contributors": [
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "email": "selinad@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "Selina Dwight",
+            "id": "04442cec-6ab7-40d0-af26-1e5fefd535eb"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "date": "2020-02-26T23:30:21.693Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0000214"
+        }
+    }
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "approved",
+    "report_id": "7f9988fa-16d9-11e5-ba73-60f81dc5b05a",
+    "contributors": [
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "email": "selinad@stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "Selina Dwight",
+            "id": "04442cec-6ab7-40d0-af26-1e5fefd535eb"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "ClinGen Test Curator"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "ClinGen Test Curator"
+        }
+    ],
+    "date": "2020-02-26T23:34:52.767Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0000214"
+        }
+    }
+},
+{
+    "performed_by": {
+        "name": "Shaung Cheng",
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "email": "shaungc@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "roles": [],
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "shaungc@stanford.edu"
+        }
+    ],
+    "report_id": "f9f6fb7c-53d4-423d-9660-6ba4b34aff25",
+    "status": "provisionally_approved",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "gene": "HGNC:144",
+            "mode_of_inheritance": "HP:0000006"
+        }
+    },
+    "date": "2020-02-26T23:43:12.080Z"
+},
+{
+    "report_id": "f9f6fb7c-53d4-423d-9660-6ba4b34aff25",
+    "date": "2020-02-26T23:43:32.589Z",
+    "contributors": [
+        {
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659",
+            "name": "Shaung Cheng",
+            "roles": [],
+            "email": "shaungc@stanford.edu"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        },
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "provisional approver"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "status": "provisionally_approved",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "condition": "MONDO:0011111",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:144"
+        }
+    }
+},
+{
+    "performed_by": {
+        "email": "shaungc@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 2",
+            "id": "99999"
+        },
+        "name": "Shaung Cheng",
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+    },
+    "status": "provisionally_approved",
+    "report_id": "f9f6fb7c-53d4-423d-9660-6ba4b34aff25",
+    "contributors": [
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        }
+    ],
+    "date": "2020-02-26T23:44:27.402Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:144",
+            "condition": "MONDO:0011111"
+        }
+    }
+},
+{
+    "performed_by": {
+        "email": "shaungc@stanford.edu",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 2",
+            "id": "99999"
+        },
+        "name": "Shaung Cheng",
+        "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+    },
+    "status": "approved",
+    "report_id": "f9f6fb7c-53d4-423d-9660-6ba4b34aff25",
+    "contributors": [
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        },
+        {
+            "roles": [
+                "provisional approver"
+            ],
+            "name": "Shaung Cheng"
+        },
+        {
+            "email": "shaungc@stanford.edu",
+            "roles": [
+                "approver"
+            ],
+            "name": "Shaung Cheng",
+            "id": "a21447ed-5f4e-4c17-9b62-6601ffec8659"
+        },
+        {
+            "roles": [
+                "secondary approver"
+            ],
+            "name": "Person X"
+        }
+    ],
+    "date": "2020-02-26T23:44:35.178Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "cg:gene_validity_sop_7",
+        "evidence_level": "No Classification",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:144",
+            "condition": "MONDO:0011111"
+        }
+    }
+},
+{
+    "date": "2020-02-28T18:45:14.385Z",
+    "status": "created",
+    "report_id": "6e18344f-1272-4614-9a7b-64676797f929",
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:6769"
+        },
+        "evidence_level": "",
+        "gene_validity_sop": ""
+    },
+    "performed_by": {
+        "name": "Mark Mandell",
+        "on_behalf_of": {
+            "name": "ClinGen Curator Test Affiliation 1",
+            "id": "88888"
+        },
+        "id": "efbea3d3-06e2-423d-a1b6-807456ed5fa4",
+        "email": "markmand@stanford.edu"
+    },
+    "contributors": [
+        {
+            "name": "Mark Mandell",
+            "id": "efbea3d3-06e2-423d-a1b6-807456ed5fa4",
+            "email": "markmand@stanford.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ]
+},
+{
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:17098",
+            "condition": "MONDO:0000789"
+        }
+    },
+    "status": "created",
+    "date": "2020-02-28T18:59:22.311Z",
+    "report_id": "61b047d5-0427-4170-9cd5-2451016423bb",
+    "performed_by": {
+        "on_behalf_of": {
+            "id": "88888",
+            "name": "ClinGen Curator Test Affiliation 1"
+        },
+        "email": "wrightmw@stanford.edu",
+        "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+        "name": "Matt Wright"
+    },
+    "contributors": [
+        {
+            "email": "wrightmw@stanford.edu",
+            "id": "c0a70214-08a8-48a0-ba8d-521bed321d4a",
+            "name": "Matt Wright",
+            "roles": [
+                "creator"
+            ]
+        }
+    ]
+},
+{
+    "report_id": "0bc96ee9-32ee-4c36-93ec-a2c3a24c951d",
+    "date": "2020-02-29T03:53:01.242Z",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0008903",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:3236"
+        }
+    }
+},
+{
+    "report_id": "a427bb0f-1d3a-4cb7-bd63-1ab9f6c11c06",
+    "date": "2020-03-02T00:50:13.047Z",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "name": "ClinGen Test Curator",
+            "roles": [
+                "creator"
+            ],
+            "email": "clingen.demo.curator@genome.stanford.edu"
+        }
+    ],
+    "status": "created",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "name": "ClinGen Test Curator",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "email": "clingen.demo.curator@genome.stanford.edu"
+    },
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "condition": "MONDO:0001071",
+            "mode_of_inheritance": "HP:0000006",
+            "gene": "HGNC:12303"
+        }
+    }
+},
+{
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        },
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+    },
+    "status": "created",
+    "report_id": "d02bdd51-ce53-4a1b-a47d-7f4452fa6f0d",
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01"
+        }
+    ],
+    "date": "2020-03-02T03:54:42.761Z",
+    "gene_validity_evidence_level": {
+        "gene_validity_sop": "",
+        "evidence_level": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000007",
+            "gene": "HGNC:4927",
+            "condition": "MONDO:0015977"
+        }
+    }
+},
+{
+    "gene_validity_evidence_level": {
+        "genetic_condition": {
+            "condition": "MONDO:0016587",
+            "gene": "HGNC:17098",
+            "mode_of_inheritance": "HP:0000006"
+        },
+        "gene_validity_sop": "",
+        "evidence_level": ""
+    },
+    "date": "2020-03-02T21:17:42.431Z",
+    "performed_by": {
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        },
+        "name": "ClinGen Test Curator"
+    },
+    "status": "created",
+    "report_id": "737a7747-c8a6-4ead-83e5-a53ca3444918",
+    "contributors": [
+        {
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "roles": [
+                "creator"
+            ],
+            "name": "ClinGen Test Curator"
+        }
+    ]
+},
+{
+    "gene_validity_evidence_level": {
+        "evidence_level": "No Classification",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "mode_of_inheritance": "HP:0000006",
+            "condition": "MONDO:0019181",
+            "gene": "HGNC:338"
+        }
+    },
+    "contributors": [
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": []
+        },
+        {
+            "email": "someuser2@stanford.edu",
+            "name": "ClinGen Gene Curator",
+            "id": "d84302eb-ce02-49c2-9ec0-dac58f490bdf",
+            "roles": [
+                "creator"
+            ]
+        },
+        {
+            "email": "clingen.demo.curator@genome.stanford.edu",
+            "name": "ClinGen Test Curator",
+            "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+            "roles": [
+                "provisional approver"
+            ]
+        }
+    ],
+    "date": "2020-03-03T01:57:56.710Z",
+    "status": "provisionally_approved",
+    "report_id": "ef9a6fa1-16d9-11e5-9918-60f81dc5b05a",
+    "performed_by": {
+        "email": "clingen.demo.curator@genome.stanford.edu",
+        "name": "ClinGen Test Curator",
+        "id": "7b112e8d-4e72-4336-b789-f7c0b241da01",
+        "on_behalf_of": {
+            "name": "",
+            "id": ""
+        }
+    }
+},
+{
+    "performed_by": {
+        "id": "aa90ff71-4a67-4ba4-9f00-a0a61497a996",
+        "name": "Emily Brown",
+        "email": "ebrow102@jhmi.edu",
+        "on_behalf_of": {
+            "id": "",
+            "name": ""
+        }
+    },
+    "contributors": [
+        {
+            "id": "aa90ff71-4a67-4ba4-9f00-a0a61497a996",
+            "name": "Emily Brown",
+            "email": "ebrow102@jhmi.edu",
+            "roles": [
+                "creator"
+            ]
+        }
+    ],
+    "status": "created",
+    "report_id": "e703cc9f-e42f-4994-8c20-6733e953f6d1",
+    "gene_validity_evidence_level": {
+        "evidence_level": "",
+        "gene_validity_sop": "",
+        "genetic_condition": {
+            "gene": "HGNC:20264",
+            "condition": "MONDO:0005021",
+            "mode_of_inheritance": "HP:0032113"
+        }
+    },
+    "date": "2020-03-03T18:35:05.834Z"
+}
+]

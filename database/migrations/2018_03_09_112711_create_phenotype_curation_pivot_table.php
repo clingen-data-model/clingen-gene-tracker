@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('curation_phenotype', function (Blueprint $table) {
+            $table->integer('phenotype_id')->unsigned()->index();
+            $table->foreign('phenotype_id')->references('id')->on('phenotypes')->onDelete('cascade');
+            $table->integer('curation_id')->unsigned()->index();
+            $table->foreign('curation_id')->references('id')->on('curations')->onDelete('cascade');
+            $table->primary(['phenotype_id', 'curation_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::drop('phenotype_curation');
+    }
+};

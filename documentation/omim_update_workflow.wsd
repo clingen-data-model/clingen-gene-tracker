@@ -1,0 +1,40 @@
+@startuml
+start
+partition Ingest_genemap2 {
+    :get genemap2.txt;
+    if (generated date later than last_import_date?) then (yes)
+        :Update or add phenotypes and link to genes;
+        partition Notifications {
+            if (associated with curations?) then (yes)
+                :notify curation coordinators;
+            else (no)
+            endif
+        }
+    else (no)
+    endif
+}
+partition Check_formoved_removed {
+    :Search OMIM API for moved/removed phenotypes;
+    partition foreach_result {
+        if (mim_numner in phenotypes?) then (yes)
+            :Set phenotypes.status to <status>;
+            if (status?) then (moved)
+                :Set phenotypes moved_to <new_mim_number>;
+            else (removed)
+            endif
+            
+            :update curation phenotype;
+
+            partition Notifications {
+                if (associated with curations?) then (yes)
+                    :notify curation coordinators;
+                else (no)
+                endif
+            }
+
+        else (no)
+        endif
+    }
+}
+stop
+@enduml

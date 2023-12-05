@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: 'GeneTracker API'
+  version: '1.0'
+paths:
+  /api/v1/pre-curations:
+    get:
+      tags:
+        - precurations
+      summary: 'Display a paginated listing of the curations.'
+      operationId: 124d23b2011b5238ab022eff0a638c54
+      parameters:
+        -
+          name: where
+          in: query
+          required: false
+          schema:
+            description: 'Associative array to add where clauses to query.'
+            type: array
+            items:
+              type: string
+        -
+          name: with
+          in: query
+          description: 'Relationships to include'
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: without
+          in: query
+          description: 'Default relationships to skip=default relationships include type and currentStatus.'
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: sort
+          in: query
+          description: 'Associative array with keys ''field'' and ''dir'' where field is the field on which sort and dir is the dircection (asc, desc)'
+          schema:
+            type: array
+            items:
+              type: string
+        -
+          name: page_size
+          in: query
+          description: 'Number of items to return at one time. Default=20'
+          schema:
+            type: int
+        -
+          name: page
+          in: query
+          description: 'Page to retrieve, based on page_size.'
+          schema:
+            type: int
+      responses:
+        '200':
+          description: 'A paginated list of curations'
+        '401':
+          description: Unauthenticated
+        '403':
+          description: Unauthorized
+        default:
+          description: 'An unexpected error occurred.'
+  '/api/v1/pre-curuations/{precurationId}':
+    get:
+      tags:
+        - precurations
+      summary: 'Get detailed precuration record'
+      description: 'Display the specified resource.'
+      operationId: 6298b1187a09ae2a6cfc76dec607b143
+      parameters:
+        -
+          name: precurationId
+          in: path
+          description: 'ID of precuration record.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Precuration record'
+        '404':
+          description: 'Precuration record not found'
+        '401':
+          description: Unauthenticated
+        '403':
+          description: Unauthorized

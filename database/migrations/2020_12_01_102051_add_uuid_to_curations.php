@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (! Schema::hasColumn('curations', 'uuid')) {
+            Schema::table('curations', function (Blueprint $table) {
+                $table->uuid('uuid')->after('id');
+            });
+        }
+
+        DB::statement('UPDATE curations SET uuid = gdm_uuid WHERE gdm_uuid IS NOT NULL');
+        DB::statement('UPDATE curations SET uuid = uuid() WHERE gdm_uuid is NULL');
+
+        Schema::table('curations', function (Blueprint $table) {
+            $table->unique('uuid');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        if (Schema::hasColumn('curations', 'uuid')) {
+            Schema::table('curations', function (Blueprint $table) {
+                $table->dropColumn('uuid');
+            });
+        }
+    }
+};

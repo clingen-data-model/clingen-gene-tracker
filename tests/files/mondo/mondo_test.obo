@@ -1,0 +1,300 @@
+format-version: 1.2
+data-version: releases/2021-06-01/reasoned.owl.owl
+subsetdef: clingen "initial subset used by clingen"
+subsetdef: do_inheritance_inconsistent "classes where the corresponding DO term is both AR and AD https://github.com/monarch-initiative/monarch-disease-ontology/issues/406"
+subsetdef: gard_rare "GARD rare disease subset"
+subsetdef: historic_epidemic "classes representing a historic epidemic"
+subsetdef: implicit_genetic_in_ordo "in ORDO this is classified as genetic even though the class is used for non-genetic disorders"
+subsetdef: merged_class "this class merges distinct concepts in other resources"
+subsetdef: metaclass "A grouping of disease classes. Should be excluded from analysis"
+subsetdef: mostly_harmless "condition has no severe phenotypes and is harmless or mostly harmless"
+subsetdef: n_of_one "N of one"
+subsetdef: not_a_disease "classes that do not represent diseases"
+subsetdef: obsoletion_candidate "obsoletion candidate"
+subsetdef: ordo_biological_anomaly "biological anomaly"
+subsetdef: ordo_clinical_situation "particular clinical situation in a disease or syndrome"
+subsetdef: ordo_clinical_subtype "clinical subtype"
+subsetdef: ordo_clinical_syndrome "clinical syndrome"
+subsetdef: ordo_disease "disease"
+subsetdef: ordo_etiological_subtype "etiological subtype"
+subsetdef: ordo_group_of_disorders "group of disorders"
+subsetdef: ordo_histopathological_subtype "histopathological subtype"
+subsetdef: ordo_inheritance_inconsistent "classes where the corresponding ordo term is both AR and AD https://github.com/monarch-initiative/monarch-disease-ontology/issues/406"
+subsetdef: ordo_malformation_syndrome "malformation syndrome"
+subsetdef: ordo_morphological_anomaly "morphological anomaly"
+subsetdef: other_hierarchy "A bin for classes that are likely not diseases and may be moved to a separate hierarchy"
+subsetdef: predisposition "Diseases that are pre-dispositions to other diseases"
+subsetdef: prototype_pattern "Conforms to the prototype design pattern where the classic/type1 form may be confused with the grouping type. See https://github.com/monarch-initiative/monarch-disease-ontology/issues/149"
+subsetdef: speculative "A hypothesized disease whose existence is speculative"
+synonymtypedef: ABBREVIATION "abbreviation"
+synonymtypedef: AMBIGUOUS "ambiguous"
+synonymtypedef: CLINGEN_PREFERRED "clingen preferred"
+synonymtypedef: DEPRECATED "A synonym that is historic and discouraged"
+synonymtypedef: DUBIOUS "dubious synonym"
+synonymtypedef: EXCLUDE "Synonym to be removed from public release but maintained in edit version as record of external usage"
+synonymtypedef: MISSPELLING "A synonym that is recorded for consistency with another source but is a misspelling"
+remark: Includes Ontology(OntologyID(Anonymous-33)) [Axioms: 7236 Logical Axioms: 0]
+remark: Includes Ontology(OntologyID(Anonymous-39)) [Axioms: 88251 Logical Axioms: 0]
+ontology: mondo
+property_value: http://purl.org/dc/elements/1.1/description "A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology." xsd:string
+property_value: http://purl.org/dc/elements/1.1/title "Mondo Disease Ontology" xsd:string
+property_value: http://purl.org/dc/terms/license http://creativecommons.org/licenses/by/4.0/
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/chebi.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/doid.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/envo.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/go.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/hp.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/mf.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/ncbitaxon.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/ncit.owl
+property_value: http://purl.org/dc/terms/source http://purl.obolibrary.org/obo/uberon.owl
+property_value: http://purl.org/dc/terms/source http://www.orpha.net/ontology/orphanet.owl
+property_value: http://purl.org/dc/terms/source https://id.nlm.nih.gov/mesh/
+property_value: http://purl.org/dc/terms/source https://rarediseases.info.nih.gov/
+property_value: http://xmlns.com/foaf/0.1/homepage http://obofoundry.org/ontology/mondo.html xsd:anyURI
+property_value: IAO:0000700 MONDO:0000001
+property_value: IAO:0000700 MONDO:0021125
+property_value: IAO:0000700 MONDO:0042489
+
+[Term]
+id: MONDO:0000001
+name: disease or disorder
+def: "A disease is a disposition to undergo pathological processes that exists in an organism because of one or more disorders in that organism." [OGMS:0000031]
+synonym: "condition" EXACT [NCIT:C2991]
+synonym: "disease" EXACT [NCIT:C2991]
+synonym: "disease or disorder" EXACT [NCIT:C2991]
+synonym: "disease or disorder, non-neoplastic" EXACT [NCIT:C2991]
+synonym: "diseases" EXACT [NCIT:C2991]
+synonym: "diseases and disorders" EXACT [NCIT:C2991]
+synonym: "disorder" EXACT [NCIT:C2991]
+synonym: "disorders" EXACT [NCIT:C2991]
+synonym: "medical condition" EXACT []
+synonym: "other disease" EXACT [NCIT:C2991]
+xref: DOID:4 {source="MONDO:equivalentTo", source="EFO:0000408"}
+xref: EFO:0000408 {source="MONDO:equivalentTo"}
+xref: ICD9:799.9 {source="MONDO:relatedTo", source="i2s"}
+xref: MESH:D004194 {source="MONDO:equivalentTo", source="DOID:4", source="EFO:0000408"}
+xref: NCIT:C2991 {source="MONDO:equivalentTo", source="DOID:4"}
+xref: OGMS:0000031 {source="MONDO:equivalentTo"}
+xref: Orphanet:377788 {source="MONDO:equivalentTo"}
+xref: SCTID:64572001 {source="MONDO:equivalentTo", source="DOID:4", source="EFO:0000408"}
+xref: UMLS:C0012634 {source="MONDO:equivalentTo", source="NCIT:C2991", source="DOID:4"}
+property_value: exactMatch DOID:4
+property_value: exactMatch http://identifiers.org/mesh/D004194
+property_value: exactMatch http://identifiers.org/snomedct/64572001
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C0012634
+property_value: exactMatch NCIT:C2991
+property_value: exactMatch Orphanet:377788
+
+[Term]
+id: MONDO:0600008
+name: cytokine release syndrome
+def: "A syndrome that occurs after therapeutic infusion of antibodies into the blood and is characterized by nausea, headache, tachycardia, hypotension, rash, and shortness of breath. It is caused by the release of cytokines from the cells that are targeted by the antibodies. Most patients experience a mild to moderate reaction; however, the reaction may be severe and life-threatening." [NCIT:C78251, PMID:24876563]
+synonym: "CRS" EXACT ABBREVIATION [PMID:32291137]
+synonym: "cytokine storm" EXACT [PMID:32291137]
+synonym: "cytokine-associated toxicity" EXACT [PMID:24876563]
+xref: NCIT:C78251 {source="MONDO:equivalentTo"}
+is_a: MONDO:0005046 {source="PMID:24876563", source="PMID:32291137"} ! immune system disease
+property_value: created_by http://orcid.org/0000-0002-5460-8025
+property_value: exactMatch NCIT:C78251
+
+[Term]
+id: MONDO:0000002
+name: obsolete 46,XX sex reversal
+is_obsolete: true
+replaced_by: MONDO:0009299
+
+[Term]
+id: MONDO:0000003
+name: obsolete 17-hydroxysteroid dehydrogenase deficiency
+xref: DC:0000002 {source="MONDO:obsoleteEquivalent"}
+is_obsolete: true
+
+[Term]
+id: MONDO:0000004
+name: adrenocortical insufficiency
+def: "An endocrine or hormonal disorder that occurs when the adrenal cortex does not produce enough of the hormone cortisol and in some cases, the hormone aldosterone. It may be due to a disorder of the adrenal cortex (Addison's disease or primary adrenal insufficiency) or to inadequate secretion of ACTH by the pituitary gland (secondary adrenal insufficiency)." [NCIT:C26691]
+synonym: "adrenal cortical hypofunction" EXACT [DOID:10493, NCIT:C26691]
+synonym: "adrenal cortical insufficiency" EXACT [DOID:10493, NCIT:C26691, NCIT:C27150]
+synonym: "adrenal gland insufficiency" EXACT [NCIT:C26691]
+synonym: "adrenal insufficiency" EXACT [NCIT:C26691]
+synonym: "adrenocortical insufficiency" EXACT [NCIT:C26691]
+synonym: "corticoadrenal insufficiency" EXACT [DOID:10493]
+synonym: "hypocortisolemia" EXACT [NCIT:C26691]
+synonym: "hypocortisolism" EXACT [NCIT:C26691]
+xref: DC:0000011 {source="MONDO:equivalentTo"}
+xref: DOID:10493 {source="MONDO:equivalentTo"}
+xref: GARD:0006722 {source="shared-umls-xref", source="MONDO:equivalentTo"}
+xref: ICD9:255.4 {source="MONDO:equivalentTo", source="i2s", source="DOID:10493"}
+xref: ICD9:255.41 {source="MONDO:relatedTo", source="i2s"}
+xref: MESH:D000309 {source="MONDO:equivalentTo"}
+xref: NCIT:C26691 {source="MONDO:equivalentTo", source="DOID:10493"}
+xref: SCTID:386584007 {source="MONDO:equivalentTo", source="DOID:10493"}
+xref: UMLS:C0405580 {source="MONDO:equivalentTo", source="DOID:10493"}
+is_a: MONDO:0002816 {source="DOID:10493", source="MONDO:Inferred", source="linkedlifedata"} ! adrenal cortex disease
+property_value: closeMatch http://identifiers.org/snomedct/154707007
+property_value: closeMatch http://identifiers.org/snomedct/190527008
+property_value: closeMatch http://identifiers.org/snomedct/267398003
+property_value: closeMatch http://identifiers.org/snomedct/267483004
+property_value: closeMatch http://identifiers.org/snomedct/68588005
+property_value: closeMatch http://linkedlifedata.com/resource/umls/id/C0001623
+property_value: exactMatch DOID:10493
+property_value: exactMatch http://identifiers.org/mesh/D000309
+property_value: exactMatch http://identifiers.org/snomedct/386584007
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C0405580
+property_value: exactMatch NCIT:C26691
+property_value: related "hypoadrenalism" xsd:string {xref="GARD:0006722"}
+
+[Term]
+id: MONDO:0000005
+name: alopecia, isolated
+xref: DC:0000016 {source="MONDO:equivalentTo"}
+xref: OMIMPS:203655 {source="MONDO:equivalentTo", source="DC:0000016"}
+is_a: MONDO:0021034 ! genetic alopecia
+
+[Term]
+id: MONDO:0000006
+name: obsolete alopecia-mental retardation syndrome
+xref: DC:0000017
+is_obsolete: true
+
+[Term]
+id: MONDO:0000007
+name: obsolete atypical Mycobacteriosis, familial
+comment: OMIM 209950 lists 300636 and 300645 as other types of this disease. {source="DC:0000046"}
+xref: DC:0000046
+is_obsolete: true
+
+[Term]
+id: MONDO:0000008
+name: obsolete bare lymphocyte syndrome
+is_obsolete: true
+
+[Term]
+id: MONDO:0000009
+name: inherited bleeding disorder, platelet-type
+synonym: "bleeding disorder, platelet-type" EXACT [OMIMPS:231200]
+synonym: "blood platelet disease" BROAD [DOID:2218]
+synonym: "platelet disorder" BROAD [CSP2005:0446-1413, DOID:2218]
+synonym: "thrombocytopathy" RELATED [DOID:2218, MTHICD9_2006:287.1]
+xref: DC:0000057 {source="MONDO:equivalentTo"}
+xref: DOID:2218 {source="MONDO:equivalentTo"}
+xref: OMIMPS:231200 {source="MONDO:equivalentTo", source="DC:0000057"}
+xref: UMLS:C0005818 {source="MONDO:equivalentTo", source="DOID:2218"}
+is_a: MONDO:0002243 {source="DOID:2218", source="MONDO:Redundant", source="MONDO:cjm"} ! hemorrhagic disease
+is_a: MONDO:0002245 {source="DC:0000057", source="MONDO:Entailed", source="MONDO:Redundant"} ! blood platelet disease
+is_a: MONDO:0003847 ! Mendelian disease
+property_value: exactMatch DOID:2218
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C0005818
+
+[Term]
+id: MONDO:0000010
+name: obsolete cerebrooculofacioskeletal syndrome
+is_obsolete: true
+replaced_by: MONDO:0008926
+
+[Term]
+id: MONDO:0000011
+name: obsolete chondrodysplasia
+xref: DC:0000080 {source="MONDO:obsoleteEquivalent"}
+is_obsolete: true
+
+[Term]
+id: MONDO:0000012
+name: obsolete choreoathetosis (disease)
+xref: DC:0000083
+is_obsolete: true
+
+[Term]
+id: MONDO:0000013
+name: obsolete choroidal dystrophy
+is_obsolete: true
+replaced_by: MONDO:0008982
+
+[Term]
+id: MONDO:0000014
+name: colorblindness, partial
+xref: DC:0000090 {source="MONDO:equivalentTo"}
+is_a: MONDO:0001703 {source="DC:0000090"} ! color vision disorder
+
+[Term]
+id: MONDO:0000015
+name: classic complement early component deficiency
+def: "A genetic deficiency of any early component of the classical pathway (C1q, C1r/s, C2, C4, and C3) that is associated with autoimmune diseases due to the failure of clearance of immune complexes (IC) and apoptotic materials, and the impairment of normal humoral response." [https://orcid.org/0000-0001-5208-3432, PMID:22773339]
+subset: gard_rare {source="GARD:0009526"}
+synonym: "genetic deficiency of early component of the classical complement pathway" EXACT [https://orcid.org/0000-0001-5208-3432]
+xref: DC:0000094 {source="MONDO:equivalentTo"}
+xref: GARD:0009526 {source="MONDO:equivalentTo"}
+xref: ICD9:279.8 {source="MONDO:relatedTo", source="i2s"}
+xref: SCTID:363009005 {source="MONDO:equivalentTo"}
+xref: UMLS:C1285186 {source="GARD:0009526", source="MONDO:equivalentTo"}
+is_a: MONDO:0003832 {source="DC:0000094"} ! complement deficiency
+property_value: exactMatch http://identifiers.org/snomedct/363009005
+property_value: exactMatch http://linkedlifedata.com/resource/umls/id/C1285186
+property_value: seeAlso https://rarediseases.info.nih.gov/diseases/9526/complement-component-deficiency xsd:anyURI {source="GARD:0009526"}
+
+[Term]
+id: MONDO:0000016
+name: obsolete coronary heart disease
+is_obsolete: true
+replaced_by: MONDO:0005010
+
+[Term]
+id: MONDO:0000017
+name: obsolete deafness, autosomal recessive
+is_obsolete: true
+replaced_by: MONDO:0011791
+
+[Term]
+id: MONDO:0000018
+name: obsolete myotonic dystrophy
+is_obsolete: true
+replaced_by: MONDO:0016107
+
+[Term]
+id: MONDO:0000019
+name: obsolete ectodermal dysplasia
+xref: DC:0000128
+is_obsolete: true
+replaced_by: MONDO:0019287
+
+[Term]
+id: MONDO:0000020
+name: obsolete elliptocytosis
+is_obsolete: true
+replaced_by: MONDO:0017319
+
+[Term]
+id: MONDO:0000021
+name: obsolete short-rib thoracic dysplasia
+xref: DC:0000131 {source="MONDO:obsoleteEquivalent"}
+is_obsolete: true
+replaced_by: MONDO:0018770
+
+[Term]
+id: MONDO:0000022
+name: nocturnal enuresis
+def: "Urination during sleep." [NCIT:C118172]
+comment: See genetic heterogeneity of OMIM 600631. {source="DC:0000133"}
+synonym: "bedwetting" EXACT []
+synonym: "enuresis, nocturnal" EXACT []
+synonym: "sleep enuresis" EXACT [NCIT:C118172]
+xref: COHD:193874 {source="MONDO:equivalentTo"}
+xref: DC:0000133 {source="MONDO:equivalentTo"}
+xref: MESH:D053206 {source="MONDO:equivalentTo"}
+xref: NCIT:C118172 {source="MONDO:equivalentTo"}
+is_a: MONDO:0024290 {source="NCIT:C118172"} ! enuresis
+property_value: closeMatch http://linkedlifedata.com/resource/umls/id/C0270327
+property_value: exactMatch http://identifiers.org/mesh/D053206
+property_value: exactMatch NCIT:C118172
+
+[Typedef]
+id: disease_arises_from_feature
+name: disease arises from feature
+xref: RO:0004022
+is_transitive: true
+
+[Typedef]
+id: disease_arises_from_structure
+name: disease arises from structure
+xref: RO:0004030

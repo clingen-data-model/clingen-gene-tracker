@@ -1,0 +1,6 @@
+gene_symbol,hgnc_id,mondo_id,affiliation,creator,uuid
+ACTG1,HGNC:144,FREETEXT,"Hearing Loss",rsiegert@mgh.harvard.edu,198e96d7-db6c-484d-a91a-f1a54e704d98
+CBL,HGNC:1541,FREETEXT,RASopathy,agrant@broadinstitute.org,09b4ecc9-3195-491d-93cf-6bd225d12c6e
+GCH1,HGNC:4193,16812,Aminoacidopathy,jennifer.goldstein@unc.edu,a40a9595-88de-4f14-8c55-96614192acae
+LIG1,HGNC:6598,FREETEXT,"Harvard/Geisinger Biocuration Core",mdistefano1@partners.org,51568827-a8d5-4371-8d57-4d7229ce2306
+MYOC,HGNC:7610,20367,"UNC Biocuration Core",may_flowers@med.unc.edu,948e63f6-1c94-494d-abe9-c090da1bb1bc

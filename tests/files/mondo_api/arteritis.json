@@ -1,0 +1,83 @@
+{
+    "iri": "http://purl.obolibrary.org/obo/MONDO_0043494",
+    "label": "arteritis",
+    "description": null,
+    "annotation": {
+        "def": [
+            "An inflammatory process affecting an artery."
+        ],
+        "hasExactSynonym": [
+            "artery inflammation",
+            "inflammation of artery",
+            "arteritis"
+        ],
+        "hasRelatedSynonym": [
+            "Inflammation, arterial",
+            "Arteritides",
+            "arterial Inflammation"
+        ],
+        "property_value": [
+            "exactMatch http://identifiers.org/snomedct/52089001",
+            "exactMatch NCIT:C34399",
+            "closeMatch http://linkedlifedata.com/resource/umls/id/C0003860",
+            "exactMatch http://identifiers.org/mesh/D001167"
+        ],
+        "xref": [
+            "http://purl.obolibrary.org/obo/EFO_0009011",
+            "http://purl.obolibrary.org/obo/HP_0012089",
+            "http://purl.obolibrary.org/obo/SCTID_52089001",
+            "http://purl.obolibrary.org/obo/MESH#_D001167",
+            "http://purl.obolibrary.org/obo/NCIT#_C34399"
+        ]
+    },
+    "synonyms": null,
+    "ontology_name": "mondo",
+    "ontology_prefix": "MONDO",
+    "ontology_iri": "http://purl.obolibrary.org/obo/mondo.obo",
+    "is_obsolete": false,
+    "term_replaced_by": null,
+    "is_defining_ontology": true,
+    "has_children": true,
+    "is_root": false,
+    "short_form": "MONDO_0043494",
+    "obo_id": "MONDO:0043494",
+    "in_subset": null,
+    "obo_definition_citation": null,
+    "obo_xref": null,
+    "obo_synonym": null,
+    "_links": {
+        "self": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494"
+        },
+        "parents": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/parents"
+        },
+        "ancestors": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/ancestors"
+        },
+        "hierarchicalParents": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/hierarchicalParents"
+        },
+        "hierarchicalAncestors": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/hierarchicalAncestors"
+        },
+        "jstree": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/jstree"
+        },
+        "children": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/children"
+        },
+        "descendants": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/descendants"
+        },
+        "hierarchicalChildren": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/hierarchicalChildren"
+        },
+        "hierarchicalDescendants": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/hierarchicalDescendants"
+        },
+        "graph": {
+            "href": "https://www.ebi.ac.uk/ols/api/ontologies/mondo/terms/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0043494/graph"
+        }
+    }
+}

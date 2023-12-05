@@ -1,0 +1,77 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 0
+    },
+    "response": {
+        "numFound": 1,
+        "start": 0,
+        "docs": [
+            {
+                "hgnc_id": "HGNC:4036",
+                "symbol": "FYB1",
+                "name": "FYN binding protein 1",
+                "status": "Approved",
+                "locus_type": "gene with protein product",
+                "prev_symbol": [
+                    "FYB"
+                ],
+                "prev_name": [
+                    "FYN-binding protein (FYB-120/130)",
+                    "FYN binding protein"
+                ],
+                "alias_symbol": [
+                    "SLAP-130",
+                    "FYB-120/130",
+                    "ADAP"
+                ],
+                "alias_name": [
+                    "adhesion and degranulation promoting adaptor protein"
+                ],
+                "location": "5p13.1",
+                "date_approved_reserved": "1998-04-22T00:00:00Z",
+                "date_modified": "2019-10-09T00:00:00Z",
+                "date_name_changed": "2017-05-25T00:00:00Z",
+                "ena": [
+                    "U93049"
+                ],
+                "entrez_id": "2533",
+                "mgd_id": [
+                    "MGI:1346327"
+                ],
+                "pubmed_id": [
+                    9115214,
+                    9207119
+                ],
+                "refseq_accession": [
+                    "NM_001465"
+                ],
+                "date_symbol_changed": "2017-05-25T00:00:00Z",
+                "vega_id": "OTTHUMG00000162071",
+                "lsdb": [
+                    "LRG_1351|http://ftp.ebi.ac.uk/pub/databases/lrgex/pending/LRG_1351.xml"
+                ],
+                "ensembl_gene_id": "ENSG00000082074",
+                "ccds_id": [
+                    "CCDS47200",
+                    "CCDS54848",
+                    "CCDS58945"
+                ],
+                "locus_group": "protein-coding gene",
+                "omim_id": [
+                    "602731"
+                ],
+                "uniprot_ids": [
+                    "O15117"
+                ],
+                "ucsc_id": "uc003jlu.4",
+                "rgd_id": [
+                    "RGD:1563421"
+                ],
+                "location_sortable": "05p13.1",
+                "uuid": "f5698b32-48dc-46b3-be72-72a1c8664948",
+                "_version_": 1646886090278174722
+            }
+        ]
+    }
+}

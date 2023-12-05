@@ -1,0 +1,114 @@
+{
+  "omim": {
+    "version": "1.0",
+    "searchResponse": {
+      "search": "MYL2",
+      "expandedSearch": "MYL2",
+      "parsedSearch": "+(number:MYL2^5.0 | text:myl2 | title:myl2^3.0) ()",
+      "searchSuggestion": null,
+      "searchSpelling": null,
+      "filter": null,
+      "expandedFilter": null,
+      "fields": null,
+      "searchReport": null,
+      "totalResults": 14,
+      "startIndex": 0,
+      "endIndex": 9,
+      "sort": null,
+      "operator": null,
+      "searchTime": 1,
+      "entryList": [
+        {
+          "entry": {
+            "mimNumber": "160781",
+            "titles": {
+              "preferredTitle": "MYOSIN, LIGHT CHAIN 2, REGULATORY, CARDIAC, SLOW; MYL2"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "608758",
+            "titles": {
+              "preferredTitle": "CARDIOMYOPATHY, FAMILIAL HYPERTROPHIC, 10; CMH10"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "612147",
+            "titles": {
+              "preferredTitle": "MYOSIN LIGHT CHAIN KINASE 3; MYLK3"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "192600",
+            "titles": {
+              "preferredTitle": "CARDIOMYOPATHY, FAMILIAL HYPERTROPHIC, 1; CMH1"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "160790",
+            "titles": {
+              "preferredTitle": "MYOSIN, LIGHT CHAIN 3, ALKALI, VENTRICULAR, SKELETAL, SLOW; MYL3"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "163950",
+            "titles": {
+              "preferredTitle": "NOONAN SYNDROME 1; NS1"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "310200",
+            "titles": {
+              "preferredTitle": "MUSCULAR DYSTROPHY, DUCHENNE TYPE; DMD"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "610479",
+            "titles": {
+              "preferredTitle": "SERUM RESPONSE FACTOR BINDING PROTEIN 1; SRFBP1"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "610762",
+            "titles": {
+              "preferredTitle": "HIGH DENSITY LIPOPROTEIN CHOLESTEROL LEVEL QUANTITATIVE TRAIT LOCUS 6; HDLCQ6"
+            },
+            "matches": "myl2"
+          }
+        },
+        {
+          "entry": {
+            "mimNumber": "600958",
+            "titles": {
+              "preferredTitle": "MYOSIN-BINDING PROTEIN C, CARDIAC; MYBPC3"
+            },
+            "matches": "myl2"
+          }
+        }
+      ]
+    }
+  }
+}

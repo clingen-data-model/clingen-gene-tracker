@@ -1,0 +1,66 @@
+{
+    "omim": {
+        "version": "1.0",
+        "searchResponse": {
+            "search": "approved_gene_symbol:BRCA1",
+            "expandedSearch": "approved_gene_symbol:BRCA1",
+            "parsedSearch": "+approved_gene_symbol:brca1 ()",
+            "searchSuggestion": null,
+            "searchSpelling": null,
+            "filter": null,
+            "expandedFilter": null,
+            "fields": null,
+            "searchReport": null,
+            "totalResults": 1,
+            "startIndex": 0,
+            "endIndex": 0,
+            "sort": null,
+            "operator": null,
+            "searchTime": 2.0,
+            "entryList": [
+                {
+                    "entry": {
+                        "prefix": "*",
+                        "mimNumber": 191170,
+                        "status": "live",
+                        "titles": {
+                            "preferredTitle": "TUMOR PROTEIN p53; BRCA1",
+                            "alternativeTitles": "P53;;\nTRANSFORMATION-RELATED PROTEIN 53; TRP53"
+                        },
+                        "geneMap": {
+                            "sequenceID": 12602,
+                            "chromosome": 17,
+                            "chromosomeSymbol": "17",
+                            "chromosomeSort": 158,
+                            "chromosomeLocationStart": 7668401,
+                            "chromosomeLocationEnd": 7687549,
+                            "transcript": "uc060aur.1",
+                            "cytoLocation": "17p13.1",
+                            "computedCytoLocation": "17p13.1",
+                            "mimNumber": 191170,
+                            "geneSymbols": "TP53, P53, LFS1 , BCC7",
+                            "geneName": "Tumor protein p53",
+                            "mappingMethod": "REa, A, D",
+                            "confidence": "C",
+                            "mouseGeneSymbol": "Trp53",
+                            "mouseMgiID": "MGI:98834",
+                            "geneInheritance": null,
+                            "phenotypeMapList": [
+                                {
+                                    "phenotypeMap": {
+                                        "mimNumber": 191170,
+                                        "phenotype": "Adrenal cortical carcinoma",
+                                        "phenotypeMimNumber": 202300,
+                                        "phenotypeMappingKey": 3,
+                                        "phenotypeInheritance": "Autosomal recessive"
+                                    }
+                                },
+                           ]
+                        },
+                        "matches": "brca1"
+                    }
+                }
+            ]
+        }
+    }
+}

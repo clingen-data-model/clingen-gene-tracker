@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class PhenotypeResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            // 'id' => $this->id,
+            'mim_number' => $this->mim_number,
+            'name' => $this->name,
+            'curations' => CurationResource::collection($this->whenLoaded('curations')),
+        ];
+    }
+}

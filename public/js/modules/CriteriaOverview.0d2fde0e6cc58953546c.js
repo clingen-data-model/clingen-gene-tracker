@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{BHdJ:function(i,t,e){"use strict";e.r(t);var n={},s=e("KHd+"),r=Object(s.a)(n,(function(){var i=this.$createElement;return(this._self._c||i)("div",{staticClass:"criteria-overview-container"},[this._v("\n    This is the lumping and splitting criteria overview\n")])}),[],!1,null,null,null);t.default=r.exports}}]);
+//# sourceMappingURL=CriteriaOverview.0d2fde0e6cc58953546c.js.map

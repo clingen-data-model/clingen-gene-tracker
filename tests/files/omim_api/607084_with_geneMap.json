@@ -1,0 +1,40 @@
+{
+    "omim": {
+      "version": "1.0",
+      "entryList": [
+        {
+          "entry": {
+            "prefix": "#",
+            "mimNumber": 607084,
+            "status": "live",
+            "titles": {
+              "preferredTitle": "DEAFNESS, AUTOSOMAL RECESSIVE 31; DFNB31",
+              "alternativeTitles": "WHIRLER, MOUSE, HOMOLOG OF"
+            },
+            "phenotypeMapList": [
+              {
+                "phenotypeMap": {
+                  "mimNumber": 607928,
+                  "phenotype": "Deafness, autosomal recessive 31",
+                  "phenotypeMimNumber": 607084,
+                  "phenotypeMappingKey": 3,
+                  "phenotypeInheritance": "Autosomal recessive",
+                  "phenotypicSeriesNumber": "PS220290",
+                  "sequenceID": 8786,
+                  "chromosome": 9,
+                  "chromosomeSymbol": "9",
+                  "chromosomeSort": 405,
+                  "chromosomeLocationStart": 114402077,
+                  "chromosomeLocationEnd": 114505499,
+                  "transcript": "ENST00000362057.4",
+                  "cytoLocation": "9q32-q34",
+                  "computedCytoLocation": "9q32",
+                  "geneSymbols": "WHRN, CIP98, KIAA1526, DFNB31, USH2D"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
