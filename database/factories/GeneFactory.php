@@ -10,6 +10,6 @@ $factory->define(Gene::class, function (Faker $faker) {
         'hgnc_id' => $faker->unique()->randomNumber(6),
         'gene_symbol' => $faker->randomLetter.$faker->randomLetter.$faker->randomLetter.$faker->randomLetter,
         'hgnc_name' => $faker->sentence,
-        'hgnc_status' => 'Approved'
+        'hgnc_status' => 'Approved',
     ];
 });

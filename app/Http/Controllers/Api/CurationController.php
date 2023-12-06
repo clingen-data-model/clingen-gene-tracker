@@ -14,12 +14,12 @@ use App\Jobs\Curations\AddStatus;
 use App\Jobs\Curations\SyncPhenotypes;
 use App\Services\Curations\CurationSearchService;
 use App\Services\RequestDataCleaner;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CurationController extends Controller
 {
     protected $cleaner;
+
     protected $omim;
 
     public function __construct(RequestDataCleaner $cleaner, OmimClient $omim, CurationSearchService $search)
@@ -47,8 +47,7 @@ class CurationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CurationCreateRequest $request)
@@ -76,15 +75,14 @@ class CurationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $curation = Curation::findByAnyId($id);
-        
-        if (!$curation) {
+
+        if (! $curation) {
             return response('Curation not found', 404);
         }
 
@@ -101,9 +99,8 @@ class CurationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(CurationUpdateRequest $request, $id)
@@ -131,8 +128,7 @@ class CurationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -167,15 +163,15 @@ class CurationController extends Controller
             $curation->rationales()->sync(collect($rationales)->pluck('id'));
         }
     }
-    
+
     private function setMondoId($data)
     {
         if (isset($data['disease']) && is_array($data['disease'])) {
             $data['mondo_id'] = $data['disease']['mondo_id'];
         }
+
         return $data;
     }
-    
 
     private function loadRelations(&$curation)
     {

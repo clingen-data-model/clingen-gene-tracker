@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use App\User;
 use App\Curation;
-use Tests\TestCase;
-use App\ExpertPanel;
-use App\WorkingGroup;
-use App\CurationStatus;
 use App\CurationExporter;
+use App\CurationStatus;
+use App\ExpertPanel;
 use App\Jobs\Curations\AddStatus;
+use App\User;
+use App\WorkingGroup;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class CurationExporterTest extends TestCase
 {
@@ -196,28 +196,25 @@ class CurationExporterTest extends TestCase
                 AddStatus::dispatch($curation, $st, Carbon::now());
                 AddStatus::dispatch($curation, $st, Carbon::now()->subDays(1));
                 AddStatus::dispatch($curation, $st, Carbon::now()->subDays(2));
-            });            
+            });
 
         $curationData = $this->exporter->getData(['expert_panel_id' => $curation->expert_panel_id]);
 
         $dateFields = [
-            "Uploaded date",
-            "Precuration date",
-            "Disease entity assigned date",
-            "Precuration Complete date",
-            "Curation Provisional date",
-            "Curation Approved date",
-            "Recuration assigned date",
-            "Retired Assignment date",
-            "Published date",
-            "Unublished on GCI date",
+            'Uploaded date',
+            'Precuration date',
+            'Disease entity assigned date',
+            'Precuration Complete date',
+            'Curation Provisional date',
+            'Curation Approved date',
+            'Recuration assigned date',
+            'Retired Assignment date',
+            'Published date',
+            'Unublished on GCI date',
         ];
-            
-        foreach($dateFields as $dateKey) {
-            $this->assertEquals($curationData->first()[$dateKey],  Carbon::today()->format('Y-m-d'));
-        }
 
-        
+        foreach ($dateFields as $dateKey) {
+            $this->assertEquals($curationData->first()[$dateKey], Carbon::today()->format('Y-m-d'));
+        }
     }
-    
 }

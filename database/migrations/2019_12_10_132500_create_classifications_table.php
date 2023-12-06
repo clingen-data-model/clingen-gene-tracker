@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use Database\Seeders\ClassificationsTableSeeder;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateClassificationsTable extends Migration
 {
@@ -14,7 +14,7 @@ class CreateClassificationsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('classifications')) {            
+        if (! Schema::hasTable('classifications')) {
             Schema::create('classifications', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name')->unique();
@@ -24,7 +24,6 @@ class CreateClassificationsTable extends Migration
         }
 
         $seeder = (new ClassificationsTableSeeder)->run();
-        
     }
 
     /**

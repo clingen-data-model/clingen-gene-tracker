@@ -25,7 +25,7 @@ class CreateGciCurationsTable extends Migration
             $table->uuid('creator_uuid');
             $table->string('creator_email');
             $table->timestamps();
-            
+
             $table->foreign('hgnc_id')->references('hgnc_id')->on('genes');
             $table->foreign('moi_id')->references('id')->on('mode_of_inheritances');
             $table->foreign('classification_id')->references('id')->on('classifications');

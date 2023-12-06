@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CurationStatus;
 use App\Http\Requests\CurationStatusRequest as StoreRequest;
 use App\Http\Requests\CurationStatusRequest as UpdateRequest;
-use App\CurationStatus;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 class CurationStatusCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -27,7 +27,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         |--------------------------------------------------------------------------
         */
         $this->crud->setModel(CurationStatus::class);
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/curation-status');
+        $this->crud->setRoute(config('backpack.base.route_prefix').'/curation-status');
         $this->crud->setEntityNameStrings('curation status', 'curation statuses');
 
         /*
@@ -38,7 +38,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 
         $this->crud->setFromDb();
 
-        $this->crud->denyAccess(['list','create','update','delete']);
+        $this->crud->denyAccess(['list', 'create', 'update', 'delete']);
         if ($this->user->hasPermissionTo('create curation-statuses')) {
             $this->crud->allowAccess(['list']);
         }

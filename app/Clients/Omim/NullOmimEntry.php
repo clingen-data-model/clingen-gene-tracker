@@ -13,7 +13,7 @@ class NullOmimEntry implements OmimEntryContract
     {
         return null;
     }
-    
+
     public function toJson()
     {
         return null;
@@ -28,14 +28,15 @@ class NullOmimEntry implements OmimEntryContract
     {
         return '';
     }
-    
 
     public function __get($key)
     {
         if (method_exists($this, 'get'.ucfirst(camel_case($key)))) {
             $methodName = 'get'.ucfirst(camel_case($key));
+
             return $this->$methodName();
         }
+
         return null;
     }
 

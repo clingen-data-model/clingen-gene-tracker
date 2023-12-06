@@ -4,8 +4,6 @@ namespace App\Listeners\Mail;
 
 use App\Email;
 use Illuminate\Mail\Events\MessageSent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StoreMailInDatabase
 {
@@ -22,7 +20,6 @@ class StoreMailInDatabase
     /**
      * Handle the event.
      *
-     * @param  MessageSent  $event
      * @return void
      */
     public function handle(MessageSent $event)

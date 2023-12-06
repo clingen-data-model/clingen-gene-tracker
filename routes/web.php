@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\View;
-use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------

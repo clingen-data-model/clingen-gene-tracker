@@ -21,7 +21,7 @@ class TaskTimeWriter
 
         $entries = [];
         $events = $this->timer->getEvents();
-        for ($i = 0; $i < count($events); ++$i) {
+        for ($i = 0; $i < count($events); $i++) {
             $evt = $events[$i];
             $prevIdx = $i == 0 ? 0 : $i - 1;
             $lastMicrotime = $events[$prevIdx]->getMicrotime();

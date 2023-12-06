@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\User;
 use App\Affiliation;
 use App\AffiliationType;
-use Illuminate\Support\Facades\Auth;
-use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Requests\Admin\AffiliationRequest as StoreRequest;
 use App\Http\Requests\Admin\AffiliationRequest as UpdateRequest;
+use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class AffiliationCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -30,7 +29,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         |--------------------------------------------------------------------------
         */
         $this->crud->setModel(Affiliation::class);
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/aff');
+        $this->crud->setRoute(config('backpack.base.route_prefix').'/aff');
         $this->crud->setEntityNameStrings('affiliation', 'affiliations');
 
         /*
@@ -48,7 +47,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'model' => AffiliationType::class
+            'model' => AffiliationType::class,
         ]);
 
         $this->crud->modifyField('parent_id', [
@@ -57,12 +56,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'model' => Affiliation::class
+            'model' => Affiliation::class,
         ]);
 
         $this->crud->modifyField('clingen_id', [
             'name' => 'clingen_id',
-            'label' => 'Affiliation ID'
+            'label' => 'Affiliation ID',
         ]);
 
         // // ------ COLUMNS
@@ -76,7 +75,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'affiliation_type_id',
             'entity' => 'type',
             'attribute' => 'name',
-            'model' => AffiliationType::class
+            'model' => AffiliationType::class,
         ]);
         $this->crud->modifyColumn('parent_id', [
             'label' => 'Parent',
@@ -84,15 +83,15 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'parent_id',
             'entity' => 'parent',
             'attribute' => 'name',
-            'model' => Affiliation::class
+            'model' => Affiliation::class,
         ]);
-        $this->crud->modifyColumn('clingen_id',[
+        $this->crud->modifyColumn('clingen_id', [
             'name' => 'clingen_id',
-            'label' => 'Affiliation ID'
+            'label' => 'Affiliation ID',
         ]);
 
         // ------ CRUD ACCESS
-        $this->crud->denyAccess(['list','create','update','delete']);
+        $this->crud->denyAccess(['list', 'create', 'update', 'delete']);
         if ($this->user->hasPermissionTo('list expert-panels')) {
             $this->crud->allowAccess(['list']);
         }
@@ -117,7 +116,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setValidation(UpdateRequest::class);
         $this->crud->addField([
             'name' => 'id',
-            'type' => 'hidden'
+            'type' => 'hidden',
         ], 'update');
     }
 }

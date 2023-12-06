@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateClassificationCurationPivotTable extends Migration
 {
@@ -16,10 +16,10 @@ class CreateClassificationCurationPivotTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('classification_id')->index();
             $table->foreign('classification_id', 'classification_id_foreign')->references('id')->on('classifications')->onDelete('cascade');
-            
+
             $table->unsignedInteger('curation_id')->index();
             $table->foreign('curation_id', 'curation_id_foreign')->references('id')->on('curations')->onDelete('cascade');
-            
+
             $table->datetime('classification_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
         });

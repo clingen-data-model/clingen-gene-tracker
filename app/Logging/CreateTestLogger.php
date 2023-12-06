@@ -2,18 +2,16 @@
 
 namespace App\Logging;
 
-use Monolog\Logger;
 use Monolog\Handler\TestHandler;
+use Monolog\Logger;
 
 class CreateTestLogger
 {
     /**
      * Create a custom Monolog instance
-     * 
-     * @param array $config
+     *
      * @return \Monolog\Logger
      */
-
     public function __invoke(array $config)
     {
         $monolog = new Logger('test');
@@ -21,6 +19,4 @@ class CreateTestLogger
 
         return $monolog;
     }
-    
 }
-

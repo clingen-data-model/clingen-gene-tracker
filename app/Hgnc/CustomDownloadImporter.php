@@ -5,14 +5,14 @@ namespace App\Hgnc;
 use App\Gene;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Hgnc\HgncRecord;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CustomDownloadImporter
 {
     protected $client;
+
     private $defaultParams = [
         'col' => [
             'md_eg_id',
@@ -54,7 +54,7 @@ class CustomDownloadImporter
 
         yield 'parsing data...';
         $records = $this->parseCustomResponse($customDownload);
-        
+
         Log::debug('filtered records: '.$records->count());
 
         yield 'storing '.$records->count().' gene records...';
@@ -68,17 +68,17 @@ class CustomDownloadImporter
             $aliasSymbols = $this->parseAliasSymbols($record);
 
             $newAttributes = [
-                'gene_symbol'       => $record->approved_symbol,
-                'omim_id'           => $record->omim_id ? $record->omim_id : null,
-                'ncbi_gene_id'      => (!empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
-                'hgnc_name'         => ($record->status == 'Symbol Withdrawn') 
-                                            ? 'symbol withdrawn' 
+                'gene_symbol' => $record->approved_symbol,
+                'omim_id' => $record->omim_id ? $record->omim_id : null,
+                'ncbi_gene_id' => (! empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
+                'hgnc_name' => ($record->status == 'Symbol Withdrawn')
+                                            ? 'symbol withdrawn'
                                             : $record->approved_name,
-                'hgnc_status'       => $record->status,
-                'previous_symbols'  => $prevSymbols,
-                'alias_symbols'     => $aliasSymbols,
-                'date_approved'     => $this->getValueOrNull($record->date_approved),
-                'date_modified'     => $this->getValueOrNull($record->date_modified),
+                'hgnc_status' => $record->status,
+                'previous_symbols' => $prevSymbols,
+                'alias_symbols' => $aliasSymbols,
+                'date_approved' => $this->getValueOrNull($record->date_approved),
+                'date_modified' => $this->getValueOrNull($record->date_modified),
                 'date_symbol_changed' => $this->getValueOrNull($record->date_symbol_changed),
                 'date_name_changed' => $this->getValueOrNull($record->date_name_changed),
             ];
@@ -92,7 +92,6 @@ class CustomDownloadImporter
     {
         return ($attr == '') ? null : $attr;
     }
-    
 
     private function parseAliasSymbols($record)
     {
@@ -104,7 +103,6 @@ class CustomDownloadImporter
 
         return null;
     }
-    
 
     private function parsePreviousSymbols($record)
     {
@@ -113,14 +111,15 @@ class CustomDownloadImporter
                 return trim($sym);
             }, explode(',', $record->previous_symbols));
         }
+
         return null;
     }
-    
 
-    public function fetchCustomDownload(array $params): String
+    public function fetchCustomDownload(array $params): string
     {
         if (file_exists($this->tmpPath)) {
             Log::info('Using temp file.');
+
             return file_get_contents($this->tmpPath);
         }
 
@@ -133,10 +132,10 @@ class CustomDownloadImporter
         $response = $this->client->request('GET', $url);
         $contents = $response->getBody()->getContents();
         Log::debug('Got response');
-        
+
         file_put_contents($this->tmpPath, $contents);
         Log::debug('Wrote contents to '.$this->tmpPath);
-        
+
         return $contents;
     }
 
@@ -148,20 +147,19 @@ class CustomDownloadImporter
             $genes->filter(function ($gene) {
                 return is_null($gene->omim_id);
             })->pluck('hgnc_id'),
-            $genes->pluck('date_modified', 'hgnc_id')->max()
+            $genes->pluck('date_modified', 'hgnc_id')->max(),
         ];
     }
 
-    private function parseCustomResponse(String $responseString): Collection
+    private function parseCustomResponse(string $responseString): Collection
     {
-        
         [$hgncsWithoutOmimId, $genesLastModified] = $this->getGeneData();
 
         $lines = explode("\n", $responseString);
-        
+
         $columnNames = null;
         $collection = collect();
-        
+
         Log::debug('lines in download: '.count($lines));
         foreach ($lines as $idx => $line) {
             $cols = explode("\t", $line);
@@ -173,6 +171,7 @@ class CustomDownloadImporter
 
                     return Str::snake(strtolower($heading));
                 }, $cols);
+
                 continue;
             }
 
@@ -184,20 +183,21 @@ class CustomDownloadImporter
 
             $data = array_combine($columnNames, $cols);
             $hgncId = substr($data['hgnc_id'], 5);
-            
-            if ($hgncId == '16216')
 
-            if (!empty($hgncId) && $hgncsWithoutOmimId->contains($hgncId)) {
-                $hgncRecord = new HgncRecord($data);
-                $collection->push($hgncRecord);
-                continue;
+            if ($hgncId == '16216') {
+                if (! empty($hgncId) && $hgncsWithoutOmimId->contains($hgncId)) {
+                    $hgncRecord = new HgncRecord($data);
+                    $collection->push($hgncRecord);
+
+                    continue;
+                }
             }
 
             if ($genesLastModified) {
                 if ($data['date_modified'] == '' && Carbon::parse($data['date_approved'])->lt($genesLastModified)) {
                     continue;
                 }
-                
+
                 if ($data['date_modified'] !== '' && Carbon::parse($data['date_modified'])->lt($genesLastModified)) {
                     continue;
                 }

@@ -20,7 +20,7 @@ class CurationStatusTest extends TestCase
     public function has_fillable_name()
     {
         $curation = new CurationStatus();
-        $curation->fill(['name'=>'beans']);
+        $curation->fill(['name' => 'beans']);
         $curation->save();
 
         $this->assertEquals('beans', $curation->name);

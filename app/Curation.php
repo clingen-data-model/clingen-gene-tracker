@@ -2,24 +2,21 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use App\Traits\HasUuid;
-use App\Traits\HasNotes;
 use App\Contracts\Notable;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use App\Events\Curation\Saved;
-use App\Events\Curation\Saving;
 use App\Events\Curation\Created;
 use App\Events\Curation\Deleted;
+use App\Events\Curation\Saved;
+use App\Events\Curation\Saving;
 use App\Events\Curation\Updated;
-use App\Jobs\Curations\SetOwner;
 use App\Jobs\Curations\AddStatus;
-use Illuminate\Support\Facades\Bus;
-use App\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Jobs\Curations\SetOwner;
+use App\Traits\HasNotes;
+use App\Traits\HasUuid;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 /**
  * @property Classification $currentClassificiation
@@ -68,7 +65,7 @@ class Curation extends Model implements Notable
 
     protected $with = [
         // 'currentStatus'
-        'disease'
+        'disease',
     ];
 
     protected $dispatchesEvents = [
@@ -84,8 +81,8 @@ class Curation extends Model implements Notable
         parent::boot();
 
         static::created(function ($curation) {
-            if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
-                AddStatus::dispatch($curation, CurationStatus::find(1), $curation->created_at->format("Y-m-d H:i:s"));
+            if (CurationStatus::count() > 0 && ! config('app.bulk_uploading')) {
+                AddStatus::dispatch($curation, CurationStatus::find(1), $curation->created_at->format('Y-m-d H:i:s'));
                 SetOwner::dispatch($curation, $curation->expert_panel_id, $curation->created_at);
             }
         });
@@ -138,7 +135,7 @@ class Curation extends Model implements Notable
     {
         return $this->belongsTo(CurationStatus::class, 'curation_status_id', 'id');
     }
-    
+
     public function curationType()
     {
         return $this->belongsTo(CurationType::class);
@@ -186,18 +183,14 @@ class Curation extends Model implements Notable
     {
         return $this->belongsTo(Disease::class, 'mondo_id', 'mondo_id');
     }
-    
 
     /**
      * Get all of the incomingStreamMessages for the GciCuration
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function incomingStreamMessages(): HasMany
     {
         return $this->hasMany(IncomingStreamMessage::class, 'gdm_uuid', 'gdm_uuid');
     }
-
 
     /**
      * ACCESSORS.
@@ -216,19 +209,19 @@ class Curation extends Model implements Notable
     {
         if (isset($this->attributes['expert_panel_id']) && $value == $this->attributes['expert_panel_id']) {
             $this->attributes['expert_panel_id'] = $value;
+
             return;
         }
 
-        if (!is_null($this->id)) {
+        if (! is_null($this->id)) {
             $backtrace = collect(debug_backtrace());
-            if (!$backtrace->pluck('class')->contains(SetOwner::class)) {
+            if (! $backtrace->pluck('class')->contains(SetOwner::class)) {
                 $backtrace = $backtrace->map(function ($step) {
-                    return $step['file'].":".$step['line'];
+                    return $step['file'].':'.$step['line'];
                 })->toArray();
-    
+
                 \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace);
             }
-            
         }
         $this->attributes['expert_panel_id'] = $value;
     }
@@ -239,6 +232,7 @@ class Curation extends Model implements Notable
         if ($lastStatus) {
             return $lastStatus->pivot->status_date;
         }
+
         return null;
     }
 
@@ -246,8 +240,6 @@ class Curation extends Model implements Notable
     {
         return ($this->disease) ? $this->disease->name : null;
     }
-    
-    
 
     /**
      * SCOPES.
@@ -335,17 +327,17 @@ class Curation extends Model implements Notable
 
     public function getExcludedPhenotypesAttribute()
     {
-        if (!$this->gene) {
+        if (! $this->gene) {
             return collect();
         }
         $curationPhenos = $this->phenotypes()->get();
+
         return $this->gene->phenotypes()
                 ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
                 ->select('mim_number')
                 ->orderBy('mim_number')
                 ->get();
     }
-    
 
     /**
      * MUTATORS.
@@ -372,7 +364,6 @@ class Curation extends Model implements Notable
     /**
      * DOMAIN METHODS.
      */
-    
     public static function findByUuid($uuid)
     {
         return static::where('uuid', $uuid)->first();
@@ -386,16 +377,16 @@ class Curation extends Model implements Notable
     public static function findByAnyId($curationId): ?self
     {
         $curation = null;
-        
+
         if (is_numeric($curationId)) {
             $curation = Curation::find($curationId);
         }
 
-        if (!$curation) {
+        if (! $curation) {
             $curation = Curation::findByUuid($curationId);
         }
 
-        if (!$curation) {
+        if (! $curation) {
             $curation = Curation::findByGdmUuid($curationId);
         }
 

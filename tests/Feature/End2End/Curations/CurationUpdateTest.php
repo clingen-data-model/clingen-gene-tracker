@@ -2,14 +2,12 @@
 
 namespace Tests\Feature\End2End\Curations;
 
-use Tests\TestCase;
-use App\Clients\OmimClient;
 use App\Clients\Omim\OmimEntry;
-use App\Rules\ValidHgncGeneSymbol;
 use App\Clients\Omim\OmimEntryContract;
+use App\Clients\OmimClient;
 use App\Contracts\OmimClient as ContractsOmimClient;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Rules\ValidHgncGeneSymbol;
+use Tests\TestCase;
 
 class CurationUpdateTest extends TestCase
 {
@@ -34,7 +32,7 @@ class CurationUpdateTest extends TestCase
             'page' => 'curation-types',
             'nav' => 'next',
             'curation_type_id' => '',
-            'rationales' => [['id' => 1]]
+            'rationales' => [['id' => 1]],
         ];
 
         $response = $this->actingAs($this->user, 'api')
@@ -106,12 +104,11 @@ class CurationUpdateTest extends TestCase
             'page' => 'info',
             'pmids' => 'test,beans,monkeys',
             'rationales' => [['id' => $this->rationale->id]],
-        ]);        
-        
+        ]);
+
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
-            ->assertJsonFragment(['pmids' => ["test","beans","monkeys"]]);
-
+            ->assertJsonFragment(['pmids' => ['test', 'beans', 'monkeys']]);
     }
 
     /**
@@ -121,8 +118,10 @@ class CurationUpdateTest extends TestCase
     {
         $this->assumeGeneSymbolValid();
         app()->bind('App\Contracts\OmimClient', function ($app) {
-            return new class extends OmimClient {
-                public function getEntry($omimId): OmimEntryContract {
+            return new class extends OmimClient
+            {
+                public function getEntry($omimId): OmimEntryContract
+                {
                     return new OmimEntry(json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')))->omim->entryList[0]->entry);
                 }
             };
@@ -168,6 +167,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function rationales_even_required_when_page_not_phenotypes()
@@ -190,16 +190,20 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function rationales_required_when_curation_type_not_single_and_1_phenotype()
     {
         // $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
         app()->bind(ContractsOmimClient::class, function () {
-            return new class extends OmimClient {
-                public function getGenePhenotypes($arg) {
+            return new class extends OmimClient
+            {
+                public function getGenePhenotypes($arg)
+                {
                     return collect([1]);
                 }
+
                 public function geneSymbolIsValid($geneSymbol)
                 {
                     return true;
@@ -236,6 +240,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function rationales_required_if_1_phenotype_and_type_single_omim()
@@ -247,15 +252,19 @@ class CurationUpdateTest extends TestCase
         ]);
 
         app()->bind('App\Contracts\OmimClient', function ($app) {
-            return new class extends OmimClient {
-                public function getGenePhenotypes($geneSymbol) {
+            return new class extends OmimClient
+            {
+                public function getGenePhenotypes($geneSymbol)
+                {
                     return collect([1]);
                 }
             };
         });
         app()->bind('App\Rules\ValidGeneSymbolRule', function ($app) {
-            return new class extends ValidHgncGeneSymbol {
-                public function passes($attribute, $value) {
+            return new class extends ValidHgncGeneSymbol
+            {
+                public function passes($attribute, $value)
+                {
                     return true;
                 }
             };
@@ -265,7 +274,7 @@ class CurationUpdateTest extends TestCase
         $data['page'] = 'phenotypes';
         $data['rationales'] = null;
         $data['nav'] = 'next';
-        
+
         $response = $this->actingAs($this->user, 'api')
             ->json('put', '/api/curations/'.$curation->id, $data)
             ->assertJsonFragment([
@@ -275,6 +284,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function rationales_required_if_1_phenotype_and_curation_type_other_than_single_omim()
@@ -309,6 +319,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function rationales_required_when_gene_has_more_than_1_phenotype()
@@ -344,6 +355,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function isolated_phenotype_required_when_curation_type_id_is_3()
@@ -369,6 +381,7 @@ class CurationUpdateTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-validation
      */
     public function isolated_phenotype_must_be_valid_mim_number_when_present()
@@ -411,7 +424,7 @@ class CurationUpdateTest extends TestCase
             'hgnc_id' => 666666,
             'hgnc_name' => 'beelzabub',
             'page' => 'info',
-            'rationales' => [$this->rationale]
+            'rationales' => [$this->rationale],
         ];
         $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data)
@@ -419,5 +432,4 @@ class CurationUpdateTest extends TestCase
             ->assertJsonFragment(['hgnc_id' => $curation->hgnc_id])
             ->assertJsonFragment(['hgnc_name' => $curation->hgnc_name]);
     }
-
 }

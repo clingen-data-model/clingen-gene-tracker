@@ -3,13 +3,12 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
+use App\Notifications\DigestibleNotificationInterface;
 use App\Phenotype;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class PhenotypeAddedForCurationNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -43,7 +42,7 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage);
+        return new MailMessage;
     }
 
     /**
@@ -57,7 +56,7 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
         return [
             'curation' => $this->curation->only('id', 'gene_symbol'),
             'phenotype' => $this->phenotype->only('id', 'name'),
-            'template' => 'email.digest.phenotype_added'
+            'template' => 'email.digest.phenotype_added',
         ];
     }
 
@@ -82,6 +81,7 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
     {
         return $collection;
     }
+
     public static function getDigestTemplate(): string
     {
         return 'email.digest.phenotype_added';

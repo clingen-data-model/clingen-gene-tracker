@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\ExternalApi;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class ApiDocumentationController extends Controller
 {
@@ -15,6 +14,7 @@ class ApiDocumentationController extends Controller
     public function index()
     {
         $openapi = \OpenApi\Generator::scan([app_path()]);
+
         return response($openapi->toYaml(), 200, ['Content-type' => 'application/x-yaml']);
     }
 }

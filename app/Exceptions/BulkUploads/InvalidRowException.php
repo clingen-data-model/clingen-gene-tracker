@@ -2,8 +2,6 @@
 
 namespace App\Exceptions\BulkUploads;
 
-use Exception;
-
 class InvalidRowException extends \InvalidArgumentException
 {
     protected $rowData;

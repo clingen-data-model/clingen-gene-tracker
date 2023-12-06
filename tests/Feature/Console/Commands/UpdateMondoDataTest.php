@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use App\Disease;
 use App\AppState;
-use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
+use App\Disease;
 use GuzzleHttp\ClientInterface;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Artisan;
+use Tests\MocksGuzzleRequests;
+use Tests\TestCase;
 
 /**
  * @group mondo
@@ -21,7 +19,7 @@ class UpdateMondoDataTest extends TestCase
     use DatabaseTransactions;
     use MocksGuzzleRequests;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $oboData = file_get_contents(base_path('tests/files/mondo/mondo_test.obo'));
@@ -61,7 +59,7 @@ class UpdateMondoDataTest extends TestCase
 
         $this->assertDatabaseHas('app_states', [
             'name' => 'last_mondo_update',
-            'value' => '2021-06-01 00:00:00'
+            'value' => '2021-06-01 00:00:00',
         ]);
     }
 }

@@ -2,13 +2,11 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
-use App\Curation;
-use Tests\TestCase;
 use App\Classification;
+use App\Curation;
 use App\Jobs\Curations\UpdateClassification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group classifications
@@ -28,15 +26,14 @@ class UpdateClassificationTest extends TestCase
 
         $job = new UpdateClassification($curation, $curation->classifications()->first()->pivot->id, [
             'classification_id' => $classification->id,
-            'classification_date' => '2020-01-01'
+            'classification_date' => '2020-01-01',
         ]);
         $job->handle();
 
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => $classification->id,
-            'classification_date' => '2020-01-01'
+            'classification_date' => '2020-01-01',
         ]);
     }
-    
 }

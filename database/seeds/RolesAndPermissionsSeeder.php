@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -82,7 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
     protected function giveRolePermissionTo($role, $permission)
     {
-        if (!$role->hasPermissionTo($permission)) {
+        if (! $role->hasPermissionTo($permission)) {
             $role->givePermissionTo($permission);
         }
     }

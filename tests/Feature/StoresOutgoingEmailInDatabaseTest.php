@@ -3,11 +3,9 @@
 namespace Tests\Feature;
 
 use App\Email;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 class StoresOutgoingEmailInDatabaseTest extends TestCase
 {
@@ -15,6 +13,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
 
     /**
      * @test
+     *
      * @group mail
      */
     public function stores_outgoing_mail_in_database()
@@ -30,7 +29,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
         });
 
         $email = Email::orderBy('id', 'desc')->first();
-        $this->assertEquals(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com'=>null], $email->from);
+        $this->assertEquals(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com' => null], $email->from);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->sender);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->to);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->cc);

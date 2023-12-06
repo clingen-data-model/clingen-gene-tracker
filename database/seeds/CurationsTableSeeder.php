@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\ExpertPanel;
 use App\Curation;
+use App\ExpertPanel;
 use App\User;
 use Illuminate\Database\Seeder;
 

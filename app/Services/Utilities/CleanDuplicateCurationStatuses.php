@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 class CleanDuplicateCurationStatuses
 {
     protected $backupPath;
+
     protected $table = 'curation_curation_status';
 
     public function __construct()
@@ -32,7 +33,7 @@ class CleanDuplicateCurationStatuses
                     WHERE tbl1.curation_id = tbl2.curation_id
                         AND tbl1.`curation_status_id` = tbl2.`curation_status_id`
                         AND tbl1.status_date = tbl2.`status_date`'
-                    );
+        );
     }
 
     private function backupDuplicateForRoleback()
@@ -68,6 +69,7 @@ class CleanDuplicateCurationStatuses
         while (($data = fgetcsv($fh)) !== false) {
             if (count($keys) == 0) {
                 $keys = $data;
+
                 continue;
             }
             $records[] = array_combine($keys, $data);

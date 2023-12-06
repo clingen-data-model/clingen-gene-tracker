@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Affiliation;
 use App\ExpertPanel;
 use App\Http\Requests\UserRequest as StoreRequest;
 use App\Http\Requests\UserRequest as UpdateRequest;
@@ -16,8 +15,8 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation {
         store as parentStore;
     }
@@ -139,10 +138,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             ]);
 
             \Alert::add('success', 'User '.$user->name.' deactivated successfully')->flash();
+
             return Redirect::back();
         }
 
         \Alert::add('error', 'Logged in user does not hae access to do deactivate users')->flash();
+
         return Redirect::back();
     }
 
@@ -155,10 +156,12 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             ]);
 
             \Alert::add('success', 'User '.$user->name.' reactivated successfully')->flash();
+
             return Redirect::back();
         }
 
         \Alert::add('error', 'Logged in user does not hae access to do reactivate users')->flash();
+
         return Redirect::back();
     }
 
@@ -167,7 +170,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         if ($request->expert_panels_json) {
             $expertPanels = [];
             foreach (json_decode($request->expert_panels_json) as $panel) {
-                if (!isset($panel->id)) {
+                if (! isset($panel->id)) {
                     continue;
                 }
                 unset($panel->pivot->created_at);

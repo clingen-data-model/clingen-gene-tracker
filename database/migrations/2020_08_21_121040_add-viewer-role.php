@@ -1,10 +1,8 @@
 <?php
 
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Artisan;
+use Spatie\Permission\Models\Role;
 
 class AddViewerRole extends Migration
 {

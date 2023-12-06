@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -45,9 +45,6 @@ class RegisterController extends Controller
         return $this->return403();
     }
 
-    
-  
-
     /**
      * Create a new controller instance.
      *
@@ -61,7 +58,6 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -76,7 +72,6 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \App\User
      */
     protected function create(array $data)
@@ -93,7 +88,7 @@ class RegisterController extends Controller
         $data = [];
         $data['title'] = '403';
         $data['name'] = 'Registration is closed';
-    
+
         return response()
             ->view('errors.403', $data, 403);
     }

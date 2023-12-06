@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\WorkingGroup;
 use App\Http\Resources\WorkingGroupResource;
+use App\WorkingGroup;
 
 class WorkingGroupController extends ApiController
 {

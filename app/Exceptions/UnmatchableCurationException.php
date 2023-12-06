@@ -2,8 +2,6 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
 class UnmatchableCurationException extends GciSyncException
 {
     protected $payload;

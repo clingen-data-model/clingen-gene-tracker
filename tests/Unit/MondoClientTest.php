@@ -2,15 +2,14 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
-use GuzzleHttp\Client;
 use App\Clients\MondoClient;
+use App\Contracts\MondoClient as MondoClientContract;
+use App\Exceptions\HttpNotFoundException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Handler\MockHandler;
-use App\Exceptions\HttpNotFoundException;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Contracts\MondoClient as MondoClientContract;
+use Tests\TestCase;
 
 /**
  * @group mondo
@@ -18,7 +17,6 @@ use App\Contracts\MondoClient as MondoClientContract;
  */
 class MondoClientTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -27,7 +25,6 @@ class MondoClientTest extends TestCase
         $client = app()->make(MondoClientContract::class);
         $this->assertInstanceOf(MondoClient::class, $client);
     }
-
 
     /**
      * @test
@@ -39,7 +36,6 @@ class MondoClientTest extends TestCase
         $this->expectException(HttpNotFoundException::class);
         $record = $mondoClient->fetchRecord(1298371283);
     }
-    
 
     /**
      * @test
@@ -51,10 +47,9 @@ class MondoClientTest extends TestCase
         $record = $mondoClient->fetchRecord('0043494');
 
         $expectedRecord = json_decode($json);
-        
+
         $this->assertEquals($expectedRecord, $record->getAttributes());
     }
-    
 
     private function getClient($responses)
     {
@@ -62,10 +57,11 @@ class MondoClientTest extends TestCase
         $stack = HandlerStack::create($mock);
         $guzzleClient = new Client([
             'handler' => $stack,
-            'headers'=>[
-                'Accept' => 'application/json'
-            ]
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
+
         return new MondoClient($guzzleClient);
     }
 }

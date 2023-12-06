@@ -2,21 +2,21 @@
 
 namespace Tests\Unit\Models;
 
-use App\Gene;
-use App\Upload;
-use App\Curation;
-use App\Phenotype;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Affiliation;
-use App\ExpertPanel;
-use Ramsey\Uuid\Uuid;
 use App\Classification;
+use App\Curation;
 use App\CurationStatus;
 use App\Events\Curation\Saved;
+use App\ExpertPanel;
+use App\Gene;
 use App\Jobs\Curations\AddStatus;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Phenotype;
+use App\Upload;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
 
 /**
  * @group curations
@@ -45,7 +45,6 @@ class CurationTest extends TestCase
         ]);
         $this->assertNotNull($this->curation->deleted_at);
     }
-    
 
     /**
      * @test
@@ -208,7 +207,6 @@ class CurationTest extends TestCase
 
         $this->assertEquals(Carbon::today()->addDays(2), $curation->currentStatusDate);
     }
-    
 
     /**
      * @test
@@ -394,6 +392,7 @@ class CurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group uuid
      */
     public function adds_uuid_when_creating_if_none_exists()
@@ -408,6 +407,7 @@ class CurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group uuid
      */
     public function can_find_a_curation_by_uuid()
@@ -421,6 +421,7 @@ class CurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group uuid
      */
     public function can_find_a_curation_by_gdm_uuid()
@@ -434,6 +435,7 @@ class CurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group curation-ownership
      */
     public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed()
@@ -460,7 +462,7 @@ class CurationTest extends TestCase
 
         $curation = factory(Curation::class)->create([
             'gene_symbol' => 'LMNA',
-            'hgnc_id' => 6636
+            'hgnc_id' => 6636,
         ]);
         $curation->addPhenotype($ph1);
 

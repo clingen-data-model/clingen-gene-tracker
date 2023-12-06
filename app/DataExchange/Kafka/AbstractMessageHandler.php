@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DataExchange\Kafka;
@@ -15,7 +16,7 @@ abstract class AbstractMessageHandler implements MessageHandler
     public function setNext(MessageHandler $handler): MessageHandler
     {
         $this->nextHandler = $handler;
-        
+
         return $handler;
     }
 
@@ -24,6 +25,6 @@ abstract class AbstractMessageHandler implements MessageHandler
         if ($this->nextHandler) {
             return $this->nextHandler->handle($message);
         }
-        return;
+
     }
 }

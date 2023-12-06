@@ -4,12 +4,9 @@ namespace Tests\Feature\End2End\Curations;
 
 use App\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DeleteCurationTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -19,6 +16,7 @@ class DeleteCurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group authorization
      */
     public function must_have_delete_permissions_to_delete_curation()
@@ -27,11 +25,11 @@ class DeleteCurationTest extends TestCase
             ->expertPanel
             ->users()
             ->attach(
-                $this->user->id, 
+                $this->user->id,
                 [
-                    'is_coordinator' => 0, 
-                    'can_edit_curations' => 1, 
-                    'is_curator' => 1
+                    'is_coordinator' => 0,
+                    'can_edit_curations' => 1,
+                    'is_curator' => 1,
                 ]
             );
 
@@ -42,6 +40,7 @@ class DeleteCurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group authorization
      */
     public function user_can_delete_a_curation_if_they_are_the_curator_of_curation_and_has_delete_permission()
@@ -55,6 +54,7 @@ class DeleteCurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group authorization
      */
     public function user_can_delete_a_curation_if_they_are_a_coordinator_of_expert_panel_that_owns_the_curation()
@@ -73,6 +73,7 @@ class DeleteCurationTest extends TestCase
 
     /**
      * @test
+     *
      * @group authorization
      */
     public function user_with_panel_curation_edit_perms_and_delete_curation_permission_can_delete_a_curation()
@@ -88,4 +89,5 @@ class DeleteCurationTest extends TestCase
         $this->actingAs($user, 'api')
             ->json('DELETE', '/api/curations/'.$this->curation->id)
             ->assertStatus(200);
-    }}
+    }
+}

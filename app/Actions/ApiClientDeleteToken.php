@@ -9,14 +9,14 @@ use Lorisleiva\Actions\Concerns\AsController;
 class ApiClientDeleteToken
 {
     use AsController;
-    
+
     public function handle(int $tokenId): void
     {
         $tokenModel = Sanctum::$personalAccessTokenModel;
         $token = $tokenModel::findOrFail($tokenId);
         $token->delete();
     }
-    
+
     public function asController(ActionRequest $request, $tokenId)
     {
         $this->handle($tokenId);
@@ -29,4 +29,3 @@ class ApiClientDeleteToken
         return $request->user()->hasAnyRole(['programmer', 'admin']);
     }
 }
-

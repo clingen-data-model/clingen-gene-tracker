@@ -4,19 +4,17 @@ namespace Tests\Feature;
 
 use App\Curation;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class HgncInfoAddedToCurationOnSavingTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->curation = factory(Curation::class)
                             ->make([
                                 'gene_symbol' => 'TP53',
                                 'hgnc_id' => null,
-                                'hgnc_name' => null
+                                'hgnc_name' => null,
                             ]);
     }
 
@@ -30,6 +28,4 @@ class HgncInfoAddedToCurationOnSavingTest extends TestCase
         $this->assertNotNull($this->curation->hgnc_id);
         $this->assertNotNull($this->curation->hgnc_name);
     }
-    
-    
 }

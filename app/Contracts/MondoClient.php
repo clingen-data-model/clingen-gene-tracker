@@ -6,5 +6,5 @@ use App\MondoRecord;
 
 interface MondoClient
 {
-    public function fetchRecord($mondoId):MondoRecord;
+    public function fetchRecord($mondoId): MondoRecord;
 }

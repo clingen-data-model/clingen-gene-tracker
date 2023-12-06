@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\ModeOfInheritance;
@@ -36,8 +37,8 @@ class MOIsTableSeeder extends Seeder
                     'HP:0000007',
                     'HP:0001417',
                     'HP:0032113',
-                    'HP:0001427'
-                ]) ? 1 : 0
+                    'HP:0001427',
+                ]) ? 1 : 0,
             ]);
         });
         ModeOfInheritance::updateOrCreate(
@@ -47,7 +48,7 @@ class MOIsTableSeeder extends Seeder
                 'abbreviation' => 'OTHER',
                 'parent_id' => null,
                 'hp_uri' => 'http://purl.obolibrary.org/obo/HP_0000000',
-                'curatable' => 0
+                'curatable' => 0,
             ]
         );
     }

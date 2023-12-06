@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Notifications\Disease;
 
-use Tests\TestCase;
-use Illuminate\Support\Facades\View;
-use Tests\Traits\SetsUpDiseaseWithCuration;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Notifications\DigestibleNotificationInterface;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Disease\MondoTermObsoleteNotification;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\View;
+use Tests\TestCase;
+use Tests\Traits\SetsUpDiseaseWithCuration;
 
 /**
  * @group mondo
@@ -21,7 +19,7 @@ class MondoTermObsoletedNotificationTest extends TestCase
     use DatabaseTransactions;
     use SetsUpDiseaseWithCuration;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupDiseaseWithCuration(['name' => 'bob', 'is_obsolete' => false]);
@@ -35,12 +33,12 @@ class MondoTermObsoletedNotificationTest extends TestCase
         Notification::fake();
         $this->disease->update(['is_obsolete' => true]);
         Notification::assertSentTo(
-            $this->user1, 
+            $this->user1,
             MondoTermObsoleteNotification::class,
             function ($notification) {
                 return $this->curation->id == $notification->curation->id
                     && $notification->via($this->user1) == ['mail']
-                    && !($notification instanceof DigestibleNotificationInterface);
+                    && ! ($notification instanceof DigestibleNotificationInterface);
             }
         );
     }
@@ -56,7 +54,4 @@ class MondoTermObsoletedNotificationTest extends TestCase
         $this->assertStringContainsString($this->curation->expertPanel->name, $html);
         $this->assertStringContainsString($this->curation->disease->name, $html);
     }
-    
-    
-    
 }

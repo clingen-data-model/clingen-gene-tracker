@@ -2,13 +2,11 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use App\User;
-use App\Curation;
-use Tests\TestCase;
 use App\Classification;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Curation;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group classifications
@@ -17,7 +15,7 @@ class CurationClassificationControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
         $this->actingAs(factory(User::class)->create(), 'api');
@@ -31,10 +29,10 @@ class CurationClassificationControllerTest extends TestCase
     public function store_returns_422_when_classification_id_not_found()
     {
         $this->json(
-                'POST', 
-                '/api/curations/'.$this->curation->id.'/classifications', 
-                ['classification_date' => '2020-01-01']
-            )
+            'POST',
+            '/api/curations/'.$this->curation->id.'/classifications',
+            ['classification_date' => '2020-01-01']
+        )
             ->assertStatus(422);
     }
 
@@ -44,13 +42,13 @@ class CurationClassificationControllerTest extends TestCase
     public function store_returns_422_when_classifcation_date_invalid()
     {
         $this->json(
-                'POST', 
-                '/api/curations/'.$this->curation->id.'/classifications', 
-                [
-                    'classification_id' => $this->classifications->first()->id,
-                    'classification_date' => '9/22/12'
-                ]
-            )
+            'POST',
+            '/api/curations/'.$this->curation->id.'/classifications',
+            [
+                'classification_id' => $this->classifications->first()->id,
+                'classification_date' => '9/22/12',
+            ]
+        )
             ->assertStatus(422);
     }
 
@@ -62,17 +60,17 @@ class CurationClassificationControllerTest extends TestCase
         $this->json(
             'POST',
             '/api/curations/'.$this->curation->id.'/classifications',
-                [
-                    'classification_id' => $this->classifications->first()->id,
-                    'classification_date' => '2020-01-01'
-                ]
-            )
+            [
+                'classification_id' => $this->classifications->first()->id,
+                'classification_date' => '2020-01-01',
+            ]
+        )
             ->assertStatus(200);
-        
+
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $this->curation->id,
             'classification_id' => $this->classifications->first()->id,
-            'classification_date' => '2020-01-01'
+            'classification_date' => '2020-01-01',
         ]);
     }
 
@@ -86,22 +84,17 @@ class CurationClassificationControllerTest extends TestCase
         $this->json(
             'PUT',
             '/api/curations/'.$this->curation->id.'/classifications/'.$this->curation->classifications->first()->pivot->id,
-                [
-                    'classification_id' => $this->classifications->last()->id,
-                    'classification_date' => '2022-01-01'
-                ]
-            )
+            [
+                'classification_id' => $this->classifications->last()->id,
+                'classification_date' => '2022-01-01',
+            ]
+        )
             ->assertStatus(200);
-        
+
         $this->assertDatabaseHas('classification_curation', [
             'curation_id' => $this->curation->id,
             'classification_id' => $this->classifications->last()->id,
-            'classification_date' => '2022-01-01'
+            'classification_date' => '2022-01-01',
         ]);
     }
-    
-    
-    
-    
-    
 }

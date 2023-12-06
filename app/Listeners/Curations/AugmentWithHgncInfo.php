@@ -3,9 +3,7 @@
 namespace App\Listeners\Curations;
 
 use App\Events\Curation\Saving;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Exceptions\HttpNotFoundException;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Jobs\Curations\AugmentWithHgncInfo as HgncInfoJob;
 
 class AugmentWithHgncInfo
@@ -23,7 +21,6 @@ class AugmentWithHgncInfo
     /**
      * Handle the event.
      *
-     * @param  Saving  $event
      * @return void
      */
     public function handle(Saving $event)

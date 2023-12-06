@@ -1,10 +1,11 @@
 <?php
+
 namespace App\DataExchange\Actions;
 
 use App\Curation;
-use Illuminate\Support\Facades\Bus;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\DataExchange\Notifications\MondoObsoletionCandidateNotification;
+use App\Jobs\NotifyCoordinatorsAboutCuration;
+use Illuminate\Support\Facades\Bus;
 
 class NotifyMondoObsoletionCandidate
 {
@@ -14,12 +15,11 @@ class NotifyMondoObsoletionCandidate
             ->each(function ($curation) use ($data) {
                 Bus::dispatch(
                     new NotifyCoordinatorsAboutCuration(
-                        $curation, 
-                        MondoObsoletionCandidateNotification::class, 
+                        $curation,
+                        MondoObsoletionCandidateNotification::class,
                         $data
                     )
                 );
             });
     }
-    
 }

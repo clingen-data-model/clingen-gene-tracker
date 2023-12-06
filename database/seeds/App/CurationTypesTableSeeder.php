@@ -12,7 +12,7 @@ class CurationTypesTableSeeder extends Seeder
         foreach (config('project.curation-types') as $name => $description) {
             CurationType::updateOrCreate([
                 'name' => $name,
-                'description' => $description
+                'description' => $description,
             ]);
         }
     }

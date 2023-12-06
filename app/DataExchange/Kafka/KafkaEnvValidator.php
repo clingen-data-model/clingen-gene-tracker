@@ -10,7 +10,7 @@ class KafkaEnvValidator
     {
         $ssConfig = config('dx');
         foreach (['username', 'password', 'group'] as $config) {
-            if (!isset($ssConfig[$config]) || !$ssConfig[$config]) {
+            if (! isset($ssConfig[$config]) || ! $ssConfig[$config]) {
                 throw new KafkaEnvironmentException('Missing kafka environment variable '.strtoupper($config));
             }
         }

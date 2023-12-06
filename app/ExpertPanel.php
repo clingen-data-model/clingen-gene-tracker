@@ -2,13 +2,11 @@
 
 namespace App;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
-use App\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use phpDocumentor\Reflection\Types\Boolean;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class ExpertPanel extends Model implements HasAffiliation
 {
@@ -17,6 +15,7 @@ class ExpertPanel extends Model implements HasAffiliation
     use HasAffiliationTrait;
 
     protected $revisionCreationsEnabled = true;
+
     protected $fillable = [
         'name',
         'working_group_id',
@@ -77,7 +76,6 @@ class ExpertPanel extends Model implements HasAffiliation
     {
         return $this->coordinators->count() > 0;
     }
-    
 
     public static function findByAffiliationId($affiliationId): ?ExpertPanel
     {
@@ -85,5 +83,4 @@ class ExpertPanel extends Model implements HasAffiliation
             $q->where('clingen_id', $affiliationId);
         })->first();
     }
-    
 }

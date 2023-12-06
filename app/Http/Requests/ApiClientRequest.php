@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\ApiClient;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ApiClientRequest extends FormRequest
 {
@@ -29,10 +29,10 @@ class ApiClientRequest extends FormRequest
         if ($this->id) {
             $apiClient = ApiClient::findOrFail($this->id);
         }
-        
+
         return [
             'name' => ['required', Rule::unique('api_clients', 'name')->ignore($apiClient)],
-            'contact_email' => ['required', 'email']
+            'contact_email' => ['required', 'email'],
         ];
     }
 }

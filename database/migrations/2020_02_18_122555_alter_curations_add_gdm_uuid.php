@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AlterCurationsAddGdmUuid extends Migration
 {
@@ -31,7 +31,6 @@ class AlterCurationsAddGdmUuid extends Migration
             $table->dropIndex('gdm_uuid');
 
             $table->dropColumn('gdm_uuid');
-
         });
     }
 }

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\User;
 use App\Affiliation;
 use App\ExpertPanel;
-use App\WorkingGroup;
-use Illuminate\Support\Facades\Auth;
-use Backpack\CRUD\app\Http\Controllers\CrudController;
 use App\Http\Requests\ExpertPanelRequest as StoreRequest;
 use App\Http\Requests\ExpertPanelRequest as UpdateRequest;
+use App\User;
+use App\WorkingGroup;
+use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Illuminate\Support\Facades\Auth;
 
 class ExpertPanelCrudController extends CrudController
-{    
-use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -31,7 +31,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         |--------------------------------------------------------------------------
         */
         $this->crud->setModel(ExpertPanel::class);
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/expert-panel');
+        $this->crud->setRoute(config('backpack.base.route_prefix').'/expert-panel');
         $this->crud->setEntityNameStrings('expert-panel', 'expert-panels');
 
         /*
@@ -59,40 +59,40 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'type' => 'select2',
             'attribute' => 'name',
             'options' => (function ($query) {
-                return $query->whereIn('affiliation_type_id', [3,4])
+                return $query->whereIn('affiliation_type_id', [3, 4])
                     ->orderBy('affiliation_type_id')
                     ->orderBy('name')
                     ->get();
-            })
+            }),
         ]);
 
         // ------ COLUMNS
 
         $this->crud->addColumn([
             'name' => 'id',
-            'label' => 'ID'
+            'label' => 'ID',
         ])->makeFirstColumn();
 
         $this->crud->setColumnDetails('working_group_id', [
-           'label' => "Working Group", // Table column heading
-           'type' => "select",
-           'name' => 'working_group_id', // the column that contains the ID of that connected entity;
-           'entity' => 'workingGroup', // the method that defines the relationship in your Model
-           'attribute' => "name", // foreign key attribute that is shown to user
-           'model' => WorkingGroup::class
+            'label' => 'Working Group', // Table column heading
+            'type' => 'select',
+            'name' => 'working_group_id', // the column that contains the ID of that connected entity;
+            'entity' => 'workingGroup', // the method that defines the relationship in your Model
+            'attribute' => 'name', // foreign key attribute that is shown to user
+            'model' => WorkingGroup::class,
         ]);
 
         $this->crud->setColumnDetails('affiliation_id', [
-            'label' => "Affiliation", // Table column heading
-            'type' => "select",
+            'label' => 'Affiliation', // Table column heading
+            'type' => 'select',
             'name' => 'affiliation_id', // the column that contains the ID of that connected entity;
             'entity' => 'affiliation', // the method that defines the relationship in your Model
-            'attribute' => "name", // foreign key attribute that is shown to user
-            'model' => Affiliation::class
-         ]);
+            'attribute' => 'name', // foreign key attribute that is shown to user
+            'model' => Affiliation::class,
+        ]);
 
         // ------ CRUD ACCESS
-        $this->crud->denyAccess(['list','create','update','delete']);
+        $this->crud->denyAccess(['list', 'create', 'update', 'delete']);
         if ($this->user->hasPermissionTo('list expert-panels')) {
             $this->crud->allowAccess(['list']);
         }
@@ -116,5 +116,4 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     {
         $this->crud->setValidation(UpdateRequest::class);
     }
-
 }

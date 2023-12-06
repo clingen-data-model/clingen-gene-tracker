@@ -37,7 +37,7 @@ return [
         ],
         'stack' => [
             'driver' => 'stack',
-            'channels' => (!is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack', 'syslog'] : ['daily', 'syslog'],
+            'channels' => (! is_null(env('LOG_SLACK_WEBHOOK_URL'))) ? ['daily', 'slack', 'syslog'] : ['daily', 'syslog'],
         ],
 
         'single' => [
@@ -87,7 +87,7 @@ return [
             'with' => [
                 'stream' => 'php://stderr',
             ],
-            'level' => env('LOG_LEVEL', 'debug')
+            'level' => env('LOG_LEVEL', 'debug'),
         ],
 
     ],

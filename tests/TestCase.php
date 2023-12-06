@@ -2,15 +2,14 @@
 
 namespace Tests;
 
-use Mockery;
-use App\User;
 use App\Curation;
-use JsonSerializable;
-use App\Rules\ValidGeneSymbolRule;
 use App\DataExchange\Contracts\MessagePusher;
-use Illuminate\Foundation\Exceptions\Handler;
+use App\Rules\ValidGeneSymbolRule;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use JsonSerializable;
+use Mockery;
 
 abstract class TestCase extends BaseTestCase
 {

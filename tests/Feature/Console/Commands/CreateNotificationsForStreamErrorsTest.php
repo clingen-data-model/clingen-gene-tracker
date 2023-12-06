@@ -3,8 +3,8 @@
 namespace Tests\Feature\Console\Commands;
 
 use App\Affiliation;
-use App\ExpertPanel;
 use App\DataExchange\Notifications\StreamErrorNotification;
+use App\ExpertPanel;
 use App\StreamError;
 use App\User;
 use Carbon\Carbon;

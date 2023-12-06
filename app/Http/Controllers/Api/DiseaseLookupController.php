@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Disease;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -13,7 +13,7 @@ class DiseaseLookupController extends Controller
     public function show($mondoId)
     {
         $validator = Validator::make(['mondo_id' => $mondoId], [
-            'mondo_id' => 'required|regex:/(MONDO:)?\d{7}/'
+            'mondo_id' => 'required|regex:/(MONDO:)?\d{7}/',
         ]);
         if ($validator->fails()) {
             throw new ValidationException($validator);
@@ -32,6 +32,4 @@ class DiseaseLookupController extends Controller
 
         return $results->toArray();
     }
-    
-    
 }

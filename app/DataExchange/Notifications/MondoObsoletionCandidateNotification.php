@@ -3,12 +3,10 @@
 namespace App\DataExchange\Notifications;
 
 use App\Curation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class MondoObsoletionCandidateNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -48,20 +46,23 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
         return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection->unique(function ($item) {
             return static::uniqueStringForItem($item);
         });
     }
-    public static function filterInvalid(Collection $collection):Collection
+
+    public static function filterInvalid(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function getValidUnique(Collection $collection):Collection
+
+    public static function getValidUnique(Collection $collection): Collection
     {
         return static::getUnique(static::filterInvalid($collection));
     }
+
     public static function getDigestTemplate(): string
     {
         return 'email.digest.mondo_obsoletion_candidate';

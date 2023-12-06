@@ -3,12 +3,6 @@
 namespace Tests\Feature\End2End\ExternalApi;
 
 use App\Curation;
-use App\ApiClient;
-use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Testing\TestResponse;
 
 /**
@@ -17,18 +11,20 @@ use Illuminate\Testing\TestResponse;
 class CurationShowTest extends ExternalApiTest
 {
     private Curation $curation;
+
     private string $gdmUuid;
+
     private string $gtUuid;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->gdmUuid = $this->faker()->uuid();
         $this->gtUuid = $this->faker()->uuid();
         $this->curation = factory(Curation::class)
                     ->create([
-                        'gdm_uuid' => $this->gdmUuid, 
-                        'uuid' => $this->gtUuid
+                        'gdm_uuid' => $this->gdmUuid,
+                        'uuid' => $this->gtUuid,
                     ]);
     }
 
@@ -52,7 +48,7 @@ class CurationShowTest extends ExternalApiTest
         $this->makeRequest()
             ->assertStatus(200)
             ->assertJson(['data' => [
-                'id' => $this->curation->id
+                'id' => $this->curation->id,
             ]]);
     }
 
@@ -64,10 +60,10 @@ class CurationShowTest extends ExternalApiTest
         $this->makeRequest($this->curation->uuid)
             ->assertStatus(200)
             ->assertJson(['data' => [
-                'id' => $this->curation->id
+                'id' => $this->curation->id,
             ]]);
     }
-    
+
     /**
      * @test
      */
@@ -76,10 +72,10 @@ class CurationShowTest extends ExternalApiTest
         $this->makeRequest($this->curation->gdm_uuid)
             ->assertStatus(200)
             ->assertJson(['data' => [
-                'id' => $this->curation->id
+                'id' => $this->curation->id,
             ]]);
     }
-    
+
     /**
      * @test
      */
@@ -89,8 +85,7 @@ class CurationShowTest extends ExternalApiTest
         $this->makeRequest($otherUuid)
             ->assertStatus(404);
     }
-    
-    
+
     private function makeRequest($id = null): TestResponse
     {
         $id = $id ?? $this->curation->id;
@@ -100,5 +95,4 @@ class CurationShowTest extends ExternalApiTest
             uri: '/api/v1/pre-curations/'.$id,
         );
     }
-    
 }

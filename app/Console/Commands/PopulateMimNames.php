@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Contracts\OmimClient;
-use App\Phenotype;
 use App\Curation;
+use Illuminate\Console\Command;
 
 class PopulateMimNames extends Command
 {
@@ -51,7 +50,7 @@ class PopulateMimNames extends Command
 
                     if ($genePheno) {
                         $pheno->update([
-                            'name' => $genePheno->phenotype
+                            'name' => $genePheno->phenotype,
                         ]);
                     }
                 }

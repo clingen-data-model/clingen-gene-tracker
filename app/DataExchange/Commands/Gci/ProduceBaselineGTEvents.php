@@ -3,13 +3,11 @@
 namespace App\DataExchange\Commands\Gci;
 
 use App\Curation;
-use Ramsey\Uuid\Uuid;
-use App\StreamMessage;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Bus;
 use App\Jobs\Curations\CreateStreamMessage;
+use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 
 class ProduceBaselineGTEvents extends Command
 {
@@ -52,14 +50,14 @@ class ProduceBaselineGTEvents extends Command
         $bar = $this->output->createProgressBar($curations->count());
         $curations->map(function ($curation) use ($bar) {
             $bar->advance();
-            if (!$curation->currentStatus) {
+            if (! $curation->currentStatus) {
                 return;
             }
 
             Bus::dispatchNow(
                 new CreateStreamMessage(
-                    config('dx.topics.outgoing.gt-gci-sync'), 
-                    $curation, 
+                    config('dx.topics.outgoing.gt-gci-sync'),
+                    $curation,
                     'precuration_completed'
                 )
             );
@@ -73,7 +71,6 @@ class ProduceBaselineGTEvents extends Command
             DB::table('stream_messages')->truncate();
         }
     }
-    
 
     private function getCurations(): Collection
     {
@@ -87,11 +84,10 @@ class ProduceBaselineGTEvents extends Command
 
         $query->whereNotNull('mondo_id')
             ->whereNotNull('moi_id')
-            ->whereIn('curation_status_id', [4,5,6,7,9]);
+            ->whereIn('curation_status_id', [4, 5, 6, 7, 9]);
 
         return $query->get();
     }
-    
 
     private function getLimit()
     {

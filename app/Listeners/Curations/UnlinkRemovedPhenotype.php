@@ -3,8 +3,6 @@
 namespace App\Listeners\Curations;
 
 use App\Events\Phenotypes\OmimRemovedPhenotype;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UnlinkRemovedPhenotype
 {
@@ -21,7 +19,6 @@ class UnlinkRemovedPhenotype
     /**
      * Handle the event.
      *
-     * @param  OmimRemovedPhenotype  $event
      * @return void
      */
     public function handle(OmimRemovedPhenotype $event)

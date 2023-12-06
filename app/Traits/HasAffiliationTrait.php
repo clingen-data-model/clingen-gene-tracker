@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 trait HasAffiliationTrait
 {
-    public function affiliation():BelongsTo
+    public function affiliation(): BelongsTo
     {
         return $this->belongsTo(Affiliation::class);
     }

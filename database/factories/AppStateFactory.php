@@ -11,6 +11,6 @@ $factory->define(AppState::class, function (Faker $faker) {
         'description' => $faker->sentence,
         'default' => null,
         'value' => '0',
-        'type' => 'string'
+        'type' => 'string',
     ];
 });

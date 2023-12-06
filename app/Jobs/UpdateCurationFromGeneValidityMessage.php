@@ -2,33 +2,35 @@
 
 namespace App\Jobs;
 
-use App\Curation;
 use App\Affiliation;
+use App\Curation;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Maps\GciStatusMap;
+use App\Exceptions\GciSyncException;
 use App\ExpertPanel;
+use App\Gci\GciClassificationMap;
 use App\Gci\GciMessage;
+use App\Jobs\Curations\AddClassification;
+use App\Jobs\Curations\AddStatus;
+use App\Jobs\Curations\SetOwner;
 use App\ModeOfInheritance;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Carbon;
-use App\Jobs\Curations\SetOwner;
-use App\Gci\GciClassificationMap;
-use App\Jobs\Curations\AddStatus;
-use Illuminate\Support\Facades\Bus;
-use App\Exceptions\GciSyncException;
-use Illuminate\Queue\SerializesModels;
-use App\DataExchange\Maps\GciStatusMap;
-use Illuminate\Queue\InteractsWithQueue;
-use App\Jobs\Curations\AddClassification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidityCurationUpdateJob
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $curation;
+
     protected $gciMessage;
+
     protected $statusMap;
+
     protected $classificationMap;
 
     /**
@@ -58,7 +60,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             'gdm_uuid' => $this->gciMessage->uuid,
             'affiliation_id' => ($affiliation) ? $affiliation->id : null,
             'moi_id' => $moi->id,
-            'mondo_id' => $this->gciMessage->mondoId
+            'mondo_id' => $this->gciMessage->mondoId,
         ]);
 
         if ($this->gciMessage->isCreate()) {
@@ -109,7 +111,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
         if ($this->gciMessage->hasContentNotes()) {
             $job = new AddNote(
-                subject: $this->curation, 
+                subject: $this->curation,
                 content: 'Transferred from Test GCEP 2 to Test GCEP 1.',
                 topic: 'curation transfer (via GCI)',
                 author: null
@@ -121,9 +123,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
     private function updateDisease()
     {
-
     }
-    
 
     /**
      * gene_validity_events message sets status to 'gdm_transfered' and 'disease_changed'
@@ -134,7 +134,6 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
     {
         return $status == 'gdm_transferred' || $status == 'disease_changed';
     }
-    
 
     private function addClassification()
     {
@@ -147,9 +146,5 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         } catch (GciSyncException $e) {
             report($e);
         }
-     }
-    
-    
-    
-    
+    }
 }

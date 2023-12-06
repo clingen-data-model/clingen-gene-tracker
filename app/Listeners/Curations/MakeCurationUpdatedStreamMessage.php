@@ -2,12 +2,9 @@
 
 namespace App\Listeners\Curations;
 
-use App\StreamMessage;
-use App\Events\Curation\Updated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Jobs\Curations\CreatePrecurationStreamMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
+use App\Events\Curation\Updated;
+use App\Jobs\Curations\CreatePrecurationStreamMessage;
 
 class MakeCurationUpdatedStreamMessage
 {
@@ -24,7 +21,6 @@ class MakeCurationUpdatedStreamMessage
     /**
      * Handle the event.
      *
-     * @param  Updated  $event
      * @return void
      */
     public function handle(Updated $event)

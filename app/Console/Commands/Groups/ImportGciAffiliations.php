@@ -43,7 +43,7 @@ class ImportGciAffiliations extends Command
         $this->affiliations = Affiliation::all()->keyBy('clingen_id');
 
         $filePath = $this->argument('jsonFile');
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             $this->error('File at '.$filePath.' does not exist');
         }
 
@@ -53,7 +53,7 @@ class ImportGciAffiliations extends Command
 
         foreach ($affiliations as $affiliation) {
             $this->addOrUpdateAffiliation($affiliation);
-        };
+        }
     }
 
     private function addOrUpdateAffiliation($data)
@@ -65,6 +65,7 @@ class ImportGciAffiliations extends Command
 
         if ($this->affiliationExists($data)) {
             $this->info('Affiliation *'.$data['name'].'* with clingen_id '.$data['clingen_id'].' already exists');
+
             return;
         }
 
@@ -72,12 +73,11 @@ class ImportGciAffiliations extends Command
         $this->info('Created new affiliation *'.$data['name'].'* with cligen_id '.$data['clingen_id']);
         $this->affiliations->put($affModel->clingen_id, $affModel);
     }
-    
+
     private function affiliationExists($affiliationData)
     {
         return $this->affiliations->keys()->contains($affiliationData['clingen_id']);
     }
-    
 
     private function flattenAffiliations($gciStructure)
     {
@@ -86,14 +86,14 @@ class ImportGciAffiliations extends Command
             $affiliations[] = [
                 'clingen_id' => $topLevel->affiliation_id,
                 'name' => $topLevel->affiliation_fullname,
-                'affiliation_type_id' => 1
+                'affiliation_type_id' => 1,
             ];
             if (isset($topLevel->subgroups->vcep)) {
                 $affiliations[] = [
                     'clingen_id' => $topLevel->subgroups->vcep->id,
                     'name' => $topLevel->subgroups->vcep->fullname,
                     'parent_clingen_id' => $topLevel->affiliation_id,
-                    'affiliation_type_id' => 4
+                    'affiliation_type_id' => 4,
                 ];
             }
             if (isset($topLevel->subgroups->gcep)) {
@@ -101,10 +101,11 @@ class ImportGciAffiliations extends Command
                     'clingen_id' => $topLevel->subgroups->gcep->id,
                     'name' => $topLevel->subgroups->gcep->fullname,
                     'parent_clingen_id' => $topLevel->affiliation_id,
-                    'affiliation_type_id' => 3
+                    'affiliation_type_id' => 3,
                 ];
             }
         }
+
         return $affiliations;
     }
 }

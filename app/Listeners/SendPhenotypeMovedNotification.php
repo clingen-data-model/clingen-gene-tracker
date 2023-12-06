@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Events\Phenotypes\OmimMovedPhenotype;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Curations\PhenotypeOmimEntryMoved;
@@ -23,7 +21,6 @@ class SendPhenotypeMovedNotification
     /**
      * Handle the event.
      *
-     * @param  OmimMovedPhenotype  $event
      * @return void
      */
     public function handle(OmimMovedPhenotype $event)

@@ -3,11 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Rules\ValidOmimId;
-use App\Contracts\OmimClient;
 
 /**
-* Request for a curation update request
-*/
+ * Request for a curation update request
+ */
 class CurationUpdateRequest extends CurationCreateRequest
 {
     public function rules()
@@ -31,6 +30,7 @@ class CurationUpdateRequest extends CurationCreateRequest
                 return trim($i);
             }, explode(',', $data['pmids']));
         }
+
         return $data;
     }
 
@@ -40,7 +40,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             'curation_type_id.required' => 'A curation type is required to continue',
             'rationale_ids.required' => 'You must select a rationale to continue',
             'mondo_id.regex' => 'MonDO ID must have the format "MONDO:1234567"',
-            'moi_id' => 'nullable|exists:mode_of_inheritances,id'
+            'moi_id' => 'nullable|exists:mode_of_inheritances,id',
         ];
 
         return array_merge(parent::messages(), $messages);
@@ -55,6 +55,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
+
             return $input->page == 'curation-types';
         });
 
@@ -63,6 +64,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
+
             return $input->page == 'phenotypes';
         });
 
@@ -71,6 +73,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
+
             return $input->rationale_id == 100;
         });
 
@@ -79,6 +82,7 @@ class CurationUpdateRequest extends CurationCreateRequest
             if (! $this->shouldValidate($input)) {
                 return false;
             }
+
             return $input->page == 'phenotypes'
                     && $input->curation_type_id == 3;
         });
@@ -100,6 +104,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         if ($input->nav == 'next' || $input->nav == 'finish') {
             return true;
         }
+
         return false;
     }
 }

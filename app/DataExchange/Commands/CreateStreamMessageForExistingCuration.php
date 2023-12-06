@@ -3,9 +3,8 @@
 namespace App\DataExchange\Commands;
 
 use App\Curation;
-use App\StreamMessage;
-use Illuminate\Console\Command;
 use App\Jobs\Curations\CreatePrecurationStreamMessage;
+use Illuminate\Console\Command;
 
 class CreateStreamMessageForExistingCuration extends Command
 {

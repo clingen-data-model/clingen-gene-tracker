@@ -3,10 +3,9 @@
 namespace Tests\Unit;
 
 use App\DataExchange\Events\Received;
-use Tests\TestCase;
 use App\Jobs\Gci\UpdateGciCurationFromStreamMessage;
-use App\Listeners\UpdateGciCurationFromGveMessage;
 use Illuminate\Support\Facades\Bus;
+use Tests\TestCase;
 
 class UpdateGciCurationFromGveMessageTest extends TestCase
 {
@@ -26,8 +25,8 @@ class UpdateGciCurationFromGveMessageTest extends TestCase
                     'gene' => 'HGNC:1234',
                     'condition' => 'MONDO:0000666',
                     'mode_of_inheritance' => 'HP:000005',
-                ]
-            ]
+                ],
+            ],
 
         ]);
         event(new Received($kafkaMessage));

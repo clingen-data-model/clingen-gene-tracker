@@ -15,7 +15,7 @@ class CreateTableAppStates extends Migration
     {
         if (Schema::hasTable('app_states')) {
             return;
-        };
+        }
         Schema::create('app_states', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();

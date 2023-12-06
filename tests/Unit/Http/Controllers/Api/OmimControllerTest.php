@@ -2,24 +2,25 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Tests\TestCase;
 use App\Clients\Omim\OmimEntry;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group omim
  * @group omim-controller
  * @group api
- *
  */
 class OmimControllerTest extends TestCase
 {
     use DatabaseTransactions;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->u = factory(\App\User::class)->create();
     }
+
     /**
      * @test
      */

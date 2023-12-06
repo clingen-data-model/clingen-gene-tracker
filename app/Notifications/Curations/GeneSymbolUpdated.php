@@ -3,19 +3,18 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class GeneSymbolUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
     private $curation;
+
     private $oldGeneSymbol;
 
     /**
@@ -63,7 +62,7 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
         return [
             'curation' => $this->curation,
             'oldGeneSymbol' => $this->oldGeneSymbol,
-            'template' => 'email.digest.gene_symbol_updated'
+            'template' => 'email.digest.gene_symbol_updated',
         ];
     }
 

@@ -13,5 +13,4 @@ class FeaturesController extends Controller
             'sendToGciEnabled' => config('app.send-to-gci-enabled'),
         ];
     }
-    
 }

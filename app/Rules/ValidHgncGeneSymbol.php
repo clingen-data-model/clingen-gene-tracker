@@ -6,7 +6,6 @@ use App\Gene;
 
 class ValidHgncGeneSymbol implements ValidGeneSymbolRule
 {
-
     /**
      * Create a new rule instance.
      *
@@ -35,6 +34,6 @@ class ValidHgncGeneSymbol implements ValidGeneSymbolRule
      */
     public function message()
     {
-        return ":input is not a valid HGNC gene symbol.";
+        return ':input is not a valid HGNC gene symbol.';
     }
 }

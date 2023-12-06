@@ -13,7 +13,7 @@ class AlterTableCurationsRemoveMondoName extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('curations', 'mondo_name')) {            
+        if (Schema::hasColumn('curations', 'mondo_name')) {
             Schema::table('curations', function (Blueprint $table) {
                 $table->dropColumn('mondo_name');
             });

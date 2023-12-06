@@ -59,12 +59,12 @@ class SendNotificationDigest extends Command
             if ($groupedNotifications->count() == 0) {
                 return;
             }
-            
+
             $user->notify(new CurationNotificationsDigest($groupedNotifications));
             $user->unreadNotifications
                 ->each
                 ->update([
-                    'read_at' => Carbon::now()
+                    'read_at' => Carbon::now(),
                 ]);
             $bar->advance();
         });

@@ -6,5 +6,5 @@ return [
         'clinical-domain-working-group' => 2,
         'gcep' => 3,
         'vcep' => 4,
-    ]
+    ],
 ];

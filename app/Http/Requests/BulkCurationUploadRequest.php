@@ -24,7 +24,7 @@ class BulkCurationUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'bulk_curations' => 'required'
+            'bulk_curations' => 'required',
         ];
     }
 }

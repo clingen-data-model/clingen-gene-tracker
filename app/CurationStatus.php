@@ -3,7 +3,6 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use App\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class CurationStatus extends Model
@@ -14,7 +13,7 @@ class CurationStatus extends Model
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     protected $touches = ['curations'];

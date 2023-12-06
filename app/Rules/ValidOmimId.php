@@ -10,6 +10,7 @@ use Illuminate\Contracts\Validation\Rule;
 class ValidOmimId implements Rule
 {
     protected $omim;
+
     /**
      * Create a new rule instance.
      *
@@ -31,6 +32,7 @@ class ValidOmimId implements Rule
     {
         try {
             $entry = $this->omim->getEntry($value);
+
             return $entry->isValid();
         } catch (ClientException $e) {
             if ($e->getCode() == 400) {

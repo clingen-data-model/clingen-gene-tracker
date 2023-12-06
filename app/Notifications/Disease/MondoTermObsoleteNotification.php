@@ -4,9 +4,8 @@ namespace App\Notifications\Disease;
 
 use App\Curation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class MondoTermObsoleteNotification extends Notification
 {
@@ -34,6 +33,7 @@ class MondoTermObsoleteNotification extends Notification
     public function via($notifiable)
     {
         \Log::debug('via [mail]');
+
         return ['mail'];
     }
 
@@ -47,6 +47,7 @@ class MondoTermObsoleteNotification extends Notification
     {
         $view = 'email.curations.mondo_term_obsoleted';
         \Log::debug($view);
+
         return (new MailMessage)->view($view, ['curation' => $this->curation, 'notifiable' => $notifiable]);
     }
 

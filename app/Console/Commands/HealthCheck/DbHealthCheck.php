@@ -42,6 +42,7 @@ class DbHealthCheck extends Command
             $this->info('Database is up and running.');
         } catch (\Exception $e) {
             $this->error('Database is down.');
+
             return 1;
         }
     }

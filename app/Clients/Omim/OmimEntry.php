@@ -75,7 +75,6 @@ class OmimEntry implements OmimEntryContract
             return null;
         }
     }
-    
 
     public function __get($key)
     {

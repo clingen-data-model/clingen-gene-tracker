@@ -2,12 +2,10 @@
 
 namespace App\Listeners\Disease;
 
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Events\Disease\DiseaseNameChanged;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
 use App\Notifications\Disease\NameChangedNotification;
+use Illuminate\Support\Facades\Bus;
 
 class NotifyDiseaseNameChanged
 {
@@ -24,7 +22,6 @@ class NotifyDiseaseNameChanged
     /**
      * Handle the event.
      *
-     * @param  DiseaseNameChanged  $event
      * @return void
      */
     public function handle(DiseaseNameChanged $event)
@@ -40,8 +37,8 @@ class NotifyDiseaseNameChanged
             ->each(function ($curation) use ($event) {
                 Bus::dispatch(
                     new NotifyCoordinatorsAboutCuration(
-                        $curation, 
-                        NameChangedNotification::class, 
+                        $curation,
+                        NameChangedNotification::class,
                         ['oldName' => $event->oldName]
                     )
                 );

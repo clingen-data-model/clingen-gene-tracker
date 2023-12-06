@@ -2,18 +2,12 @@
 
 namespace Tests\Feature\Notifications\Disease;
 
-use App\User;
-use App\Disease;
-use App\Curation;
-use Tests\TestCase;
-use App\Events\Disease\DiseaseNameChanged;
 use App\Notifications\DigestibleNotificationInterface;
-use Tests\Traits\SetsUpDiseaseWithCuration;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Notifications\Disease\NameChangedNotification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
+use Tests\Traits\SetsUpDiseaseWithCuration;
 
 /**
  * @group mondo
@@ -24,7 +18,7 @@ class NameChangeNotificationTest extends TestCase
     use DatabaseTransactions;
     use SetsUpDiseaseWithCuration;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->setupDiseaseWithCuration(['name' => 'bob', 'is_obsolete' => false]);
@@ -38,7 +32,7 @@ class NameChangeNotificationTest extends TestCase
         Notification::fake();
         $this->disease->update(['name' => 'New Name!!']);
         Notification::assertSentTo($this->user1, NameChangedNotification::class, function ($notification) {
-            return $notification->curation->id == $this->curation->id 
+            return $notification->curation->id == $this->curation->id
                 && $notification->oldName == 'bob'
                 && $notification->via($this->user1) == ['database']
                 && $notification instanceof DigestibleNotificationInterface;
@@ -54,7 +48,4 @@ class NameChangeNotificationTest extends TestCase
         $this->disease->update(['name' => 'New Name!!', 'is_obsolete' => true]);
         Notification::assertNotSentTo($this->user1, NameChangedNotification::class);
     }
-    
-    
-    
 }

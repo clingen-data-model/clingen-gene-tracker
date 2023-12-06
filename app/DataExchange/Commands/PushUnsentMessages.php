@@ -2,9 +2,9 @@
 
 namespace App\DataExchange\Commands;
 
+use App\DataExchange\Jobs\PushMessage;
 use App\StreamMessage;
 use Illuminate\Console\Command;
-use App\DataExchange\Jobs\PushMessage;
 
 class PushUnsentMessages extends Command
 {
@@ -40,7 +40,7 @@ class PushUnsentMessages extends Command
     public function handle()
     {
         $query = StreamMessage::unsent();
-        
+
         $progress = $this->output->createProgressBar($query->count());
 
         $query->get()->each(function ($message) use ($progress) {

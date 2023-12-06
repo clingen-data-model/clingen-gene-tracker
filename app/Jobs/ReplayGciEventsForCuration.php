@@ -2,17 +2,17 @@
 
 namespace App\Jobs;
 
-use Exception;
+use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Curation;
 use App\Gci\GciMessage;
-use Illuminate\Bus\Queueable;
 use App\IncomingStreamMessage;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use Exception;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Contracts\GeneValidityCurationUpdateJob;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 
 class ReplayGciEventsForCuration implements ShouldQueue
 {
@@ -38,8 +38,9 @@ class ReplayGciEventsForCuration implements ShouldQueue
      */
     public function handle()
     {
-        if (!$this->curation->gdm_uuid) {
+        if (! $this->curation->gdm_uuid) {
             throw new Exception('Curation '.$this->curation->id.' is not linked to a GDM.');
+
             return 1;
         }
 
@@ -52,7 +53,7 @@ class ReplayGciEventsForCuration implements ShouldQueue
                     GeneValidityCurationUpdateJob::class,
                     [
                         'curation' => $this->curation,
-                        'gciMessage' => $gciMsg
+                        'gciMessage' => $gciMsg,
                     ]
                 );
                 Bus::dispatch($job);

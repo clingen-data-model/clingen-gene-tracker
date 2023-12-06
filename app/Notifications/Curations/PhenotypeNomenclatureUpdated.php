@@ -6,17 +6,18 @@ use App\Curation;
 use App\Notifications\DigestibleNotificationInterface;
 use App\Phenotype;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 
     private $curation;
+
     private $oldName;
+
     private $phenotype;
 
     /**
@@ -55,7 +56,7 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
             [
                 'curation' => $this->curation,
                 'oldName' => $this->oldName,
-                'phenotype' => $this->phenotype
+                'phenotype' => $this->phenotype,
             ]
         );
     }
@@ -72,26 +73,30 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
             'curation' => $this->curation,
             'oldName' => $this->oldName,
             'phenotype' => $this->phenotype,
-            'template' => 'email.digest.pheno_name_updated'
+            'template' => 'email.digest.pheno_name_updated',
         ];
     }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->id;
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function filterInvalid(Collection $collection):Collection
+
+    public static function filterInvalid(Collection $collection): Collection
     {
         return $collection;
     }
-    public static function getValidUnique(Collection $collection):Collection
+
+    public static function getValidUnique(Collection $collection): Collection
     {
         return $collection;
     }
+
     public static function getDigestTemplate(): string
     {
         return 'email.digest.pheno_name_updated';

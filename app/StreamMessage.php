@@ -3,7 +3,6 @@
 namespace App;
 
 use App\DataExchange\Events\Created;
-use App\Model;
 
 class StreamMessage extends Model
 {
@@ -11,11 +10,11 @@ class StreamMessage extends Model
         'message',
         'topic',
         'sent_at',
-        'error'
+        'error',
     ];
-    
+
     protected $dates = [
-        'sent_at'
+        'sent_at',
     ];
 
     protected $dispatchesEvents = [
@@ -23,9 +22,9 @@ class StreamMessage extends Model
     ];
 
     protected $casts = [
-        'message' => 'array'
+        'message' => 'array',
     ];
-    
+
     public function scopeUnsent($query)
     {
         return $query->whereNull('sent_at');

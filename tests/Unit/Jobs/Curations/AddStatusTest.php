@@ -3,25 +3,22 @@
 namespace Tests\Unit\Jobs\Curations;
 
 use App\Curation;
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\CurationStatus;
 use App\Jobs\Curations\AddStatus;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Carbon\Carbon;
+use Tests\TestCase;
 
 /**
  * @group curations
  */
 class AddStatusTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         Carbon::setTestNow('2020-01-01 12:34:56');
         $this->curation = factory(Curation::class)->create();
     }
-
 
     /**
      * @test
@@ -38,10 +35,9 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('curations.statuses.curation-provisional'),
-            'status_date' => Carbon::now()->startOfDay()
+            'status_date' => Carbon::now()->startOfDay(),
         ]);
     }
-    
 
     /**
      * @test
@@ -59,7 +55,7 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional'),
-            'status_date' => '2019-02-01 00:00:00'
+            'status_date' => '2019-02-01 00:00:00',
         ]);
     }
 
@@ -79,10 +75,9 @@ class AddStatusTest extends TestCase
             $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
-        
+
         $this->assertEquals(2, $this->curation->statuses()->count());
     }
-    
 
     /**
      * @test
@@ -121,7 +116,7 @@ class AddStatusTest extends TestCase
 
         $this->assertDatabaseHas('curations', [
             'id' => $this->curation->id,
-            'curation_status_id' => config('project.curation-statuses.curation-provisional')
+            'curation_status_id' => config('project.curation-statuses.curation-provisional'),
         ]);
     }
 
@@ -140,7 +135,7 @@ class AddStatusTest extends TestCase
 
         $this->assertDatabaseHas('curations', [
             'id' => $this->curation->id,
-            'curation_status_id' => config('project.curation-statuses.uploaded')
+            'curation_status_id' => config('project.curation-statuses.uploaded'),
         ]);
     }
 }

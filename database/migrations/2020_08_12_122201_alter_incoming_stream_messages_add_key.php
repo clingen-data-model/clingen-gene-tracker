@@ -17,7 +17,7 @@ class AlterIncomingStreamMessagesAddKey extends Migration
         // $this->backupDuplicateMessagesForRoleback();
         $this->deleteDuplicateIncomingMessages();
 
-        if (!Schema::hasColumn('incoming_stream_messages', 'key')) {
+        if (! Schema::hasColumn('incoming_stream_messages', 'key')) {
             Schema::table('incoming_stream_messages', function (Blueprint $table) {
                 $table->string('key')->nullable()->after('topic')->unique();
                 $table->bigInteger('timestamp')->nullable()->after('offset');
@@ -55,7 +55,7 @@ class AlterIncomingStreamMessagesAddKey extends Migration
                         AND ism1.gdm_uuid = ism2.gdm_uuid
                         AND ism1.payload->>\'$.date\' = ism2.payload->>\'$.date\'
                         AND ism1.gdm_uuid IS NOT NULL'
-                    );
+        );
     }
 
     private function backupDuplicateMessagesForRoleback()
@@ -90,6 +90,7 @@ class AlterIncomingStreamMessagesAddKey extends Migration
         while (($data = fgetcsv($fh)) !== false) {
             if (count($keys) == 0) {
                 $keys = $data;
+
                 continue;
             }
             $records[] = array_combine($keys, $data);

@@ -25,7 +25,7 @@ class CurationClassificationRequest extends FormRequest
     {
         return [
             'classification_id' => 'required|exists:classifications,id',
-            'classification_date' => 'date_format:Y-m-d'
+            'classification_date' => 'date_format:Y-m-d',
         ];
     }
 }

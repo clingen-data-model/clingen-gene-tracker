@@ -3,10 +3,10 @@
 namespace App\Actions;
 
 use App\ApiClient;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Ramsey\Uuid\Uuid;
 
 class ApiClientCreate
 {
@@ -19,7 +19,7 @@ class ApiClientCreate
         return ApiClient::create([
             'name' => $name,
             'contact_email' => $email,
-            'uuid' => Uuid::uuid4()->toString()
+            'uuid' => Uuid::uuid4()->toString(),
         ]);
     }
 
@@ -30,7 +30,7 @@ class ApiClientCreate
 
         $validator = Validator::make(compact('name', 'email'), [
             'name' => 'required|max:255|unique:api_clients,name',
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         if ($validator->fails()) {
@@ -38,6 +38,7 @@ class ApiClientCreate
             foreach ($errors as $msg) {
                 $command->error($msg);
             }
+
             return;
         }
 
@@ -45,7 +46,4 @@ class ApiClientCreate
 
         $command->info('New "API Client" '.$name.' with id = '.$apiClient->id.' has been created.');
     }
-    
-
-
 }

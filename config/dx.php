@@ -44,12 +44,12 @@ return [
     'topics' => [
         'incoming' => [
             'gene-validity-events' => env('DX_INCOMING_GCI', 'gene_validity_events'),
-            'mondo-notifications' => env('DX_INCOMING_MONDO', 'mondo-notifications')
+            'mondo-notifications' => env('DX_INCOMING_MONDO', 'mondo-notifications'),
         ],
         'outgoing' => [
             'precuration-events' => env('DX_OUTGOING_PRECURATION', 'gt-precuration-events'),
             'gt-gci-sync' => env('DX_OUTGOING_GT_GCI_SYNC', 'gt-gci'),
-        ]
+        ],
     ],
 
 ];

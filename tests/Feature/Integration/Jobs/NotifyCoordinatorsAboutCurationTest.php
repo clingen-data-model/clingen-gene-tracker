@@ -2,23 +2,21 @@
 
 namespace Tests\Feature\Integration\Jobs;
 
-use App\User;
 use App\Curation;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Notification;
 use Tests\Dummies\CurationNotification;
+use Tests\TestCase;
 
 class NotifyCoordinatorsAboutCurationTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->curation = factory(Curation::class)->create(['gene_symbol' => 'BRCA1', 'curation_status_id' => 1]);
@@ -37,10 +35,8 @@ class NotifyCoordinatorsAboutCurationTest extends TestCase
         Notification::fake();
 
         Bus::dispatch(new NotifyCoordinatorsAboutCuration($this->curation, CurationNotification::class));
-        
+
         Notification::assertSentto($this->coordinator, CurationNotification::class);
         Notification::assertNotSentTo($inactiveCoord, CurationNotification::class);
     }
-    
-    
 }

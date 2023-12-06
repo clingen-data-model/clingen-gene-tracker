@@ -8,6 +8,6 @@ class CurationExpertPanel extends Pivot
 {
     protected $dates = [
         'start_date',
-        'end_date'
+        'end_date',
     ];
 }

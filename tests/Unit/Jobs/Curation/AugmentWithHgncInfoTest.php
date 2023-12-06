@@ -2,13 +2,10 @@
 
 namespace Tests\Unit\Jobs\Curation;
 
-use App\Hgnc\HgncClientContract;
 use App\Curation;
-use App\Exceptions\ApiServerErrorException;
 use App\Exceptions\HttpNotFoundException;
 use App\ExpertPanel;
 use App\Gene;
-use App\Hgnc\HgncRecord;
 use App\Jobs\Curations\AugmentWithHgncInfo;
 use App\Notifications\Curations\GeneSymbolUpdated;
 use App\User;
@@ -31,7 +28,7 @@ class AugmentWithHgncInfoTest extends TestCase
         $this->coord->expertPanels()->attach([$this->ep->id => [
             'is_coordinator' => 1,
         ]]);
-        
+
         $this->curation = factory(Curation::class)->create([
             'gene_symbol' => 'TH',
             'expert_panel_id' => $this->ep->id,
@@ -59,7 +56,7 @@ class AugmentWithHgncInfoTest extends TestCase
         $gene = factory(Gene::class)->create([
             'gene_symbol' => 'TH',
             'hgnc_name' => 'tyrosine hydroxylase',
-            'hgnc_id' => 11782
+            'hgnc_id' => 11782,
         ]);
         $job = new AugmentWithHgncInfo($this->curation);
         $job->handle();
@@ -70,6 +67,7 @@ class AugmentWithHgncInfoTest extends TestCase
 
     /**
      * @test
+     *
      * @group notifications
      * @group mail
      */
@@ -79,7 +77,7 @@ class AugmentWithHgncInfoTest extends TestCase
             'hgnc_id' => 11782,
             'gene_symbol' => 'MLTN2',
             'hgnc_name' => 'Milton Dog',
-            'previous_symbols' => ["MLTN1"],
+            'previous_symbols' => ['MLTN1'],
         ]);
 
         $this->curation->gene_symbol = 'MLTN1';

@@ -3,8 +3,6 @@
 use App\Curation;
 use App\CurationStatus;
 use App\Jobs\Curations\AddStatus;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateDataAddUplaodedStatusToCurationsWithoutStatus extends Migration
@@ -16,8 +14,6 @@ class UpdateDataAddUplaodedStatusToCurationsWithoutStatus extends Migration
      */
     public function up()
     {
-        
-        
         $uploadedStatus = CurationStatus::find(config('project.curation-statuses.uploaded'));
         Curation::doesntHave('statuses')
             ->get()
@@ -33,6 +29,5 @@ class UpdateDataAddUplaodedStatusToCurationsWithoutStatus extends Migration
      */
     public function down()
     {
-
     }
 }

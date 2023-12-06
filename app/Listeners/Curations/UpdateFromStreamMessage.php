@@ -2,12 +2,12 @@
 
 namespace App\Listeners\Curations;
 
-use App\Curation;
 use App\Contracts\GeneValidityCurationUpdateJob;
-use App\StreamError;
-use App\Gci\GciMessage;
+use App\Curation;
 use App\DataExchange\Events\Received;
 use App\Exceptions\UnmatchableCurationException;
+use App\Gci\GciMessage;
+use App\StreamError;
 use Illuminate\Contracts\Bus\Dispatcher;
 
 class UpdateFromStreamMessage
@@ -27,7 +27,6 @@ class UpdateFromStreamMessage
     /**
      * Handle the event.
      *
-     * @param  Received  $event
      * @return void
      */
     public function handle(Received $event)
@@ -42,16 +41,17 @@ class UpdateFromStreamMessage
                 'message_payload' => $e->getPayload(),
                 'direction' => 'incoming',
             ]);
+
             return;
         }
 
         $job = app()->makeWith(
-                GeneValidityCurationUpdateJob::class, 
-                [
-                    'curation' => $curation, 
-                    'gciMessage' => $gciMessage
-                ]
-            );
+            GeneValidityCurationUpdateJob::class,
+            [
+                'curation' => $curation,
+                'gciMessage' => $gciMessage,
+            ]
+        );
 
         $this->dispatcher->dispatch($job);
     }
@@ -59,19 +59,19 @@ class UpdateFromStreamMessage
     private function matchCuration(GciMessage $message)
     {
         $curation = Curation::findByGdmUuid($message->uuid);
-        if (!$curation) {
+        if (! $curation) {
             $curation = Curation::hgncAndMondo($message->hgncId, $message->mondoId)
                             ->noGdmUuid()
                             // ->whereHas('expertPanel', function ($q) use ($message) {
                             //     $q->where('affiliation_id', $message->affiliation->id);
                             // })
                             ->first();
-            
-            if (!$curation) {
+
+            if (! $curation) {
                 $curation = $this->findByHgncAndOriginalMondo($message);
             }
-                            
-            if (!$curation) {
+
+            if (! $curation) {
                 throw new UnmatchableCurationException($message->payload);
             }
         }
@@ -81,11 +81,10 @@ class UpdateFromStreamMessage
 
     private function findByHgncAndOriginalMondo(GciMessage $message)
     {
-        if (!$message->isDiseaseChange()) {
+        if (! $message->isDiseaseChange()) {
             return null;
         }
 
         return Curation::findByHgncAndMondo($message->hgncId, $message->originalDisease);
     }
-    
 }

@@ -4,13 +4,13 @@ namespace App\Jobs\Curations;
 
 use App\Curation;
 use App\GciCuration;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\SerializesModels;
 use App\Jobs\ReplayGciEventsForCuration;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Bus;
 
 /**
  * @group gci
@@ -51,7 +51,7 @@ class LinkGciCuration implements ShouldQueue
 
         $gciCuration = GciCuration::where($searchData)->first();
 
-        if (!$gciCuration) {
+        if (! $gciCuration) {
             return;
         }
 

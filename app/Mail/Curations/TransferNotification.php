@@ -7,13 +7,13 @@ use App\ExpertPanel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class TransferNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
     public Curation $curation;
+
     public ExpertPanel $previousEp;
 
     /**
@@ -36,15 +36,15 @@ class TransferNotification extends Mailable
     {
         $this->previousEp
             ->coordinators
-            ->each( function ($c) {
+            ->each(function ($c) {
                 $this->cc($c->email, $c->name);
             });
 
-            $this
-                ->view('email.curations.transfer_notification')
-                ->with([
-                    'curation' => $this->curation,
-                    'previousEp' => $this->previousEp
-                ]);
+        $this
+            ->view('email.curations.transfer_notification')
+            ->with([
+                'curation' => $this->curation,
+                'previousEp' => $this->previousEp,
+            ]);
     }
 }

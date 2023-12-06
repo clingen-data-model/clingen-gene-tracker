@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group admin
@@ -54,7 +54,6 @@ class AdminNavigationTest extends TestCase
             ->call('GET', '/admin/dashboard')
             ->assertRedirect('/admin/login');
     }
-
 
     /**
      * @test

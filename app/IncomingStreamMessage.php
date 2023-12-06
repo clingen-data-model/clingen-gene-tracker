@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Model;
-
 class IncomingStreamMessage extends Model
 {
     public $fillable = [
@@ -14,16 +12,15 @@ class IncomingStreamMessage extends Model
         'gdm_uuid',
         'offset',
         'timestamp',
-        'key'
+        'key',
     ];
 
     protected $casts = [
-        'payload' => 'object'
+        'payload' => 'object',
     ];
 
     public static function boot()
     {
         parent::boot();
     }
-    
 }

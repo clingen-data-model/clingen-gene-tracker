@@ -4,10 +4,10 @@ namespace App\Jobs;
 
 use App\StateVariable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class SetState implements ShouldQueue
 {
@@ -43,7 +43,7 @@ class SetState implements ShouldQueue
             ['name' => $this->name],
             [
                 'value' => $this->value,
-                'type' => $this->type
+                'type' => $this->type,
             ]
         );
     }

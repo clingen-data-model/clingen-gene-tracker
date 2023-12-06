@@ -4,9 +4,8 @@ namespace App\Console\Commands;
 
 use App\Curation;
 use App\CurationStatus;
-use Illuminate\Console\Command;
 use App\Jobs\Curations\UpdateCurrentStatus;
-use Symfony\Component\Console\Output\Output;
+use Illuminate\Console\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class FixStatusOrder extends Command
@@ -66,14 +65,13 @@ class FixStatusOrder extends Command
         if ($curation->created_at->timestamp > $minInstance->pivot->status_date->timestamp) {
             $this->output('setting uploaded status date to '.$minInstance->pivot->status_date);
             $curation->statuses()->updateExistingPivot(config('curations.statuses.uploaded'), ['status_date' => $minInstance->pivot->status_date]);
-        } else if ($minInstance->curation_status_id != config('curations.statuses.uploaded')) {
+        } elseif ($minInstance->curation_status_id != config('curations.statuses.uploaded')) {
             $this->output('setting uploaded status date to '.$curation->created_at);
             $curation->statuses()->updateExistingPivot(config('curations.statuses.uploaded'), ['status_date' => $curation->created_at]);
         }
 
         UpdateCurrentStatus::dispatch($curation);
     }
-    
 
     private function getCurations()
     {
@@ -84,7 +82,6 @@ class FixStatusOrder extends Command
                     $q->where('curation_status_id', '>', 1);
                 });
     }
-
 
     private function output($message, $output = 'info')
     {

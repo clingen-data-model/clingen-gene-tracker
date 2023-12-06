@@ -2,17 +2,16 @@
 
 namespace App;
 
-use DateTimeInterface;
 use App\Events\User\Created;
-use Laravel\Passport\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Lab404\Impersonate\Models\Impersonate;
+use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class User extends Authenticatable
 {
@@ -108,7 +107,6 @@ class User extends Authenticatable
             }
         );
     }
-    
 
     public function deactivateUser()
     {
@@ -129,7 +127,6 @@ class User extends Authenticatable
             $this->attributes['password'] = Hash::make($value);
         }
     }
-    
 
     public function inExpertPanel($panel)
     {
@@ -182,10 +179,10 @@ class User extends Authenticatable
     public function canBeImpersonated()
     {
         if (\Auth::user()->hasRole('admin')) {
-            return !$this->hasRole('programmer|admin');
+            return ! $this->hasRole('programmer|admin');
         }
 
-        return !$this->hasRole('programmer');
+        return ! $this->hasRole('programmer');
     }
 
     public function getPanelsCoordinating()
@@ -225,7 +222,6 @@ class User extends Authenticatable
     /**
      * SCOPES
      */
-
     public function scopeActive($query)
     {
         return $query->whereNull('deactivated_at');

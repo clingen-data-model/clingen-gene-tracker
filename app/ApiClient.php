@@ -3,11 +3,11 @@
 namespace App;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\Contracts\HasApiTokens as HasApiTokensContract;
+use Laravel\Sanctum\HasApiTokens;
 
 class ApiClient extends Model implements HasApiTokensContract
 {
@@ -19,6 +19,6 @@ class ApiClient extends Model implements HasApiTokensContract
     public $fillable = [
         'name',
         'contact_email',
-        'uuid'
+        'uuid',
     ];
 }

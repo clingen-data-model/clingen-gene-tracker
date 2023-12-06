@@ -2,15 +2,13 @@
 
 namespace App;
 
-use App\Model;
 use App\Events\Phenotypes\OmimMovedPhenotype;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Events\Phenotypes\OmimRemovedPhenotype;
 use App\Events\Phenotypes\PhenotypeNameChanged;
 use Illuminate\Database\Eloquent\Collection;
-use Venturecraft\Revisionable\RevisionableTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Phenotype extends Model
 {
@@ -25,14 +23,14 @@ class Phenotype extends Model
         'omim_entry',
         'omim_status',
         'moved_to_mim_number',
-        'moi'
+        'moi',
     ];
 
     protected $touches = ['curations'];
 
     protected $casts = [
         'omim_entry' => 'array',
-        'moved_to_mim_number' => 'array'
+        'moved_to_mim_number' => 'array',
     ];
 
     public static function boot()
@@ -59,8 +57,6 @@ class Phenotype extends Model
 
     /**
      * The genes that belong to the Phenotype
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function genes(): BelongsToMany
     {

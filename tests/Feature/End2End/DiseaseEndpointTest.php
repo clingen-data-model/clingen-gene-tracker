@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\End2End;
 
-use App\User;
 use App\Disease;
+use App\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * @group mondo
  */
 class DiseaseEndpointTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
         $this->user = factory(User::class)->create();
@@ -31,7 +29,7 @@ class DiseaseEndpointTest extends TestCase
             ->assertStatus(200)
             ->assertJsonFragment($this->disease->toArray());
     }
-    
+
     /**
      * @test
      */
@@ -41,22 +39,23 @@ class DiseaseEndpointTest extends TestCase
             ->json('GET', $this->baseUrl.'MONDO:')
             ->assertStatus(422);
     }
-    
+
     /**
      * @test
      */
     public function gets_mondo_ids_matching_string()
-    {        $d2 = factory(Disease::class)->create([
+    {
+        $d2 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:2234567',
-            'name' => 'Hypermyoplasia'
+            'name' => 'Hypermyoplasia',
         ]);
         $d3 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:1234568',
-            'name' => 'Inclusion Body Myocitis'
+            'name' => 'Inclusion Body Myocitis',
         ]);
         $d4 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:1234569',
-            'name' => 'Early Syndrom'
+            'name' => 'Early Syndrom',
         ]);
 
         $response = $this->actingAs($this->user, 'api')
@@ -66,7 +65,7 @@ class DiseaseEndpointTest extends TestCase
         $response->assertJsonFragment($d4->toArray());
         $response->assertJsonMissingExact($d2->toArray());
     }
-    
+
     /**
      * @test
      */
@@ -74,15 +73,15 @@ class DiseaseEndpointTest extends TestCase
     {
         $d2 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:2234567',
-            'name' => 'Hypermyoplasia'
+            'name' => 'Hypermyoplasia',
         ]);
         $d3 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:1234568',
-            'name' => 'Inclusion Body Myocitis'
+            'name' => 'Inclusion Body Myocitis',
         ]);
         $d4 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:1234569',
-            'name' => 'Early Syndrom'
+            'name' => 'Early Syndrom',
         ]);
 
         $this->withoutExceptionHandling();
@@ -93,6 +92,4 @@ class DiseaseEndpointTest extends TestCase
         $response->assertJsonFragment($d3->toArray());
         $response->assertJsonMissingExact($d4->toArray());
     }
-    
-    
 }

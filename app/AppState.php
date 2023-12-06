@@ -3,7 +3,6 @@
 namespace App;
 
 use Carbon\Carbon;
-use App\Model;
 
 class AppState extends Model
 {
@@ -12,7 +11,7 @@ class AppState extends Model
         'description',
         'value',
         'default',
-        'type'
+        'type',
     ];
 
     public static function findByName($name)
@@ -45,12 +44,12 @@ class AppState extends Model
         switch ($type) {
             case 'int':
             case 'integer':
-                return (int)$value;
+                return (int) $value;
             case 'bool':
             case 'boolean':
-                return (bool)$value;
+                return (bool) $value;
             case 'float':
-                return (float)$value;
+                return (float) $value;
             case 'date':
                 return Carbon::parse($value);
             case 'json':
@@ -74,7 +73,7 @@ class AppState extends Model
             case 'bool':
             case 'boolean':
             case 'float':
-                return (string)$value;
+                return (string) $value;
             default:
                 return $value;
         }

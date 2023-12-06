@@ -3,15 +3,14 @@
 namespace App\Notifications\Curations;
 
 use App\Curation;
-use App\Hgnc\HgncClientContract;
-use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use App\Exceptions\HttpNotFoundException;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Exceptions\HttpUnexpectedResponseException;
+use App\Hgnc\HgncClientContract;
 use App\Notifications\DigestibleNotificationInterface;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 
 class HgncIdNotFoundNotification extends Notification implements DigestibleNotificationInterface
 {
@@ -64,7 +63,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     {
         return [
             'curation' => $this->curation,
-            'template' => 'email.digest.hgnc_id_not_found'
+            'template' => 'email.digest.hgnc_id_not_found',
         ];
     }
 
@@ -73,27 +72,29 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
     }
 
-    public static function getUnique(Collection $collection):Collection
+    public static function getUnique(Collection $collection): Collection
     {
         return $collection->unique(function ($item) {
             return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
         });
     }
 
-    public static function filterInvalid(Collection $collection):Collection
+    public static function filterInvalid(Collection $collection): Collection
     {
         $hgncClient = app()->make(HgncClientContract::class);
+
         return $collection->filter(function ($item) use ($hgncClient) {
             $curation = Curation::find($item->data['curation']['id']);
-            if (!is_null($curation->hgnc_id)) {
+            if (! is_null($curation->hgnc_id)) {
                 return false;
             }
             if ($curation->gene_symbol == $item->data['curation']['gene_symbol']) {
                 return true;
             }
-    
+
             try {
                 $hgncClient->fetchGeneSymbol($curation->gene_symbol);
+
                 return false;
             } catch (HttpNotFoundException $e) {
                 return true;
@@ -103,7 +104,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         });
     }
 
-    public static function getValidUnique($collection):Collection
+    public static function getValidUnique($collection): Collection
     {
         return static::filterInvalid(static::getUnique($collection));
     }

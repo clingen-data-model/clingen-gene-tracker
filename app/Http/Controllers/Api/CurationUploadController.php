@@ -52,14 +52,13 @@ class CurationUploadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateUploadRequest $request, $curationId)
     {
         $curation = Curation::findOrFail($curationId);
-        if (!Auth::user()->hasAnyRole(['programmer', 'admin']) && !Auth::user()->inExpertPanel($curation->expertPanel)) {
+        if (! Auth::user()->hasAnyRole(['programmer', 'admin']) && ! Auth::user()->inExpertPanel($curation->expertPanel)) {
             return response()->json(['error' => 'You do not have permission to create a document.'], 403);
         }
 
@@ -83,9 +82,8 @@ class CurationUploadController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $curationId
-     * @param int $uploadId
-     *
+     * @param  int  $curationId
+     * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
     public function show($curationId, $uploadId)
@@ -101,11 +99,11 @@ class CurationUploadController extends Controller
         $upload = Upload::findOrFail($uploadId);
         $upload->load('category');
 
-        if (!Auth::user()->can('view', $upload)) {
+        if (! Auth::user()->can('view', $upload)) {
             return response('', 403);
         }
 
-        if (!file_exists(storage_path('app/'.$upload->file_path))) {
+        if (! file_exists(storage_path('app/'.$upload->file_path))) {
             return response(null, 404);
         }
 
@@ -115,15 +113,14 @@ class CurationUploadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int $curationId
-     * @param int $uploadId
-     *
+     * @param  int  $curationId
+     * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $curationId, $uploadId)
     {
         $upload = Upload::find($uploadId);
-        if (!Auth::user()->can('update', $upload)) {
+        if (! Auth::user()->can('update', $upload)) {
             return response(null, 403);
         }
 
@@ -136,15 +133,14 @@ class CurationUploadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $curationId
-     * @param int $uploadId
-     *
+     * @param  int  $curationId
+     * @param  int  $uploadId
      * @return \Illuminate\Http\Response
      */
     public function destroy($curationId, $uploadId)
     {
         $upload = Upload::find($uploadId);
-        if (!Auth::user()->can('delete', $upload)) {
+        if (! Auth::user()->can('delete', $upload)) {
             return response(null, 403);
         }
 

@@ -53,7 +53,6 @@ Route::group([
     Route::post('/genes', 'GeneController@index');
     Route::post('/genes/csv', 'GeneController@download');
 
-
     /*
     * Catch-all route for generic API read exposure
     **/
@@ -64,4 +63,3 @@ Route::group([
     // show
     Route::get('{model}/{id}', 'DefaultApiController@show');
 });
-

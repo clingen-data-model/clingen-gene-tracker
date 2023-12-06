@@ -13,7 +13,7 @@ class CreateUploadCategoriesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('upload_categories')) {
+        if (! Schema::hasTable('upload_categories')) {
             Schema::create('upload_categories', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('name');

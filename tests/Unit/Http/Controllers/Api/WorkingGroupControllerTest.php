@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use Tests\TestCase;
 use App\WorkingGroup;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group api
@@ -43,10 +43,10 @@ class WorkingGroupControllerTest extends TestCase
      */
     public function index_includes_expert_panels_if_requested()
     {
-        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
+        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/?with=expertPanels')
-            ->assertSee("expert_panels")
+            ->assertSee('expert_panels')
             ->assertSee($expertPanels->first()->name)
             ->assertSee($expertPanels->get(1)->name)
             ->assertSee($expertPanels->get(2)->name);
@@ -77,7 +77,7 @@ class WorkingGroupControllerTest extends TestCase
      */
     public function show_includes_expert_panels_by_default()
     {
-        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
+        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $this->group->load('expertPanels');
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/'.$this->group->id)
@@ -90,9 +90,9 @@ class WorkingGroupControllerTest extends TestCase
      */
     public function show_includes_curations_for_expert_panels_by_default()
     {
-        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
+        $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
         $curations = factory(\App\Curation::class, 2)->create([
-            'expert_panel_id' => $expertPanels->first()->id
+            'expert_panel_id' => $expertPanels->first()->id,
         ]);
 
         $this->actingAs($this->user, 'api')

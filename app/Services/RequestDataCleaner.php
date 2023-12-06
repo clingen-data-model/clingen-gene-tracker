@@ -1,13 +1,12 @@
 <?php
 
-
 namespace App\Services;
 
 use Carbon\Carbon;
 
 /**
-* Cleans request input
-*/
+ * Cleans request input
+ */
 class RequestDataCleaner
 {
     protected $dates = [];

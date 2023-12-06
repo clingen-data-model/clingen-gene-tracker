@@ -13,7 +13,7 @@ class CreateUploadsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('uploads')) {
+        if (! Schema::hasTable('uploads')) {
             Schema::create('uploads', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->unsignedInteger('curation_id');

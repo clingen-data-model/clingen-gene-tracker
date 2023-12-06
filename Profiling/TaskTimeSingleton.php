@@ -9,6 +9,7 @@ require_once __DIR__.'/TaskTimingEvent.php';
 class TaskTimeSingleton
 {
     private static $instance;
+
     private $events;
 
     public static function init(): TaskTimeSingleton

@@ -2,11 +2,9 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\Clients\Omim\OmimEntry;
 use App\Exceptions\OmimResponseException;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 /**
  * @group omim
@@ -110,7 +108,6 @@ class OmimEntryTest extends TestCase
 
         $this->assertEquals('Autosomal recessive', $entry->getMoi());
     }
-    
 
     /**
      * @test

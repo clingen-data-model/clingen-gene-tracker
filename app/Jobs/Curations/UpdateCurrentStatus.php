@@ -3,12 +3,7 @@
 namespace App\Jobs\Curations;
 
 use App\Curation;
-use App\CurationStatus;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class UpdateCurrentStatus
 {
@@ -43,7 +38,7 @@ class UpdateCurrentStatus
         $currentStatus = $curationStatuses->last();
 
         $this->curation->update([
-            'curation_status_id' => $currentStatus->id
+            'curation_status_id' => $currentStatus->id,
         ]);
     }
 }

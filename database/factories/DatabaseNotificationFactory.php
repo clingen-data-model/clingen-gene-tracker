@@ -2,11 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\User;
 use App\Curation;
+use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 use Faker\Generator as Faker;
 use Illuminate\Notifications\DatabaseNotification;
-use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 
 $factory->define(DatabaseNotification::class, function (Faker $faker) {
     return [

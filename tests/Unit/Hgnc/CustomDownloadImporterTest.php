@@ -3,16 +3,13 @@
 namespace Tests\Unit\Hgnc;
 
 use App\Gene;
-use Tests\TestCase;
-use GuzzleHttp\Client;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
-use Illuminate\Support\Facades\DB;
-use GuzzleHttp\Handler\MockHandler;
 use App\Hgnc\CustomDownloadImporter;
 use Carbon\Carbon;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+use Tests\MocksGuzzleRequests;
+use Tests\TestCase;
 
 /**
  * @group hgnc-custom-download
@@ -37,8 +34,7 @@ class CustomDownloadImporterTest extends TestCase
         $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
         $importer = $this->getImporter([new Response(200, [], $data)]);
 
-        foreach($importer->import() as $msg) {
-
+        foreach ($importer->import() as $msg) {
         }
 
         $this->assertEquals(20, DB::table('genes')->count());
@@ -94,17 +90,17 @@ class CustomDownloadImporterTest extends TestCase
         $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
         $importer = $this->getImporter([new Response(200, [], $data)]);
 
-        foreach($importer->import() as $a){}
+        foreach ($importer->import() as $a) {
+        }
 
         $this->assertEquals(20, DB::table('genes')->count());
         $this->assertDatabaseHas('genes', [
             'hgnc_id' => 5,
             'gene_symbol' => 'A1BG',
             'hgnc_name' => 'alpha-1-B glycoprotein',
-            'updated_at' => Carbon::now()
+            'updated_at' => Carbon::now(),
         ]);
     }
-    
 
     private function getImporter($responses)
     {

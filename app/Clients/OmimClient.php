@@ -2,17 +2,17 @@
 
 namespace App\Clients;
 
-use Exception;
-use GuzzleHttp\Client;
-use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\NullOmimEntry;
-use Illuminate\Support\Facades\Cache;
+use App\Clients\Omim\OmimEntry;
 use App\Clients\Omim\OmimEntryContract;
 use App\Contracts\OmimClient as OmimClientContract;
+use Exception;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cache;
 
 /**
-* Client for interacting with OMIM APi
-*/
+ * Client for interacting with OMIM APi
+ */
 class OmimClient implements OmimClientContract
 {
     protected $client;
@@ -24,18 +24,20 @@ class OmimClient implements OmimClientContract
         }
 
         $this->client = $client;
-        if (!$this->client) {
+        if (! $this->client) {
             $this->client = $this->getClient();
         }
 
-        $this->baseQuery = ['format'=>'json'];
+        $this->baseQuery = ['format' => 'json'];
     }
 
     public function fetch($path, $query)
     {
         $cacheKey = sha1($path.'?'.http_build_query($query));
-        return Cache::remember($cacheKey, 20*60, function () use ($path, $query) {
+
+        return Cache::remember($cacheKey, 20 * 60, function () use ($path, $query) {
             $response = $this->client->request('GET', $path, $query);
+
             return json_decode($response->getBody()->getContents());
         });
     }
@@ -43,7 +45,7 @@ class OmimClient implements OmimClientContract
     /**
      * Fetches one or more entries from the OMIM API
      *
-     * @param mixed $mimNumber integer or array or integers
+     * @param  mixed  $mimNumber integer or array or integers
      * @return OmimEntry omim entry
      */
     public function getEntry($mimNumber): OmimEntryContract
@@ -54,13 +56,14 @@ class OmimClient implements OmimClientContract
 
         $query = $this->buildQuery([
             'mimNumber' => $mimNumber,
-            'include'=>'geneMap'
+            'include' => 'geneMap',
         ]);
         $response = $this->fetch('entry', compact('query'));
 
         if (count($response->omim->entryList) > 0) {
             return new OmimEntry($response->omim->entryList[0]->entry);
         }
+
         return new NullOmimEntry();
     }
 
@@ -77,7 +80,7 @@ class OmimClient implements OmimClientContract
 
     public function paginatedSearch($searchString, $start = 0, $pageSize = 100)
     {
-        $query = $this->buildQuery(array_merge($searchString, ['start'=> $start, 'limit' => $pageSize,             'include'=> 'geneMap'
+        $query = $this->buildQuery(array_merge($searchString, ['start' => $start, 'limit' => $pageSize,             'include' => 'geneMap',
         ]));
         $response = $this->fetch('entry/search', compact('query'));
 
@@ -97,15 +100,15 @@ class OmimClient implements OmimClientContract
     public function geneSymbolIsValid($geneSymbol)
     {
         return $this->search([
-            'search'=>'approved_gene_symbol:'.$geneSymbol
+            'search' => 'approved_gene_symbol:'.$geneSymbol,
         ])->count() > 0;
     }
 
     public function getGenePhenotypes($geneSymbol)
     {
         $entryList = $this->search([
-            'search'=>'approved_gene_symbol:'.$geneSymbol,
-            'include'=> 'geneMap'
+            'search' => 'approved_gene_symbol:'.$geneSymbol,
+            'include' => 'geneMap',
         ]);
 
         if ($this->responseHasPhenotypeMapList($entryList)) {
@@ -126,10 +129,10 @@ class OmimClient implements OmimClientContract
     private function getClient()
     {
         return new Client([
-            'base_uri'=>'https://api.omim.org/api/',
-            'headers'=>[
-                'ApiKey' => config('app.omim_key')
-            ]
+            'base_uri' => 'https://api.omim.org/api/',
+            'headers' => [
+                'ApiKey' => config('app.omim_key'),
+            ],
         ]);
     }
 

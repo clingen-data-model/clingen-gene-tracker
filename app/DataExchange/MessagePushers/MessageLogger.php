@@ -2,14 +2,15 @@
 
 namespace App\DataExchange\MessagePushers;
 
-use Ramsey\Uuid\Uuid;
 use App\DataExchange\Contracts\MessagePusher;
+use Ramsey\Uuid\Uuid;
 
 class MessageLogger implements MessagePusher
 {
     public function topic(string $topic)
     {
         $this->topic = $topic;
+
         return $this;
     }
 

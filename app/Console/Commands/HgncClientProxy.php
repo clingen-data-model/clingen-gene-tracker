@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Hgnc\HgncClientContract;
 use Illuminate\Console\Command;
 
 class HgncClientProxy extends Command
@@ -41,7 +40,7 @@ class HgncClientProxy extends Command
         $client = app()->make(HgncClient::class);
         ['method' => $method, 'args' => $args] = $this->parseSignature($this->argument('methodsig'));
 
-        if (!method_exists($client, $method)) {
+        if (! method_exists($client, $method)) {
             $this->error('Method '.$method.'does not exist on the HGNC client');
 
             return;

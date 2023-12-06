@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 /**
  * @group roles
@@ -17,7 +15,7 @@ class NavCustomizationTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        \Artisan::call('db:seed', ['--class'=> 'RolesAndPermissionsSeeder']);
+        \Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
         $this->pr = factory(\App\User::class)->create();
         $this->pr->assignRole('programmer');
 
@@ -29,6 +27,7 @@ class NavCustomizationTest extends TestCase
 
     /**
      * @test
+     *
      * @group nav
      */
     public function programmers_can_see_admin_link()
@@ -40,6 +39,7 @@ class NavCustomizationTest extends TestCase
 
     /**
      * @test
+     *
      * @group nav
      */
     public function admins_can_see_admin_link()
@@ -51,6 +51,7 @@ class NavCustomizationTest extends TestCase
 
     /**
      * @test
+     *
      * @group nav
      */
     public function others_cannot_see_admin_link()
@@ -62,6 +63,7 @@ class NavCustomizationTest extends TestCase
 
     /**
      * @test
+     *
      * @group nav
      */
     public function guests_cannot_see_admin_link()

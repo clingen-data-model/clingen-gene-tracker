@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use GuzzleHttp\Client;
 use App\Hgnc\HgncClient;
-use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 
 trait HasHgncClient
 {
@@ -15,10 +15,11 @@ trait HasHgncClient
         $stack = HandlerStack::create($mock);
         $guzzleClient = new Client([
             'handler' => $stack,
-            'headers'=>[
-                'Accept' => 'application/json'
-            ]
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
         ]);
+
         return new HgncClient($guzzleClient);
     }
 }

@@ -2,14 +2,13 @@
 
 namespace App\Providers;
 
-use Carbon\Carbon;
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use App\Logging\ContainerRoleProcessor;
 use App\Rules\ValidGeneSymbolRule;
 use App\Rules\ValidHgncGeneSymbol;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
-use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
 
@@ -70,5 +69,4 @@ class AppServiceProvider extends ServiceProvider
             Actions::registerCommands($actionsDirs);
         }
     }
-    
 }

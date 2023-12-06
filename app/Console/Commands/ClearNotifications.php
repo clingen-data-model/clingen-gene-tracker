@@ -39,8 +39,9 @@ class ClearNotifications extends Command
     public function handle()
     {
         if (app()->environment('production')) {
-            if (!$this->confirm('You are about to clear notifications in a PRODUCTION environment.  This cannot be undone.  Are you sure you want to continue?')) {
+            if (! $this->confirm('You are about to clear notifications in a PRODUCTION environment.  This cannot be undone.  Are you sure you want to continue?')) {
                 $this->info('notificaions:clear was cancelled.');
+
                 return;
             }
         }
