@@ -21,6 +21,7 @@ services:
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}
             - MYSQL_SORT_BUFFER_SIZE=256000000
+            - DB_DATABASE_TEST=testing
         user: ${DOCKER_USER:-501:20}
 
     app:
