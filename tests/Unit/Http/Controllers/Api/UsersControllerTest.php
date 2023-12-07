@@ -13,14 +13,19 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class UsersControllerTest extends TestCase
 {
     use DatabaseTransactions;
+    
+    private $users;
+    private $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->users = factory(\App\User::class, 10)->create();
-        $this->user = factory(\App\User::class)->create();
         \Artisan::call('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
+
+        $this->user = factory(\App\User::class)->create();
         $this->user->assignRole('programmer');
+        
+        $this->users = factory(\App\User::class, 10)->create();
     }
 
     /**

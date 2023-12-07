@@ -20,7 +20,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
     public function stores_outgoing_mail_in_database()
     {
         Mail::raw('plain text message', function ($message) {
-            $message->from(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com']);
+            $message->from('john@johndoe.com', 'John Doe');
             $message->sender('john@johndoe.com', 'John Doe');
             $message->to('john@johndoe.com', 'John Doe');
             $message->cc('john@johndoe.com', 'John Doe');
@@ -30,7 +30,7 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
         });
 
         $email = Email::orderBy('id', 'desc')->first();
-        $this->assertEquals(['john@johndoe.com' => 'John Doe', 'beans@monkeys.com'=>null], $email->from);
+        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->from);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->sender);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->to);
         $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->cc);

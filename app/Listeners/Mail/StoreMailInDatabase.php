@@ -3,6 +3,7 @@
 namespace App\Listeners\Mail;
 
 use App\Email;
+use Symfony\Component\Mime\Address;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,17 +26,37 @@ class StoreMailInDatabase
      * @param  MessageSent  $event
      * @return void
      */
-    public function handle(MessageSent $event)
+    public function handle(MessageSent $event): Email
     {
-        Email::create([
-            'from' => $event->message->getFrom(),
-            'sender' => $event->message->getSender(),
-            'reply_to' => $event->message->getReplyTo(),
-            'to' => $event->message->getTo(),
-            'cc' => $event->message->getCc(),
-            'bcc' => $event->message->getBcc(),
+        // dump('text body: '.$event->message->getTextBody());
+        // dd('html body' . $event->message->getHtmlBody());
+        $record = Email::create([
+            'from' => $this->addressesToHash($event->message->getFrom()),
+            'sender' => $this->addressesToHash([$event->message->getSender()]),
+            'reply_to' => $this->addressesToHash($event->message->getReplyTo()),
+            'to' => $this->addressesToHash($event->message->getTo()),
+            'cc' => $this->addressesToHash($event->message->getCc()),
+            'bcc' => $this->addressesToHash($event->message->getBcc()),
             'subject' => $event->message->getSubject(),
-            'body' => $event->message->getBody(),
+            'body' => $event->message->getTextBody(),
         ]);
+
+        return $record;
     }
+
+    private function addressesToHash(Array|Address $addresses): array|null
+    {
+        $hash = [];
+        $presentAddresses = array_filter($addresses);
+        array_walk($presentAddresses, function ($address) use (&$hash) {
+            $hash[$address->getAddress()] = $address->getName();
+        });
+
+        if (count($hash) == 0) {
+            return null;
+        }
+
+        return $hash;
+    }
+
 }
