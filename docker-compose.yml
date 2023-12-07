@@ -46,6 +46,7 @@ services:
             REDIS_HOST: ${DOCKER_NAME:-gt}-redis
             SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8012},127.0.0.1:${APP_PORT:-8012}
             CONTAINER_ENV: ${CONTAINER_ENV:-local}
+            COMPOSER_NO_DEV: "0"
         user: ${DOCKER_USER:-501:20}
 
     nginx:
