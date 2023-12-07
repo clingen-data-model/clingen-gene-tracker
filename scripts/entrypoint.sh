@@ -7,9 +7,12 @@ env=${CONTAINER_ENV:-production}
 
 cd /srv/app
 
-if [[ -n ${APP_DO_INIT-} || ! -d vendor ]]; then
+# by default, do not install dev deps, but install them of COMPOSER_NO_DEV is set to 0
+export COMPOSER_NO_DEV=${COMPOSER_NO_DEV:-1}
+
+if [[ -v APP_DO_INIT || ! -d vendor ]]; then
     echo "Running composer install..."
-    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev --no-suggest
+    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-suggest
     composer dump-autoload
 fi
 
