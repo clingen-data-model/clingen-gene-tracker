@@ -1,4 +1,4 @@
-FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.0:v1.1.3
+FROM ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6
 
 LABEL maintainer="UNC ClinGen Infrastructure Team" \
     io.openshift.tags="gene-tracker:v1" \
