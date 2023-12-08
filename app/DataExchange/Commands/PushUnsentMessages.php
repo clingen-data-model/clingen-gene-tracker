@@ -44,7 +44,7 @@ class PushUnsentMessages extends Command
         $progress = $this->output->createProgressBar($query->count());
 
         $query->get()->each(function ($message) use ($progress) {
-            PushMessage::dispatchNow($message);
+            PushMessage::dispatchSync($message);
             $progress->advance();
         });
         $progress->finish();

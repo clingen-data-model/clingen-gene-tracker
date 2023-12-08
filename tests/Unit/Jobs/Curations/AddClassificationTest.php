@@ -77,13 +77,13 @@ class AddClassificationTest extends TestCase
         $job = new AddClassification($curation, $classification, '2020-02-25');
         $job->handle();
 
-        AddClassification::dispatchNow(
+        AddClassification::dispatchSync(
             $curation->fresh(), 
             Classification::find(config('project.classifications.moderate')),
             '2019-12-01'
         );
 
-        AddClassification::dispatchNow(
+        AddClassification::dispatchSync(
             $curation->fresh(), 
             Classification::find(config('project.classifications.moderate')),
             '2019-12-01'

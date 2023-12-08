@@ -4,155 +4,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Look & feel customizations
-    |--------------------------------------------------------------------------
-    |
-    | Make it yours.
-    |
-    */
-
-    // Date & Datetime Format Syntax: https://carbon.nesbot.com/docs/#api-localization
-    'default_date_format'     => 'm/d/y',
-    'default_datetime_format' => 'm/d/y h:i a',
-
-    // Direction, according to language
-    // (left-to-right vs right-to-left)
-    'html_direction' => 'ltr',
-
-    // ----
-    // HEAD
-    // ----
-
-    // Project name. Shown in the window title.
-    'project_name' => 'CLINGEN',
-
-    // When clicking on the admin panel's top-left logo/name,
-    // where should the user be redirected?
-    // The string below will be passed through the url() helper.
-    // - default: '' (project root)
-    // - alternative: 'admin' (the admin's dashboard)
-    'home_link' => '',
-
-    // Content of the HTML meta robots tag to prevent indexing and link following
-    'meta_robots_content' => 'noindex, nofollow',
-
-    // ------
-    // STYLES
-    // ------
-
-    // CSS files that are loaded in all pages, using Laravel's asset() helper
-    'styles' => [
-        'packages/backpack/base/css/bundle.css',
-
-        // Here's what's inside the bundle:
-        // 'packages/@digitallyhappy/backstrap/css/style.min.css',
-        // 'packages/animate.css/animate.min.css',
-        // 'packages/noty/noty.css',
-
-        // Load the fonts separately (so that you can replace them at will):
-        'packages/source-sans-pro/source-sans-pro.css',
-        'packages/line-awesome/css/line-awesome.min.css',
-
-        // Example (the fonts above, loaded from CDN instead)
-        // 'https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css',
-        // 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
-
-        // Example (load font-awesome instead of line-awesome):
-        // 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css',
-    ],
-
-    // CSS files that are loaded in all pages, using Laravel's mix() helper
-    'mix_styles' => [ // file_path => manifest_directory_path
-        // 'css/app.css' => '',
-    ],
-
-    // ------
-    // HEADER
-    // ------
-
-    // Menu logo. You can replace this with an <img> tag if you have a logo.
-    'project_logo'   => '<b>Gene</b>Tracker',
-
-    // Show / hide breadcrumbs on admin panel pages.
-    'breadcrumbs' => true,
-
-    // Horizontal navbar classes. Helps make the admin panel look similar to your project's design.
-    'header_class' => 'app-header bg-light border-0 navbar',
-    // For background colors use: bg-dark, bg-primary, bg-secondary, bg-danger, bg-warning, bg-success, bg-info, bg-blue, bg-light-blue, bg-indigo, bg-purple, bg-pink, bg-red, bg-orange, bg-yellow, bg-green, bg-teal, bg-cyan, bg-white
-    // For links to be visible on different background colors use: "navbar-dark", "navbar-light", "navbar-color"
-
-    // ----
-    // BODY
-    // ----
-
-    // Body element classes.
-    'body_class' => 'app aside-menu-fixed sidebar-lg-show',
-    // Try sidebar-hidden, sidebar-fixed, sidebar-compact, sidebar-lg-show
-
-    // Sidebar element classes.
-    'sidebar_class' => 'sidebar sidebar-pills bg-light',
-    // Remove "sidebar-transparent" for standard sidebar look
-    // Try "sidebar-light" or "sidebar-dark" for dark/light links
-    // You can also add a background class like bg-dark, bg-primary, bg-secondary, bg-danger, bg-warning, bg-success, bg-info, bg-blue, bg-light-blue, bg-indigo, bg-purple, bg-pink, bg-red, bg-orange, bg-yellow, bg-green, bg-teal, bg-cyan
-
-    // ------
-    // FOOTER
-    // ------
-
-    // Footer element classes.
-    'footer_class' => 'app-footer d-print-none',
-    // hide it with d-none
-    // change background color with bg-dark, bg-primary, bg-secondary, bg-danger, bg-warning, bg-success, bg-info, bg-blue, bg-light-blue, bg-indigo, bg-purple, bg-pink, bg-red, bg-orange, bg-yellow, bg-green, bg-teal, bg-cyan, bg-white
-
-    // Developer or company name. Shown in footer.
-    'developer_name' => 'Cristian Tabacitu',
-
-    // Developer website. Link in footer. Type false if you want to hide it.
-    'developer_link' => 'http://tabacitu.ro',
-
-    // Show powered by Laravel Backpack in the footer? true/false
-    'show_powered_by' => true,
-
-    // -------
-    // SCRIPTS
-    // -------
-
-    // JS files that are loaded in all pages, using Laravel's asset() helper
-    'scripts' => [
-        // Backstrap includes jQuery, Bootstrap, CoreUI, PNotify, Popper
-        'packages/backpack/base/js/bundle.js',
-
-        // examples (everything inside the bundle, loaded from CDN)
-        // 'https://code.jquery.com/jquery-3.4.1.min.js',
-        // 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js',
-        // 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',
-        // 'https://unpkg.com/@coreui/coreui/dist/js/coreui.min.js',
-        // 'https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
-        // 'https://unpkg.com/sweetalert/dist/sweetalert.min.js',
-        // 'https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js'
-
-        // examples (VueJS or React)
-        // 'https://unpkg.com/vue@2.4.4/dist/vue.min.js',
-        // 'https://unpkg.com/react@16/umd/react.production.min.js',
-        // 'https://unpkg.com/react-dom@16/umd/react-dom.production.min.js',
-    ],
-
-    // JS files that are loaded in all pages, using Laravel's mix() helper
-    'mix_scripts' => [// file_path => manifest_directory_path
-        // 'js/app.js' => '',
-    ],
-
-    // -------------
-    // CACHE-BUSTING
-    // -------------
-
-    // All JS and CSS assets defined above have this string appended as query string (?v=string).
-    // If you want to manually trigger cachebusting for all styles and scripts,
-    // append or prepent something to the string below, so that it's different.
-    'cachebusting_string' => \PackageVersions\Versions::getVersion('backpack/crud'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Registration Open
     |--------------------------------------------------------------------------
     |
@@ -163,7 +14,7 @@ return [
     | By default the registration is open only on localhost.
     */
 
-    'registration_open' => env('BACKPACK_REGISTRATION_OPEN', false),
+    'registration_open' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -194,7 +45,8 @@ return [
     */
 
     // Fully qualified namespace of the User model
-    'user_model_fqn' => \App\User::class,
+    // 'user_model_fqn' => App\Models\BackpackUser::class,
+    'user_model_fqn' => App\User::class,
 
     // The classes for the middleware to check if the visitor is an admin
     // Can be a single class or an array of clases
@@ -211,12 +63,12 @@ return [
     // Username column for authentication
     // The Backpack default is the same as the Laravel default (email)
     // If you need to switch to username, you also need to create that column in your db
-    'authentication_column'      => 'email',
+    'authentication_column' => 'email',
     'authentication_column_name' => 'Email',
 
     // The guard that protects the Backpack admin panel.
     // If null, the config.auth.defaults.guard value will be used.
-    'guard' => 'web',
+    'guard' => null,
 
     // The password reset configuration for Backpack.
     // If null, the config.auth.defaults.passwords value will be used.
@@ -228,22 +80,6 @@ return [
     // - placehold (generic image with his first letter)
     // - example_method_name (specify the method on the User model that returns the URL)
     'avatar_type' => 'gravatar',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Theme (User Interface)
-    |--------------------------------------------------------------------------
-    */
-    // Change the view namespace in order to load a different theme than the one Backpack provides.
-    // You can create child themes yourself, by creating a view folder anywhere in your resources/views
-    // and choosing that view_namespace instead of the default one. Backpack will load a file from there
-    // if it exists, otherwise it will load it from the default namespace ("backpack::").
-
-    'view_namespace' => 'backpack::',
-
-    // EXAMPLE: if you create a new folder in resources/views/vendor/myname/mypackage,
-    // your namespace would be the one below. IMPORTANT: in this case the namespace ends with a dot.
-    // 'view_namespace' => 'vendor.myname.mypackage.',
 
     /*
     |--------------------------------------------------------------------------

@@ -10,8 +10,6 @@ use Carbon\Carbon;
 */
 class RequestDataCleaner
 {
-    protected $dates = [];
-
     public function clean($data, $options)
     {
         $this->parseOptions($options);

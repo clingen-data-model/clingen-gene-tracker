@@ -38,7 +38,7 @@ class CurationCurationStatusController extends Controller
 
         $curation = Curation::findOrFail($curationId);
         $status = CurationStatus::find($request->curation_status_id);
-        AddStatus::dispatchNow($curation, $status, $request->status_date);
+        AddStatus::dispatchSync($curation, $status, $request->status_date);
         
         return $curation->curationStatuses()
                 ->where('curation_status_id', $curation->curation_status_id)
@@ -101,7 +101,7 @@ class CurationCurationStatusController extends Controller
             ->pivot
             ->delete();
 
-        Bus::dispatchNow(new UpdateCurrentStatus($curation));
+        Bus::dispatchSync(new UpdateCurrentStatus($curation));
 
         return response()->json([], 204);
     }

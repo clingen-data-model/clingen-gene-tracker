@@ -2369,9 +2369,9 @@ namespace Illuminate\Support\Facades {
          * @return mixed
          * @static
          */
-        public static function dispatchNow($command, $handler = null)
+        public static function dispatchSync($command, $handler = null)
         {
-            return \Illuminate\Bus\Dispatcher::dispatchNow($command, $handler);
+            return \Illuminate\Bus\Dispatcher::dispatchSync($command, $handler);
         }
         
         /**

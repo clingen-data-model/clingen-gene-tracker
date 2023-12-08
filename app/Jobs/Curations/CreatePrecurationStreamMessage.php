@@ -44,6 +44,6 @@ class CreatePrecurationStreamMessage implements ShouldQueue
                     $this->curation, 
                     $this->eventType
                 );
-        Bus::dispatchNow($job);
+        Bus::dispatchSync($job);
     }
 }
