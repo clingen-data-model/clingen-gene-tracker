@@ -14,16 +14,13 @@ class StreamMessage extends Model
         'error'
     ];
     
-    protected $dates = [
-        'sent_at'
-    ];
-
     protected $dispatchesEvents = [
         'created' => Created::class,
     ];
 
     protected $casts = [
-        'message' => 'array'
+        'message' => 'array',
+        'sent_at' => 'datetime',
     ];
     
     public function scopeUnsent($query)

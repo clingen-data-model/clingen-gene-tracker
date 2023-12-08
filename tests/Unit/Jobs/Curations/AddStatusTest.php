@@ -69,13 +69,13 @@ class AddStatusTest extends TestCase
     public function does_not_add_status_if_new_status_matches_current_status()
     {
         Carbon::setTestNow('2020-01-15');
-        AddStatus::dispatchNow(
+        AddStatus::dispatchSync(
             $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
 
         Carbon::setTestNow('2020-02-01');
-        AddStatus::dispatchNow(
+        AddStatus::dispatchSync(
             $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
@@ -89,13 +89,13 @@ class AddStatusTest extends TestCase
      */
     public function does_not_add_previously_added_status_if_date_matches_existing_status_date()
     {
-        AddStatus::dispatchNow(
+        AddStatus::dispatchSync(
             $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
             '2019-12-01'
         );
 
-        AddStatus::dispatchNow(
+        AddStatus::dispatchSync(
             $this->curation->fresh(),
             CurationStatus::find(config('project.curation-statuses.curation-provisional')),
             '2019-12-01'

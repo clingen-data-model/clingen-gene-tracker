@@ -58,7 +58,7 @@ class CurationController extends Controller
         try {
             $curation = Curation::create($data);
             if ($request->phenotypes) {
-                SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+                SyncPhenotypes::dispatchSync($curation, $request->phenotypes);
             }
             if ($request->curation_status_id) {
                 AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
@@ -147,12 +147,12 @@ class CurationController extends Controller
     private function setPhenotypes(Curation $curation, $request)
     {
         if ($request->phenotypes) {
-            SyncPhenotypes::dispatchNow($curation, $request->phenotypes);
+            SyncPhenotypes::dispatchSync($curation, $request->phenotypes);
         }
 
         if ($request->isolated_phenotype) {
             $pheno = $this->omim->getEntry($request->isolated_phenotype);
-            SyncPhenotypes::dispatchNow($curation, [
+            SyncPhenotypes::dispatchSync($curation, [
                 [
                     'mim_number' => $pheno->mimNumber,
                     'name' => $pheno->titles->preferredTitle,

@@ -56,7 +56,7 @@ class ProduceBaselineGTEvents extends Command
                 return;
             }
 
-            Bus::dispatchNow(
+            Bus::dispatchSync(
                 new CreateStreamMessage(
                     config('dx.topics.outgoing.gt-gci-sync'), 
                     $curation, 

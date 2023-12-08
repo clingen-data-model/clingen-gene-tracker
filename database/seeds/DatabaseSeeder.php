@@ -49,11 +49,11 @@ class DatabaseSeeder extends Seeder
 
     private function isTesting() 
     {
-        return \DB::getDatabaseName() == 'testing';
+        return app()->environment() == 'testing';
     }
 
     private function isLocal()
     {
-        return \DB::getDatabaseName() == 'local';
+        return app()->environment() == 'local';
     }
 }
