@@ -16,9 +16,13 @@ use App\Contracts\OmimClient as OmimClientContract;
 class OmimClient implements OmimClientContract
 {
     protected $client;
+    private $baseQuery;
 
     public function __construct($client = null)
     {
+        if (!config('app.omim_key')) {
+            throw new Exception('No OMIM_API_KEY environment variable.  Things will fail until you set this to an activate key.');
+        }
         if ($client && get_class($client) != Client::class) {
             throw new Exception('Bad client exception');
         }
