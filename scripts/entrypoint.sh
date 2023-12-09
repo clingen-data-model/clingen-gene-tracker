@@ -8,8 +8,13 @@ env=${CONTAINER_ENV:-production}
 cd /srv/app
 
 if [[ -n ${APP_DO_INIT-} || ! -d vendor ]]; then
-    echo "Running composer install..."
-    composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev --no-suggest
+    if [[$env != "local"]]; then
+        echo "Running composer install for production or demo..."
+        composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-dev --no-suggest
+    else
+        echo "Running composer install with dev dependencies for development..."
+        composer install --no-interaction --no-plugins --no-scripts --prefer-dist --no-suggest
+    fi
     composer dump-autoload
 fi
 
@@ -33,6 +38,8 @@ if [[ $env != "local" ]]; then
     php artisan event:cache
     php artisan clear-compiled
     php artisan notify:deployed
+else
+    echo "This is a local environment do not cache the config"
 fi
 
 # the old (pre-nginx) command:
