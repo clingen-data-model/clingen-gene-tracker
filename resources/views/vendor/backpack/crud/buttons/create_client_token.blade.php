@@ -1,5 +1,5 @@
 @php
-$operationUrl = \Request::root().'/admin/api-client/'.$entry->getKey().'/create-token'
+    $operationUrl = \Request::root().'/admin/api-client/'.$entry->getKey().'/create-token'
 @endphp
 <a
     class="btn btn-sm btn-link" 
