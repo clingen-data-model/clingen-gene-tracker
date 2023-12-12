@@ -74,24 +74,15 @@ class KafkaConsumer implements MessageConsumer
     {
         $availableTopics = $this->kafkaConsumer->getMetadata(true, null, (60*100))->getTopics();
 
-        $topics = [];
-        foreach($availableTopics as $topic) {
-            $topics[] = [
-                'name' => $topic->getName(),
-                'offset' => $topic->getOffset()
-            ];
-        };
-
-        return $topics;
-        // return array_map(
-        //     function ($topic) {
-        //         return [
-        //             'name' => $topic->getName(),
-        //             'offset' => $topic->getOffset()
-        //         ];
-        //     },
-        //     $availableTopics
-        // );
+        return array_map(
+            function ($topic) {
+                return [
+                    'name' => $topic->getName(),
+                    'offset' => $topic->getOffset()
+                ];
+            },
+            $availableTopics
+        );
     }
     
 
