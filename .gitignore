@@ -23,6 +23,7 @@ tests/files/omim_api/full_genemap2.txt
 yarn-error.log
 
 /.docker/mysql/db-init/*.sql.gz
+.docker/mysql/db-init/testing-init.sql
 
 # things that composer and related tools may drop in $HOME
 /.config
