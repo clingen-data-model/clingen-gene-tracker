@@ -47,6 +47,7 @@ services:
             SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8012},127.0.0.1:${APP_PORT:-8012}
             CONTAINER_ENV: ${CONTAINER_ENV:-local}
             COMPOSER_NO_DEV: "0"
+            COMPOSER_AUTH: ${COMPOSER_AUTH:?You must provide valid Backpack credentials in COMPOSER_AUTH (see the .env.example)}
         user: ${DOCKER_USER:-501:20}
 
     nginx:
