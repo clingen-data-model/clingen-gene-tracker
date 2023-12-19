@@ -38,12 +38,9 @@ class Gene extends Model
         'date_name_changed'
     ];
 
-    protected $dates = [
-        'date_modified',
-        'date_approved',
-    ];
-
     protected $casts = [
+        'date_modified' => 'datetime',
+        'date_approved' => 'datetime',
         'previous_symbols' => 'array',
         'alias_symbols' => 'array',
     ];

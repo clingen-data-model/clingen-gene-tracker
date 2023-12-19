@@ -23,7 +23,7 @@ class CurationClassificationController extends Controller
         $curation = Curation::findOrFail($curationId);
         $classification = Classification::find($request->classification_id);
         
-        AddClassification::dispatchNow($curation, $classification, $request->classification_date);
+        AddClassification::dispatchSync($curation, $classification, $request->classification_date);
         
         return $curation->classifications()->orderBy('classification_curation.created_at', 'desc')->first();
     }
@@ -41,7 +41,7 @@ class CurationClassificationController extends Controller
     {
         $curation = Curation::findOrFail($curationId);
 
-        UpdateClassification::dispatchNow($curation, $curationClassificationId, $request->all());
+        UpdateClassification::dispatchSync($curation, $curationClassificationId, $request->all());
 
         return $curation->classifications()
                 ->where('classification_curation.id', $curationClassificationId)

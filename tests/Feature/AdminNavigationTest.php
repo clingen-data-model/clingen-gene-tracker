@@ -13,6 +13,8 @@ class AdminNavigationTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $u;
+
     public function setUp(): void
     {
         parent::setUp();

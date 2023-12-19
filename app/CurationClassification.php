@@ -12,7 +12,7 @@ class CurationClassification extends Pivot
         'classification_date'
     ];
 
-    protected $dates = [
-        'classification_date'
+    protected $casts = [
+        'classification_date' => 'datetime'
     ];
 }

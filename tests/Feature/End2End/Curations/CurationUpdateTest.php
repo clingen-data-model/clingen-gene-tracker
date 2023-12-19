@@ -13,6 +13,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CurationUpdateTest extends TestCase
 {
+    private $user, $panel, $curation, $rationale, $curationType;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -194,7 +196,6 @@ class CurationUpdateTest extends TestCase
      */
     public function rationales_required_when_curation_type_not_single_and_1_phenotype()
     {
-        // $this->markTestIncomplete('Can not test this b/c can not figure out how to mock OmimClient in http test');
         app()->bind(ContractsOmimClient::class, function () {
             return new class extends OmimClient {
                 public function getGenePhenotypes($arg) {

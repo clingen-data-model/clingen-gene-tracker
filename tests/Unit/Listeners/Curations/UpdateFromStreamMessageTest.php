@@ -227,7 +227,7 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         $curation = $this->createDICER1();
         $curationStatus = CurationStatus::find(config('curations.statuses.approved'));
-        AddStatus::dispatchNow($curation, $curationStatus, '2019-01-08 18:16:30');
+        AddStatus::dispatchSync($curation, $curationStatus, '2019-01-08 18:16:30');
 
         $payload = json_decode(file_get_contents($this->approvedWithStatusDateMsgPath));
         $kafkaMessage = $this->makeMessage(json_encode($payload));
