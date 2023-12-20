@@ -89,7 +89,15 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover"
         ],
-        "post-install-cmd": ["php artisan storage:link --quiet"]
+        "post-install-cmd": ["php artisan storage:link --quiet"],
+        "test": [
+            "@php artisan clear-compiled",
+            "@php artisan storage:link",
+            "@php artisan config:clear",
+            "@php artisan cache:clear",
+            "@php artisan view:clear",
+            "@php artisan test"
+        ]
     },
     "config": {
         "preferred-install": "dist",
