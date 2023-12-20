@@ -42,7 +42,6 @@ class CustomDownloadImporter
     public function __construct(Client $guzzleClient)
     {
         $this->client = $guzzleClient;
-        $this->tmpPath = base_path('storage/tmp/hgnc_custom_download.csv');
     }
 
     public function import($params = null)
@@ -119,12 +118,7 @@ class CustomDownloadImporter
 
     public function fetchCustomDownload(array $params): String
     {
-        if (file_exists($this->tmpPath)) {
-            Log::info('Using temp file.');
-            return file_get_contents($this->tmpPath);
-        }
-
-        Log::info('No temp file; getting data from hgnc.');
+        Log::info('Getting data from hgnc.');
         $queryString = $this->queryStringFromParams($params);
 
         $url = 'www.genenames.org/cgi-bin/download/custom?'.$queryString;
@@ -132,10 +126,7 @@ class CustomDownloadImporter
 
         $response = $this->client->request('GET', $url);
         $contents = $response->getBody()->getContents();
-        Log::debug('Got response');
-        
-        file_put_contents($this->tmpPath, $contents);
-        Log::debug('Wrote contents to '.$this->tmpPath);
+        Log::debug('Got response with length'.strlen($contents));
         
         return $contents;
     }
