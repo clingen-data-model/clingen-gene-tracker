@@ -48,8 +48,18 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setFromDb();
 
         $this->crud->removeColumns(['cc', 'bcc', 'reply_to', 'sender']);
-        $this->crud->setColumnsDetails(['from','to'], ['type' => 'json_email']);
-        $this->crud->addColumn(['type' => 'datetime', 'name' => 'created_at', 'label' => 'Sent'])->makeFirstColumn();
+        $this->crud->setColumnsDetails(['from','to'],
+            ['type' => 'json_email']);
+        $this->crud->setColumnsDetails(['body'], [
+            'escaped' => false,
+            'visibleInTable' => false,
+        ]);
+        $this->crud->addColumn([
+            'type' => 'datetime',
+            'name' => 'created_at',
+            'label' => 'Sent',
+            'format' => 'MM/DD/YYYY h:mm a',
+        ])->makeFirstColumn();
 
         $this->crud->orderBy('created_at', 'DESC');
     }

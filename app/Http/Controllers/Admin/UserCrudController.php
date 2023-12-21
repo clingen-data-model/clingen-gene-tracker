@@ -33,6 +33,17 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     {
         $this->user = Auth::user();
 
+        // defining this up front so it can be a column and a field (is there a better way to do this?)
+        $roleInfo = [
+            'label' => 'Roles',
+            'type' => 'select2_multiple',
+            'name' => 'roles',
+            'entity' => 'roles',
+            'attribute' => 'name',
+            'model' => Role::class,
+            'pivot' => true,
+        ];
+
         /*
         |--------------------------------------------------------------------------
         | BASIC CRUD INFORMATION
@@ -42,13 +53,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setRoute(config('backpack.base.route_prefix').'/user');
         $this->crud->setEntityNameStrings('user', 'users');
 
-        /*
-        |--------------------------------------------------------------------------
-        | BASIC CRUD INFORMATION
-        |--------------------------------------------------------------------------
-        */
-
         $this->crud->setFromDb();
+        $this->crud->removeColumn('gci_uuid'); // always null anyway?
+        $this->crud->addColumn($roleInfo);
 
         // ------ CRUD FIELDS
 
@@ -62,15 +69,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'pivot' => true,
         ]);
 
-        $this->crud->addField([
-            'label' => 'Roles',
-            'type' => 'select2_multiple',
-            'name' => 'roles',
-            'entity' => 'roles',
-            'attribute' => 'name',
-            'model' => Role::class,
-            'pivot' => true,
-        ]);
+        $this->crud->addField($roleInfo);
 
         $this->crud->addField([
             'label' => 'Extra Permissions',

@@ -33,12 +33,6 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setRoute(config('backpack.base.route_prefix') . '/aff');
         $this->crud->setEntityNameStrings('affiliation', 'affiliations');
 
-        /*
-        |--------------------------------------------------------------------------
-        | BASIC CRUD INFORMATION
-        |--------------------------------------------------------------------------
-        */
-
         $this->crud->setFromDb();
 
         // ------ FIELDS
@@ -66,9 +60,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         ]);
 
         // // ------ COLUMNS
-        $this->crud->addColumn('affiliation_id', [
-            'name' => 'affiliation_id',
-            'label' => 'Affiliation ID',
+        $this->crud->addColumn([
+            'name' => 'id',
+            'label' => 'ID',
         ])->makeFirstColumn();
         $this->crud->modifyColumn('affiliation_type_id', [
             'label' => 'Type',
