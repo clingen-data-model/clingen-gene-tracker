@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
+use App\User;
 use Tests\TestCase;
+use App\ExpertPanel;
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -14,12 +16,13 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ExpertPanelControllerTest extends TestCase
 {
     use DatabaseTransactions;
+    private $panels, $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->panels = factory(\App\ExpertPanel::class, 10)->create();
-        $this->user = factory(\App\User::class)->create();
+        $this->panels = factory(ExpertPanel::class, 10)->create();
+        $this->user = factory(User::class)->create();
     }
 
     /**
