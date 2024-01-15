@@ -9,7 +9,7 @@
             @click="modalVisible = true"
         >Add or update status</b-button>
 
-        <curation-status-history :curation="value"></curation-status-history>
+        <CurationStatusHistory :curation="value"></CurationStatusHistory>
 
         <b-modal 
             v-model="modalVisible"
