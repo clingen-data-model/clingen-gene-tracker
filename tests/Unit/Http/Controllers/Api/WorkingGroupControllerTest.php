@@ -13,6 +13,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class WorkingGroupControllerTest extends TestCase
 {
     use DatabaseTransactions;
+    private $user, $groups, $group;
+
 
     public function setUp(): void
     {
@@ -44,7 +46,7 @@ class WorkingGroupControllerTest extends TestCase
     public function index_includes_expert_panels_if_requested()
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
-        $response = $this->actingAs($this->user, 'api')
+        $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/?with=expertPanels')
             ->assertSee("expert_panels")
             ->assertSee($expertPanels->first()->name)
