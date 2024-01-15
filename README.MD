@@ -104,6 +104,7 @@ To work on the front end client you will need:
 
 To build and watch client-side assets for development:
 ```
+npm install
 npm run serve
 
 ```
