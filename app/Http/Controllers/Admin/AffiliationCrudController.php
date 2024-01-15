@@ -34,24 +34,19 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setEntityNameStrings('affiliation', 'affiliations');
 
         $this->crud->setFromDb();
+        $this->crud->removeFields(['affiliation_type_id', 'parent_id']);
 
         // ------ FIELDS
-        $this->crud->modifyField('affiliation_type_id', [
-            'label' => 'Type',
-            'type' => 'select2',
-            'name' => 'affiliation_type_id',
-            'entity' => 'type',
+        $this->crud->addField([
+            'type' => 'relationship',
+            'name' => 'type',
             'attribute' => 'name',
-            'model' => AffiliationType::class
         ]);
 
-        $this->crud->modifyField('parent_id', [
+        $this->crud->addField([
+            'name' => 'parent',
             'label' => 'Parent',
-            'type' => 'select2',
-            'name' => 'parent_id',
-            'entity' => 'parent',
-            'attribute' => 'name',
-            'model' => Affiliation::class
+            'type' => 'relationship',
         ]);
 
         $this->crud->modifyField('clingen_id', [
@@ -64,22 +59,23 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'id',
             'label' => 'ID',
         ])->makeFirstColumn();
-        $this->crud->modifyColumn('affiliation_type_id', [
-            'label' => 'Type',
-            'type' => 'select',
-            'name' => 'affiliation_type_id',
-            'entity' => 'type',
-            'attribute' => 'name',
-            'model' => AffiliationType::class
-        ]);
-        $this->crud->modifyColumn('parent_id', [
-            'label' => 'Parent',
-            'type' => 'select',
-            'name' => 'parent_id',
-            'entity' => 'parent',
-            'attribute' => 'name',
-            'model' => Affiliation::class
-        ]);
+
+        // $this->crud->modifyColumn('affiliation_type_id', [
+        //     'label' => 'Type',
+        //     'type' => 'select',
+        //     'name' => 'affiliation_type_id',
+        //     'entity' => 'type',
+        //     'attribute' => 'name',
+        // //     'model' => AffiliationType::class
+        // // ]);
+        // $this->crud->modifyColumn('parent_id', [
+        //     'label' => 'Parent',
+        //     'type' => 'select',
+        //     'name' => 'parent_id',
+        //     'entity' => 'parent',
+        //     'attribute' => 'name',
+        //     'model' => Affiliation::class
+        // ]);
         $this->crud->modifyColumn('clingen_id',[
             'name' => 'clingen_id',
             'label' => 'Affiliation ID'

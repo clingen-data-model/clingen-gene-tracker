@@ -41,29 +41,16 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         */
 
         $this->crud->setFromDb();
+        $this->crud->removeFields(['working_group_id', 'affiliation_id']);
 
-        $this->crud->modifyField('working_group_id', [
-            'name' => 'working_group_id',
-            'label' => 'Working Group',
-            'entity' => 'workingGroup',
-            'model' => WorkingGroup::class,
-            'type' => 'select2',
-            'attribute' => 'name',
+        $this->crud->addField([
+            'name' => 'workingGroup',
+            'type' => 'relationship'
         ]);
 
-        $this->crud->modifyField('affiliation_id', [
-            'name' => 'affiliation_id',
-            'label' => 'Affiliation',
-            'entity' => 'affiliation',
-            'model' => Affiliation::class,
-            'type' => 'select2',
-            'attribute' => 'name',
-            'options' => (function ($query) {
-                return $query->whereIn('affiliation_type_id', [3,4])
-                    ->orderBy('affiliation_type_id')
-                    ->orderBy('name')
-                    ->get();
-            })
+        $this->crud->addField([
+            'name' => 'affiliation',
+            'type' => 'relationship'
         ]);
 
         // ------ COLUMNS
