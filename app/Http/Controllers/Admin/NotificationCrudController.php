@@ -9,6 +9,8 @@ use Backpack\CRUD\CrudPanel;
 use Illuminate\Http\Request;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
+use function PHPSTORM_META\map;
+
 /**
  * Class NotificationCrudController
  * @package App\Http\Controllers\Admin
@@ -40,14 +42,11 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         */
 
         // TODO: remove setFromDb() and manually define Fields and Columns
-        $this->crud->setFromDb();
+        // $this->crud->setFromDb();
         $this->crud->allowAccess('show');
         $this->crud->denyAccess('update');
-        // $this->crud->denyAccess('delete');
         $this->crud->denyAccess('create');
 
-        $this->crud->removeColumns(['notifiable_type']);
-        
         $this->crud->addColumn([
             'name' => 'created_at',
             'type' => 'date',
@@ -56,9 +55,11 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'priority' => 1
         ])->makeFirstColumn();
 
-        $this->crud->setColumnDetails('notifiable_id', [
-            'type' => 'text',
+        $this->crud->addColumn([
             'name' => 'notifiable.name',
+            'type' => 'text',
+            'label' => 'Notifiable',
+            'visibleInTable' => true,
             'priority' => 1,
             'searchLogic' => function ($query, $col, $term) {
                 $query->orWhere(function ($q) use ($term) {
@@ -68,28 +69,63 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
                 });
             }
         ]);
-
-        $this->crud->modifyColumn('type', [
-            'type' => 'text',
-            'name' => 'readable_type',
-            'searchLogic' => function ($query, $column, $searchTerm) {
-                $query->orWhere('type', $searchTerm);
-            },
+        $this->crud->addColumn([
+            'name' => 'read_at',
+            'type' => 'boolean',
+            'label' => 'Read',
+            'visibleInTable' => true,
             'priority' => 1
         ]);
-
-
-        $this->crud->modifyColumn('read_at', [
+        $this->crud->addColumn([
+            'name' => 'readable_type',
+            'type' => 'string',
+            'label' => 'Type',
             'visibleInTable' => true,
             'priority' => 1
         ]);
 
-        $this->crud->modifyColumn('data', [
-            'type' => 'json',
+        $this->crud->addColumn([
             'name' => 'data',
+            'type' => 'json',
             'visibleInTable' => false,
             'visibleInShow' => true,
             'priority' => 1000000000
         ]);
+
+        // $this->crud->setColumnDetails('notifiable_id', [
+        //     'type' => 'text',
+        //     'name' => 'notifiable.name',
+        //     'priority' => 1,
+        //     'searchLogic' => function ($query, $col, $term) {
+        //         $query->orWhere(function ($q) use ($term) {
+        //             $q->whereHasMorph('notifiable', [User::class], function ($qu) use ($term) {
+        //                 return $qu->where('name', 'LIKE', '%'.$term.'%');
+        //             });
+        //         });
+        //     }
+        // ]);
+
+        // $this->crud->modifyColumn('type', [
+        //     'type' => 'text',
+        //     'name' => 'readable_type',
+        //     'searchLogic' => function ($query, $column, $searchTerm) {
+        //         $query->orWhere('type', $searchTerm);
+        //     },
+        //     'priority' => 1
+        // ]);
+
+
+        // $this->crud->modifyColumn('read_at', [
+        //     'visibleInTable' => true,
+        //     'priority' => 1
+        // ]);
+
+        // $this->crud->modifyColumn('data', [
+        //     'type' => 'json',
+        //     'name' => 'data',
+        //     'visibleInTable' => false,
+        //     'visibleInShow' => true,
+        //     'priority' => 1000000000
+        // ]);
     }
 }
