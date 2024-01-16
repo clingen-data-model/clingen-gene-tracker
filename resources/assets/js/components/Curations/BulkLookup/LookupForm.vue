@@ -17,11 +17,12 @@
                 <div>
                     <label for="csv-upload">CSV file: </label>
                     <input 
-                        type="file" 
+                        type="file"
                         accept="csv"
                         id="csv-upload"
                         @change="processFile($event.target.files)"
-                        class="d-block" 
+                        class="d-block"
+                        ref="fileInput"
                     >
                     <div class="text-info text-small">
                         <small>File should contain a single column with gene symbols.</small>
@@ -73,6 +74,12 @@ export default {
     },
     methods: {
         processFile(files) {
+            console.log(files)
+            if (files[0].type !== 'text/csv') {
+                alert('The file must be a csv.')
+                this.$refs.fileInput.value = null;
+                return;
+            }
             if (files.length > 0 && files[0].type == 'text/csv') {
                 const reader = new FileReader();
                 reader.addEventListener('load', (event) => {
