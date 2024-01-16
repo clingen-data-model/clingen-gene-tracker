@@ -47,8 +47,8 @@ class CurationExporter
         $query = $this->buildQuery($params);
         $curationStatuses = CurationStatus::all();
 
-        return  $query->get()
-                ->transform(function ($curation) use ($curationStatuses) {
+        return  $query->lazy()
+                ->map(function ($curation) use ($curationStatuses) {
                     $statuses = $this->getLatestStatusDates($curation);
 
                     $line = [
