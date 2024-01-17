@@ -17,6 +17,8 @@ class CurationExporterTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $groups, $panels, $curations, $exporter;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -40,9 +42,11 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function exporter_returns_all_curations_with_columns()
+    public function exporter_returns_the_correct_columns()
     {
-        $curationData = $this->exporter->getData();
+        $csvPath = $this->exporter->getCsv();
+        $file = fopen($csvPath, 'r');
+        $firstLine = fgetcsv($file);
 
         $this->assertEquals(
             [
@@ -64,10 +68,18 @@ class CurationExporterTest extends TestCase
                 'Created',
                 'GCI UUID',
             ],
-            array_keys($curationData->first())
+            $firstLine
         );
-
-        $this->assertEquals($this->curations->count(), $curationData->count());
+    }
+    
+    /**
+     * @test
+     */
+    public function returns_line_for_each_curation()
+    {
+        $csvPath = $this->exporter->getCsv();
+        
+        $this->assertFileHasLineCount($csvPath, $this->curations->count()+1);
     }
 
     /**
@@ -75,9 +87,9 @@ class CurationExporterTest extends TestCase
      */
     public function filters_by_expert_panel()
     {
-        $curationData = $this->exporter->getData(['expert_panel_id' => $this->panels->first()->id]);
+        $csvPath = $this->exporter->getCsv(['expert_panel_id' => $this->panels->first()->id]);
 
-        $this->assertEquals(3, $curationData->count());
+        $this->assertFileHasLineCount($csvPath, 4);
     }
 
     /**
@@ -93,11 +105,11 @@ class CurationExporterTest extends TestCase
         $c2->statuses()->updateExistingPivot(1, ['status_date' => now()->addDays(10)]);
         $c2 = $c2->fresh();
 
-        $rangeData1 = $this->exporter->getData(['start_date' => today()->subDays(10), 'end_date' => today()->subDays(9)]);
-        $this->assertEquals(1, $rangeData1->count());
+        $csvPath1 = $this->exporter->getCsv(['start_date' => today()->subDays(10), 'end_date' => today()->subDays(9)]);
+        $this->assertFileHasLineCount($csvPath1, 2);
 
-        $rangeData1 = $this->exporter->getData(['start_date' => today()->subDays(1), 'end_date' => today()->addDays(10)]);
-        $this->assertEquals(26, $rangeData1->count());
+        $csvPath2 = $this->exporter->getCsv(['start_date' => today()->subDays(1), 'end_date' => today()->addDays(10)]);
+        $this->assertFileHasLineCount($csvPath2, 27);
     }
 
     /**
@@ -109,8 +121,8 @@ class CurationExporterTest extends TestCase
         $c1->statuses()->updateExistingPivot(1, ['status_date' => now()->subDays(10)]);
         $c1 = $c1->fresh();
 
-        $data = $this->exporter->getData(['expert_panel_id' => $this->panels->first()->id, 'start_date' => today()->subDays(2)]);
-        $this->assertEquals(2, $data->count());
+        $filePath = $this->exporter->getCsv(['expert_panel_id' => $this->panels->first()->id, 'start_date' => today()->subDays(2)]);
+        $this->assertFileHasLineCount($filePath, 3);
     }
 
     /**
@@ -142,9 +154,9 @@ class CurationExporterTest extends TestCase
         ]);
         $this->actingAs($coordinator);
 
-        $data = $this->exporter->getData();
+        $csvPath = $this->exporter->getCsv();
 
-        $this->assertEquals($this->curations->count(), $data->count());
+        $this->assertFileHasLineCount($csvPath, $this->curations->count()+1);
     }
 
     /**
@@ -156,9 +168,9 @@ class CurationExporterTest extends TestCase
         $admin->assignRole('admin');
         $this->actingAs($admin);
 
-        $data = $this->exporter->getData();
+        $csvPath = $this->exporter->getCsv();
 
-        $this->assertEquals($this->curations->count(), $data->count());
+        $this->assertFileHasLineCount($csvPath, $this->curations->count()+1);
     }
 
     /**
@@ -180,9 +192,9 @@ class CurationExporterTest extends TestCase
             'gene_symbol' => 'beans',
         ]);
 
-        $data = $this->exporter->getData();
+        $csvPath = $this->exporter->getCsv();
 
-        $this->assertEquals(1, $data->count());
+        $this->assertFileHasLineCount($csvPath, 2);
     }
 
     /**
@@ -198,7 +210,12 @@ class CurationExporterTest extends TestCase
                 AddStatus::dispatch($curation, $st, Carbon::now()->subDays(2));
             });            
 
-        $curationData = $this->exporter->getData(['expert_panel_id' => $curation->expert_panel_id]);
+        $csvPath = $this->exporter->getCsv(['expert_panel_id' => $curation->expert_panel_id]);
+        $fh = fopen($csvPath, 'r');
+        $header = fgetcsv($fh);
+        $firstRow = fgetcsv($fh);
+        
+        $rowDict = array_combine($header, $firstRow);
 
         $dateFields = [
             "Uploaded date",
@@ -214,10 +231,23 @@ class CurationExporterTest extends TestCase
         ];
             
         foreach($dateFields as $dateKey) {
-            $this->assertEquals($curationData->first()[$dateKey],  Carbon::today()->format('Y-m-d'));
+            $this->assertEquals($rowDict[$dateKey],  Carbon::today()->format('Y-m-d'));
+        }
+    }
+
+    private function assertFileHasLineCount($filePath, $expected)
+    {
+        $fh = fopen($filePath, 'r');
+        fgetcsv($fh);
+
+        $lineCount = 0;
+        while (!feof($fh)) {
+            fgets($fh);
+            $lineCount++;
         }
 
-        
+        $this->assertEquals($expected, $lineCount);
+
     }
     
 }
