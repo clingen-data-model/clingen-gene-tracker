@@ -3,9 +3,18 @@
 namespace App;
 
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 
 class CurationExporter
 {
+    private $curationStatuses;
+    private $storage;
+
+    public function __construct()
+    {
+        $this->curationStatuses = CurationStatus::all();
+    }
+
     protected function buildQuery($params)
     {
         $query = Curation::with([
@@ -42,65 +51,20 @@ class CurationExporter
         return $query;
     }
 
-    public function getData($params = [])
-    {
-        $query = $this->buildQuery($params);
-        $curationStatuses = CurationStatus::all();
-
-        return  $query->lazy()
-                ->map(function ($curation) use ($curationStatuses) {
-                    $statuses = $this->getLatestStatusDates($curation);
-
-                    $line = [
-                        'Gene Symbol' => $curation->gene_symbol,
-                        'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
-                        'Curator' => ($curation->curator) ? $curation->curator->name : null,
-                        'Disease Entity' => $curation->mondo_id,
-                    ];
-
-                    $curationStatuses->each(function ($status) use (&$line, $statuses) {
-                        $line[$status->name.' date'] = (isset($statuses[$status->id]))
-                                                            ? $statuses[$status->id]->format('Y-m-d')
-                                                            : null;
-                    });
-
-                    $line['Classification'] = $curation->currentClassification->name;
-                    $line['Created'] = $curation->created_at;
-                    $line['GCI UUID'] = $curation->gdm_uuid;
-
-                    return $line;
-                });
-    }
-
     /**
      * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
     public function getCsv($params = [], $csvPath = null)
     {
-        $filename = 'exports/curations_export';
+        $query = $this->buildQuery($params);
 
-        if (isset($params['expert_panel_id'])) {
-            $panel = ExpertPanel::findOrFail($params['expert_panel_id']);
-            $filename .= '_'.$panel->fileSafeName;
-        }
-        if (isset($params['start_date'])) {
-            $filename .= '_from_'.$params['start_date'];
-        }
-        if (isset($params['end_date'])) {
-            $filename .= '_to_'.$params['end_date'];
-        }
-
-        $path = $csvPath ?? storage_path($filename.'_at_'.now()->format('Y-m-d_H:i:s').'.csv');
-        $data = $this->getData($params);
+        $path = $csvPath ?? $this->buildFileName($params);
+        
         $fh = fopen($path, 'w');
-        if ($data->count() > 0) {
-            fputcsv($fh, array_keys($data->first()));
-            foreach ($data as $row) {
-                fputcsv($fh, $row);
-            }
-        } else {
-            fputcsv($fh, ['Gene Symbol', 'Expert Panel', 'Curator', 'Status', 'Disease Entity', 'Created']);
-        }
+        fputcsv($fh, $this->buildHeader());
+        $query->lazy()->each(function ($curation) use ($fh) {
+            fputcsv($fh, $this->buildLine($curation));
+        });
         fclose($fh);
 
         return $path;
@@ -118,6 +82,71 @@ class CurationExporter
             return $statusGroup->sortByDesc('pivot.status_date')->first();
         })
         ->pluck('pivot.status_date', 'id');
+    }
+
+    private function buildFileName(array $params): string
+    {
+        $filename = 'exports/curations_export';
+
+        if (isset($params['expert_panel_id'])) {
+            $panel = ExpertPanel::findOrFail($params['expert_panel_id']);
+            $filename .= '_'.$panel->fileSafeName;
+        }
+        if (isset($params['start_date'])) {
+            $filename .= '_from_'.$params['start_date'];
+        }
+        if (isset($params['end_date'])) {
+            $filename .= '_to_'.$params['end_date'];
+        }
+
+        $path = storage_path($filename.'_at_'.now()->format('Y-m-d_H:i:s').'.csv');
+
+        return $path;
+    }
+
+    private function buildLine(Curation $curation): array
+    {
+        $statuses = $this->getLatestStatusDates($curation);
+
+        $line = [
+            'Gene Symbol' => $curation->gene_symbol,
+            'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
+            'Curator' => ($curation->curator) ? $curation->curator->name : null,
+            'Disease Entity' => $curation->mondo_id,
+        ];
+
+        $this->curationStatuses->each(function ($status) use (&$line, $statuses) {
+            $line[$status->name.' date'] = (isset($statuses[$status->id]))
+                                                ? $statuses[$status->id]->format('Y-m-d')
+                                                : null;
+        });
+
+        $line['Classification'] = $curation->currentClassification->name;
+        $line['Created'] = $curation->created_at;
+        $line['GCI UUID'] = $curation->gdm_uuid;
+
+        return $line;
+    }
+
+    private function buildHeader(): array
+    {
+        $header = [
+            'Gene Symbol',
+            'Expert Panel',
+            'Curator',
+            'Disease Entity',
+        ];
+
+        $header = array_merge(
+            $header, 
+            $this->curationStatuses->map(fn ($status) => $status->name.' date')->toArray()
+        );
+
+        $header[] = 'Classification';
+        $header[] = 'Created';
+        $header[] = 'GCI UUID';
+
+        return $header;
     }
     
 }
