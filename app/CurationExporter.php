@@ -3,7 +3,6 @@
 namespace App;
 
 use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
 
 class CurationExporter
 {
