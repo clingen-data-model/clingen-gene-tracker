@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('app:clear-exports')
+            ->dailyAt("00:00:00");
+
         $schedule->command('hgnc:update-data')
             ->dailyAt("01:00:00");
         
