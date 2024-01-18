@@ -11,14 +11,12 @@ class CurationExportController extends Controller
 {
     public function __construct(
         private CurationExporter $exporter, 
-        private FilesystemManager $fsManager
     ) {}
 
 
 
     public function getCsv(Request $request)
     {
-        $csvPath = $this->exporter->getCsv($request->all());
-        return response()->download($csvPath);
+        return response()->download($this->exporter->getCsv($request->all()));
     }
 }
