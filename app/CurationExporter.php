@@ -59,7 +59,7 @@ class CurationExporter
         $query = $this->buildQuery($params);
 
         $path = $csvPath ?? $this->buildFileName($params);
-        
+
         $fh = fopen($path, 'w');
         fputcsv($fh, $this->buildHeader());
         $query->lazy()->each(function ($curation) use ($fh) {
