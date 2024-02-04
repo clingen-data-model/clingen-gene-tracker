@@ -15,6 +15,8 @@ class CurationExportController extends Controller
 
     public function getCsv(Request $request)
     {
+        $this->exporter->getCsv($request->all());
+        return view('main-test', []);
         return response()->download($this->exporter->getCsv($request->all()));
     }
 }

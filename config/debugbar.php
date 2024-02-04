@@ -13,7 +13,7 @@ return [
      |
      */
 
-    'enabled' => false, //env('DEBUGBAR_ENABLED', null),
+    'enabled' => env('DEBUGBAR_ENABLED', env('APP_DEBUG', null)),
     'except' => [
     ],
 
