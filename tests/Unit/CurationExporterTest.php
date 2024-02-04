@@ -54,16 +54,16 @@ class CurationExporterTest extends TestCase
                 'Expert Panel',
                 'Curator',
                 'Disease Entity',
-                'Uploaded date',
-                'Precuration date',
-                'Disease entity assigned date',
-                'Precuration Complete date',
-                'Curation Provisional date',
-                'Curation Approved date',
-                'Recuration assigned date',
-                'Retired Assignment date',
-                'Published date',
-                'Unublished on GCI date',
+                'Uploaded Date',
+                'Precuration Date',
+                'Disease entity assigned Date',
+                'Precuration Complete Date',
+                'Curation Provisional Date',
+                'Curation Approved Date',
+                'Recuration assigned Date',
+                'Retired Assignment Date',
+                'Published Date',
+                'Unublished on GCI Date',
                 'Classification',
                 'Created',
                 'GCI UUID',
@@ -95,7 +95,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
-    public function filters_by_date_range()
+    public function filters_export_by_date_range()
     {
         $c1 = $this->curations->first();
         $c2 = $this->curations->last();
@@ -103,7 +103,7 @@ class CurationExporterTest extends TestCase
         $c1->statuses()->updateExistingPivot(1, ['status_date' => now()->subDays(10)]);
         $c1 = $c1->fresh();
         $c2->statuses()->updateExistingPivot(1, ['status_date' => now()->addDays(10)]);
-        $c2 = $c2->fresh();
+        $c2 = $c2->fresh();    
 
         $csvPath1 = $this->exporter->getCsv(['start_date' => today()->subDays(10), 'end_date' => today()->subDays(9)]);
         $this->assertFileHasLineCount($csvPath1, 2);
@@ -135,7 +135,7 @@ class CurationExporterTest extends TestCase
         $this->assertFileExists($path);
 
         $content = explode("\n", file_get_contents($path));
-        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded date","Precuration date","Disease entity assigned date","Precuration Complete date","Curation Provisional date","Curation Approved date","Recuration assigned date","Retired Assignment date","Published date","Unublished on GCI date",Classification,Created,"GCI UUID"', $content[0]);
+        $this->assertEquals('"Gene Symbol","Expert Panel",Curator,"Disease Entity","Uploaded Date","Precuration Date","Disease entity assigned Date","Precuration Complete Date","Curation Provisional Date","Curation Approved Date","Recuration assigned Date","Retired Assignment Date","Published Date","Unublished on GCI Date",Classification,Created,"GCI UUID"', $content[0]);
         $this->assertEquals($this->curations->count() + 1, count(array_filter($content)));
 
         unlink($path);
@@ -218,20 +218,20 @@ class CurationExporterTest extends TestCase
         $rowDict = array_combine($header, $firstRow);
 
         $dateFields = [
-            "Uploaded date",
-            "Precuration date",
-            "Disease entity assigned date",
-            "Precuration Complete date",
-            "Curation Provisional date",
-            "Curation Approved date",
-            "Recuration assigned date",
-            "Retired Assignment date",
-            "Published date",
-            "Unublished on GCI date",
+            "Uploaded Date",
+            "Precuration Date",
+            "Disease entity assigned Date",
+            "Precuration Complete Date",
+            "Curation Provisional Date",
+            "Curation Approved Date",
+            "Recuration assigned Date",
+            "Retired Assignment Date",
+            "Published Date",
+            "Unublished on GCI Date",
         ];
             
         foreach($dateFields as $dateKey) {
-            $this->assertEquals($rowDict[$dateKey],  Carbon::today()->format('Y-m-d'));
+            $this->assertEquals(Carbon::today()->format('Y-m-d'), $rowDict[$dateKey]);
         }
     }
 

@@ -3,11 +3,12 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\Debugbar\Facades\Debugbar;
 
 class CurationExporter
 {
     private $curationStatuses;
-    private $storage;
 
     public function __construct()
     {
@@ -15,6 +16,52 @@ class CurationExporter
     }
 
     protected function buildQuery($params)
+    {
+        $query = DB::table('curations')
+                    ->select($this->getReportColumns())
+                    ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
+                    ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
+                    ->leftJoinSub($this->getLatestClassQuery(), 'latest_class', function ($join) {
+                        $join->on('curations.id', '=', 'latest_class.curation_id');
+                    })
+                    ->leftJoinSub($this->buildStatusSubQuery(), 'status_dates', function ($join) {
+                        $join->on('curations.id', '=', 'status_dates.curation_id');
+                    })
+                    ->orderBy('expert_panels.name', 'ASC')->orderBy('curations.gene_symbol', 'ASC')
+                    ;
+
+        if (isset($params['expert_panel_id'])) {
+            $query->where('expert_panel_id', $params['expert_panel_id']);
+        }
+
+        if (isset($params['start_date']) || isset($params['end_date'])) {
+            $query->whereExists(function ($q) use ($params) {
+                $q->select(DB::raw(1))
+                    ->from('curation_curation_status')
+                    ->whereColumn('curation_curation_status.curation_id', 'curations.id');
+                if (isset($params['start_date'])) {
+                    $q->where('status_date', '>', Carbon::parse($params['start_date'])->startOfDay());
+                }
+                if (isset($params['end_date'])) {
+                    $q->where('status_date', '<', Carbon::parse($params['end_date'])->endOfDay());
+                }
+            });
+        }
+
+        if (\Auth::user()->hasAnyRole(['programmer', 'admin'])) {
+            return $query;
+        }
+
+        if (\Auth::user()->isCoordinator()) {
+            return $query;
+        }
+
+        $query->where('curator_id', \Auth::user()->id);
+        
+        return $query;
+    }
+
+    protected function buildQueryOld($params)
     {
         $query = Curation::with([
             'expertPanel', 
@@ -50,37 +97,75 @@ class CurationExporter
         return $query;
     }
 
+    private function getReportColumns(): array
+    {
+        $columns = array_merge(
+            [
+                'curations.gene_symbol as Gene Symbol',
+                'expert_panels.name as Expert Panel',
+                'users.name as Curator',
+                'curations.mondo_id as Disease Entity',
+            ], 
+            $this->curationStatuses->map(fn ($status) => "{$status->name} Date")->toArray(),
+            [
+                'latest_class.name as Classification',
+                'curations.created_at as Created',
+                'curations.gdm_uuid as GCI UUID',
+            ]
+        );
+
+        if (config('app.debug') && !app()->environment('testing')) {
+            array_unshift($columns, 'curations.id as ID');
+        }
+
+        return $columns;
+    }
+
+    private function buildStatusSubQuery()
+    {
+        $statusColumns = ['curation_id', 'name',];
+        $aggregateColumns = ['curation_id'];
+        $this->curationStatuses->each(function ($status) use (&$statusColumns, &$aggregateColumns, &$statusDateColumns) {
+            $statusColumns[] = DB::raw("CASE WHEN curation_status_id = {$status->id} THEN DATE(status_date) ELSE NULL END as `{$status->name}`");
+            $aggregateColumns[] = DB::raw("MAX(`{$status->name}`) as `{$status->name} Date`");
+        });
+
+        $statusDateQuery = DB::table('curation_curation_status')
+            ->select($statusColumns)
+            ->join('curation_statuses', 'curation_curation_status.curation_status_id', '=', 'curation_statuses.id')
+            ->whereIn(
+                DB::Raw('(curation_id, status_date, curation_status_id)'),
+                function ($query) {
+                    $query->select('curation_id', DB::raw('max(status_date) as status_date'), 'curation_status_id')
+                        ->from('curation_curation_status')
+                        ->groupBy('curation_id', 'curation_status_id');
+                }
+            );
+
+        return DB::query()
+            ->from($statusDateQuery, 'status_date_query')
+            ->select($aggregateColumns)
+            ->groupBy('curation_id');
+    }
+
     /**
      * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
     public function getCsv($params = [], $csvPath = null)
     {
         $query = $this->buildQuery($params);
-
+       
         $path = $csvPath ?? $this->buildFileName($params);
 
+        $header = array_keys((array)$query->first());
         $fh = fopen($path, 'w');
-        fputcsv($fh, $this->buildHeader());
-        $query->lazy()->each(function ($curation) use ($fh) {
-            fputcsv($fh, $this->buildLine($curation));
+        fputcsv($fh, $header);
+        $query->lazy()->each(function ($row) use ($fh) {
+            fputcsv($fh, (array)$row);
         });
         fclose($fh);
 
         return $path;
-    }
-
-    /**
-     * Filters $curation's statuses entries to the latest (by status_date) for each status
-     * b/c we only want the latest instance of a status for the curtion export.
-     */
-    private function getLatestStatusDates($curation)
-    {
-        return $curation->statuses
-        ->groupBy('id')
-        ->map(function ($statusGroup) {
-            return $statusGroup->sortByDesc('pivot.status_date')->first();
-        })
-        ->pluck('pivot.status_date', 'id');
     }
 
     private function buildFileName(array $params): string
@@ -103,49 +188,18 @@ class CurationExporter
         return $path;
     }
 
-    private function buildLine(Curation $curation): array
+    private function getLatestClassQuery()
     {
-        $statuses = $this->getLatestStatusDates($curation);
-
-        $line = [
-            'Gene Symbol' => $curation->gene_symbol,
-            'Expert Panel' => ($curation->expertPanel) ? $curation->expertPanel->name : null,
-            'Curator' => ($curation->curator) ? $curation->curator->name : null,
-            'Disease Entity' => $curation->mondo_id,
-        ];
-
-        $this->curationStatuses->each(function ($status) use (&$line, $statuses) {
-            $line[$status->name.' date'] = (isset($statuses[$status->id]))
-                                                ? $statuses[$status->id]->format('Y-m-d')
-                                                : null;
-        });
-
-        $line['Classification'] = $curation->currentClassification->name;
-        $line['Created'] = $curation->created_at;
-        $line['GCI UUID'] = $curation->gdm_uuid;
-
-        return $line;
+        return DB::table('classification_curation')
+            ->select('curation_id', 'classification_date', 'name')
+            ->join('classifications', 'classification_curation.classification_id', '=', 'classifications.id')
+            ->whereIn(
+                DB::raw('(curation_id, classification_date)'),
+                function ($query) {
+                    $query->select('curation_id', DB::raw('max(classification_date) as classification_date'))
+                        ->from('classification_curation')
+                        ->groupBy('curation_id');
+                }
+            );
     }
-
-    private function buildHeader(): array
-    {
-        $header = [
-            'Gene Symbol',
-            'Expert Panel',
-            'Curator',
-            'Disease Entity',
-        ];
-
-        $header = array_merge(
-            $header, 
-            $this->curationStatuses->map(fn ($status) => $status->name.' date')->toArray()
-        );
-
-        $header[] = 'Classification';
-        $header[] = 'Created';
-        $header[] = 'GCI UUID';
-
-        return $header;
-    }
-    
 }
