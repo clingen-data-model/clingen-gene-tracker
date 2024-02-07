@@ -4,7 +4,6 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\Debugbar\Facades\Debugbar;
 
 class CurationExporter
 {
@@ -58,42 +57,6 @@ class CurationExporter
 
         $query->where('curator_id', \Auth::user()->id);
         
-        return $query;
-    }
-
-    protected function buildQueryOld($params)
-    {
-        $query = Curation::with([
-            'expertPanel', 
-            'curationStatuses', 
-            'curator', 
-            'statuses', 
-            'classifications'
-        ]);
-        if (isset($params['expert_panel_id'])) {
-            $query->where('expert_panel_id', $params['expert_panel_id']);
-        }
-        if (isset($params['start_date']) || isset($params['end_date'])) {
-            $query->whereHas('statuses', function ($q) use ($params) {
-                if (isset($params['start_date'])) {
-                    $q->where('status_date', '>', Carbon::parse($params['start_date'])->startOfDay());
-                }
-                if (isset($params['end_date'])) {
-                    $q->where('status_date', '<', Carbon::parse($params['end_date'])->endOfDay());
-                }
-            });
-        }
-
-        if (\Auth::user()->hasAnyRole(['programmer', 'admin'])) {
-            return $query;
-        }
-
-        if (\Auth::user()->isCoordinator()) {
-            return $query;
-        }
-
-        $query->where('curator_id', \Auth::user()->id);
-
         return $query;
     }
 
