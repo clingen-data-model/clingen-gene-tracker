@@ -2,15 +2,17 @@
 
 namespace Tests\Unit;
 
+use App\Classification;
 use App\User;
 use App\Curation;
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\ExpertPanel;
 use App\WorkingGroup;
 use App\CurationStatus;
 use App\CurationExporter;
 use App\Jobs\Curations\AddStatus;
-use Carbon\Carbon;
+use App\Jobs\Curations\AddClassification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CurationExporterTest extends TestCase
@@ -30,7 +32,7 @@ class CurationExporterTest extends TestCase
         $this->groups->each(function ($grp) {
             $this->panels = $this->panels->merge($grp->expertPanels()->saveMany(factory(ExpertPanel::class, 3)->make()));
         });
-
+        
         $this->curations = collect();
         $this->panels->each(function ($pnl) {
             $this->curations = $this->curations->merge($pnl->curations()->saveMany(factory(Curation::class, 3)->make()));
@@ -233,6 +235,28 @@ class CurationExporterTest extends TestCase
         foreach($dateFields as $dateKey) {
             $this->assertEquals(Carbon::today()->format('Y-m-d'), $rowDict[$dateKey]);
         }
+    }
+
+    /**
+     * @test
+     */
+    public function selects_latest_classification_for_curation()
+    {
+        $curation = factory(Curation::class)->create();
+        list($class1, $class2) = Classification::find([1,2]);
+
+        $date = Carbon::now();
+        AddClassification::dispatch($curation, $class1, $date);
+        AddClassification::dispatch($curation, $class2, $date);
+
+        $csvPath = $this->exporter->getCsv(['expert_panel_id' => $curation->expert_panel_id]);
+        $fh = fopen($csvPath, 'r');
+        $header = fgetcsv($fh);
+        $firstRow = fgetcsv($fh);
+        
+        $rowDict = array_combine($header, $firstRow);
+
+        $this->assertEquals($class2->name, $rowDict['Classification']);
     }
 
     private function assertFileHasLineCount($filePath, $expected)

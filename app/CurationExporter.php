@@ -26,6 +26,7 @@ class CurationExporter
                     ->leftJoinSub($this->buildStatusSubQuery(), 'status_dates', function ($join) {
                         $join->on('curations.id', '=', 'status_dates.curation_id');
                     })
+                    ->where('curations.deleted_at', null)
                     ->orderBy('expert_panels.name', 'ASC')->orderBy('curations.gene_symbol', 'ASC')
                     ;
 
@@ -153,16 +154,22 @@ class CurationExporter
 
     private function getLatestClassQuery()
     {
-        return DB::table('classification_curation')
+        $query = DB::table('classification_curation')
             ->select('curation_id', 'classification_date', 'name')
             ->join('classifications', 'classification_curation.classification_id', '=', 'classifications.id')
             ->whereIn(
-                DB::raw('(curation_id, classification_date)'),
+                DB::raw('(curation_id, classification_date, classification_id)'),
                 function ($query) {
-                    $query->select('curation_id', DB::raw('max(classification_date) as classification_date'))
-                        ->from('classification_curation')
-                        ->groupBy('curation_id');
+                    $query->select(
+                        'curation_id',
+                        DB::raw('max(classification_date) as classification_date'),
+                        DB::raw('max(id) as classification_id'),
+                    )
+                    ->from('classification_curation')
+                    ->groupBy('curation_id');
                 }
             );
+
+        return $query;
     }
 }
