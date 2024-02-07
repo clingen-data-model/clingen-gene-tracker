@@ -42,9 +42,9 @@
                                 return 0
                             }
                             if (a.id < b.id) {
-                                return 1
+                                return -1
                             }
-                            return -1;
+                            return 1;
                         }
                         if (moment(a.pivot.classification_date).isBefore(b.pivot.classification_date)) {
                             return 1;
