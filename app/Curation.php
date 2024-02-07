@@ -151,6 +151,8 @@ class Curation extends Model implements Notable
         return $this->belongsToMany(Classification::class)
                 ->withPivot('id', 'classification_date')
                 ->withTimestamps()
+                ->orderBy('classification_date', 'desc')
+                ->orderBy('classification_curation.id', 'desc')
                 ->using(CurationClassification::class);
     }
 
@@ -201,12 +203,10 @@ class Curation extends Model implements Notable
      */
     public function getCurrentClassificationAttribute()
     {
-        return $this->classifications
-                    ->sortByDesc(function ($item) {
-                        return $item->pivot->classification_date->timestamp.'.'.$item->id;
-                    })
-                    ->first()
-                ?? new Classification();
+        $query = $this->classifications();
+
+        return $query->first() 
+            ?? new Classification();
     }
 
     public function setExpertPanelIdAttribute($value)
