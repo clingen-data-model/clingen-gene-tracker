@@ -32,10 +32,12 @@ mix.webpackConfig({
     }
 });
 
-mix.config.webpackConfig.output = {
-    chunkFilename: mix.inProduction() ? 'js/modules/[name].[contenthash].js' : 'js/modules/[name].bundle.js',
-    publicPath: '/',
-}
+mix.webpackConfig({
+    output: {
+        chunkFilename: mix.inProduction() ? 'js/modules/[name].[contenthash].js' : 'js/modules/[name].bundle.js',
+        publicPath: '/',
+    }
+})
 
 mix.webpackConfig({
     plugins: [
@@ -46,7 +48,7 @@ mix.webpackConfig({
     ]
 })
 
-mix.js('resources/assets/js/app.js', 'public/js')
+mix.js('resources/assets/js/app.js', 'public/js').vue()
    .sass('resources/assets/sass/app.scss', 'public/css')
    .sourceMaps();
 

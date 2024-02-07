@@ -16,7 +16,7 @@ import './filters.js';
 
 // console.log(configs);
 
-window.Vue = require('vue')
+window.Vue = require('vue').default
 window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
