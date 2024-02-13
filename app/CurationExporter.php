@@ -47,7 +47,7 @@ class CurationExporter
                 }
             });
         }
-
+        
         if (\Auth::user()->hasAnyRole(['programmer', 'admin'])) {
             return $query;
         }
@@ -112,6 +112,27 @@ class CurationExporter
             ->groupBy('curation_id');
     }
 
+    private function getLatestClassQuery()
+    {
+        $query = DB::table('classification_curation')
+            ->select('curation_id', 'classification_date', 'name')
+            ->join('classifications', 'classification_curation.classification_id', '=', 'classifications.id')
+            ->whereIn(
+                DB::raw('(curation_id, classification_date, classification_curation.id)'),
+                function ($query) {
+                    $query->select(
+                        'curation_id',
+                        DB::raw('max(classification_date) as classification_date'),
+                        DB::raw('max(id) as id'),
+                    )
+                    ->from('classification_curation')
+                    ->groupBy('curation_id');
+                }
+            );
+
+        return $query;
+    }
+
     /**
      * @SuppressWarnings(PHPMD.ElseExpression) // used as callback in this class
      */
@@ -150,26 +171,5 @@ class CurationExporter
         $path = storage_path($filename.'_at_'.now()->format('Y-m-d_H:i:s').'.csv');
 
         return $path;
-    }
-
-    private function getLatestClassQuery()
-    {
-        $query = DB::table('classification_curation')
-            ->select('curation_id', 'classification_date', 'name')
-            ->join('classifications', 'classification_curation.classification_id', '=', 'classifications.id')
-            ->whereIn(
-                DB::raw('(curation_id, classification_date, classification_id)'),
-                function ($query) {
-                    $query->select(
-                        'curation_id',
-                        DB::raw('max(classification_date) as classification_date'),
-                        DB::raw('max(id) as classification_id'),
-                    )
-                    ->from('classification_curation')
-                    ->groupBy('curation_id');
-                }
-            );
-
-        return $query;
     }
 }
