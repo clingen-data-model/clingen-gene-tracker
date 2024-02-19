@@ -19,7 +19,7 @@ use App\Listeners\UpdateGciCurationFromGveMessage;
 use App\DataExchange\MessagePushers\DisabledPusher;
 use App\Jobs\UpdateCurationFromGeneValidityMessage;
 use App\DataExchange\MessageFactories\MessageFactoryInterface;
-use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
+use App\DataExchange\MessageFactories\PrecurationV2MessageFactory;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class DataExchangeServiceProvider extends ServiceProvider
@@ -87,7 +87,7 @@ class DataExchangeServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(GeneValidityCurationUpdateJob::class, UpdateCurationFromGeneValidityMessage::class);
-        $this->app->bind(MessageFactoryInterface::class, PrecurationV1MessageFactory::class);
+        $this->app->bind(MessageFactoryInterface::class, PrecurationV2MessageFactory::class);
     }
 
 

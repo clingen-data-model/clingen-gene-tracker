@@ -338,7 +338,7 @@ class Curation extends Model implements Notable
         $curationPhenos = $this->phenotypes()->get();
         return $this->gene->phenotypes()
                 ->whereNotIn('mim_number', $curationPhenos->pluck('mim_number')->toArray())
-                ->select('mim_number')
+                ->select('mim_number', 'name')
                 ->orderBy('mim_number')
                 ->get();
     }
