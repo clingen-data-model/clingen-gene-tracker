@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[144],{6220:(e,t,n)=>{n.r(t),n.d(t,{default:()=>s});const i={};const s=(0,n(1456).c)(i,(function(){var e=this,t=e.$createElement;return(e._self._c||t)("div",{staticClass:"criteria-overview-container"},[e._v("\n    This is the lumping and splitting criteria overview\n")])}),[],!1,null,null,null).exports}}]);
+//# sourceMappingURL=CriteriaOverview.22b18c1ca928f81e.js.map
