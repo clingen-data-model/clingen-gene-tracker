@@ -24,7 +24,7 @@
 </template>
 <script>
     import moment from 'moment'
-    import filters from '../../filters'
+    import '../../filters.js'
     
     export default {
         props: {

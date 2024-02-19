@@ -32,7 +32,7 @@
         <script>
             let user = null;
         </script>
-        <script src="{{ mix('js/app.js') }}"></script>
+        @vite(['resources/assets/js/app.js'])
     @endpush
 
 @endif

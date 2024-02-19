@@ -1,6 +1,5 @@
 <script>
 import moment from 'moment';
-import {LineToLineMappedSource} from 'webpack-sources';
 import {mapActions} from 'vuex'
 import queryStringFromParams from '../../http/query_string_from_params';
 
@@ -9,7 +8,7 @@ export default {
     props: {
         curation: {
             type: Object,
-            required: LineToLineMappedSource
+            required: true,
         }
     },
     data() {

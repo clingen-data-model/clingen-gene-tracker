@@ -4,12 +4,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
-import store from './store/index'
+import './bootstrap.js';
+import BootstrapVue, { componentsPlugin } from 'bootstrap-vue-next'
+import store from './store/index.js'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
-import User from './User'
+import User from './User.js'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 import './filters.js';
 // import configs from './configs.json';
@@ -69,9 +69,9 @@ if (document.getElementById('app')) {
         el: '#app',
         store: store,
         components: {
-            'clingen-app': require('./components/ClingenApp.vue').default,
-            'clingen-nav': require('./components/ClingenNav.vue').default,
-            'alerts': require('./components/Alerts.vue').default,
+            'clingen-app': () => import('./components/ClingenApp.vue'),
+            'clingen-nav': () => import('./components/ClingenNav.vue'),
+            'alerts': () => import('./components/Alerts.vue'),
             CriteriaTable
         },
         computed: {

@@ -1,4 +1,5 @@
 <style>
+    @import '../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css';
     .form-control[readonly]{
         background: #fff;
     }
@@ -14,10 +15,8 @@
         :readonly="readonly"/>
 </template>
 <script>
-    require('../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css')
-    
-    var moment = require('moment'),
-        datepicker = require('bootstrap-datepicker');
+    import 'moment';
+    import datepicker from 'bootstrap-datepicker';
 
     module.exports = {
         name: 'date-field',
