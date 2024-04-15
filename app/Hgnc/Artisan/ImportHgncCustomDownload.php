@@ -39,10 +39,11 @@ class ImportHgncCustomDownload extends Command
      */
     public function handle()
     {
+        Log::info('Updating genes with HGNC data');
         $importer = app()->make(CustomDownloadImporter::class);
         foreach ($importer->import() as $message) {
             $this->info($message);
         }
-        Log::info('Update genes with HGNC data');
+        Log::info('Updated genes with HGNC data');
     }
 }

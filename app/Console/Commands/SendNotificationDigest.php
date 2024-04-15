@@ -6,6 +6,7 @@ use App\Notifications\CurationNotificationsDigest;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SendNotificationDigest extends Command
 {
@@ -40,6 +41,7 @@ class SendNotificationDigest extends Command
      */
     public function handle()
     {
+        Log::info('Sending notification digests.');
         // Make sure notifications have been created for all unsent streaming service errors
         $this->call('dx:notify-errors');
 
@@ -69,6 +71,6 @@ class SendNotificationDigest extends Command
             $bar->advance();
         });
         $bar->finish();
-        \Log::info('Sent notification digests.');
+        Log::info('Sent notification digests.');
     }
 }

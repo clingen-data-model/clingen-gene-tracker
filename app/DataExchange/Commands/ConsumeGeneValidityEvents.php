@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\DataExchange\Contracts\MessageConsumer;
 use App\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\Jobs\DryRunUpdateFromGeneValidityMessage;
+use Illuminate\Support\Facades\Log;
 
 class ConsumeGeneValidityEvents extends Command
 {
@@ -40,6 +41,7 @@ class ConsumeGeneValidityEvents extends Command
      */
     public function handle(MessageConsumer $consumer)
     {
+        Log::debug('Starting gene validity event consumption.');
         if ($this->option('dry-run')) {
             app()->bind(GeneValidityCurationUpdateJob::class, DryRunUpdateFromGeneValidityMessage::class);
         }
@@ -60,5 +62,6 @@ class ConsumeGeneValidityEvents extends Command
 
         $this->info('listening to '.implode(', ', $consumer->topics));
         $consumer->consume();
+        Log::debug('completed gene validity event consumption for now.');
     }
 }

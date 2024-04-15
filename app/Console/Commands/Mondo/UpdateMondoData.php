@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class UpdateMondoData extends Command
 {
@@ -45,6 +46,7 @@ class UpdateMondoData extends Command
      */
     public function handle(ClientInterface $guzzleClient, OboParser $parser)
     {
+        Log::info('Starting to update MonDO data.');
         $tmpFilePath = $this->option('file');
         if (!$this->option('file')) {
             $this->info('downloading latest obo...');
@@ -68,7 +70,7 @@ class UpdateMondoData extends Command
 
         $this->info('Deleting mondo temp file');
         unlink($tmpFilePath);
-        \Log::info('Finished updating MonDO data.');
+        Log::info('Finished updating MonDO data.');
     }
 
     private function downloadOboFile(ClientInterface $guzzleClient)
