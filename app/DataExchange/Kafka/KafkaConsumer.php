@@ -127,10 +127,6 @@ class KafkaConsumer implements MessageConsumer
 
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
-            if ($message->err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
-                Log::info('Kakfa consumer timed out-- maybe a config problem or maybe no messages in the queue. Guess we\'ll just try again later.');
-                break;
-            }
             try {
                 $handleMessage($message);
             } catch (StreamingServiceEndOfFIleException $e) {

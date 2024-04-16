@@ -61,7 +61,7 @@ class ConsumeGeneValidityEvents extends Command
         }
 
         $this->info('listening to '.implode(', ', $consumer->topics));
-        $consumer->consume();
+        $consumer->consumePresentMessages();
         Log::debug('completed gene validity event consumption for now.');
     }
 }
