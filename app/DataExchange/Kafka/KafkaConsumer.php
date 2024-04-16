@@ -12,6 +12,7 @@ use App\DataExchange\Exceptions\StreamingServiceException;
 use  App\DataExchange\Kafka\NoActionMessageHandler;
 use  App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\DataExchange\Exceptions\StreamingServiceEndOfFIleException;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property array $topics
@@ -127,7 +128,7 @@ class KafkaConsumer implements MessageConsumer
         while (true) {
             $message = $this->kafkaConsumer->consume(10000);
             if ($message->err == RD_KAFKA_RESP_ERR__TIMED_OUT) {
-                report("Kakfa consumer timed out-- maybe a config problem or maybe no messages in the queue. Guess we'll just try again later.");
+                Log::info('Kakfa consumer timed out-- maybe a config problem or maybe no messages in the queue. Guess we\'ll just try again later.');
                 break;
             }
             try {
