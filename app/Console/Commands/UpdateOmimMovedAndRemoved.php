@@ -82,6 +82,9 @@ class UpdateOmimMovedAndRemoved extends Command
         Log::info('Finished checking for moved and removed omim phenotypes.');
     }
 
+    /**
+     * Recursive function that accumulates all search results from OMIM API which enforces a page limit
+     */
     private function getPaginatedSearchResults($omimClient, $accumulator = [], $start = 0, $limit = 100)
     {
         $results = $omimClient->paginatedSearch(['search' => $this->buildSearchString()], $start, $limit);
