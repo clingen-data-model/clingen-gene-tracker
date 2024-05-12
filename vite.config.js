@@ -6,11 +6,19 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
     plugins: [
         laravel([
-            'resources/assets/css/app.css',
+            'resources/assets/sass/app.scss',
+            'resources/assets/sass/env.scss',
+            'resources/assets/sass/_transitions.scss',
+            'resources/assets/sass/_variables.scss',
             'resources/assets/js/app.js',
         ]),
         vue({
             template: {
+                compilerOptions: {
+                    compatConfig: {
+                        MODE: 2
+                    }
+                }, // until vue 3 migration complete
                 transformAssetUrls: {
                     // The Vue plugin will re-write asset URLs, when referenced
                     // in Single File Components, to point to the Laravel web
@@ -29,8 +37,8 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            vue: '@vue/compat/dist/vue.esm-bundler.js',
+            vue: '@vue/compat/dist/vue.esm-bundler.js', // until we no longer use bootstrapvue
             '@': path.resolve(__dirname, './resources/assets/js'),
         },
-    }
+    },
 });
