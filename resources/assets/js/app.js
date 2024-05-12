@@ -4,19 +4,22 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap.js'
+import { Vue, configureCompat }  from '@vue/compat'
+window.Vue = Vue
+
 import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
-import './filters.js';
 // import configs from './configs.json';
 
 // console.log(configs);
 
-window.Vue = require('vue').default
+configureCompat({MODE: 3}) // enable Vue 2 compat mode until BootsrapVue is updated to Vue 3 (or we get rid of it...)
+
 window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
@@ -69,9 +72,9 @@ if (document.getElementById('app')) {
         el: '#app',
         store: store,
         components: {
-            'clingen-app': require('./components/ClingenApp.vue').default,
-            'clingen-nav': require('./components/ClingenNav.vue').default,
-            'alerts': require('./components/Alerts.vue').default,
+            'clingen-app': () => import('@/components/ClingenApp.vue'),
+            'clingen-nav': () => import('@/components/ClingenNav.vue'),
+            'alerts': () => import('@/components/Alerts.vue'),
             CriteriaTable
         },
         computed: {
@@ -80,6 +83,15 @@ if (document.getElementById('app')) {
             }
         }
     });
+    app.config.globalProperties.$filters = {
+        formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
+            if (dateString === null) {
+                return null;
+            }
+
+            return moment(dateString).format(format)
+        }
+    }
 }
 
 if (document.getElementById('expert-panel-field')) {

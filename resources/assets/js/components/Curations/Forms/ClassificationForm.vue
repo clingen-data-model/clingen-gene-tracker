@@ -141,7 +141,7 @@
                         curation: this.curationCopy, 
                         data: {
                             classification_id: this.newClassificationId,
-                            classification_date: this.$options.filters.formatDate(this.newClassificationDate, 'YYYY-MM-DD')
+                            classification_date: this.$filters.formatDate(this.newClassificationDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {
