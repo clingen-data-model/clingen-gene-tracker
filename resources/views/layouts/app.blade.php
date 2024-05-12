@@ -28,7 +28,7 @@
         onload="this.rel = 'stylesheet'"
     >
 
-    @vite(['resources/assets/css/app.css', 'resources/assets/js/app.js'])
+    @vite(['resources/assets/sass/app.scss', 'resources/assets/js/app.js'])
 
 </head>
 <body>
