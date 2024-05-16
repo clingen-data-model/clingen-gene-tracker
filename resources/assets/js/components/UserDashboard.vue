@@ -22,7 +22,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import CurationsTable from './Curations/Table'
+    import CurationsTable from '@/components/Curations/Table'
     
     export default {
         components: {

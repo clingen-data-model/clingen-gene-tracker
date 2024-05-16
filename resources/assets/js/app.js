@@ -5,10 +5,10 @@
  */
 
 import './bootstrap.js'
-import { Vue, configureCompat }  from '@vue/compat'
+import Vue, { createApp }  from '@vue/compat'
 window.Vue = Vue
 
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
@@ -17,8 +17,6 @@ import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
-
-configureCompat({MODE: 3}) // enable Vue 2 compat mode until BootsrapVue is updated to Vue 3 (or we get rid of it...)
 
 window.Vue.use(BootstrapVue)
 
@@ -67,7 +65,7 @@ axios.interceptors.response.use(
 );
 
 if (document.getElementById('app')) {
-    const app = new Vue({
+    const app = createApp({
         router,
         el: '#app',
         store: store,
@@ -95,7 +93,7 @@ if (document.getElementById('app')) {
 }
 
 if (document.getElementById('expert-panel-field')) {
-    const app = new Vue({
+    const app = createApp({
         el: '#expert-panel-field',
         components: {
             ExpertPanelField

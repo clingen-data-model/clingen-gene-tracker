@@ -1,4 +1,4 @@
-module.exports = function (prefix, moreEntropy) {
+export const uniqid = function (prefix, moreEntropy) {
     //  discuss at: https://locutus.io/php/uniqid/
     // original by: Kevin van Zonneveld (https://kvz.io)
     //  revised by: Kankrelune (https://www.webfaktory.info/)
@@ -44,7 +44,7 @@ module.exports = function (prefix, moreEntropy) {
   
     // start with prefix, add current milliseconds hex string
     retId = prefix
-    retId += _formatSeed(parseInt(new Date().getTime() / 1000, 10), 8)
+    retId += _formatSeed(parseInt(new qDate().getTime() / 1000, 10), 8)
     // add seed hex string
     retId += _formatSeed($locutus.php.uniqidSeed, 5)
     if (moreEntropy) {
@@ -54,3 +54,5 @@ module.exports = function (prefix, moreEntropy) {
   
     return retId
   }
+
+  export default uniqid;

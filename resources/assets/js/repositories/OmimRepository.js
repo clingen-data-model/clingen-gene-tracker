@@ -30,4 +30,4 @@ OmimRepo.gene = function (geneSymbol) {
     return this.makeRequest('get', this.baseUrl+'/gene/'+geneSymbol);
 }
 
-module.exports = OmimRepo;
+export default OmimRepo;

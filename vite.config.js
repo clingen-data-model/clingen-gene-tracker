@@ -36,6 +36,7 @@ export default defineConfig({
         }),
     ],
     resolve: {
+        extensions: ['.js', '.vue', '.mjs'],
         alias: {
             vue: '@vue/compat/dist/vue.esm-bundler.js', // until we no longer use bootstrapvue
             '@': path.resolve(__dirname, './resources/assets/js'),
