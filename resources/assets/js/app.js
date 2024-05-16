@@ -11,9 +11,6 @@ window.Vue = Vue
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
-import CriteriaTable from './components/Curations/CriteriaTable.vue'
-import User from './User'
-import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
@@ -27,10 +24,6 @@ import GciLink from './components/Curations/GciLink.vue';
 window.Vue.component('gci-link', GciLink)
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 window.Vue.component('gci-linked-message', GciLinkedMessage)
-
-if (user) {
-    user = new User(user);
-}
 
 axios.interceptors.request.use(function(config) {
     store.commit('addRequest');
@@ -73,7 +66,7 @@ if (document.getElementById('app')) {
             'clingen-app': () => import('@/components/ClingenApp.vue'),
             'clingen-nav': () => import('@/components/ClingenNav.vue'),
             'alerts': () => import('@/components/Alerts.vue'),
-            CriteriaTable
+            CriteriaTable: () => import('@/components/Curations/CriteriaTable.vue'),
         },
         computed: {
             loading: function() {
@@ -96,7 +89,7 @@ if (document.getElementById('expert-panel-field')) {
     const app = createApp({
         el: '#expert-panel-field',
         components: {
-            ExpertPanelField
+            ExpertPanelField: () => import('@/components/admin/ExpertPanelField.vue'),
         }
     });
 }
