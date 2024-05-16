@@ -11,19 +11,21 @@ window.Vue = Vue
 import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
+import ClingenApp from './components/ClingenApp.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
 
 // window.Vue.use(BootstrapVue)
 
+/*
 import ExternalLink from './components/ExternalLink.vue'
 window.Vue.component('external-link', ExternalLink)
-
 import GciLink from './components/Curations/GciLink.vue';
 window.Vue.component('gci-link', GciLink)
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 window.Vue.component('gci-linked-message', GciLinkedMessage)
+*/
 
 axios.interceptors.request.use(function(config) {
     store.commit('addRequest');
@@ -58,19 +60,10 @@ axios.interceptors.response.use(
 );
 
 if (document.getElementById('app')) {
-    const app = createApp({
-        components: {
-            'clingen-app': () => import('@/components/ClingenApp.vue'),
-            'clingen-nav': () => import('@/components/ClingenNav.vue'),
-            'alerts': () => import('@/components/Alerts.vue'),
-            CriteriaTable: () => import('@/components/Curations/CriteriaTable.vue'),
-        },
-        computed: {
-            loading: function() {
-                return this.$store.getters.loading;
-            }
-        }
-    }).use(router).use(store).use(BootstrapVue);
+    const app = createApp(ClingenApp)
+        .use(router)
+        .use(store)
+        .use(BootstrapVue);
 
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
