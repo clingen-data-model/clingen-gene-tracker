@@ -15,7 +15,7 @@ import router from './routing.js'
 
 // console.log(configs);
 
-window.Vue.use(BootstrapVue)
+// window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
 window.Vue.component('external-link', ExternalLink)
@@ -59,9 +59,6 @@ axios.interceptors.response.use(
 
 if (document.getElementById('app')) {
     const app = createApp({
-        router,
-        el: '#app',
-        store: store,
         components: {
             'clingen-app': () => import('@/components/ClingenApp.vue'),
             'clingen-nav': () => import('@/components/ClingenNav.vue'),
@@ -73,7 +70,8 @@ if (document.getElementById('app')) {
                 return this.$store.getters.loading;
             }
         }
-    });
+    }).use(router).use(store).use(BootstrapVue);
+
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
             if (dateString === null) {
@@ -83,13 +81,13 @@ if (document.getElementById('app')) {
             return moment(dateString).format(format)
         }
     }
+    app.mount('#app');
 }
 
 if (document.getElementById('expert-panel-field')) {
     const app = createApp({
-        el: '#expert-panel-field',
         components: {
             ExpertPanelField: () => import('@/components/admin/ExpertPanelField.vue'),
         }
-    });
+    }).mount('#expert-panel-field');
 }

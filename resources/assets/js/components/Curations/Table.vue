@@ -38,7 +38,9 @@
             :show-empty="true"
         >     
             <template v-slot:table-busy>
-                <center>Loading...</center>
+                <div class="text-center text-danger my-2">
+                    Loading...
+                </div>
             </template>
             <template v-slot:cell(gene_symbol)="{item}">
                 <router-link

@@ -44,7 +44,7 @@ export const uniqid = function (prefix, moreEntropy) {
   
     // start with prefix, add current milliseconds hex string
     retId = prefix
-    retId += _formatSeed(parseInt(new qDate().getTime() / 1000, 10), 8)
+    retId += _formatSeed(parseInt(new Date().getTime() / 1000, 10), 8)
     // add seed hex string
     retId += _formatSeed($locutus.php.uniqidSeed, 5)
     if (moreEntropy) {

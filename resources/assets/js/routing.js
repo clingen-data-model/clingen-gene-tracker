@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import { createRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import store from './store/index'
 
 const Curations = () =>
@@ -128,7 +127,8 @@ const routes = [{
 ]
 
 const router = createRouter({
-    routes
+    routes,
+    history: createWebHistory(),
 })
 
 export default router
