@@ -22,6 +22,7 @@
         "sass": "^1.77.1",
         "sass-loader": "^14.2.1",
         "vite": "^5.2.11",
+        "vite-plugin-vuetify": "^2.0.3",
         "vue-loader": "^17.4.2",
         "vue-router": "^4.3.2",
         "vue-template-compiler": "^2.7.16",
@@ -33,6 +34,7 @@
         "autotrack": "^2.4.1",
         "bootstrap-vue": "^2.23.1",
         "upgrade": "^1.1.0",
-        "vue": "^3.4.27"
+        "vue": "^3.4.27",
+        "vuetify": "^3.6.6"
     }
 }

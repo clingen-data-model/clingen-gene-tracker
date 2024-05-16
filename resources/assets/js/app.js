@@ -12,6 +12,7 @@ import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import ClingenApp from './components/ClingenApp.vue'
+import vuetify from '@/plugins/vuetify'
 // import configs from './configs.json';
 
 // console.log(configs);
@@ -63,6 +64,7 @@ if (document.getElementById('app')) {
     const app = createApp(ClingenApp)
         .use(router)
         .use(store)
+        .use(vuetify)
         .use(BootstrapVue);
 
     app.config.globalProperties.$filters = {
