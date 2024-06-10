@@ -1,4 +1,3 @@
-version: "3"
 services:
     db:
         container_name: ${DOCKER_NAME:-gt}-db
@@ -27,6 +26,7 @@ services:
     app:
         image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
         container_name: ${DOCKER_NAME:-gt}-app
+        init: true
         entrypoint:
             - bash
             - /srv/app/scripts/entrypoint.sh
@@ -60,6 +60,7 @@ services:
         volumes:
             - .:/srv/app
         user: ${DOCKER_USER:-501:20}
+        init: true
         entrypoint:
             - /usr/sbin/nginx
             - -g
@@ -91,6 +92,7 @@ services:
         container_name: ${DOCKER_NAME:-gt}-scheduler
         depends_on:
             - app
+        init: true
         entrypoint:
             - bash
             - -c
@@ -113,6 +115,7 @@ services:
         container_name: ${DOCKER_NAME:-gt}-queue
         depends_on:
             - app
+        init: true
         entrypoint:
             - bash
             - -c
