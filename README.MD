@@ -73,6 +73,18 @@ docker compose run --no-deps --rm -it --entrypoint composer app install --no-int
 docker compose run --no-deps --rm -it --entrypoint composer app dump-autoload
 ```
 
+## Creating a user
+
+If you don't have a user in the database dump you are using to seed a local instance, you can create
+one with the following artisan command:
+
+```bash
+docker compose run --no-deps --rm -it --entrypoint php artisan user:create --email test@example.com --first_name Test --last_name Administrator -s
+```
+
+Of course you can change the email and names as you see fit. The email will end up being the login
+identifier. You'll be prompted for a password and password confirmation.
+
 ## Running
 
 Once everything above is setup, you should be able to just run the following:
