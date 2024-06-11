@@ -58,7 +58,9 @@ class UpdateMondoData extends Command
         $parser->setOboPath($tmpFilePath);
         
         while ($term = $parser->getNextTerm()) {
-            Disease::updateOrCreate(['mondo_id' => $term['mondo_id']], $term);
+            if (str_starts_with($term['mondo_id'], 'MONDO:')) {
+                Disease::updateOrCreate(['mondo_id' => $term['mondo_id']], $term);
+            }
         }
 
         $lastMondoUpdate = AppState::findByName('last_mondo_update');
