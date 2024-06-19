@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Clients\OmimClient as Omim;
+use Log;
+use App\Gene;
+use App\Curation;
+use Illuminate\Http\Request;
 use App\Contracts\OmimClient;
+use Illuminate\Http\JsonResponse;
+use App\Clients\OmimClient as Omim;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OmimGeneRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class OmimController extends Controller
 {
@@ -18,8 +21,12 @@ class OmimController extends Controller
         $this->omim = $client;
     }
 
+    /**
+     * @deprecated
+     */
     public function entry(Request $request)
     {
+        Log::warning('OmimController::entry has been deprecated.');
         if (!$request->mim_number) {
             return new JsonResponse(['errors' => ['You must provide a mim_number to get a omim record.']], 422);
         }
@@ -27,8 +34,12 @@ class OmimController extends Controller
         return $entry->toArray();
     }
 
+    /**
+     * @deprecated
+     */
     public function search(Request $request)
     {
+        Log::warning('OmimController::search has been deprecated.');
         if (!$request->has('search')) {
             return new JsonResponse(['errors' => ['You must provide a search term to search OMIM.']], 422);
         }
@@ -43,14 +54,41 @@ class OmimController extends Controller
             return new JsonResponse(['errors' => ['You must provide a gene_symbol to get the gene\'s phenotypes.']], 422);
         }
 
-        if (!$this->omim->geneSymbolIsValid($geneSymbol)) {
+        $gene = Gene::findBySymbol($geneSymbol);
+        if (!$gene) {
             return new JsonResponse(['errors' => ['No HGNC gene symbol was found for '.$geneSymbol]], 404);
         }
 
-        $searchResults = $this->omim->getGenePhenotypes($geneSymbol);
         return [
             'gene_symbol' => $geneSymbol,
-            'phenotypes' => $searchResults
+            'phenotypes' => $gene->phenotypes->map(fn($ph) => $this->serializePhenotypeModelForResponse($ph))
+        ];
+    }
+
+    public function forCuration($curationId)
+    {
+        $curation = Curation::findOrFail($curationId);
+
+        $curationPhenotypes = $curation->phenotypes;
+
+        $phenotypes = $curationPhenotypes
+            ->merge($curation->gene->phenotypes)
+            ->unique('id')
+            ->sortBy(fn($ph) => $ph->id)
+            ->values();
+
+        return [
+            'gene_symbol' => $curation->gene_symbol,
+            'phenotypes' => $phenotypes->map(fn($ph) => $this->serializePhenotypeModelForResponse($ph)),
+        ];
+    }
+
+    private function serializePhenotypeModelForResponse($phenotype):array
+    {
+        return [
+            'phenotype' => $phenotype->name,
+            'phenotypeMimNumber' => $phenotype->mim_number,
+            'phenotypeInheritance' => $phenotype->moi,
         ];
     }
 }

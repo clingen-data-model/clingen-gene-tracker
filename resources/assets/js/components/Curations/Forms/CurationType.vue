@@ -74,7 +74,7 @@
             updatedCuration: function (to, from) {
                 if (to != from) {
                     if (to.gene_symbol != from.gene_symbol || to.curation_type_id != from.curation_type_id) {
-                        this.fetchPhenotypes(this.updatedCuration.gene_symbol);
+                        this.fetchPhenotypes(this.updatedCuration.id);
                     }
                     this.updatedCuration.addingCurationType = 1;
                 }
