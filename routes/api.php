@@ -44,6 +44,7 @@ Route::group([
     Route::get('/omim/entry', 'OmimController@entry');
     Route::get('/omim/search', 'OmimController@search');
     Route::get('/omim/gene/{geneSymbol}', 'OmimController@gene');
+    Route::get('/omim/curation/{curationId}', 'OmimController@forCuration');
 
     // Diseases
     Route::get('/diseases/search', 'DiseaseLookupController@search');

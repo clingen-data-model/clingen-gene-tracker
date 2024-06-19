@@ -13,9 +13,9 @@ export default {
         }
     },
     methods: {
-        fetchPhenotypes: function (geneSymbol) {
-            if (geneSymbol) {
-                return OmimRepo.gene(geneSymbol)
+        fetchPhenotypes: function (curationId) {
+            if (curationId) {
+                return OmimRepo.forCuration(curationId)
                     .then( response => {
                         this.phenotypes = response.data.phenotypes;
                         this.phenotypesLoaded = true
