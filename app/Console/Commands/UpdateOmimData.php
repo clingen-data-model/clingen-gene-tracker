@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Storage;
 use App\Gene;
 use App\AppState;
 use App\Phenotype;
@@ -9,16 +10,19 @@ use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Str;
 use GuzzleHttp\Psr7\Response;
+use Tests\MocksGuzzleRequests;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ClientException;
 use App\Events\Phenotypes\PhenotypeAddedForGene;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\MultipleRecordsFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateOmimData extends Command
 {
+    use MocksGuzzleRequests;
+
     /**
      * The name and signature of the console command.
      *
@@ -65,14 +69,18 @@ class UpdateOmimData extends Command
 
         $newDateGenerated = null;
         $lastGeneMapDownload = AppState::findByName('last_genemap_download');
+        $archivePath = Storage::path('omim/genemap2.'.Carbon::now()->format('Y-m-d_H:i:s').'.txt.gz');
+        $gzfile = gzopen($archivePath, 'wb9');
         try {
             $url = 'https://data.omim.org/downloads/'.config('app.omim_key').'/genemap2.txt';
             $request = $client->get($url, ['stream' => true]);
-            $this->info('Retrieved file...');
+            $this->info('Retrieved OMIM genemap2 file...');
 
             $keys = [];
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
+                gzwrite($gzfile, $line);
+
                 $line = str_replace("\n", ',', $line);
 
                 if ($this->lineIsHeader($line)) {
@@ -82,9 +90,15 @@ class UpdateOmimData extends Command
 
                 if ($this->lineIsDateGenerated($line)) {
                     $newDateGenerated = $this->getGeneratedDate($line);
+                    dump($newDateGenerated);
                     if (!is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
+                        // Close and remove the archive since we're not using the file.
+                        dump('should close and delete the gzip file');
+                        gzclose($gzfile);
+                        unlink($archivePath);
                         return;
                     }
+                    dump('but it didn\'t :(');
                 }
                 
                 if ($this->lineIsGarbage($line)) {
@@ -158,11 +172,16 @@ class UpdateOmimData extends Command
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
             $lastGeneMapDownload->update(['value' => $newDateGenerated]);
+            gzclose($gzfile);
         } catch (ClientException $e) {
+            gzclose($gzfile);
+            unlink($archivePath);
             $this->error($e->getMessage());
             \Log::error($e->getMessage());
         }
         Log::info('Finished Omim genemap2 update.');
+
+        
     }
 
     private function parseKeys($line)
