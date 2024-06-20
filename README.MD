@@ -79,7 +79,7 @@ If you don't have a user in the database dump you are using to seed a local inst
 one with the following artisan command:
 
 ```bash
-docker compose run --no-deps --rm -it --entrypoint php artisan user:create --email test@example.com --first_name Test --last_name Administrator -s
+docker compose run --no-deps --rm -it --entrypoint php app artisan user:create --email test@example.com --first_name Test --last_name Administrator -s
 ```
 
 Of course you can change the email and names as you see fit. The email will end up being the login
