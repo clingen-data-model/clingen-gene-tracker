@@ -21,6 +21,7 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;
                         </template>
                         <template v-slot:cell(checkbox)="data">
+                            <pre>{{ data.value }}</pre>
                             <input 
                                 class="form-check-input form-check-input-lg"
                                 type="checkbox" 
@@ -126,6 +127,7 @@
                         label: ' ',
                         formatter: (value, key, item) => {
                             return {
+                                'id': item.id,
                                 'mim_number': item.phenotypeMimNumber,
                                 'name': item.phenotype
                             }

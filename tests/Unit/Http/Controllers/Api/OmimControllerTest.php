@@ -15,10 +15,13 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class OmimControllerTest extends TestCase
 {
     use DatabaseTransactions;
+
+    private $user;
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->u = factory(\App\User::class)->create();
+        $this->user = factory(\App\User::class)->create();
     }
     /**
      * @test
@@ -27,7 +30,7 @@ class OmimControllerTest extends TestCase
     {
         $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')));
         $entry = new OmimEntry($omimEntryResponse->omim->entryList[0]->entry);
-        $response = $this->actingAs($this->u, 'api')
+        $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/omim/entry?mim_number=100100');
         $response->assertJson($entry->toArray());
     }
@@ -38,7 +41,7 @@ class OmimControllerTest extends TestCase
     public function searches_omim_entries()
     {
         $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/search_response.json')), true);
-        $this->actingAs($this->u, 'api')
+        $this->actingAs($this->user, 'api')
             ->call('GET', '/api/omim/search?search=myl2')
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][0]['entry'])
             ->assertJsonFragment($omimEntryResponse['omim']['searchResponse']['entryList'][1]['entry'])
@@ -53,12 +56,12 @@ class OmimControllerTest extends TestCase
      */
     public function checks_to_see_if_gene_symbol_is_valid()
     {
-        $this->actingAs($this->u, 'api')
+        $this->actingAs($this->user, 'api')
             ->call('GET', '/api/omim/gene/MLTN1')
             ->assertStatus(404)
             ->assertSee('No HGNC gene symbol was found for MLTN1');
 
-        $this->actingAs($this->u, 'api')
+        $this->actingAs($this->user, 'api')
             ->call('GET', '/api/omim/gene/BRCA1')
             ->assertStatus(200);
     }
