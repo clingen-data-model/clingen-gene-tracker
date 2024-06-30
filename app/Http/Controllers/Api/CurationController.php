@@ -12,6 +12,7 @@ use App\Http\Requests\CurationUpdateRequest;
 use App\Http\Resources\CurationResource;
 use App\Jobs\Curations\AddStatus;
 use App\Jobs\Curations\SyncPhenotypes;
+use App\Phenotype;
 use App\Services\Curations\CurationSearchService;
 use App\Services\RequestDataCleaner;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class CurationController extends Controller
 {
     protected $cleaner;
     protected $omim;
+    protected $search;
 
     public function __construct(RequestDataCleaner $cleaner, OmimClient $omim, CurationSearchService $search)
     {
@@ -147,15 +149,17 @@ class CurationController extends Controller
     private function setPhenotypes(Curation $curation, $request)
     {
         if ($request->phenotypes) {
-            SyncPhenotypes::dispatchSync($curation, $request->phenotypes);
+            $phenotypes_mim_numbers = collect($request->phenotypes)->map(fn($ph_hash) => $ph_hash['mim_number']);
+            SyncPhenotypes::dispatchSync($curation, $phenotypes_mim_numbers);
         }
 
         if ($request->isolated_phenotype) {
-            $pheno = $this->omim->getEntry($request->isolated_phenotype);
+            // $pheno = $this->omim->getEntry($request->isolated_phenotype);
+            $pheno = Phenotype::findByMimNumber($request->isolated_phenotype);
             SyncPhenotypes::dispatchSync($curation, [
                 [
                     'mim_number' => $pheno->mimNumber,
-                    'name' => $pheno->titles->preferredTitle,
+                    'name' => $pheno->title
                 ],
             ]);
         }

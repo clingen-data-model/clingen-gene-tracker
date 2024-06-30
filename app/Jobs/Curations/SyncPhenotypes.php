@@ -13,34 +13,18 @@ use Illuminate\Queue\SerializesModels;
 class SyncPhenotypes implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $curation;
-    protected $phenotypes;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(Curation $curation, $phenotypes)
+    public function __construct(private Curation $curation, private $mim_numbers)
     {
-        $this->curation = $curation;
-        $this->phenotypes = collect($phenotypes);
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        if (!$this->phenotypes && $this->phenotypes->count() > 0) {
+        $phenotypes = Phenotype::whereIn('mim_number', $this->mim_numbers ?? []);
+        if (!$phenotypes && $phenotypes->count() > 0) {
             return;
         }
 
-        $curationPhenos = $this->phenotypes->map(function ($pheno) {
-            return Phenotype::firstOrCreate($pheno);
-        });
-        $this->curation->phenotypes()->sync($curationPhenos->pluck('id'));
+        $this->curation->phenotypes()->sync($phenotypes->pluck('id'));
     }
 }
