@@ -86,6 +86,7 @@ class OmimController extends Controller
     private function serializePhenotypeModelForResponse($phenotype):array
     {
         return [
+            'id' => $phenotype->id,
             'phenotype' => $phenotype->name,
             'phenotypeMimNumber' => $phenotype->mim_number,
             'phenotypeInheritance' => $phenotype->moi,
