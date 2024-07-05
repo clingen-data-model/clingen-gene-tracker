@@ -193,7 +193,7 @@
                 loading: 'loading',
             }),
             panelOptions: function () {
-                return this.panels.filter(panel => user.canSelectExpertPanel(panel))
+                return this.panels.filter(panel => user.canSelectExpertPanel(panel)).sort((a, b) => a.name.localeCompare(b.name))
             },
             statusOptions: function () {
                 return this.curationStatuses.filter(status => user.canSelectCurationStatus(status, this.updatedCuration))
