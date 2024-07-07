@@ -24,6 +24,8 @@ class CurationControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $user, $curations, $panel, $rationale, $curationType;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -51,21 +53,6 @@ class CurationControllerTest extends TestCase
             ->json('GET', '/api/curations')
              ->assertStatus(200);
     }
-
-    // /**
-    //  * @test
-    //  */
-    // public function index_lists_curations_filtered_by_gene_symbol()
-    // {
-    //     $this->withoutExceptionHandling();
-    //     $testGene = 'BRCA1';
-    //     $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
-
-    //     $response = $this->actingAs($this->user, 'api')
-    //         ->json('GET', '/api/curations?gene_symbol='.$testGene);
-
-    //     $this->assertEquals(16, $response->original->count());
-    // }
 
     /**
      * @test
@@ -236,38 +223,26 @@ class CurationControllerTest extends TestCase
 
     /**
      * @test
+     * @group phenotypes
      */
     public function store_saves_phenotypes_for_new_curation()
     {
-        $phenotype = factory(\App\Phenotype::class)->create();
+        $phenotypes = factory(\App\Phenotype::class, 3)->create();
         $curator = factory(\App\User::class)->create();
 
         $data = [
             'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
             'curator_id' => $curator->id,
-            'phenotypes' => [
-                [
-                    'mim_number' => 12345,
-                    'name' => 'test pheno1',
-                ],
-                [
-                    'mim_number' => 67890,
-                    'name' => 'test pheno2',
-                ],
-                [
-                    'mim_number' => $phenotype->mim_number,
-                    'name' => $phenotype->name,
-                ],
-            ],
+            'phenotypes' => $phenotypes->pluck('id'),
             'nav' => 'next',
         ];
 
         $this->actingAs($this->user, 'api')
             ->json('POST', '/api/curations', $data)
-            ->assertJsonFragment(['mim_number'=>$phenotype->mim_number])
-            ->assertJsonFragment(['mim_number'=>12345])
-            ->assertJsonFragment(['mim_number'=>67890])
+            ->assertJsonFragment(['mim_number'=>$phenotypes[0]->mim_number])
+            ->assertJsonFragment(['mim_number'=>$phenotypes[1]->mim_number])
+            ->assertJsonFragment(['mim_number'=>$phenotypes[2]->mim_number])
             ;
     }
 
