@@ -7,6 +7,9 @@ use Tests\TestCase;
 use App\Jobs\Curations\SyncPhenotypes;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
+/**
+ * @group phenotypes
+ */
 class SyncPhenotypesTest extends TestCase
 {
     use DatabaseTransactions;
@@ -16,11 +19,7 @@ class SyncPhenotypesTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->phs = factory(Phenotype::class, 3)
-                        ->create()
-                        ->map(function ($item) {
-                            return $item->mim_number;
-                        })->toArray();
+        $this->phs = factory(Phenotype::class, 3)->create();
         $this->curation = factory(\App\Curation::class)->create();
     }
 
@@ -29,7 +28,7 @@ class SyncPhenotypesTest extends TestCase
      */
     public function adds_phenotypes_to_curation()
     {
-        $job = new SyncPhenotypes($this->curation, $this->phs);
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
         $job->handle();
 
         $curation = $this->curation->fresh();
@@ -43,13 +42,13 @@ class SyncPhenotypesTest extends TestCase
     public function creates_new_phenotypes_and_adds_to_curation()
     {
         
-        $newMims = [
-            factory(Phenotype::class)->create(['mim_number' => 123456])->mim_number,
-            factory(Phenotype::class)->create(['mim_number' => 768910])->mim_number,
-        ];
-        $phs = array_merge($this->phs, $newMims);
+        $newMims = collect([
+            factory(Phenotype::class)->create(['mim_number' => 123456]),
+            factory(Phenotype::class)->create(['mim_number' => 768910]),
+        ]);
+        $phs = $this->phs->merge($newMims);
 
-        $job = new SyncPhenotypes($this->curation, $phs);
+        $job = new SyncPhenotypes($this->curation, $phs->pluck('id'));
         $job->handle();
 
         $this->assertEquals(5, $this->curation->phenotypes()->count());
@@ -62,11 +61,11 @@ class SyncPhenotypesTest extends TestCase
      */
     public function removes_phenotypes_from_curation()
     {
-        $job = new SyncPhenotypes($this->curation, $this->phs);
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
         $job->handle();
 
-        array_pop($this->phs);
-        $job = new SyncPhenotypes($this->curation, $this->phs);
+        $this->phs->pop();
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
         $job->handle();
 
         $this->assertEquals(2, $this->curation->phenotypes()->count());
