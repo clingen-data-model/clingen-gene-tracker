@@ -16,7 +16,7 @@ class PhenotypeResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // 'id' => $this->id,
+            'id' => $this->id,
             'mim_number' => $this->mim_number,
             'name' => $this->name,
             'curations' => CurationResource::collection($this->whenLoaded('curations'))

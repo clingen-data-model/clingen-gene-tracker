@@ -149,19 +149,14 @@ class CurationController extends Controller
     private function setPhenotypes(Curation $curation, $request)
     {
         if ($request->phenotypes) {
-            $phenotypes_mim_numbers = collect($request->phenotypes)->map(fn($ph_hash) => $ph_hash['mim_number']);
-            SyncPhenotypes::dispatchSync($curation, $phenotypes_mim_numbers);
+            $phenotypeIds = array_map(fn($el) => $el['id'], $request->phenotypes);
+            SyncPhenotypes::dispatchSync($curation, $phenotypeIds);
         }
 
         if ($request->isolated_phenotype) {
             // $pheno = $this->omim->getEntry($request->isolated_phenotype);
             $pheno = Phenotype::findByMimNumber($request->isolated_phenotype);
-            SyncPhenotypes::dispatchSync($curation, [
-                [
-                    'mim_number' => $pheno->mimNumber,
-                    'name' => $pheno->title
-                ],
-            ]);
+            SyncPhenotypes::dispatchSync($curation, [$pheno->id]);
         }
     }
 

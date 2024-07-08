@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\User;
 use App\Curation;
+use App\Phenotype;
 use App\Rationale;
 use App\ExpertPanel;
 use App\CurationType;
@@ -42,6 +43,8 @@ class BulkCurationProcessor
     public $panels;
     protected $validationErrors;
     protected $omim;
+    private $statuses;
+    private $duplicates;
 
     public function __construct()
     {
@@ -249,7 +252,6 @@ class BulkCurationProcessor
         }
 
         config(['app.bulk_uploading' => false]);
-        // Bus::dispatch(new CreatePrecurationStreamMessage($curation, 'created'));
 
         return $curation;
     }
@@ -290,12 +292,14 @@ class BulkCurationProcessor
         for ($i = 0; $i < 10; ++$i) {
             if (isset($rowData['omim_id_'.$i])) {
                 $mimNumber = $rowData['omim_id_'.$i];
-                try {
-                    $omimData = $this->omim->getEntry($mimNumber);
-                    $phenotypes[] = ['mim_number' => $omimData->mimNumber, 'name' => $omimData->titles->preferredTitle];
-                } catch (ClientException $e) {
+                $phenotype = Phenotype::findByMimNumber($mimNumber);
+
+                if (!$phenotype) {
                     $badMimNumbers[] = 'Bad mim number at OMIM ID '.$i.': '.$mimNumber;
+                    continue;
                 }
+
+                $phenotypes[] = $phenotype->id;
             }
         }
         if (count($badMimNumbers) > 0) {
