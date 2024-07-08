@@ -21,6 +21,8 @@ class MondoTermObsoletedNotificationTest extends TestCase
     use DatabaseTransactions;
     use SetsUpDiseaseWithCuration;
 
+    private $curation, $user1, $disease;
+
     public function setup():void
     {
         parent::setup();
