@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Mockery;
 use App\User;
 use App\Curation;
+use App\Phenotype;
 use Tests\TestCase;
 use App\ExpertPanel;
 use App\Clients\OmimClient;
@@ -22,6 +23,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class BulkCurationProcessorTest extends TestCase
 {
     use DatabaseTransactions;
+    private $user, $ep, $data, $phenotype;
 
     public function setUp(): void
     {
@@ -31,10 +33,7 @@ class BulkCurationProcessorTest extends TestCase
             $this->user = factory(User::class)->create(['email' => 'sirs@unc.edu']);
         }
         $this->ep = factory(ExpertPanel::class)->create([]);
-
-        // $omimClientMock = $this->createMock(OmimClient::class);
-        // $omimClientMock->method('geneSymbolIsValid')->willReturn(true);
-        // $omimClientMock->method('getEntry')->willReturn(true);
+        $this->phenotype = factory(Phenotype::class)->create(['mim_number' => 605724]);
 
         app()->instance(OmimClient::class, new class extends OmimClient {
             public function geneSymbolisValid($symbol) 

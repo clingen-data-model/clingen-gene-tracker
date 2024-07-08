@@ -16,6 +16,7 @@ class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
     protected $fakeCurationSavedEvent = false;
+    private $user, $expertPanel;
 
     public function setUp(): void
     {

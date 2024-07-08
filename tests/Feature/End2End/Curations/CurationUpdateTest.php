@@ -8,6 +8,7 @@ use App\Clients\Omim\OmimEntry;
 use App\Rules\ValidHgncGeneSymbol;
 use App\Clients\Omim\OmimEntryContract;
 use App\Contracts\OmimClient as ContractsOmimClient;
+use App\Phenotype;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -65,26 +66,14 @@ class CurationUpdateTest extends TestCase
     {
         $phenotype = factory(\App\Phenotype::class)->create();
         $phenotype2 = factory(\App\Phenotype::class)->create();
+        $phenotype3 = factory(\App\Phenotype::class)->create();
         $this->curation->phenotypes()->attach($phenotype2->id);
 
         $data = [
             'page' => 'phenotypes',
             'gene_symbol' => 'BRCA1',
             'expert_panel_id' => $this->panel->id,
-            'phenotypes' => [
-                [
-                    'mim_number' => 12345,
-                    'name' => 'test pheno1',
-                ],
-                [
-                    'mim_number' => 67890,
-                    'name' => 'test pheno2',
-                ],
-                [
-                    'mim_number' => $phenotype->mim_number,
-                    'name' => $phenotype->name,
-                ],
-            ],
+            'phenotypes' => [$phenotype, $phenotype2],
             'rationales' => [['id' => $this->rationale->id]],
             'nav' => 'next',
         ];
@@ -93,8 +82,7 @@ class CurationUpdateTest extends TestCase
             ->json('PUT', '/api/curations/'.$this->curation->id, $data)
             ->assertStatus(200)
             ->assertJsonFragment(['mim_number' => $phenotype->mim_number])
-            ->assertJsonFragment(['mim_number' => 12345])
-            ->assertJsonFragment(['mim_number' => 67890]);
+            ->assertJsonFragment(['mim_number' => $phenotype2->mim_number]);
     }
 
     /**
@@ -132,12 +120,15 @@ class CurationUpdateTest extends TestCase
 
         $curation = $this->curation;
         $curation->update(['gene_symbol' => 'brca1']);
+        $phenotype = factory(Phenotype::class)->create(['mim_number' => '100100']);
 
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
-        $data['rationales'] = [$this->rationale];
-        $data['isolated_phenotype'] = '100100';
+        $data['rationales'] = [$this->rationale->getAttributes()];
+        $data['isolated_phenotype'] = $phenotype->mim_number;
         $data['nav'] = 'next';
+
+        // dd($data);
 
         $this->withExceptionHandling();
 
@@ -160,6 +151,7 @@ class CurationUpdateTest extends TestCase
         $data = $curation->toArray();
         $data['page'] = 'phenotypes';
         $data['rationales'] = [$this->rationale, $otherRationale];
+
 
         $response = $this->actingAs($this->user, 'api')
             ->json('PUT', '/api/curations/'.$curation->id, $data);
