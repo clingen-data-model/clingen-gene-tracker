@@ -54,6 +54,22 @@ class CurationControllerTest extends TestCase
              ->assertStatus(200);
     }
 
+    // /**
+    //  * @test
+    //  */
+    // public function index_lists_curations_filtered_by_gene_symbol()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $testGene = 'BRCA1';
+    //     $curation = factory(\App\Curation::class, 16)->create(['gene_symbol'=>$testGene]);
+
+    //     $response = $this->actingAs($this->user, 'api')
+    //         ->json('GET', '/api/curations?gene_symbol='.$testGene);
+
+    //     $this->assertEquals(16, $response->original->count());
+    // }
+
+ 
     /**
      * @test
      */
