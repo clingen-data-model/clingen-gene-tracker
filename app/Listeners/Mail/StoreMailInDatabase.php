@@ -28,8 +28,6 @@ class StoreMailInDatabase
      */
     public function handle(MessageSent $event): Email
     {
-        // dump('text body: '.$event->message->getTextBody());
-        // dd('html body' . $event->message->getHtmlBody());
         $record = Email::create([
             'from' => $this->addressesToHash($event->message->getFrom()),
             'sender' => $this->addressesToHash([$event->message->getSender()]),
@@ -38,7 +36,7 @@ class StoreMailInDatabase
             'cc' => $this->addressesToHash($event->message->getCc()),
             'bcc' => $this->addressesToHash($event->message->getBcc()),
             'subject' => $event->message->getSubject(),
-            'body' => $event->message->getTextBody(),
+            'body' => $event->message->getHtmlBody() ?? $event->message->getTextBody(),
         ]);
 
         return $record;

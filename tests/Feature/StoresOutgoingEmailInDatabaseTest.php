@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use App\Email;
 use Tests\TestCase;
+use App\Notifications\Users\Welcome;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class StoresOutgoingEmailInDatabaseTest extends TestCase
@@ -19,24 +20,14 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
      */
     public function stores_outgoing_mail_in_database()
     {
-        Mail::raw('plain text message', function ($message) {
-            $message->from('john@johndoe.com', 'John Doe');
-            $message->sender('john@johndoe.com', 'John Doe');
-            $message->to('john@johndoe.com', 'John Doe');
-            $message->cc('john@johndoe.com', 'John Doe');
-            $message->bcc('john@johndoe.com', 'John Doe');
-            $message->replyTo('john@johndoe.com', 'John Doe');
-            $message->subject('Subject');
-        });
+        $user = factory(User::class)->create();
+        Notification::send($user, new Welcome());
 
         $email = Email::orderBy('id', 'desc')->first();
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->from);
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->sender);
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->to);
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->cc);
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->bcc);
-        $this->assertEquals(['john@johndoe.com' => 'John Doe'], $email->reply_to);
-        $this->assertEquals('Subject', $email->subject);
-        $this->assertEquals('plain text message', $email->body);
+        $this->assertEquals([config('mail.from.address') => config('mail.from.name')], $email->from);
+        $this->assertEquals(null, $email->sender);
+        $this->assertEquals([$user->email => ''], $email->to);
+        $this->assertEquals('Welcome to ClinGen GeneTracker', $email->subject);
+        $this->assertMatchesRegularExpression('/Welcome to the  system./', $email->body);
     }
 }
