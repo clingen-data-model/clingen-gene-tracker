@@ -21,8 +21,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateOmimData extends Command
 {
-    use MocksGuzzleRequests;
-
     /**
      * The name and signature of the console command.
      *
@@ -90,15 +88,12 @@ class UpdateOmimData extends Command
 
                 if ($this->lineIsDateGenerated($line)) {
                     $newDateGenerated = $this->getGeneratedDate($line);
-                    dump($newDateGenerated);
                     if (!is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
                         // Close and remove the archive since we're not using the file.
-                        dump('should close and delete the gzip file');
                         gzclose($gzfile);
                         unlink($archivePath);
                         return;
                     }
-                    dump('but it didn\'t :(');
                 }
                 
                 if ($this->lineIsGarbage($line)) {
