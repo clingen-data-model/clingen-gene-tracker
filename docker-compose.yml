@@ -48,6 +48,8 @@ services:
             CONTAINER_ENV: ${CONTAINER_ENV:-local}
             COMPOSER_NO_DEV: "0"
             COMPOSER_AUTH: ${COMPOSER_AUTH:?You must provide valid Backpack credentials in COMPOSER_AUTH (see the .env.example)}
+            XDEBUG_MODE: ${XDEBUG_MODE:-debug,develop}
+            XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:-501:20}
 
     nginx:
