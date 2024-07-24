@@ -2,9 +2,13 @@
 
 namespace Tests\Unit\Jobs\Curations;
 
+use App\Curation;
+use App\Events\Curation\CurationPhenotypesUpdated;
 use App\Phenotype;
 use Tests\TestCase;
 use App\Jobs\Curations\SyncPhenotypes;
+use Event;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
@@ -20,7 +24,7 @@ class SyncPhenotypesTest extends TestCase
     {
         parent::setUp();
         $this->phs = factory(Phenotype::class, 3)->create();
-        $this->curation = factory(\App\Curation::class)->create();
+        $this->curation = factory(Curation::class)->create();
     }
 
     /**
@@ -70,4 +74,35 @@ class SyncPhenotypesTest extends TestCase
 
         $this->assertEquals(2, $this->curation->phenotypes()->count());
     }
+
+    /**
+     * @test
+     */
+    public function it_throws_a_validation_exception_when_a_phenotype_id_is_not_found():void
+    {
+        $this->expectException(ValidationException::class);
+
+        (new SyncPhenotypes(
+            $this->curation, 
+            $this->phs->pluck('id')->push(666)
+        ))->handle();
+    }
+    
+    /**
+     * @test
+     */
+    public function it_fires_a_curation_phenotypes_updated_event():void
+    {
+        $this->curation->phenotypes()->sync($this->phs->pluck('id'));
+
+        Event::fake();
+
+        (new SyncPhenotypes($this->curation->fresh(), collect($this->phs->first()->id)))->handle();
+
+        Event::assertDispatched(function (CurationPhenotypesUpdated $event) {
+            return $event->curation->id == $this->curation->id
+                && $event->previousPhenotypeIds->toArray() == $this->phs->pluck('id')->toArray();
+        });
+    }
+    
 }
