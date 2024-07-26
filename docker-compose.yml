@@ -21,7 +21,7 @@ services:
             - MYSQL_PASSWORD=${DB_PASSWORD}
             - MYSQL_SORT_BUFFER_SIZE=256000000
             - DB_DATABASE_TEST=testing
-        user: ${DOCKER_USER:-501:20}
+        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     app:
         image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
@@ -50,7 +50,7 @@ services:
             COMPOSER_AUTH: ${COMPOSER_AUTH:?You must provide valid Backpack credentials in COMPOSER_AUTH (see the .env.example)}
             XDEBUG_MODE: ${XDEBUG_MODE:-debug,develop}
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
-        user: ${DOCKER_USER:-501:20}
+        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     nginx:
         container_name: ${DOCKER_NAME:-gt}-nginx
@@ -61,7 +61,7 @@ services:
             - "${APP_PORT:-8012}:8080"
         volumes:
             - .:/srv/app
-        user: ${DOCKER_USER:-501:20}
+        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
         init: true
         entrypoint:
             - /usr/sbin/nginx
@@ -110,7 +110,7 @@ services:
         environment:
             DB_HOST: ${DOCKER_NAME:-gt}-db
             REDIS_HOST: ${DOCKER_NAME:-gt}-redis
-        user: ${DOCKER_USER:-501:20}
+        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     queue:
         image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
@@ -133,7 +133,7 @@ services:
         environment:
             DB_HOST: ${DOCKER_NAME:-gt}-db
             REDIS_HOST: ${DOCKER_NAME:-gt}-redis
-        user: ${DOCKER_USER:-501:20}
+        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
 volumes:
     db:

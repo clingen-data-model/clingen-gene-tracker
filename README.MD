@@ -17,6 +17,11 @@ You could set this in the `.env` file (described later on), or to avoid having t
 projects that use the same convention, you can add a line like `export DOCKER_USER=$(id -u):$(id -g)`
 or `export DOCKER_USER=${UID}:${GID}` to your `.zshrc`, `.bashrc` or equivalant in your home directory.
 
+Unfortuntely, you cannot just define DOCKER_USER as `${UID}:${GID}` in the `docker-compose.yml`
+or in the `.env` because ${UID} and ${GID} are not actually variables (at least not in some shells),
+you need to put in the actual numerical values. For instance, most mac users who only use one
+account on their systems could put `DOCKER_USER=501:20` in their .env file.
+
 ### Setup other configurable options (probably don't need to re-do often)
 
 This project uses the convention that Laravel uses with most configurable options definable in
