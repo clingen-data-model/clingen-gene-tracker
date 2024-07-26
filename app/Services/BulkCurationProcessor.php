@@ -34,7 +34,7 @@ class BulkCurationProcessor
         'mondo_id', 'disease_entity_if_there_is_no_mondo_id',
         'rationale_1', 'rationale_2', 'rationale_3', 'rationale_4', 'rationale_notes',
         'pmid_1', 'pmid_2', 'pmid_3', 'pmid_4', 'pmid_5', 'pmid_6', 'pmid_7', 'pmid_8', 'pmid_9', 'pmid_10',
-        'date_uploaded', 'precuration_date', 'disease_entity_assigned_date', 'curation_in_progress_date', 'curation_provisional_date', 'curation_approved_date',
+        'uploaded_date', 'precuration_date', 'disease_entity_assigned_date', 'curation_in_progress_date', 'curation_provisional_date', 'curation_approved_date',
     ];
 
     public $users;
