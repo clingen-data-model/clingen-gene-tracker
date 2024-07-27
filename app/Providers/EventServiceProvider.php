@@ -4,11 +4,14 @@ namespace App\Providers;
 
 use App\Events\Curation\Created;
 use App\Actions\NotifyPhenotypeAdded;
+use App\Events\Curation\CurationPhenotypesUpdated;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
+    use RegistersRecordableEventListeners;
+
     /**
      * The event listener mappings for the application.
      *
@@ -76,5 +79,11 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+    }
+
+    public function register(): void
+    {
+        $eventClasses = getClassesAtPath(app_path('Events/'));
+        $this->registerRecordableEventListeners($eventClasses);
     }
 }

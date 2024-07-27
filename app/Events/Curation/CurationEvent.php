@@ -15,14 +15,12 @@ class CurationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $curation;
-
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation)
+    public function __construct(public Curation $curation)
     {
         //
         $this->curation = $curation;
