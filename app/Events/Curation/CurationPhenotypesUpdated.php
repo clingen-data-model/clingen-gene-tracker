@@ -13,7 +13,7 @@ final class CurationPhenotypesUpdated extends RecordableEvent
     }
 
     public function getLog(): string {
-        return 'phenotypes';
+        return 'curations';
     }
 
     public function hasSubject(): bool {
@@ -27,9 +27,10 @@ final class CurationPhenotypesUpdated extends RecordableEvent
 
     public function getProperties(): array 
     {
+        $currentPhenotypeIds = $this->curation->phenotypes->pluck('id')->toArray();
         return [
             'old' => $this->previousPhenotypeIds,
-            'new' => $this->curation->phenotypes->pluck('ids')
+            'new' => $currentPhenotypeIds
         ];
     }
 
