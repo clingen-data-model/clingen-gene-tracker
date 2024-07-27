@@ -18,7 +18,7 @@ class SyncPhenotypes implements ShouldQueue
 
     private array $errors = [];
 
-    public function __construct(private Curation $curation, private $phenotypeIds)
+    public function __construct(private Curation $curation, private array $phenotypeIds)
     {
     }
 
@@ -30,9 +30,13 @@ class SyncPhenotypes implements ShouldQueue
 
         $previousIds = $this->curation->phenotypes->pluck('id');
 
-        $out = $this->curation->phenotypes()->sync($this->phenotypeIds);
+        if ($previousIds->toArray() == $this->phenotypeIds) {
+            return;
+        }
 
-        CurationPhenotypesUpdated::dispatch($this->curation, $previousIds);
+        $this->curation->phenotypes()->sync($this->phenotypeIds);
+
+        CurationPhenotypesUpdated::dispatch($this->curation->fresh(), $previousIds);
     }
 
     private function phenotypeIdsAreValid()
@@ -42,7 +46,7 @@ class SyncPhenotypes implements ShouldQueue
             ->get()
             ->pluck('id');
 
-        if ($matchingIds->toArray() !== $this->phenotypeIds->toArray()) {
+        if ($matchingIds->toArray() !== $this->phenotypeIds) {
             $this->errors['phenotype_ids'] = [
                 "One or more of the ids for phenotypes you selected are not valid."
             ];

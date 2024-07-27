@@ -32,7 +32,7 @@ class SyncPhenotypesTest extends TestCase
      */
     public function adds_phenotypes_to_curation()
     {
-        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id')->toArray());
         $job->handle();
 
         $curation = $this->curation->fresh();
@@ -52,7 +52,7 @@ class SyncPhenotypesTest extends TestCase
         ]);
         $phs = $this->phs->merge($newMims);
 
-        $job = new SyncPhenotypes($this->curation, $phs->pluck('id'));
+        $job = new SyncPhenotypes($this->curation, $phs->pluck('id')->toArray());
         $job->handle();
 
         $this->assertEquals(5, $this->curation->phenotypes()->count());
@@ -65,11 +65,11 @@ class SyncPhenotypesTest extends TestCase
      */
     public function removes_phenotypes_from_curation()
     {
-        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id')->toArray());
         $job->handle();
 
         $this->phs->pop();
-        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id'));
+        $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id')->toArray());
         $job->handle();
 
         $this->assertEquals(2, $this->curation->phenotypes()->count());
@@ -84,25 +84,39 @@ class SyncPhenotypesTest extends TestCase
 
         (new SyncPhenotypes(
             $this->curation, 
-            $this->phs->pluck('id')->push(666)
+            $this->phs->pluck('id')->push(666)->toArray()
         ))->handle();
     }
     
     /**
      * @test
      */
-    public function it_fires_a_curation_phenotypes_updated_event():void
+    public function when_phenotypes_changed_it_fires_curation_phenotypes_updated_event():void
     {
-        $this->curation->phenotypes()->sync($this->phs->pluck('id'));
+        $this->curation->phenotypes()->sync($this->phs->pluck('id')->toArray());
 
         Event::fake();
 
-        (new SyncPhenotypes($this->curation->fresh(), collect($this->phs->first()->id)))->handle();
+        (new SyncPhenotypes($this->curation->fresh(), [$this->phs->first()->id]))->handle();
 
         Event::assertDispatched(function (CurationPhenotypesUpdated $event) {
             return $event->curation->id == $this->curation->id
                 && $event->previousPhenotypeIds->toArray() == $this->phs->pluck('id')->toArray();
         });
+    }
+    
+    /**
+     * @test
+     */
+    public function when_phenotypes_unchanged_it_does_not_fire_curation_phenotypes_updated_event():void
+    {
+        $this->curation->phenotypes()->sync($this->phs->pluck('id')->toArray());
+
+        Event::fake();
+
+        (new SyncPhenotypes($this->curation->fresh(), $this->phs->pluck('id')->toArray()))->handle();
+
+        Event::assertNotDispatched(CurationPhenotypesUpdated::class);
     }
     
 }
