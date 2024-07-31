@@ -38,6 +38,7 @@
                                         <li>Please limit bulk uploads to 50 curations. (improvements coming)</li>
                                         <li>All genes in a bulk upload must be for a single Expert Panel.</li> 
                                         <li>The minimum requirement for upload is the gene name (HGNC).</li>
+                                        <li>Please populate the uploaded date column</li>
                                     </ul>
                             </small>
                         </div>
@@ -47,7 +48,8 @@
                     <div style="width: 30%">
                         <div class="alert alert-info">
                             <p>Please download and fill out the excel template for best results.</p>
-                            <a href="/files/bulk_curation_template.xlsx" class="btn btn-info form-control">
+                            <p>Please note that the excel template was changed on 08/01/24 .</p>
+                            <a href="/files/bulk_curation_template_080124.xlsx" class="btn btn-info form-control">
                                 Download Template
                             </a>
                         </div>
