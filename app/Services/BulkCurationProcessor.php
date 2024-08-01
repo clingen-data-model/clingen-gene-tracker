@@ -326,6 +326,10 @@ class BulkCurationProcessor
         foreach ($sheet->getRowIterator() as $idx => $row) {
             if ($idx == 1) {
                 $headerArray = array_map(function ($item) {
+                    if ($item === 'Date Uploaded') {
+                        // turn things around from old template where name for this field was out-of-order
+                        $item = 'Uploaded Date';
+                    }
                     return implode('_', explode(' ', strtolower($item)));
                 }, $row->toArray());
                 if ($headerArray == static::VALID_HEADER_ARRAY) {
