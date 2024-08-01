@@ -243,12 +243,18 @@ class BulkCurationProcessor
         SyncPhenotypes::dispatchSync($curation, $this->getPhenotypes($rowData));
         $curation->rationales()->sync($this->getRationales($rowData));
 
-        foreach ($this->getStatusNames() as $id => $statusName) {
-            $this->addStatus($curation, $this->statuses->get($id), $statusName.'_date', $rowData);
+        // Handle date_uploaded differently because it gets autofilled to current date if
+        // not provided and not previously set
+        $uploaded_status_id = config('project.curation-statuses.uploaded');
+        if ($rowData['date_uploaded']) {
+            AddStatus::dispatchSync($curation, $this->statuses->get($uploaded_status_id), $rowData['date_uploaded']);
+        }
+        if (!$curation->fresh()->statuses()->find($uploaded_status_id)) {
+            AddStatus::dispatchSync($curation, $this->statuses->get($uploaded_status_id));
         }
 
-        if (!$curation->fresh()->currentStatus) {
-            AddStatus::dispatch($curation, $this->statuses->get(config('project.curation-statuses.uploaded')));
+        foreach ($this->getStatusNames() as $id => $statusName) {
+            $this->addStatus($curation, $this->statuses->get($id), $statusName.'_date', $rowData);
         }
 
         config(['app.bulk_uploading' => false]);
