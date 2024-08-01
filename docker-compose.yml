@@ -10,7 +10,7 @@ services:
         expose:
             - "3306"
         ports:
-          - "3318:3306"
+            - "3318:3306"
         volumes:
             - db:/var/lib/mysql
             - .docker/mysql/db-init:/docker-entrypoint-initdb.d
@@ -51,6 +51,8 @@ services:
             XDEBUG_MODE: ${XDEBUG_MODE:-debug,develop}
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
 
     nginx:
         container_name: ${DOCKER_NAME:-gt}-nginx
