@@ -67,6 +67,7 @@
                                     this.updatedCuration.phenotypes, 
                                     0, 
                                     { 
+                                        'id': this.phenotypes[0].id,
                                         'mim_number': this.phenotypes[0].phenotypeMimNumber, 
                                         'name': this.phenotypes[0].phenotype 
                                     }
