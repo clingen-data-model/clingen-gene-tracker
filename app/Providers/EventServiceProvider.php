@@ -83,7 +83,7 @@ class EventServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        ServiceProvider::register();
+        parent::register();
         $eventClasses = getClassesAtPath(app_path('Events/'));
         $this->registerRecordableEventListeners($eventClasses);
     }
