@@ -41,12 +41,13 @@ class SyncPhenotypes implements ShouldQueue
 
     private function phenotypeIdsAreValid()
     {
-        $matchingIds = Phenotype::whereIn('id', $this->phenotypeIds)
+        $uniq = collect($this->phenotypeIds)->unique();
+        $matchingIds = Phenotype::whereIn('id', $uniq)
             ->select('id')
             ->get()
             ->pluck('id');
 
-        if ($matchingIds->toArray() !== $this->phenotypeIds) {
+        if ($uniq->count() != $matchingIds->count()) {
             $this->errors['phenotype_ids'] = [
                 "One or more of the ids for phenotypes you selected are not valid."
             ];
