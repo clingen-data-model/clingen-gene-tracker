@@ -4,7 +4,6 @@ auth.json
 .push.settings.jsonc
 .phpunit.result.cache
 /.idea
-/.vscode
 /.openshift/secrets
 /node_modules
 /public/hot
