@@ -2,6 +2,11 @@
     <div class="alert alert-danger">
         There are problems with your data:
         <ul>
+        @if ($missing_panel_id = $errors->get('expert_panel_id'))
+            <li>
+                <strong>Need to select a valid Expert Panel</strong>
+            </li>
+        @endif
         @if ($fileErrors = $errors->get('file'))
             <li>
                 @foreach ($fileErrors as $message)
