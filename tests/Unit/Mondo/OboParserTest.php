@@ -10,6 +10,8 @@ use App\Mondo\OboParser;
  */
 class OboParserTest extends TestCase
 {
+    protected $parser;
+    
     public function setup():void
     {
         parent::setup();
@@ -32,6 +34,7 @@ class OboParserTest extends TestCase
     {
         $testTerm1 = [
             'mondo_id' => 'MONDO:0000001',
+            'doid_id' => 'DOID:4',
             'name' => 'disease or disorder',
             "is_obsolete" => false,
             "replaced_by" => null
