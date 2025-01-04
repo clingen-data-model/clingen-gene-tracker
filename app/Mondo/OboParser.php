@@ -8,7 +8,7 @@ class OboParser
         'id' => 'mondo_id',
         'name' => 'name',
         'is_obsolete' => 'is_obsolete',
-        'replaced_by' => 'replaced_by'
+        'replaced_by' => 'replaced_by',
     ];
 
     protected $oboPath;
@@ -52,6 +52,13 @@ class OboParser
                     break;
                 }
                 [$key, $val] = explode(": ", $line);
+                
+                // DOID is the only xref we care about and the value requires processing to get only what we want.
+                if ($key == 'xref' && substr($val, 0, 5) == 'DOID:') {
+                    $parts = explode(' ', $val);
+                    $term['doid_id'] = $parts[0];
+                }
+
                 if (in_array($key, array_keys(static::ATTRS))) {
                     $term[static::ATTRS[$key]] = $this->evaluate($val);
                 }
