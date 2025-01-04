@@ -4,8 +4,8 @@ namespace App\Console\Commands\Mondo;
 
 use App\Disease;
 use App\AppState;
-use App\Mondo\OboParser;
 use Carbon\Carbon;
+use App\Mondo\OboParser;
 use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;

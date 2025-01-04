@@ -12,6 +12,7 @@ class Disease extends Model
 {
     protected $fillable = [
         'mondo_id',
+        'doid_id',
         'name',
         'is_obsolete',
         'replaced_by'
@@ -70,12 +71,11 @@ class Disease extends Model
         return $query->where('mondo_id', $mondoId);
     }
 
-    
     static public function findByMondoId($mondoId)
     {
         return static::mondoId($mondoId)->first();
     }
-    
+
     static public function findByMondoIdOrFail($mondoId)
     {
         return static::mondoId($mondoId)->firstOrFail();
