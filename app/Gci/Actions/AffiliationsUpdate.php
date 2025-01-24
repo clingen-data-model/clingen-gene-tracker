@@ -10,15 +10,15 @@ class AffiliationsUpdate
 {
     use AsCommand;
 
-    public string $commandSignature = 'gci:affiliations-update {--storeJson}';
+    public string $commandSignature = 'affiliations:update-data {--storeJson}';
 
     public function handle(Client $client, Command $command)
     {
         $response = $client->get(
-            uri: 'https://6wbpqalizj.execute-api.us-west-2.amazonaws.com/prod/affiliations?target=api',
+            uri: config('app.affiliations_api_url'),
             options: [
                 'headers'=>[
-                    'x-api-key' => config('app.gci_api_key')
+                    'x-api-key' => config('app.affiliations_api_key')
                 ]
             ]
         );
@@ -26,7 +26,7 @@ class AffiliationsUpdate
         $affiliationData = json_decode($response->getBody()->getContents());
 
         if ($command->option('storeJson')) {
-            file_put_contents('gci_affiliations.json', json_encode($affiliationData, JSON_PRETTY_PRINT));
+            file_put_contents('affiliations.json', json_encode($affiliationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
 
         collect($affiliationData)
