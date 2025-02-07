@@ -105,6 +105,21 @@ is_obsolete: true
 replaced_by: MONDO:0009299
 
 [Term]
+id: MONDO:0000224
+name: acquired carbohydrate metabolism disease
+def: "An acquired metabolic disease that is has its basis in the disruption of carbohydrate metabolism." [https://orcid.org/0000-0002-6601-2165]
+comment: Reason of obsoletion: out of scope - MONDO:excludeHistoricalDisease. Term to consider: -
+subset: obsoletion_candidate
+synonym: "carbohydrate metabolism disease" RELATED [DOID:0050013]
+xref: DOID:0050013 {source="MONDO:equivalentObsolete"}
+is_a: MONDO:0006504 ! acquired metabolic disease
+is_a: MONDO:0037792 ! carbohydrate metabolism disease
+intersection_of: MONDO:0006504 ! acquired metabolic disease
+intersection_of: disease_has_basis_in_disruption_of GO:0005975 ! carbohydrate metabolic process
+property_value: IAO:0000233 "https://github.com/monarch-initiative/mondo/issues/7700" xsd:anyURI
+property_value: IAO:0006012 "2024-09-01" xsd:string
+
+[Term]
 id: MONDO:0000003
 name: obsolete 17-hydroxysteroid dehydrogenase deficiency
 xref: DC:0000002 {source="MONDO:obsoleteEquivalent"}
