@@ -40,6 +40,8 @@ services:
             - redis:redis
         volumes:
             - .:/srv/app
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         environment:
             HOME: /srv/app
             DB_HOST: ${DOCKER_NAME:-gt}-db
