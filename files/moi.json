@@ -104,8 +104,8 @@
     },
     [{
         "parentUri": "http://purl.obolibrary.org/obo/HP_0001428",
-        "name": "Somatic mosaicism",
-        "abbreviation": "SMT-SC",
+        "name": "Typified by somatic mosaicism",
+        "abbreviation": "SM",
         "uri": "http://purl.obolibrary.org/obo/HP_0001442"
     }],
     {

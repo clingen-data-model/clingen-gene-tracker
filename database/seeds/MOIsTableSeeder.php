@@ -23,18 +23,19 @@ class MOIsTableSeeder extends Seeder
         );
         collect($mois)->flatten()->each(function ($moi) {
             $parent = ModeOfInheritance::where('hp_uri', $moi->parentUri)->first();
-            $hpId = preg_replace('%http://purl.obolibrary.org/obo/HP_%', '', $moi->uri);
-            ModeOfInheritance::updateOrCreate(['name' => $moi->name], [
+            $hpId = 'HP:' . preg_replace('%http://purl.obolibrary.org/obo/HP_%', '', $moi->uri);
+            ModeOfInheritance::updateOrCreate(['hp_id' => $hpId], [
                 'name' => $moi->name,
                 'abbreviation' => $moi->abbreviation,
                 'hp_uri' => $moi->uri,
-                'hp_id' => 'HP:'.$hpId,
+                'hp_id' => $hpId,
                 'parent_id' => ($parent) ? $parent->id : null,
-                'curatable' => in_array('HP:'.$hpId, [
+                'curatable' => in_array($hpId, [
                     'HP:0000005',
                     'HP:0000006',
                     'HP:0000007',
                     'HP:0001417',
+                    'HP:0001442',
                     'HP:0032113',
                     'HP:0001427'
                 ]) ? 1 : 0
