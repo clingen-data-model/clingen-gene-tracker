@@ -48,13 +48,16 @@ class OboParser
             }
 
             if ($inTerm) {
+                if ($line == '[Term]') {
+                    throw new RuntimeException('Poorly-formed OBO file: [Term] block should not be nested');
+                }
                 if ($line == '') {
                     break;
                 }
                 [$key, $val] = explode(": ", $line);
                 
                 // DOID is the only xref we care about and the value requires processing to get only what we want.
-                if ($key == 'xref' && substr($val, 0, 5) == 'DOID:') {
+                if ($key == 'xref' && substr($val, 0, 5) == 'DOID:' && str_contains($val, 'source="MONDO:equivalentTo"')) {
                     $parts = explode(' ', $val);
                     $term['doid_id'] = $parts[0];
                 }

@@ -54,6 +54,13 @@ class OboParserTest extends TestCase
             'replaced_by' => 'MONDO:0009299'
         ];
 
+        $testTerm4 = [
+            'mondo_id' => 'MONDO:0000224',
+            'name' => 'acquired carbohydrate metabolism disease',
+            'is_obsolete' => false,
+            'replaced_by' => null,
+        ];
+
         $term1 = $this->parser->getNextTerm();
         $this->assertEquals($testTerm1, $term1);
 
@@ -62,5 +69,8 @@ class OboParserTest extends TestCase
 
         $term3 = $this->parser->getNextTerm();
         $this->assertEquals($testTerm3, $term3);
+
+        $term4 = $this->parser->getNextTerm();
+        $this->assertEquals($testTerm4, $term4);
     }
 }
