@@ -20,6 +20,10 @@ class CurationExporter
                     ->select($this->getReportColumns())
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
                     ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
+                    ->leftJoin('curation_types', 'curations.curation_type_id', '=', 'curation_types.id')
+                    ->leftJoinSub($this->getRationalesSubQuery(), 'rationales', function ($join) {
+                        $join->on('curations.id', '=', 'rationales.curation_id');
+                    })
                     ->leftJoinSub($this->getLatestClassQuery(), 'latest_class', function ($join) {
                         $join->on('curations.id', '=', 'latest_class.curation_id');
                     })
@@ -69,6 +73,8 @@ class CurationExporter
                 'expert_panels.name as Expert Panel',
                 'users.name as Curator',
                 'curations.mondo_id as Disease Entity',
+                'curation_types.name as Curation Type',
+                'rationales.rationales as Rationales',
             ], 
             $this->curationStatuses->map(fn ($status) => "{$status->name} Date")->toArray(),
             [
@@ -109,6 +115,14 @@ class CurationExporter
         return DB::query()
             ->from($statusDateQuery, 'status_date_query')
             ->select($aggregateColumns)
+            ->groupBy('curation_id');
+    }
+
+    private function getRationalesSubQuery()
+    {
+        return DB::table('curation_rationale')
+            ->join('rationales', 'curation_rationale.rationale_id', '=', 'rationales.id')
+            ->select('curation_id', DB::raw('GROUP_CONCAT(name SEPARATOR "; ") as rationales'))
             ->groupBy('curation_id');
     }
 
