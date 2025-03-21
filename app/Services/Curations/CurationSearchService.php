@@ -35,7 +35,7 @@ class CurationSearchService implements SearchService
 
     public function buildQuery($params)
     {
-        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel', 'modeOfInheritance', 'phenotypes', 'gene.phenotypes')
+        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel', 'modeOfInheritance', 'phenotypes', 'gene.phenotypes', 'curationType')
                     ->select('curations.*')
                     ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
                     // ->join('genes', 'genes.hgnc_id', '=', 'curations.hgnc_id')

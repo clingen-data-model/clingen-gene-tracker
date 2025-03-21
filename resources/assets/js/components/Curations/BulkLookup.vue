@@ -121,6 +121,22 @@ export default {
                     }
                 },
                 {
+                    key: 'curation_type.description',
+                    label: 'Curation Type',
+                    sortable: true,
+                    thStyle: {
+                        width: "12rem"
+                    },
+                },
+                {
+                    key: 'rationales',
+                    label: 'Rationales',
+                    formatter: function (value, key, item) {
+                        return item.rationales.map(r => r.name).join(', ')
+                    },
+                    sortable: false
+                },
+                {
                     key: 'current_status.name',
                     label: 'Status',
                     sortable: true,

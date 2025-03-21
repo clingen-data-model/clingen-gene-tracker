@@ -170,6 +170,8 @@
         watch: {
             updatedCuration: function (to, from) {
                 console.log('Info.vue: updatedCuration')
+                console.log(from)
+                console.log(to)
             }
         },
         computed: {

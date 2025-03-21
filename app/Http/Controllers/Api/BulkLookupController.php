@@ -56,6 +56,12 @@ class BulkLookupController extends Controller
                             'Classificaton date' => ($curation->currentClassification && $curation->currentClassification->pivot) 
                                 ? $curation->currentClassification->pivot->classification_date 
                                 : null,
+                            'Curation type' => ($curation->curationType) 
+                                                ? $curation->curationType->description 
+                                                : null,
+                            'Rationales' => $curation->rationales->map(function ($r) {
+                                return $r->name;
+                            })->join("; "),
                             'Status' => ($curation->currentStatus) 
                                             ? $curation->currentStatus->name 
                                             : null,
