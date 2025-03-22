@@ -246,7 +246,7 @@ class BulkCurationProcessor
         // Handle date_uploaded differently because it gets autofilled to current date if
         // not provided and not previously set
         $uploaded_status_id = config('project.curation-statuses.uploaded');
-        if ($rowData['date_uploaded']) {
+        if (isset($rowData['date_uploaded'])) {
             AddStatus::dispatchSync($curation, $this->statuses->get($uploaded_status_id), $rowData['date_uploaded']);
         }
         if (!$curation->fresh()->statuses()->find($uploaded_status_id)) {
