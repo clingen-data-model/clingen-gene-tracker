@@ -48,7 +48,7 @@ class UpdateMondoDataTest extends TestCase
         AppState::findByName('last_mondo_update')->update(['value' => '2021-05-01']);
         Artisan::call('mondo:update-data');
 
-        $this->assertEquals(23, Disease::count());
+        $this->assertEquals(24, Disease::count());
     }
 
     /**

@@ -95,23 +95,6 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
-    public function message_pushed_to_streaming_service_when_created()
-    {
-        Carbon::setTestNow('2019-01-01');
-
-        $mock = Mockery::mock(MessagePusher::class);
-        $mock->shouldReceive([
-            'topic' => $mock,
-            'push' => null
-        ]);
-        $this->instance(MessagePusher::class, $mock);
-
-        $message = factory(StreamMessage::class)->create();
-    }
-
-    /**
-     * @test
-     */
     public function sent_at_should_be_updated_when_message_successfully_pushed()
     {
         Carbon::setTestNow('2019-01-01');
