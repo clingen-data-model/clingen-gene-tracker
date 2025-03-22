@@ -33,7 +33,7 @@ class ValidOmimId implements Rule
             $entry = $this->omim->getEntry($value);
             return $entry->isValid();
         } catch (ClientException $e) {
-            if ($e->getCode() == 400) {
+            if (404 === $e->getCode() || 400 === $e->getCode()) {
                 return false;
             }
             throw $e;
