@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.2",
         "backpack/crud": "^6.0",
-        "backpack/pro": "^2.0",
+        "backpack/pro": "2.2.20",
         "backpack/revise-operation": "^2.0",
         "backpack/theme-coreuiv2": "^1.2",
         "box/spout": "^3.0",
