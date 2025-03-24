@@ -14,7 +14,6 @@ use App\Clients\Omim\OmimEntryContract;
 use App\Services\BulkCurationProcessor;
 use App\Contracts\OmimClient as OmimClientContract;
 use App\Exceptions\BulkUploads\InvalidFileException;
-use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
