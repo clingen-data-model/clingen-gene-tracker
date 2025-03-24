@@ -14,7 +14,7 @@ class AlterEmailsMakeBodyLongText extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->longText('body')->change();
+            $table->longText('body')->nullable()->change();
         });
     }
 
@@ -26,7 +26,7 @@ class AlterEmailsMakeBodyLongText extends Migration
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->text('body')->change();
+            $table->text('body')->nullable()->change();
         });
     }
 }
