@@ -27,7 +27,8 @@ class ApiDocumentationTest extends ExternalApiTest
     {
         $response = $this->makeExternalApiRequest('GET', '/api/v1/')
             ->assertStatus(200)
-            ->assertSee(['openapi: 3.0.0']);
+            ->assertSee(['openapi: 3.0.0'])
+            ->assertSee(['GeneTracker API']);
     }
     
     
