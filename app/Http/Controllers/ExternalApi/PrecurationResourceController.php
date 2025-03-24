@@ -9,10 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CurationResource;
 use OpenApi\Attributes as OA;
 
-/** 
- * @OA\Info(title="GeneTracker API", version="1.0")
- */
- 
+
+#[OA\Info(title: "GeneTracker API", version: "1.0")]
 class PrecurationResourceController extends Controller
 {
     /**
@@ -20,53 +18,55 @@ class PrecurationResourceController extends Controller
      * 
      * 
      * @return \Illuminate\Http\Response
-     * 
-     * @OA\Get(
-     *    path="/api/v1/pre-curations",
-     *    tags={"precurations"},
-     *    @OA\Parameter(
-     *        name="where",
-     *        in="query",
-     *        required=false,
-     *        @OA\Schema( 
-     *            type="array",
-     *            description="Associative array to add where clauses to query.",
-     *            @OA\Items(type="string")
-     *        )
-     *     ),
-     *     @OA\Parameter(
-     *         name="with", in="query",
-     *         description="Relationships to include",
-     *         @OA\Schema(type="array", @OA\Items(type="string"))
-     *     ),
-     *     @OA\Parameter(
-     *         name="without", in="query",
-     *         description="Default relationships to skip=default relationships include type and currentStatus.",
-     *         @OA\Schema(type="array", @OA\Items(type="string"))
-     *     ),
-     *     @OA\Parameter(
-     *         name="sort", in="query",
-     *         description="Associative array with keys 'field' and 'dir' where field is the field on which sort and dir is the dircection (asc, desc)",
-     *         @OA\Schema(type="array", @OA\Items(type="string"))
-     *     ),
-     *     @OA\Parameter(
-     *         name="page_size", in="query",
-     *         description="Number of items to return at one time. Default=20",
-     *         @OA\Schema(type="int")
-     *     ),
-     *     @OA\Parameter(
-     *         name="page", in="query",
-     *         description="Page to retrieve, based on page_size.",
-     *         @OA\Schema(type="int")
-     *     ),
-     * 
-     *     @OA\Response(response=200, description="A paginated list of curations"),
-     *     @OA\Response(response=401, description="Unauthenticated"),
-     *     @OA\Response(response=403, description="Unauthorized"),
-     *     @OA\Response(response="default", description="An unexpected error occurred.")
-     * )
-     * 
+     *
      */
+    #[OA\Get(
+        path: "api/v1/pre-curations",
+        tags: ["precurations"],
+        parameters: [
+            new OA\Parameter(
+                name: "where",
+                in: "query",
+                required: false,
+                schema: new OA\Schema( 
+                    type: "array",
+                    description: "Associative array to add where clauses to query.",
+                    items: new OA\Items(type: "string")
+                )
+            ),
+            new OA\Parameter(
+                name: "with", in: "query",
+                description: "Relationships to include",
+                schema: new OA\Schema(type: "array", items: new OA\Items(type: "string"))
+            ),
+            new OA\Parameter(
+                name: "without", in: "query",
+                description: "Default relationships to skip: default relationships include type and currentStatus.",
+                schema: new OA\Schema(type: "array", items: new OA\Items(type: "string"))
+            ),
+            new OA\Parameter(
+                name: "sort", in: "query",
+                description: "Associative array with keys 'field' and 'dir' where field is the field on which sort and dir is the dircection (asc, desc)",
+                schema: new OA\Schema(type: "array", items: new OA\Items(type: "string"))
+            ),
+            new OA\Parameter(
+                name: "page_size", in: "query",
+                description: "Number of items to return at one time. Default: 20",
+                schema: new OA\Schema(type: "int")
+            ),
+            new OA\Parameter(
+                name: "page", in: "query",
+                description: "Page to retrieve, based on page_size.",
+                schema: new OA\Schema(type: "int")
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "A paginated list of curations"),
+            new OA\Response(response: 401, description: "Unauthenticated"),
+            new OA\Response(response: 403, description: "Unauthorized"),
+            new OA\Response(response: "default", description: "An unexpected error occurred.")
+        ]
+    )]
     public function index(Request $request)
     {
         $search = new ModelSearchService(
@@ -89,36 +89,39 @@ class PrecurationResourceController extends Controller
      *
      * @param  \App\Curation  $curation
      * @return \Illuminate\Http\Response
-     * 
-     * @OA\Get(
-     *     path="/api/v1/pre-curuations/{precurationId}",
-     *     summary="Get detailed precuration record",
-     *     tags={"precurations"},
-     *     @OA\Parameter(
-     *         name="precurationId", 
-     *         in="path", 
-     *         required=true, 
-     *         description="Numeric ID or GT UUID of precuration record, or GDM UUID associated with precuration record.",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Precuration record"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Precuration record not found"
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthenticated"
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Unauthorized"
-     *     )
-     * )
-     */
+     */ 
+    #[OA\Get(
+        path: "/api/v1/pre-curuations/{precurationId}",
+        summary: "Get detailed precuration record",
+        tags: ["precurations"],
+        parameters: [
+            new OA\Parameter(
+            name: "precurationId", 
+            in: "path", 
+            required: true, 
+            description: "Numeric ID or GT UUID of precuration record, or GDM UUID associated with precuration record.",
+            schema: new OA\Schema(type: "string")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Precuration record"
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Precuration record not found"
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
+            ),
+            new OA\Response(
+                response: 403,
+                description: "Unauthorized"
+            )
+        ]
+    )]
     public function show($curationId)
     {
         $curation = Curation::findByAnyId($curationId);
