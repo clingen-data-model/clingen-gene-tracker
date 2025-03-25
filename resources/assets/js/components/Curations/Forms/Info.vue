@@ -143,6 +143,7 @@
     import _ from 'lodash'
     import CurationNotifications from './ExistingCurationNotification.vue'
     import DateField from '../../DateField.vue'
+    import GciLinkedMessage from '@/components/Curations/GciLinkedMessage.vue'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import ValidationError from '../../ValidationError.vue'
     import StatusForm from './StatusForm.vue'
@@ -156,6 +157,7 @@
         components: {
             CurationNotifications,
             DateField,
+            GciLinkedMessage,
             ValidationError,
             StatusForm,
         },

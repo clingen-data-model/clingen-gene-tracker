@@ -6,18 +6,20 @@
 <template>
     <div class="curation-status-history">
         <table class="table table-bordered table-small">
-            <tr>
-                <th>Status</th>
-                <th>Date</th>
-            </tr>
-            <tr 
-                v-for="(status, idx) in orderedStatuses" 
-                :key="status.pivot.id" 
-                :class="{'table-primary highlight': (idx == 0)}"
-            >
-                <td>{{status.name}}</td>
-                <td>{{ $filters.formatDate(status.pivot.status_date, 'YYYY-MM-DD') }}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+                <tr 
+                    v-for="(status, idx) in orderedStatuses" 
+                    :key="status.pivot.id" 
+                    :class="{'table-primary highlight': (idx == 0)}"
+                >
+                    <td>{{status.name}}</td>
+                    <td>{{ $filters.formatDate(status.pivot.status_date, 'YYYY-MM-DD') }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>

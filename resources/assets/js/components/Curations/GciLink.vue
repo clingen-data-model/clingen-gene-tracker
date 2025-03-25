@@ -5,13 +5,12 @@
         <slot>{{ curation.gdm_uuid }}</slot>
     </external-link>
 </template>
-<script>
-export default {
-    props: {
-        curation: {
-            type: Object,
-            required: true
-        }
+<script setup>
+import ExternalLink from '@/components/ExternalLink.vue'
+defineProps({
+    curation: {
+        type: Object,
+        required: true
     }
-}
+})
 </script>

@@ -11,7 +11,7 @@ var objectToQueryString = function(obj){
     return '?'+params.join('&');
 }
 
-module.exports = {
+export const BaseRepo = {
     baseUrl: null,
     name: 'BaseRepository',
     dates: [],
@@ -110,3 +110,5 @@ module.exports = {
     }
 
 };
+
+export default BaseRepo;
