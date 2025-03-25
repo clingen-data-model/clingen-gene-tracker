@@ -5,8 +5,8 @@
  */
 
 import './bootstrap.js'
-import { Vue, configureCompat } from '@vue/compat'
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
+import Vue, { createApp } from '@vue/compat'
+import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
@@ -14,7 +14,6 @@ import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 
 window.Vue = Vue
-configureCompat({ MODE: '3' }) // enable Vue 2 compat mode until moved away from BootstrapVue
 window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
@@ -62,7 +61,7 @@ axios.interceptors.response.use(
 );
 
 if (document.getElementById('app')) {
-    const app = new Vue({
+    const app = createApp({
         router,
         el: '#app',
         store: store,
@@ -78,6 +77,8 @@ if (document.getElementById('app')) {
             }
         }
     });
+    app.use(router);
+    app.use(BoostrapVue);
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
             if (dateString === null) {
@@ -89,8 +90,9 @@ if (document.getElementById('app')) {
     }
 }
 
+// FIXME: why a separate vue instance?
 if (document.getElementById('expert-panel-field')) {
-    const app = new Vue({
+    const app = createApp({
         el: '#expert-panel-field',
         components: {
             ExpertPanelField

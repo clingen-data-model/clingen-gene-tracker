@@ -40,4 +40,4 @@ OmimRepo.forCuration = function (curationId) {
     return this.makeRequest('get', url)
 }
 
-module.exports = OmimRepo;
+export default OmimRepo;
