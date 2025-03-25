@@ -101,7 +101,7 @@
             return {
                 currentStep: 'info',
                 steps: {
-                   info: {
+                    info: {
                         title: 'Info',
                         next: 'curation-type'
                     },
