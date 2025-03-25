@@ -1,4 +1,4 @@
-var BaseRepo = require('./Repository.js');
+import BaseRepo from './Repository.js';
 
 var OmimRepo = Object.create(BaseRepo);
 OmimRepo.baseUrl = '/api/omim';

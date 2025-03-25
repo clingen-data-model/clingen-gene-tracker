@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 import messages from './modules/messages'
 import curations from './modules/curations'
 import panels from './modules/panels'
@@ -11,8 +10,6 @@ import classifications from './modules/classifications'
 import mois from './modules/mois'
 import User from '../User'
 import getCurrentUser from '../resources/users/get_current_user';
-
-Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -104,7 +101,7 @@ const actions = {
     }
 }
 
-export default new Vuex.Store({
+export default createStore({
     state: state,
     getters: getters,
     mutations: mutations,

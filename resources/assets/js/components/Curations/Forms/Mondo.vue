@@ -63,6 +63,7 @@
 <script>
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import CurationNotification from './ExistingCurationNotification.vue'
+    import GciLinkedMessage from '../GciLinkedMessage.vue'
     import ValidationError from '../../ValidationError.vue'
     import SearchSelect from '../../forms/SearchSelect.vue'
     import SendToGciButton from '../SendToGciButton.vue'
@@ -74,6 +75,7 @@
         components: {
             ValidationError,
             CurationNotification,
+            GciLinkedMessage,
             SearchSelect,
             SendToGciButton,
         },

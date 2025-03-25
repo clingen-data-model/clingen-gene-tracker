@@ -37,7 +37,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      vue: '@vue/compat/dist/vue.esm-bundler.js', // until we no longer use bootstrapvue
+      vue: '@vue/compat', // until we no longer use bootstrapvue
       '@': path.resolve(__dirname, './resources/assets/js'),
     },
   }

@@ -7,6 +7,7 @@
         
         </div>
         <transition name="fade">
+            <div>
             <b-card
                 id="show-curation"
                 v-if="!loading"
@@ -204,6 +205,7 @@
             <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
                 Loading...
             </div>
+            </div>
         </transition>
     </div>
 </template>
@@ -219,6 +221,7 @@
     import TransferCurationControl from './TransferCurationControl.vue'
     import GciLink from '../Curations/GciLink.vue'
     import ToggleButton from '../buttons/ToggleButton.vue'
+    import ExternalLink from '../ExternalLink.vue'
 
     export default {
         props: ['id'],
@@ -232,7 +235,8 @@
             GciLink,
             HistoryTable,
             ToggleButton,
-            NotesList
+            NotesList,
+            ExternalLink,
         },
         data() {
             return {

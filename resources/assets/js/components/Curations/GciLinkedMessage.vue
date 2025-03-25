@@ -14,6 +14,8 @@
     </div>
 </template>
 <script>
+import GciLink from './GciLink.vue';
+
 export default {
     name: 'GciLinkedMessage',
     props: {
@@ -26,6 +28,9 @@ export default {
             required: false,
             default: 'this attribute'
         }
+    },
+    components: {
+        GciLink
     },
     data() {
         return {
