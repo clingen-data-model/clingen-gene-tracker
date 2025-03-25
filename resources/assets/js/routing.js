@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router'
 import store from './store/index'
 
 const Curations = () =>
@@ -28,8 +27,6 @@ const BulkLookup = () =>
     import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup.vue')
 const GeneBulkLookup = () =>
     import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup.vue')
-
-Vue.use(VueRouter)
 
 const user = store.getters.getUser;
 
@@ -129,7 +126,8 @@ const routes = [{
     }
 ]
 
-const router = new VueRouter({
+const router = createRouter({
+    history: createMemoryHistory(),
     routes
 })
 

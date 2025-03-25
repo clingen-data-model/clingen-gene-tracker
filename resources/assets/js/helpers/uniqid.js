@@ -1,4 +1,4 @@
-module.exports = function (prefix, moreEntropy) {
+export const uniqid = function (prefix, moreEntropy) {
     //  discuss at: https://locutus.io/php/uniqid/
     // original by: Kevin van Zonneveld (https://kvz.io)
     //  revised by: Kankrelune (https://www.webfaktory.info/)
@@ -54,3 +54,5 @@ module.exports = function (prefix, moreEntropy) {
   
     return retId
   }
+
+  export default uniqid
