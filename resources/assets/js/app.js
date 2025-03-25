@@ -14,7 +14,6 @@ import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 
 window.Vue = Vue
-window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
 window.Vue.component('external-link', ExternalLink)
@@ -24,6 +23,7 @@ window.Vue.component('gci-link', GciLink)
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 window.Vue.component('gci-linked-message', GciLinkedMessage)
 
+// FIMME: why is this here?
 if (user) {
     user = new User(user);
 }
@@ -62,12 +62,8 @@ axios.interceptors.response.use(
 
 if (document.getElementById('app')) {
     const app = createApp({
-        router,
-        el: '#app',
-        store: store,
         components: {
             'clingen-app': () => import('./components/ClingenApp.vue'),
-            'clingen-nav': () => import('./components/ClingenNav.vue'),
             'alerts': () => import('./components/Alerts.vue'),
             CriteriaTable
         },
@@ -77,8 +73,7 @@ if (document.getElementById('app')) {
             }
         }
     });
-    app.use(router);
-    app.use(BoostrapVue);
+    app.use(router).use(store).use(BootstrapVue);
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
             if (dateString === null) {
@@ -88,14 +83,14 @@ if (document.getElementById('app')) {
             return moment(dateString).format(format)
         }
     }
+    app.mount('#app');
 }
 
 // FIXME: why a separate vue instance?
 if (document.getElementById('expert-panel-field')) {
     const app = createApp({
-        el: '#expert-panel-field',
         components: {
             ExpertPanelField
         }
-    });
+    }).mount('#expert-panel-field');
 }
