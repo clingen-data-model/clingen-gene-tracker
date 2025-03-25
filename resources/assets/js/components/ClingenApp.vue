@@ -32,6 +32,14 @@
                 getFeatures: 'getFeatures'
             })
         },
+        components: {
+            Alerts,
+        },
+        data() {
+            return {
+                loading: true
+            }
+        },
         mounted: function () {
             if (this.$store.state.curations.items.length == 0) {
                 this.getAllCurationStatuses();
@@ -43,6 +51,7 @@
             ) {
                 this.getFeatures();
             }
+            this.loading = false;
         }
     }
 </script>
