@@ -7,6 +7,7 @@
         <table 
             class="table table-striped" 
         >
+            <tbody>
             <tr v-if="selectedPanels.length > 0">
                 <th><small>Expert Panel</small></th>
                 <th class="text-center"><small>Curator</small></th>
@@ -54,6 +55,7 @@
                     </strong>
                 </td>
             </tr>
+            </tbody>
         </table>
     </div>
 </template>
