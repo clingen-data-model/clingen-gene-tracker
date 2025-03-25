@@ -16,14 +16,13 @@
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{item.name}}</td>
-                <td>{{item.pivot[dateField] | formatDate('YYYY-MM-DD') }}</td>
+                <td>{{ $filters.formatDate(item.pivot[dateField], 'YYYY-MM-DD') }}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
     import moment from 'moment'
-    import filters from '../../filters'
     
     export default {
         props: {

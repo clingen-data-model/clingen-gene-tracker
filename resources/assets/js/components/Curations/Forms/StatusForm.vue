@@ -141,7 +141,7 @@
                         curation: this.curationCopy, 
                         data: {
                             curation_status_id: this.newStatusId,
-                            status_date: this.$options.filters.formatDate(this.newStatusDate, 'YYYY-MM-DD')
+                            status_date: this.$filters.formatDate(this.newStatusDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {

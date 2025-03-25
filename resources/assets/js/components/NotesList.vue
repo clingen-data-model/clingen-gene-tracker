@@ -19,7 +19,7 @@
                 <tr v-for="note in notes" :key="note.id">
                     <td>{{note.topic ? note.topic.toUpperCase()+': ' : ''}} {{note.content}}</td>
                     <td>{{note.author.name}}</td>
-                    <td>{{note.created_at | formatDate}}</td>
+                    <td>{{ $filters.formatDate(note.created_at) }}</td>
                 </tr>
             </tbody>
         </table>

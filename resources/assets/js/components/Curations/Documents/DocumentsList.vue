@@ -48,7 +48,7 @@
                     <dd class="col-md-10">{{currentDocument.category ? currentDocument.category.name : '--'}}</dd>
 
                     <dt class="col-md-2">Date uploaded:</dt>
-                    <dd class="col-md-10">{{currentDocument.created_at | formatDate('YYYY-MM-DD')}}</dd>
+                    <dd class="col-md-10">{{ $filters.formatDate(currentDocument.created_at, 'YYYY-MM-DD') }}</dd>
 
                     <dt class="col-md-2">Uploaded by:</dt>
                     <dd class="col-md-10">{{(currentDocument.uploader) ? currentDocument.uploader.name : '--'}}</dd>
@@ -111,7 +111,7 @@
                         label: 'Created',
                         sortable: true,
                         formatter: (value, key, item) => {
-                            return this.$options.filters.formatDate(value, 'YYYY-MM-DD')
+                            return this.$filters.formatDate(value, 'YYYY-MM-DD')
                         }
                     },
                     {
