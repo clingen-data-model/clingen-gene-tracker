@@ -26,7 +26,7 @@ const mutations = {
     },
     updateItem: function (state, item) {
         let itemIdx = state.items.findIndex(i => i.id == item.id);
-        Vue.set(state.items, itemIdx, item)
+        state.items[itemIdx] = item;
     },
 }
 

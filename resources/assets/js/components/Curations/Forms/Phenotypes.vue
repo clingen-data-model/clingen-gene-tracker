@@ -63,15 +63,11 @@
                                 && this.updatedCuration?.curation_type_id === 1 
                                 && this.updatedCuration?.phenotypes?.length === 0
                             ) {
-                                Vue.set( 
-                                    this.updatedCuration.phenotypes, 
-                                    0, 
-                                    { 
-                                        'id': this.phenotypes[0].id,
-                                        'mim_number': this.phenotypes[0].phenotypeMimNumber, 
-                                        'name': this.phenotypes[0].phenotype 
-                                    }
-                                );
+                                this.updateCuration.phenotypes[0] = { 
+                                    'id': this.phenotypes[0].id,
+                                    'mim_number': this.phenotypes[0].phenotypeMimNumber, 
+                                    'name': this.phenotypes[0].phenotype 
+                                };
                                 this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedCuration.gene_symbol+' with this single disease entity';
                             }
 

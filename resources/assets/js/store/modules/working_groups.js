@@ -22,7 +22,7 @@ const mutations = {
     updateItem: function (state, item) {
         let itemIdx = state.items.findIndex(i => i.id == item.id);
         if (itemIdx > -1) {
-            Vue.set(state.items, itemIdx, item)
+            state.items[itemIdx] = item;
             return
         }
         state.items.push(item);
@@ -30,7 +30,7 @@ const mutations = {
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
 
-        Vue.delete(state.items, itemIdx);
+        delete state.items[itemIdx];
     }
 }
 

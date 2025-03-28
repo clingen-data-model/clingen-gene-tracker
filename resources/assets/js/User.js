@@ -11,6 +11,11 @@ class User {
         return this.user.roles.filter((role) => role.name == roleName).length > 0
     }
 
+    hasAnyRole(...roleNames) {
+        const roles = this.getRoles()
+        return roleNames.filter(roleName => roles.includes(roleName)).length > 0
+    }
+
     hasPermission(permName) {
         return this.user.permissions.filter(permission => permission.name == permName).length > 0
     }
