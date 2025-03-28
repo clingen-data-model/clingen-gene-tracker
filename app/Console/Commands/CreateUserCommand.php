@@ -16,8 +16,7 @@ class CreateUserCommand extends Command
      */
     protected $signature = 'user:create ' .
         '{--e|email= : E-Mail of the newly created user.} ' .
-        '{--f|first_name= : First name of the newly created user.} ' .
-        '{--l|last_name= : Last name of the newly created user.} ' .
+        '{--N|name= : Name of the newly created user.} ' .
         '{--p|password= : Password of the newly created user.}' .
         '{--s|super-admin : Assign the super-admin role to the user.} ';
 
@@ -36,8 +35,7 @@ class CreateUserCommand extends Command
     public function handle()
     {
         $email = $this->option('email') ?? $this->ask('What is the email address?');
-        $first_name = $this->option('first_name') ?? $this->ask('What is the first name?');
-        $last_name = $this->option('last_name') ?? $this->ask('What is the last name?');
+        $name = $this->option('name') ?? $this->ask('What is the name?');
         if ($this->option('password') == null) {
             $password = $this->secret('What is the password?');
             $password_confirmation = $this->secret('Please confirm the password.');
@@ -51,8 +49,7 @@ class CreateUserCommand extends Command
         DB::beginTransaction();
         try {
             $user = User::create([
-                'first_name' => $first_name,
-                'last_name' => $last_name,
+                'name' => $name,
                 'email' => $email,
                 'password' => Hash::make($password),
             ]);
