@@ -42,7 +42,7 @@ return [
         ],
 
         'api' => [
-            'driver' => 'passport',
+            'driver' => 'sanctum',
             'provider' => 'activated-users',
         ],
         'api-external' => [
