@@ -42,7 +42,7 @@ const mutations = {
     removeItem: function(state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
 
-        Vue.delete(state.items, itemIdx);
+        delete state.items[itemIdx];
     },
     setCurrentItemIdx(state, curation) {
         const idx = state.items.findIndex(i => i.id == curation.id);

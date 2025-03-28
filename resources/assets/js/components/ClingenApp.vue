@@ -1,5 +1,6 @@
 <style></style>
 <template>
+    <NavBar />
     <div class="mt-2">
         <div class="clingen-app-container container">
             <router-view></router-view>
@@ -19,6 +20,7 @@
 <script>
     import { mapActions } from 'vuex'
     import Alerts from '@/components/Alerts.vue'
+    import NavBar from '@/components/NavBar.vue'
 
     export default {
         methods: {
@@ -34,6 +36,7 @@
         },
         components: {
             Alerts,
+            NavBar,
         },
         data() {
             return {
