@@ -12,7 +12,7 @@
 */
 
 Route::group([
-    'middleware' => ['auth:api'],
+    'middleware' => ['auth:sanctum'],
     'namespace' => 'Api',
 ], function () {
     Route::get('/features', 'FeaturesController@index');
