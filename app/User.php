@@ -2,9 +2,8 @@
 
 namespace App;
 
-use DateTimeInterface;
 use App\Events\User\Created;
-use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;

@@ -16,9 +16,6 @@ if [[ -v APP_DO_INIT || ! -d vendor ]]; then
     composer dump-autoload
 fi
 
-echo "Making passport keys (if they do not already exist)"
-php artisan passport:keys || echo "... keys were probably already there"
-
 echo "Linking storage"
 php artisan storage:link || echo "... storage was probably already linked"
 
