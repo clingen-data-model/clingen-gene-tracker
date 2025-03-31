@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import moment from 'moment';
-
 const baseUrl = '/api/curations'
 const state = {
     items: [],

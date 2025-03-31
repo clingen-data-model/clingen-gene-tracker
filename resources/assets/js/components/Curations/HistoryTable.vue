@@ -6,18 +6,20 @@
 <template>
     <div>
         <table class="table table-bordered table-small">
-            <tr>
-                <th>{{itemLabel}}</th>
-                <th>Date</th>
-            </tr>
-            <tr 
-                v-for="(item, idx) in orderedItems" 
-                :key="(indexAttribute) ? item[indexAttribute] : idx"
-                :class="{'table-primary highlight': (idx == 0)}"
-            >
-                <td>{{item.name}}</td>
-                <td>{{ $filters.formatDate(item.pivot[dateField], 'YYYY-MM-DD') }}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th>{{itemLabel}}</th>
+                    <th>Date</th>
+                </tr>
+                <tr 
+                    v-for="(item, idx) in orderedItems" 
+                    :key="(indexAttribute) ? item[indexAttribute] : idx"
+                    :class="{'table-primary highlight': (idx == 0)}"
+                >
+                    <td>{{item.name}}</td>
+                    <td>{{ $filters.formatDate(item.pivot[dateField], 'YYYY-MM-DD') }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>

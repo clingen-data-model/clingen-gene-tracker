@@ -43,14 +43,13 @@
                             </div>
                         </td>
                         <td class="form-inline">
-                            <datepicker 
+                            <DatePicker 
                                 v-model="newClassificationDate"
                                 input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
+                                format='yy-mm-dd'
                                 placeholder="Select a date"
                                 :highlighted="highlighted"
-                            ></datepicker>
+                            />
                             <b-button 
                                 variant="primary"
                                 @click="addClassification"
@@ -86,13 +85,13 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import ClassificationHistory from '../ClassificationHistory.vue'
-    import Datepicker from 'vuejs-datepicker'
+    import DatePicker from 'primevue/datepicker'
     import moment from 'moment'
 
     export default {
         components: {
             ClassificationHistory,
-            Datepicker
+            DatePicker
         },
         props: {
             value: {

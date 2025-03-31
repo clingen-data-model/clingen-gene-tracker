@@ -1,263 +1,228 @@
-<style></style>
 <template>
     <div class="curations-table">
         <div class="row mb-2" v-show="!loading">
-            <div class="col-md-6 form-inline">
+<!--             <div class="col-md-6 form-inline">
                 <label :for="searchFieldId">Search:</label>&nbsp;
                 <select name="" id="" v-model="filterField" class="form-control form-control-sm">
                     <option :value="null">Any Field</option>
-                    <option :value="field.key" v-for="field in filterableFields" :key="field.name">{{field.label}}</option>
+                    <option :value="field.key" v-for="field in filterableFields" :key="field.name">{{ field.label }}
+                    </option>
                 </select>
                 &nbsp;
-                <input v-model="filter" placeholder="search curations" class="form-control form-control-sm" :id="searchFieldId" />
-            </div>
-            <div class="col-md-6">
-                <b-pagination 
-                    size="sm" 
-                    hide-goto-end-buttons 
-                    :total-rows="totalRows" 
-                    :per-page="pageLength" 
-                    v-model="currentPage" 
-                    class="curations-table-pagination my-0 float-right" />    
-            </div>
+                <input v-model="filter" placeholder="search curations" class="form-control form-control-sm"
+                    :id="searchFieldId" />
+            </div> -->
         </div>
-        <div v-show="loading" class="text-center">
-            <p class="lead">loading...</p>
+        <div>
+            Search:
+            <input v-model="filter" placeholder="search curations" class="form-control form-control-sm" />
         </div>
-        <b-table striped hover 
-            ref="table"
-            :items="curationProvider" 
-            :fields="fields" 
-            :filter="filter"
-            :per-page="pageLength"
-            :current-page="currentPage"
-            @sort-changed="handleSortChanged"
-            :sort-by.sync="sortKey"
-            :sort-desc.sync="sortDesc"
-            :no-local-sorting="true"
-            :show-empty="true"
-        >     
-            <template v-slot:table-busy>
-                <div class="text-center text-danger my-2">Loading...</div>
-            </template>
-            <template v-slot:cell(gene_symbol)="{item}">
-                <router-link
-                    :id="'show-curation-'+item.id+'-link'" 
-                    :to="'/curations/'+item.id"
-                >
-                    {{item.gene_symbol}}
-                </router-link>
-                <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>
-            </template>
-            <template v-slot:cell(mode_of_inheritance)="{item}">
-                <div v-if="item.mode_of_inheritance !== null">
-                    <div :title="item.mode_of_inheritance.name">
-                        {{item.mode_of_inheritance.abbreviation}}
-                    </div>
-                </div>
-            </template>
-            <template v-slot:cell(expert_panel)="{item}">
-                <div>{{(item.expert_panel) ? item.expert_panel.name : null}}</div>
-            </template>
-            <template v-slot:cell(curator)="{item}">
-                <div>{{(item.curator) ? item.curator.name : null}}</div>
-            </template>
-            <template v-slot:cell(current_status)="{item}">
-                <div>{{(item.current_status) ? item.current_status.name : null}}</div>
-            </template>
-            <template v-slot:cell(mondo_id)="{item}">
-                <div>{{ getDiseaseEntityColumn(item) }}</div>
-            </template>
-            <template v-slot:cell(actions)="{item}" class="text-right">
-                <div>
-                    <router-link
-                        v-if="user.canEditCuration(item)"
-                        :id="'edit-curation-'+item.id+'-btn'" 
-                        class="btn btn-secondary btn-sm" 
-                        :to="'/curations/'+item.id+'/edit'"
-                    >
-                        Edit
+        <DataTable stripedRows :value="curations" :loading="loading" lazy
+            paginator :rows="pageLength" :current-page="currentPage" :totalRecords="totalRows"
+            @page="handlePage" @sort="handleSort"
+            class="curations-data-table">
+            <Column field="gene_symbol" header="Gene Symbol" sortable filterable>
+                <template #body="{ data: item }">
+                    <router-link :id="`show-curation-${item.id}-link`" :to="`/curations/${item.id}`">
+                        {{ item.gene_symbol }}
                     </router-link>
-                    <delete-button :curation="item" class="btn-sm">
-                        <span class="fa fa-trash">X</span>
-                    </delete-button>
-                </div>
-            </template>
-        </b-table>
+                    <div v-if="item.hgnc_id">
+                        (hgnc: <a :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:${item.hgnc_id}`" target="_blank">
+                            {{ item.gene_symbol }}
+                        </a>)
+                    </div>
+                </template>
+            </Column>
+            <Column field="mode_of_inheritance" header="MOI" sortable filterable>
+                <template #body="{ data: item }">
+                    <div v-if="item.mode_of_inheritance !== null">
+                        <div :title="item.mode_of_inheritance.name">
+                            {{ item.mode_of_inheritance.abbreviation }}
+                        </div>
+                    </div>
+                </template>
+            </Column>
+            <Column field="mondo_id" header="Disease Entity" sortable filterable
+                style="width: '9rem'">
+                <template #body="{ data: item }">
+                    <div>
+                        <div v-if="item.mondo_id" :title="item.mondo_id">
+                            <a :href="mondo_iri(item)" target="_blank">
+                                {{ item.mondo_id }} 
+                            </a>
+                        </div>
+                        <div v-if="item.disease" :title="item.disease.name">
+                            ({{ item.disease.name }})
+                        </div>
+                        <div v-if="item.disease_entity_notes && !(item.mondo_id || item.disease)" :title="item.disease_entity_notes">
+                            {{ truncateDiseaseEntityNotes(item) }}
+                        </div>
+                    </div>
+                </template>
+            </Column>
+            <Column field="expert_panel.name" header="Expert Panel"
+                sortField="export_panel" sortable filterable
+                style="width: '9rem'" />
+            <Column field="curator.name" header="Curator" sortable filterable
+                style="width: '9rem'" />
+            <Column field="current_status.name" header="Status" style="width: '8rem'" />
+            <Column field="id" header="Precuration ID" sortable />
+            <Column field="id" header="Actions" style="width: '7rem'">
+                <template #body="{ data: item }">
+                    <div>
+                        <router-link v-if="user.canEditCuration(item)" :id="'edit-curation-' + item.id + '-btn'"
+                            class="btn btn-secondary btn-sm" :to="`/curations/${item.id}/edit`">
+                            Edit
+                        </router-link>
+                        <delete-button :curation="item" class="btn-sm">
+                            <span class="fa fa-trash">X</span>
+                        </delete-button>
+                    </div>
+                </template>
+            </Column>
+        </DataTable>
         <div class="row border-top pt-4">
-            <div class="col-md-6">Total Records: {{totalRows}}</div>
-            <div class="col-md-6">
-                <b-pagination 
-                    size="sm" 
-                    hide-goto-end-buttons 
-                    :total-rows="totalRows" 
-                    :per-page="pageLength" 
-                    v-model="currentPage" 
-                    class="curations-table-pagination my-0 float-right" />    
-            </div>
+            <div class="col-md-6">Total Records: {{ totalRows }}</div>
         </div>
     </div>
 </template>
-<script>
-    import getPageOfCurations from '../../resources/curations/get_page_of_curations'
-    import uniqid from '../../helpers/uniqid'
-    import { mapGetters } from 'vuex'
-    import DeleteButton from './DeleteButton.vue'
 
+<script setup>
+import getPageOfCurations from '../../resources/curations/get_page_of_curations'
+import DeleteButton from './DeleteButton.vue'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
-    export default {
-        components: {
-            DeleteButton
-        },
-        props: {
-            sortBy: {
-                type: String,
-                default: 'gene_symbol'
-            },
-            sortDir: {
-                type: Boolean,
-                default: false
-            },
-            searchParams: {
-                type: Object,
-                default: function () {
-                    return {}
-                }
-            },
-            pageLength: {
-                type: Number,
-                default: 10
-            }
-        },
-        data() {
-            return {
-                filterField: null,
-                filter: null,
-                currentPage: 1,
-                sortDesc: (this.sortDir == 'desc'),
-                sortKey: JSON.parse(JSON.stringify(this.sortBy)),
-                totalRows: 0,
-                searchFieldId: `search-filter-${uniqid()}`,
-                fields: [
-                    {
-                        key: 'gene_symbol',
-                        label: 'Gene Symbol',
-                        sortable: true,
-                        filterable: true,
-                    },
-                    {
-                        key: 'mode_of_inheritance',
-                        label: 'MOI',
-                        sortable: true,
-                        filterable: true,
-                    },
-                    {
-                        key: 'mondo_id',
-                        label: 'Disease Entity',
-                        sortable: true,
-                        filterable: true,
-                        thStyle: {
-                            width: "9rem"
-                        }
-                    },
-                    {
-                        key: 'expert_panel',
-                        label: 'Expert Panel',
-                        filterable: true,
-                        sortable: true,
-                    },
-                    {
-                        key: 'curator',
-                        label: 'Curator',
-                        sortable: true,
-                    },
-                    {
-                        key: 'current_status',
-                        label: 'Status',
-                        // sortable: true,
-                        sortable: false,
-                        // filterable: true,
-                        thStyle: {
-                            width: "8rem"
-                        }
-                    },
-                    {
-                        key: 'id',
-                        label: 'Precuration ID',
-                        sortable: true,
-                    },
-                    {
-                        key: 'actions',
-                        label: '',
-                        sortable: false,
-                        thStyle: {
-                            width: "7rem"
-                        }
-                    }
-                ],
-                ctx: null
-            }
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'}),
-            loading: function () {
-                return false;
-            },
-            filterableFields() {
-                return this.fields.filter(f => f.filterable)
-            }
-        },
-        watch: {
-            filter: function (to, from) {
-                if (to != from) {
-                    this.resetCurrentPage();
-                }
-            },
-            filterField: function () {
-                this.$refs.table.refresh()
-            }
-        },
-        methods: {
-            curationProvider(ctx, callback) {
-                if (ctx == this.ctx) {
-                    return;
-                }
-
-                const context = {...ctx, ...this.searchParams, ...{filter_field: this.filterField}};
-                if (this.filterField) {
-                    context.filter_field = this.filterField;
-                }
-                getPageOfCurations(context)
-                    .then(response => {
-                        this.totalRows = response.data.meta.total
-                        callback(response.data.data)
-                    })
-            },
-            resetCurrentPage () {
-                this.currentPage = 1;
-            },
-            getDiseaseEntityColumn (item) {
-                if (item.mondo_id && item.disease) {
-                    return item.mondo_id + ' ('+item.disease.name+')'
-                }
-
-                if (item.disease_entity_notes) {
-                    let entity = item.disease_entity_notes;
-                    if (entity.length > 32) {
-                        entity = entity.substr(0, 32)+'…'
-                    }
-                    return entity
-                }
-
-                return null
-            },
-            handleFiltered () {
-              // Trigger pagination to update the number of buttons/pages due to filtering
-              this.resetCurrentPage();
-            },
-            handleSortChanged() {
-                this.resetCurrentPage();
-            }
-        }
+defineProps({
+    sortBy: {
+        type: String,
+        default: 'gene_symbol'
+    },
+    sortDir: {
+        type: Boolean,
+        default: false
+    },
+    searchParams: {
+        type: Object,
+        default: () => ({})
+    },
+    pageLength: {
+        type: Number,
+        default: 10
     }
+})
+
+const filterField = ref(null)
+const filter = ref(null)
+const currentPage = ref(1)
+const pageLength = ref(10)
+const sortBy = ref('gene_symbol')
+const sortDesc = ref(false)
+const totalRows = ref(0)
+
+const store = useStore()
+const user = computed(() => {
+    // Access the user from the store
+    return store.getters.getUser || {}
+})
+
+const curations = ref([])
+
+const loading = ref(false)
+
+const filterableFields = computed(() => {
+    return this.fields.value.filter(f => f.filterable)
+})
+
+const curationProvider = (ctx, callback) => {
+    if (ctx == this.ctx) {
+        return;
+    }
+
+    const context = { ...ctx, ...this.searchParams, ...{ filter_field: this.filterField } };
+    if (this.filterField) {
+        context.filter_field = this.filterField;
+    }
+    getPageOfCurations(context)
+        .then(response => {
+            this.totalRows.value = response.data.meta.total
+            callback(response.data.data)
+            loading.value = false
+        })
+        .catch(() => {
+            loading.value = false
+        })
+}
+
+const updateCurrentPage = () => {
+    loading.value = true
+    const context = {
+        currentPage: currentPage.value,
+        perPage: pageLength.value,
+        sortBy: sortBy.value,
+        sortDesc: sortDesc.value,
+        filter_field: filterField.value,
+        filter: filter.value
+    }
+    getPageOfCurations(context)
+        .then(response => {
+            console.log(response)
+            curations.value = response.data.data
+            if (totalRows.value !== response.data.meta.total) {
+                totalRows.value = response.data.meta.total
+            }
+            loading.value = false
+        })
+        .catch((e) => {
+            console.log('Error fetching curations:', e)
+            loading.value = false
+        })
+}
+
+const truncateDiseaseEntityNotes = (item) => {
+    if (item.disease_entity_notes) {
+        let entity = item.disease_entity_notes;
+        if (entity.length > 32) {
+            entity = entity.substr(0, 32) + '…' // truncate with ellipsis
+        }
+        return entity
+    }
+
+    return null
+}
+
+const mondo_iri = (item) => {
+    if (item.mondo_id) {
+        return `http://purl.obolibrary.org/obo/${item.mondo_id.replace(':', '_')}`
+    }
+    return null
+}
+
+const handlePage = (event) => {
+    console.log(event)
+    currentPage.value = event.page + 1
+    updateCurrentPage()
+}
+
+const handleSort = (event) => {
+    console.log(event)
+    sortBy.value = event.sortField
+    sortDesc.value = event.sortOrder === -1
+    currentPage.value = 1
+    updateCurrentPage()
+}
+
+// TODO: filtering is just global for now, could refine to use primevue filtering
+watchDebounced(filter, (newValue) => {
+    console.log('Filter changed:', newValue)
+    currentPage.value = 1
+    updateCurrentPage()
+}, { debounce: 500 })
+
+onMounted(() =>
+    updateCurrentPage()
+)
+
 </script>
+
+<style></style>

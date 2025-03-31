@@ -10,8 +10,10 @@
             <!-- <strong>In this curation</strong> -->
             <table class="table table-sm table-xs mb-0">
                 <thead>
-                    <th>MIM Number</th>
-                    <th style="width: 80%">Phenotype</th>
+                    <tr>
+                        <th>MIM Number</th>
+                        <th style="width: 80%">Phenotype</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="phenotype in phenotypes" :key="phenotype.id">

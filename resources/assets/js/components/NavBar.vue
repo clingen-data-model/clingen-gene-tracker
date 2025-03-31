@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+
+import MenuBar from 'primevue/menubar'
 
 const store = useStore()
 
@@ -8,102 +8,103 @@ const user = computed(() => {
     return store.getters.getUser
 })
 
+console.log('User in NavBar:', user.value)
+
+const items = computed(() => [
+    {
+        label: 'Dashboard',
+        route: '/',
+        visible: () => user.value.canAddCurations(),
+    },
+    {
+        label: 'Curations',
+        route: '/curations',
+    },
+    {
+        label: 'Working Groups',
+        route: '/working-groups',
+    },
+    {
+        label: 'Curation Export',
+        route: '/curations/export',
+    },
+    {
+        label: 'Bulk Lookup',
+        items: [
+            { label: 'Curation Lookup', route: '/bulk-lookup/curations' },
+            { label: 'Gene/Phenotype Lookup', route: '/bulk-lookup/genes' }
+        ]
+    },
+    {
+        label: '|',
+        separator: true,
+        style: { 'flex-grow': 1 },
+    },
+    {
+        label: `${user.value.user.name || 'Login'}`,
+        items: [
+            { label: 'Curation Export', route: '/curations/export' },
+            { label: 'Bulk Upload', route: '/bulk-uploads', visible: () => user.value.hasAnyRole('programmer', 'admin', 'coordinator') },
+            { label: 'Admin', route: '/admin', visible: () => user.value.hasAnyRole('programmer', 'admin') }, 
+            { label: 'Logs', route: '/admin/logs', visible: () => user.value.hasRole('programmer') },
+            { label: 'SOP', url: '/files/SOP_V1.pdf', target: '_blank' },
+            // FIXME: logout
+        ]
+    }
+])
+
 </script>
 
 <template>
-    <nav class="navbar navbar-default navbar-expand-md navbar-light navbar-laravel {{ config('app.env') }}">
-        <div class="container">
-            <a class="navbar-brand" href="/#/">
-                <img src="/images/clingen_logo_75w.png">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav mr-auto" v-if="user">
-                    <li v-if="user.canAddCurations()">
-                        <RouterLink class="nav-link" to="/">Dashboard</RouterLink>
-                    </li>
-                    <li>
-                        <RouterLink class="nav-link" to="/curations">Curations</RouterLink>
-                    </li>
-                    <li>
-                        <RouterLink class="nav-link" to="/working-groups">Working Groups</RouterLink>
-                    </li>
-                    <li>
-                        <RouterLink class="nav-link" to="/curations/export">Curation Export</RouterLink>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <b-dropdown variant="outline" class="nav-item" text="Bulk Lookup">
-                            <b-dropdown-item>
-                                <RouterLink class="dropdown-item" to="/bulk-lookup/curations">Curation Lookup</RouterLink>
-                            </b-dropdown-item>
-                            <b-dropdown-item>
-                                <RouterLink class="dropdown-item" to="/bulk-lookup/genes">Gene/Phenotype Lookup</RouterLink>
-                            </b-dropdown-item>
-                        </b-dropdown>
-                    </li>
-                </ul>
-
-                <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ml-auto">
-                    <!-- Authentication Links -->
-                    <li v-if="user" class="nav-item dropdown">
-                        <b-dropdown variant="outline" :text="user.user.name">
-                            <b-dropdown-item>
-                                <RouterLink class="dropdown-item" to="/curations/export">
-                                    Curation Export
-                                </RouterLink>
-                            </b-dropdown-item>
-                            <b-dropdown-item v-if="user.hasAnyRole('programmer', 'admin', 'coordinator')" class="dropdown-item"
-                                href="/bulk-uploads">Bulk Upload</b-dropdown-item>
-
-                            <b-dropdown-item v-if="user.hasAnyRole('programmer', 'admin')" href="/admin" class="dropdown-item">Admin</b-dropdown-item>
-                            <b-dropdown-item v-if="user.hasRole('programmer')" class="dropdown-item" href="/admin/logs" target="logs">Logs</b-dropdown-item>
-
-                            <b-dropdown-item class="dropdown-item" href="/files/SOP_V1.pdf" target="sop">SOP</b-dropdown-item>
-
-                            <b-dropdown-divider/>
-
-                            <a class="dropdown-item" href="/logout" onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                Logout
-                            </a>
-
-                            <form id="logout-form" action="/logout" method="POST" style="display: none;">
-                                <!-- @csrf -->
-                            </form>
-                        </b-dropdown>
-                    </li>
-                    <li v-else><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item" style="margin-right: -46px">
-                        <a class="nav-link btn-help" href="#get-help" title="Get help or report a problem"
-                            data-toggle="modal" data-target="#help-modal">?</a>
-                    </li>
-
-                    <div class="modal fade" tabindex="-1" role="dialog" id="help-modal">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">How can we help?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p class="lead text-center">
-                                        If you have any questions, please contact our help desk at <a
-                                            href="mailto:clingentrackerhelp@unc.edu">clingentrackerhelp@unc.edu</a>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
-            </div>
-        </div>
+    <div class="flex">
+    <nav class="container navbar navbar-default navbar-expand-md navbar-light navbar-laravel">
+        <MenuBar :model="items" style="flex-basis: 100%">
+            <template #start>
+                <a class="navbar-brand" href="/#/">
+                    <img src="/images/clingen_logo_75w.png">
+                </a>
+            </template>
+            <template #item="{ item, props, hasSubmenu }">
+                <span v-if="!item.hidden">
+                    <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                        <a :href="href" v-bind="props.action" @click="navigate">
+                            <span :class="item.icon" />
+                            <span>{{ item.label }}</span>
+                        </a>
+                    </router-link>
+                    <a v-else :href="item.url" :target="item.target" v-bind="props.action">
+                        <span :class="item.icon" />
+                        <span>{{ item.label }}</span>
+                        <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
+                    </a>
+                </span>
+            </template>
+            <template #end>
+                <a class="navbar-brand" href="/#/">
+                    <img src="/images/clingen_logo_75w.png">
+                </a>
+            </template>
+            <!-- FIXME: include help modal -->
+        </MenuBar>
     </nav>
+    </div>
 </template>
+
+<style scoped>
+nav {
+    display: flex;
+    width: 100%;
+    flex-basis: 100%;
+}
+
+:deep(.p-menubar) {
+    flex-grow: 1;
+    flex-basis: 100%;
+}
+
+:deep(.p-menubar-root-list) {
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 100%;
+}
+</style>

@@ -5,21 +5,14 @@
         <div class="clingen-app-container container">
             <router-view></router-view>
         </div>
-        <b-progress 
-            :value="100" 
-            :max="100"  
-            animated 
-            v-show="loading"
-            style="position:fixed; top:0; left:0; right:0; border-radius: 0"
-            height="5px"
-        >
-        </b-progress>
+        <ProgressBar mode="indeterminate" v-show="loading" style="height: 6px; position:fixed; top:0; left:0; right:0; border-radius: 0" />
         <Alerts></Alerts>
     </div>
 </template>
 <script>
     import { mapActions } from 'vuex'
     import Alerts from '@/components/Alerts.vue'
+    import ProgressBar from 'primevue/progressbar'
     import NavBar from '@/components/NavBar.vue'
 
     export default {
@@ -37,6 +30,7 @@
         components: {
             Alerts,
             NavBar,
+            ProgressBar,
         },
         data() {
             return {

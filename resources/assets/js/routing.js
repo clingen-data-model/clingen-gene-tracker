@@ -64,50 +64,44 @@ const routes = [{
     },
     {
         path: '/curations',
-        component: Curations,
-        children: [{
-                path: '',
-                component: CurationList,
-                name: 'curations-index'
-            },
-            {
-                path: 'create',
-                component: CurationCreate,
-                name: 'curations-create',
-                beforeEnter: (to, from, next) => {
-                    if (!user.canAddCurations()) {
-                        next({ path: '/curations' })
-                        return;
-                    }
+        component: CurationList,
+    },
+    {
+        path: '/curations/create',
+        component: CurationCreate,
+        name: 'curations-create',
+        beforeEnter: (to, from, next) => {
+            if (!user.canAddCurations()) {
+                next({ path: '/curations' })
+                return;
+            }
 
-                    next()
-                }
-            },
-            {
-                path: 'export',
-                component: CurationExportForm
-            },
-            {
-                path: ':id',
-                component: CurationShow,
-                props: true,
-                name: 'curations-show'
-            },
-            {
-                path: ':id/edit',
-                component: CurationEdit,
-                props: true,
-                name: 'curations-edit',
-                // beforeEnter: (to, from, next) => {
-                //     console.log(store);
-                //     if (!user.canUpdateCurations()) {
-                //         next(from)
-                //         return;
-                //     }
-                //     next()
-                // }
-            },
-        ]
+            next()
+        },
+    },
+    {
+        path: '/curations/export',
+        component: CurationExportForm
+    },
+    {
+        path: '/curations/:id',
+        component: CurationShow,
+        props: true,
+        name: 'curations-show'
+    },
+    {
+        path: '/curations/:id/edit',
+        component: CurationEdit,
+        props: true,
+        name: 'curations-edit',
+        // beforeEnter: (to, from, next) => {
+        //     console.log(store);
+        //     if (!user.canUpdateCurations()) {
+        //         next(from)
+        //         return;
+        //     }
+        //     next()
+        // }
     },
     {
         name: 'GeneBulkLookup',

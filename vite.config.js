@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
-import { resourceUsage } from 'process'
+import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
   plugins: [
@@ -14,6 +14,7 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
+    UnoCSS(),
     AutoImport({
       include: [/\.[jt]sx?$/, /\.vue$/,],
       imports: [
@@ -28,11 +29,6 @@ export default defineConfig({
     }),
     vue({
       template: {
-        complilerOptions: {
-          compatConfig: {
-            MODE: 2
-          } // until vue 3 migration complete
-        },
         transformAssetUrls: {
           // The Vue plugin will re-write asset URLs, when referenced
           // in Single File Components, to point to the Laravel web
@@ -51,7 +47,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      vue: '@vue/compat', // until we no longer use bootstrapvue
       '@': path.resolve(__dirname, './resources/assets/js'),
     },
   }

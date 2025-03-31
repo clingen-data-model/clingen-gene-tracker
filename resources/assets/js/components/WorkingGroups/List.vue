@@ -9,78 +9,61 @@
                 <div class="row">
                     <div class="col-md-6 form-inline">
                         <label for="#curations-filter-input">Search:</label>&nbsp;
-                        <input v-model="filter" placeholder="search working groups" class="form-control" id="curations-filter-input" />
-                    </div>
-                    <div class="col-md-6">
-                        <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-right" />    
+                        <input v-model="filter" placeholder="search working groups" class="form-control"
+                            id="curations-filter-input" />
                     </div>
                 </div>
                 <br>
-                
-                <b-table striped hover 
-                    :items="tableItems" 
-                    :fields="fields"
-                    :filter="filter"
-                    :per-page="pageLength"
-                    :current-page="currentPage"
-                    sort-by="name"
-                    @filtered="onFiltered"
-                    @row-clicked="handleRowClick"
-                    tbody-tr-class="crsr-pointer"
-                >            
-                </b-table>
-                <div class="float-right">Total Records: {{totalRows}}</div>
-            </div>        
+
+                <DataTable stripedRows :value="groups" :loading="loading"
+                    paginator :rows="pageLength" :current-page="currentPage" :totalRecords="totalRecords"
+                    selectionMode="single" @row-select="handleRowClick"
+                >
+                    <Column field="id" header="ID" sortable filterable></Column>
+                    <Column field="name" header="Name" sortable filterable></Column>
+                </DataTable>
+                <div class="float-right">Total Records: {{ totalRecords }}</div>
+            </div>
         </div>
     </div>
 </template>
-<script>
-    import {mapGetters, mapActions} from 'vuex'
+<script setup>
+import { useRouter } from 'vue-router'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
-    export default {
-        data() {
-            return {
-                filter: null,
-                pageLength: 25,
-                currentPage: 1,
-                totalRows: 0,
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    }
-                ],
-            }
-        },
-        computed: {
-            ...mapGetters('workingGroups', {
-                groups: 'Items'
-            }),
-            tableItems: function () {
-                let items = Object.values(this.groups)
-                this.totalRows = items.length;
-                return items;
-            },
-        },
-        methods: {
-            ...mapActions('workingGroups', {
-                getWorkingGroups: 'getAllItems'
-            }),
-            onFiltered (filteredItems) {
-              // Trigger pagination to update the number of buttons/pages due to filtering
-              this.currentPage = 1
-              this.totalRows = filteredItems.length
-            },
-            handleRowClick($event) {
-                this.$router.push({path: '/working-groups/'+$event.id})
-            }
-        },
-        mounted() {
-            this.getWorkingGroups();
-        }
-    }
+const store = useStore()
+const router = useRouter()
+
+const filter = ref(null)
+const pageLength = ref(25)
+const currentPage = ref(1)
+const loading = ref(true)
+
+const groups = computed(() => {
+    return store.getters['workingGroups/Items']
+})
+
+const totalRecords = ref(0)
+
+const getWorkingGroups = () => {
+    store.dispatch('workingGroups/getAllItems')
+        .then((response) => {
+            console.log('Working Groups:', response)
+            groups.value = response.data
+            totalRecords.value = length(response.data)
+        })
+}
+
+const handleRowClick = (event) => {
+    router.push(`/working-groups/${event.data.id}`)
+}
+
+onMounted(async () => {
+    await store.dispatch('workingGroups/getAllItems')
+    console.log('Mounted Working Groups:', groups.value)
+    totalRecords.value = groups.value.length
+    console.log('Total Records:', totalRecords.value)
+    loading.value = false
+})
 </script>

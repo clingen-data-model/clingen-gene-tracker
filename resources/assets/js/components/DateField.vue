@@ -1,44 +1,37 @@
 <style>
-    .form-control[readonly]{
-        background: #fff;
-    }
+.form-control[readonly] {
+    background: #fff;
+}
 </style>
 <template>
-    <input 
-        ref="input"
-        type="text" 
-        class="form-control" 
-        :placeholder="placeholder"
-        v-bind:value="formatted" 
-        v-on:input="$event.target.value = value" 
-        :readonly="readonly"/>
+    <DatePicker :id="id" v-model="date" :name="name" :placeholder="placeholder" :readonly="readonly"
+        class="form-control" v-on:input="$emit('input', $event)" showIcon iconDisplay="input" :date-format="mm / dd / yy" />
 </template>
-<script>
-    require('../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css')
-    
-    var moment = require('moment'),
-        datepicker = require('bootstrap-datepicker');
+<script setup>
+import DatePicker from 'primevue/datepicker'
+import { computed } from 'vue';
 
-    module.exports = {
-        name: 'date-field',
-        props: ['name', 'value', 'id', 'placeholder', 'readonly'],
-        data: function(){
-            return {
-            }
-        },
-        computed: {
-            formatted: function(){
-                return (this.value) ? moment(this.value).format('MM/DD/YYYY') : null;
-            },
-        },
-        mounted: function(){
-            this.$nextTick(function(){
-                jQuery(this.$el).datepicker()
-                    .on('changeDate', function(evt){
-                        jQuery(this.$el).trigger('input');
-                        this.$emit('input', moment(evt.date, 'MM/DD/YYYY').toDate());
-                    }.bind(this));
-            }.bind(this));
-        }
-    };
+defineProps({
+    name: {
+        type: String,
+        required: true
+    },
+    value: {
+        type: [Date, String],
+        default: null
+    },
+    id: {
+        type: String,
+        default: null
+    },
+    placeholder: {
+        type: String,
+        default: 'Select Date'
+    },
+    readonly: {
+        type: Boolean,
+        default: false
+    }
+});
+
 </script>

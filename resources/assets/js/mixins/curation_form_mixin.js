@@ -1,6 +1,3 @@
-import Vue from 'vue'
-import OmimRepo from '../repositories/OmimRepository'
-
 export default {
     props: ['value', 'errors'],
     data() {

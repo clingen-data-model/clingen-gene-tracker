@@ -5,13 +5,18 @@
  */
 
 import './bootstrap.js'
-import { createApp } from '@vue/compat'
-import BootstrapVue from 'bootstrap-vue'
+import { createApp } from 'vue'
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
 import store from './store/index'
 import router from './routing.js'
 import User from './User'
 import ClingenApp from './components/ClingenApp.vue'
 import moment from 'moment/moment.js'
+import 'virtual:uno.css'
+
+
+import 'primeicons/primeicons.css'
 
 // FIMME: why is this here?
 if (user) {
@@ -52,7 +57,12 @@ axios.interceptors.response.use(
 
 if (document.getElementById('app')) {
     const app = createApp(ClingenApp);
-    app.use(router).use(store).use(BootstrapVue);
+    app.use(router).use(store)
+    app.use(PrimeVue, {
+        theme: {
+            preset: Aura,
+        }
+    })
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
             if (dateString === null) {

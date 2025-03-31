@@ -42,14 +42,13 @@
                             </div>
                         </td>
                         <td class="form-inline">
-                            <datepicker 
+                            <DatePicker 
                                 v-model="newStatusDate"
                                 input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
+                                format='yy-mm-dd'
                                 placeholder="Select a date"
                                 :highlighted="highlighted"
-                            ></datepicker>
+                            />
                             <b-button 
                                 variant="primary"
                                 @click="addStatus"
@@ -63,16 +62,15 @@
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
                         <td class="form-inline">
-                            <datepicker
+                            <DatePicker
                                 :id="'status-date-'+status.id"
                                 v-model="status.pivot.status_date"
                                 input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
+                                format='yy-mm-dd'
                                 placeholder="Select a date"
                                 :highlighted="highlighted"
                                 @selected="updateStatusDate(status.pivot,$event)"
-                            ></datepicker>
+                            />
                             <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
                         </td>
                     </tr>
@@ -84,14 +82,14 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import Datepicker from 'vuejs-datepicker'
+    import DatePicker from 'primevue/datepicker'
     import moment from 'moment'
     import CurationStatusHistory from '../StatusHistory.vue'
 
     export default {
         components: {
             CurationStatusHistory,
-            Datepicker
+            DatePicker
         },
         props: {
             value: {

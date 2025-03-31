@@ -1,5 +1,5 @@
 
-
+// FIXME: address datatable, modal
 <template>
     <div>
         <div class="alert alert-info" v-if="loadingDocuments">Loading...</div>
@@ -11,7 +11,7 @@
                 <label for="list-filter-input">Filter:</label>&nbsp;
                 <input type="text" class="form-control form-control-sm" v-model="filter">
             </div>
-            <b-table 
+            <DataTable
                 :fields="fields" 
                 :items="documents" 
                 :filter="filter" 
@@ -34,9 +34,9 @@
                         <i class="material-icons">delete</i>
                 </a>
                 </template>    
-            </b-table>
+            </DataTable>
         </div>
-        <b-modal v-model="showDetailedInfo" hide-footer v-if="currentDocument" :title="currentDocument.name" size="lg">
+        <Dialog modal v-model:visible="showDetailedInfo" hide-footer v-if="currentDocument" :title="currentDocument.name" size="lg">
             <dl class="row">
                     <dt class="col-md-2">Name:</dt>
                     <dd class="col-md-10">{{currentDocument.name}}</dd>
@@ -66,18 +66,22 @@
                     Download document
                 </button>
             </div>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
 <script>
+    import DataTable from 'primevue/datatable'
+    import Dialog from 'primevue/dialog'
     import DocumentUploader from './DocumentUploader.vue'
     import getAllUploads from '../../../resources/uploads/get_all_uploads'
     import { mapGetters } from 'vuex';
 
     export default {
         components: {
-            DocumentUploader
+            DataTable,
+            Dialog,
+            DocumentUploader,
         },
         props: {
             curation: {

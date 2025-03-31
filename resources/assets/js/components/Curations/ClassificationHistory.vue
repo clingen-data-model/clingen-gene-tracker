@@ -7,18 +7,20 @@
     <div class="curation-classification-history">
         <!-- <pre>{{curation.classifications}}</pre> -->
         <table class="table table-bordered table-small">
-            <tr>
-                <th>Classification</th>
-                <th>Date</th>
-            </tr>
-            <tr 
-                v-for="(classification, idx) in orderedClassifications" 
-                :key="classification.pivot.id" 
-                :class="{'table-primary highlight': (idx == 0)}"
-            >
-                <td>{{classification.name}}</td>
-                <td>{{ $filters.formatDate(classification.pivot.classification_date, 'YYYY-MM-DD') }}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th>Classification</th>
+                    <th>Date</th>
+                </tr>
+                <tr 
+                    v-for="(classification, idx) in orderedClassifications" 
+                    :key="classification.pivot.id" 
+                    :class="{'table-primary highlight': (idx == 0)}"
+                >
+                    <td>{{classification.name}}</td>
+                    <td>{{ $filters.formatDate(classification.pivot.classification_date, 'YYYY-MM-DD') }}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
