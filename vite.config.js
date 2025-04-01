@@ -2,6 +2,8 @@ import laravel from 'laravel-vite-plugin'
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
+import { resourceUsage } from 'process'
 
 export default defineConfig({
   plugins: [
@@ -12,6 +14,18 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
+    AutoImport({
+      include: [/\.[jt]sx?$/, /\.vue$/,],
+      imports: [
+        'vue',
+        'vue-router',
+        '@vueuse/core',
+        // 'pinia', // maybe later...
+        'vuex',
+      ],
+      dts: 'resources/assets/js/auto-imports.d.ts',
+      // vueTemplate: true, // maybe later...
+    }),
     vue({
       template: {
         complilerOptions: {
