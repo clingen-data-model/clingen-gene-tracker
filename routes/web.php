@@ -20,6 +20,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');
 });
 
+
+Auth::routes();
+
+
+Route::get('{all}', function () {
+    return view('main');
+})->where('all', '^(?!api).*$');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', 'MainController@index');
     Route::get('/home', 'MainController@index');
@@ -35,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
     Route::redirect('logs', 'admin/logs');
-    Route::redirect('curations/{id}', '/#/curations/{id}');
+    // Route::redirect('curations/{id}', '/#/curations/{id}');
 
     /**
      * Route so GCI can easily link to pre-curation detail by GDM UUID
@@ -44,8 +52,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::impersonate();
 });
-
-Auth::routes();
 
 Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 

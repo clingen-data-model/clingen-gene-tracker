@@ -26,7 +26,7 @@ class UserController extends Controller
     public function currentUser()
     {
         $user = \Auth::guard('api')->user();
-        $user->load('roles', 'permissions', 'preferences');
+        $user->load('roles', 'permissions');
         $user->permissions = $user->getAllPermissions();
 
         return new CurrentUserResource($user);

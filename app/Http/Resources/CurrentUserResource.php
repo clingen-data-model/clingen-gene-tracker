@@ -18,7 +18,6 @@ class CurrentUserResource extends JsonResource
         $data = parent::toArray($request);
         $data['roles'] = $this->whenLoaded('roles', $this->roles);
         $data['permissions'] = $this->whenLoaded('permissions', $this->permissions);
-        $data['preferences'] = $this->whenLoaded('preferences', PreferenceResource::collection($this->preferences));
 
         return $data;
     }

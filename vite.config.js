@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
-import UnoCSS from 'unocss/vite'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
@@ -14,7 +14,6 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
-    UnoCSS(),
     AutoImport({
       include: [/\.[jt]sx?$/, /\.vue$/,],
       imports: [
@@ -26,6 +25,9 @@ export default defineConfig({
       ],
       dts: 'resources/assets/js/auto-imports.d.ts',
       // vueTemplate: true, // maybe later...
+    }),
+    tailwindcss({
+      darkMode: false, // so much inconsistant css right now, this looks awful...
     }),
     vue({
       template: {

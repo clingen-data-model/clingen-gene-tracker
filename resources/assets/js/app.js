@@ -7,14 +7,12 @@
 import './bootstrap.js'
 import { createApp } from 'vue'
 import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
+import Material from '@primeuix/themes/material'
 import store from './store/index'
 import router from './routing.js'
 import User from './User'
 import ClingenApp from './components/ClingenApp.vue'
 import moment from 'moment/moment.js'
-import 'virtual:uno.css'
-
 
 import 'primeicons/primeicons.css'
 
@@ -60,7 +58,14 @@ if (document.getElementById('app')) {
     app.use(router).use(store)
     app.use(PrimeVue, {
         theme: {
-            preset: Aura,
+            preset: Material,
+            options: {
+                cssLayer: {
+                    name: 'primevue',
+                    order: 'theme, base, primevue',
+                },
+                darkModeSelector: 'gt-theme-dark',
+            },
         }
     })
     app.config.globalProperties.$filters = {

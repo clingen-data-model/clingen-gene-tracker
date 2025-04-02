@@ -1,19 +1,18 @@
 
 
 <template>
-    <div>
+    <div class="flex justify-between">
         <h4>
-            <document-uploader 
-                :curation="curation" 
-                class="float-right"
-                v-on:uploaded="$refs.docList.getDocuments()"
-                v-if="user.canEditCuration(curation)"
-            ></document-uploader>
             Documents
         </h4>
-        
-        <documents-list :curation="curation" ref="docList"></documents-list>
+        <document-uploader 
+            :curation="curation" 
+            class="float-right"
+            v-on:uploaded="$refs.docList.getDocuments()"
+            v-if="user.canEditCuration(curation)"
+        ></document-uploader>
     </div>
+    <documents-list :curation="curation" ref="docList"></documents-list>
 </template>
 
 <script>

@@ -23,42 +23,40 @@
                             </router-link>
                             <delete-button :curation="curation"></delete-button>
                             <transfer-curation-control :curation="curation"
-                                v-if="$store.state.features.transferEnabled"></transfer-curation-control>
+                                v-if="store.state.features.transferEnabled"></transfer-curation-control>
                         </div>
                     </div>
                 </template>
                 <template #content>
                     <div v-if="curations">
-                        <div id="info">
-                            <div class="content-row">
-                                <strong class="content-key">Precuration ID:</strong>
-                                <div class="content-value">
-                                    {{ curation.id }}
-                                </div>
+                        <dl id="info">
+                            <div>
+                                <dt>Precuration ID:</dt>
+                                <dd>{{ curation.id }}</dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Gene Symbol:</strong>
-                                <div class="content-value">{{ curation.gene_symbol }} - <span v-if="curation.name">{{
-                                    `hgnc:${curation.name}`
-                                        }}</span> (<small v-if="curation.hgnc_id">{{ `hgnc:${curation.hgnc_id}`
-                                        }}</small>)
-                                </div>
+                                <dt>Gene Symbol:</dt>
+                                <dd>
+                                    {{ curation.gene_symbol }} -
+                                    <span v-if="curation.name">{{ `hgnc:${curation.name}` }}</span>
+                                    (<small v-if="curation.hgnc_id">{{ `hgnc:${curation.hgnc_id}` }}</small>)
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">
+                                <dt>
                                     Mode Of Inheritance:
-                                </strong>
-                                <div class="content-value">
+                                </dt>
+                                <dd>
                                     <div v-if="curation.mode_of_inheritance">
-                                        {{ curation.mode_of_inheritance.name }} - ({{ curation.mode_of_inheritance.hp_id
-                                        }})
+                                        {{ curation.mode_of_inheritance.name }} -
+                                        ({{ curation.mode_of_inheritance.hp_id }})
                                     </div>
                                     <div v-else>--</div>
-                                </div>
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Disease Entity:</strong>
-                                <div class="content-value">
+                                <dt>Disease Entity:</dt>
+                                <dd>
                                     <div v-if="curation.mondo_id">
                                         <external-link :href="mondoUrl" target="mondo" class="external">
                                             <span v-if="curation.disease && curation.disease.name">
@@ -67,12 +65,12 @@
                                             {{ (curation.mondo_id) ? curation.mondo_id : '--' }}
                                         </external-link>
                                     </div>
-                                </div>
+                                </dd>
                             </div>
                             <hr>
                             <div class="content-row">
-                                <strong class="content-key">Expert Panel:</strong>
-                                <div class="content-value">
+                                <dt>Expert Panel:</dt>
+                                <dd>
                                     {{ (curation.expert_panel) ? curation.expert_panel.name : '--' }}
                                     <div v-if="$store.state.features.transferEnabled">
                                         <!-- <pre>{{curation.expert_panels}}</pre> -->
@@ -84,26 +82,27 @@
                                                 index-attribute="id"></history-table>
                                         </transition>
                                     </div>
-                                </div>
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Curator:</strong>
-                                <div class="content-value">{{ (curation.curator) ? curation.curator.name : '--' }}</div>
+                                <dt>Curator:</dt>
+                                <dd>{{ (curation.curator) ? curation.curator.name : '--' }}</dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Curation Type:</strong>
-                                <div class="content-value">
+                                <dt>Curation Type:</dt>
+                                <dd>
                                     {{ curation.curation_type ? curation.curation_type.description : '--' }}
-                                </div>
-                            </div>
-                            <div class="row mt-4">
-                                <strong class="content-key">Phenotypes:</strong>
-                                <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol"
-                                    class="content-value"></phenotype-list>
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Rationale:</strong>
-                                <div class="content-value">
+                                <dt>Phenotypes:</dt>
+                                <dd>
+                                    <phenotype-list :curation="curation" :gene-symbol="curation.gene_symbol" />
+                                </dd>
+                            </div>
+                            <div class="content-row">
+                                <dt>Rationale:</dt>
+                                <dd>
                                     <ul class="list-inline">
                                         <li v-for="(rationale, idx) in curation.rationales" :key="rationale.id"
                                             class="list-inline-item">
@@ -111,33 +110,33 @@
                                                 v-if="idx + 1 < curation.rationales.length">,</span>
                                         </li>
                                     </ul>
-                                </div>
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">PMIDS</strong>
-                                <div class="content-value" v-if="curation.pmids">
+                                <dt>PMIDS</dt>
+                                <dd v-if="curation.pmids">
                                     <ul class="list-inline">
                                         <li v-for="(pmid, idx) in curation.pmids" class="list-inline-item" :key="idx">
                                             {{ pmid }}<span
                                                 v-if="curation.pmids && curation.pmids.length > idx + 1">,</span>
                                         </li>
                                     </ul>
-                                </div>
+                                </dd>
                             </div>
                             <div class="content-row">
-                                <strong class="content-key">Notes on Rationale</strong>
-                                <div class="content-value">
+                                <dt>Notes on Rationale</dt>
+                                <dd>
                                     {{ curation.rationale_notes }}
-                                </div>
+                                </dd>
                             </div>
-                            <div class="row mt-1">
-                                <strong class="content-key">Disease entity notes:</strong>
-                                <div class="content-value">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes :
-                                    '--' }}</div>
+                            <div class="content-row">
+                                <dt>Disease entity notes:</dt>
+                                <dd>{{ (curation.disease_entity_notes) ? curation.disease_entity_notes :
+                                    '--' }}</dd>
                             </div>
-                            <div class="row mt-3">
-                                <strong class="content-key">Current Status:</strong>
-                                <div class="content-value">
+                            <div class="content-row">
+                                <dt>Current Status:</dt>
+                                <dd>
                                     <div class="mb-2">
                                         {{ (curation.current_status) ? curation.current_status.name : 'No status set' }}
                                         <button class="btn btn-sm">
@@ -152,17 +151,17 @@
                                         <history-table :items="curation.curation_statuses" item-label="Status"
                                             date-field="status_date" v-show="showStatusHistory"></history-table>
                                     </transition>
-                                </div>
+                                </dd>
                             </div>
                             <div class="content-row" v-if="curation.gdm_uuid">
-                                <strong class="content-key">GCI ID:</strong>
-                                <div class="grid grid-cols-12 gap-4">
+                                <dt>GCI ID:</dt>
+                                <dd>
                                     <gci-link :curation="curation"></gci-link>
-                                </div>
+                                </dd>
                             </div>
-                            <div class="row mt-3">
-                                <strong class="content-key">Current Classification:</strong>
-                                <div class="col-span-6">
+                            <div class="content-row">
+                                <dt>Current Classification:</dt>
+                                <dd>
                                     <div class="mb-2">
                                         {{ (curation.current_classification) ? curation.current_classification.name :
                                             'Not yet classified'
@@ -181,14 +180,14 @@
                                                 v-show="showClassificationHistory"></classification-history>
                                         </div>
                                     </transition>
-                                </div>
+                                </dd>
                             </div>
-                            <div class="row mt-1">
-                                <strong class="content-key">Notes:</strong>
-                                <div class="grid grid-cols-12 gap-4">{{ (curation.curation_notes) ? curation.curation_notes : '--' }}
-                                </div>
+                            <div class="content-row">
+                                <dt>Notes:</dt>
+                                <dd>{{ (curation.curation_notes) ? curation.curation_notes : '--' }}
+                                </dd>
                             </div>
-                        </div>
+                        </dl>
                         <hr>
                         <documents-card :curation="curation"></documents-card>
 
@@ -295,11 +294,13 @@ onMounted(() => {
     justify-content: space-between;
     margin-bottom: 0.5rem;
 }
-.content-key {
+
+.content-row dt {
     font-weight: bold;
     width: 30%;
 }
-.content-value {
+
+.content-row dd {
     width: 70%;
 }
 </style>

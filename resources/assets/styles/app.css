@@ -1,22 +1,14 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 .router-link-active {
     @apply text-gray-500 underline;
 }
 
-/**
- * "sticky" footer technique lifted from
- * https://css-tricks.com/a-clever-sticky-footer-technique/
- **/
-html, body {
-    height: 100%;
-}
-
-body > footer {
-    position: sticky;
-    top: 100vh;
-}
 
 body {
     @apply bg-gray-50;
@@ -365,3 +357,4 @@ th.sorted, td.sorted  {
     .screen-block {
         @apply bg-white p-4 border-b border-gray-200;
     }
+
