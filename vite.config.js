@@ -1,9 +1,11 @@
 import laravel from 'laravel-vite-plugin'
+import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   plugins: [
@@ -14,6 +16,10 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
+    quasar({
+      autoImportComponentCase: 'pascal',
+      sassVariables: new URL('./resources/assets/styles/quasar-variables.sass', import.meta.url)
+    }),
     AutoImport({
       include: [/\.[jt]sx?$/, /\.vue$/,],
       imports: [
