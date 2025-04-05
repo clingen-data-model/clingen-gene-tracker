@@ -16,8 +16,24 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
+    vue({
+      template: {
+        transformAssetUrls,
+        // The Vue plugin will re-write asset URLs, when referenced
+        // in Single File Components, to point to the Laravel web
+        // server. Setting this to `null` allows the Laravel plugin
+        // to instead re-write asset URLs to point to the Vite
+        // server instead.
+        base: null,
+        // The Vue plugin will parse absolute URLs and treat them
+        // as absolute paths to files on disk. Setting this to
+        // `false` will leave absolute URLs un-touched so they can
+        // reference assets in the public directory as expected.
+        includeAbsolute: false,
+      },
+    }),
     quasar({
-      autoImportComponentCase: 'pascal',
+      autoImportComponentCase: 'kebab',
       sassVariables: new URL('./resources/assets/styles/quasar-variables.sass', import.meta.url)
     }),
     AutoImport({
@@ -34,23 +50,6 @@ export default defineConfig({
     }),
     tailwindcss({
       darkMode: false, // so much inconsistant css right now, this looks awful...
-    }),
-    vue({
-      template: {
-        transformAssetUrls: {
-          // The Vue plugin will re-write asset URLs, when referenced
-          // in Single File Components, to point to the Laravel web
-          // server. Setting this to `null` allows the Laravel plugin
-          // to instead re-write asset URLs to point to the Vite
-          // server instead.
-          base: null,
-          // The Vue plugin will parse absolute URLs and treat them
-          // as absolute paths to files on disk. Setting this to
-          // `false` will leave absolute URLs un-touched so they can
-          // reference assets in the public directory as expected.
-          includeAbsolute: false,
-        },
-      },
     }),
   ],
   resolve: {

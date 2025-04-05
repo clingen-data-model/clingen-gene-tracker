@@ -1,7 +1,5 @@
 <script setup>
 
-import MenuBar from 'primevue/menubar'
-
 const store = useStore()
 
 const user = computed(() => {
@@ -56,55 +54,30 @@ const items = computed(() => [
 </script>
 
 <template>
-    <div class="flex">
-    <nav class="container navbar navbar-default navbar-expand-md navbar-light navbar-laravel">
-        <MenuBar :model="items" style="flex-basis: 100%">
-            <template #start>
-                <a class="navbar-brand" href="/#/">
-                    <img src="/images/clingen_logo_75w.png">
-                </a>
-            </template>
-            <template #item="{ item, props, hasSubmenu }">
-                <span v-if="!item.hidden">
-                    <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                        <a :href="href" v-bind="props.action" @click="navigate">
-                            <span :class="item.icon" />
-                            <span>{{ item.label }}</span>
-                        </a>
-                    </router-link>
-                    <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                        <span :class="item.icon" />
-                        <span>{{ item.label }}</span>
-                        <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
-                    </a>
-                </span>
-            </template>
-            <template #end>
-                <a class="navbar-brand" href="/#/">
-                    <img src="/images/clingen_logo_75w.png">
-                </a>
-            </template>
-            <!-- FIXME: include help modal -->
-        </MenuBar>
-    </nav>
+    <div class="q-pa-md">
+        <q-toolbar class="bg-white text-primary">
+            <a class="navbar-brand" href="/#/">
+                <img src="/images/clingen_logo_75w.png">
+            </a>
+            <q-btn flat to="/" label="Dashboard" />
+            <q-btn flat to="/curations" label="Curations" />
+            <q-btn flat to="/working-groups" label="Working Groups" />
+            <q-btn flat to="/curations/export" label="Curation Export" />
+            <q-btn flat to="/bulk-lookup/curations" label="Bulk Lookup" />
+            <q-btn-dropdown label="Bulk Lookup" class="q-ml-xs">
+                <q-list>
+                    <q-item clickable to="/bulk-lookup/curations">
+                        <q-item-section>Curations</q-item-section>
+                    </q-item>
+                    <q-item clickable to="/bulk-lookup/genes">
+                        <q-item-section>Gene/Phenotype Lookup</q-item-section>
+                    </q-item>
+                </q-list>
+            </q-btn-dropdown>
+            <q-space />
+            <a class="navbar-brand" href="/#/">
+                <img src="/images/clingen_logo_75w.png">
+            </a>
+        </q-toolbar>
     </div>
 </template>
-
-<style scoped>
-nav {
-    display: flex;
-    width: 100%;
-    flex-basis: 100%;
-}
-
-:deep(.p-menubar) {
-    flex-grow: 1;
-    flex-basis: 100%;
-}
-
-:deep(.p-menubar-root-list) {
-    display: flex;
-    flex-grow: 1;
-    flex-basis: 100%;
-}
-</style>

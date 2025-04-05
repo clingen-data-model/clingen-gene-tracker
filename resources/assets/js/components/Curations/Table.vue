@@ -1,7 +1,7 @@
 <template>
     <div class="curations-table">
         <div class="row mb-2" v-show="!loading">
-<!--             <div class="col-md-6 form-inline">
+            <!--             <div class="col-md-6 form-inline">
                 <label :for="searchFieldId">Search:</label>&nbsp;
                 <select name="" id="" v-model="filterField" class="form-control form-control-sm">
                     <option :value="null">Any Field</option>
@@ -17,70 +17,63 @@
             Search:
             <input v-model="filter" placeholder="search curations" class="form-control form-control-sm" />
         </div>
-        <DataTable stripedRows :value="curations" :loading="loading" lazy
-            paginator :rows="pageLength" :current-page="currentPage" :totalRecords="totalRows"
-            @page="handlePage" @sort="handleSort"
-            class="curations-data-table">
-            <Column field="gene_symbol" header="Gene Symbol" sortable filterable>
-                <template #body="{ data: item }">
-                    <router-link :id="`show-curation-${item.id}-link`" :to="`/curations/${item.id}`">
-                        {{ item.gene_symbol }}
+        <q-table flat bordered title="Curations" :rows="curations" :columns="columns" row-key="id">
+            <template #body-cell-gene_symbol="props">
+                <q-td :props="props">
+                    <router-link :id="`show-curation-${props.row.id}-link`" :to="`/curations/${props.row.id}`">
+                        {{ props.row.gene_symbol }}
                     </router-link>
-                    <div v-if="item.hgnc_id">
-                        (hgnc: <a :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:${item.hgnc_id}`" target="_blank">
-                            {{ item.gene_symbol }}
+                    <div v-if="props.row.hgnc_id">
+                        (hgnc: <a
+                            :href="`https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:${props.row.hgnc_id}`"
+                            target="_blank">
+                            {{ props.row.hgnc_id }}
                         </a>)
                     </div>
-                </template>
-            </Column>
-            <Column field="mode_of_inheritance" header="MOI" sortable filterable>
-                <template #body="{ data: item }">
-                    <div v-if="item.mode_of_inheritance !== null">
-                        <div :title="item.mode_of_inheritance.name">
-                            {{ item.mode_of_inheritance.abbreviation }}
+                </q-td>
+            </template>
+            <template #body-cell-mode_of_inheritance="props">
+                <q-td :props="props">
+                    <div v-if="props.row.mode_of_inheritance !== null">
+                        <div :title="props.row.mode_of_inheritance.name">
+                            {{ props.row.mode_of_inheritance.abbreviation }}
                         </div>
                     </div>
-                </template>
-            </Column>
-            <Column field="mondo_id" header="Disease Entity" sortable filterable
-                style="width: '9rem'">
-                <template #body="{ data: item }">
+                </q-td>
+            </template>
+            <template #body-cell-mondo_id="props">
+                <q-td :props="props">
                     <div>
-                        <div v-if="item.mondo_id" :title="item.mondo_id">
-                            <a :href="mondo_iri(item)" target="_blank">
-                                {{ item.mondo_id }} 
+                        <div v-if="props.row.mondo_id" :title="props.row.mondo_id">
+                            <a :href="mondo_iri(props.row)" target="_blank">
+                                {{ props.row.mondo_id }}
                             </a>
                         </div>
-                        <div v-if="item.disease" :title="item.disease.name">
-                            ({{ item.disease.name }})
+                        <div v-if="props.row.disease" :title="props.row.disease.name">
+                            ({{ props.row.disease.name }})
                         </div>
-                        <div v-if="item.disease_entity_notes && !(item.mondo_id || item.disease)" :title="item.disease_entity_notes">
-                            {{ truncateDiseaseEntityNotes(item) }}
+                        <div v-if="props.row.disease_entity_notes && !(props.row.mondo_id || props.row.disease)"
+                            :title="props.row.disease_entity_notes">
+                            {{ truncateDiseaseEntityNotes(props.row) }}
                         </div>
                     </div>
-                </template>
-            </Column>
-            <Column field="expert_panel.name" header="Expert Panel"
-                sortField="export_panel" sortable filterable
-                style="width: '9rem'" />
-            <Column field="curator.name" header="Curator" sortable filterable
-                style="width: '9rem'" />
-            <Column field="current_status.name" header="Status" style="width: '8rem'" />
-            <Column field="id" header="Precuration ID" sortable />
-            <Column field="id" header="Actions" style="width: '7rem'">
-                <template #body="{ data: item }">
+                </q-td>
+            </template>
+            <template #body-cell-actions="props">
+                <q-td :props="props">
                     <div>
-                        <router-link v-if="user.canEditCuration(item)" :id="'edit-curation-' + item.id + '-btn'"
-                            class="btn btn-secondary btn-sm" :to="`/curations/${item.id}/edit`">
+                        <router-link v-if="user.canEditCuration(props.row)"
+                            :id="'edit-curation-' + props.row.id + '-btn'" class="btn btn-secondary btn-sm"
+                            :to="`/curations/${props.row.id}/edit`">
                             Edit
                         </router-link>
-                        <delete-button :curation="item" class="btn-sm">
+                        <delete-button :curation="props.row" class="btn-sm">
                             <span class="fa fa-trash">X</span>
                         </delete-button>
                     </div>
-                </template>
-            </Column>
-        </DataTable>
+                </q-td>
+            </template>
+        </q-table>
         <div class="row border-top pt-4">
             <div class="col-md-6">Total Records: {{ totalRows }}</div>
         </div>
@@ -90,8 +83,7 @@
 <script setup>
 import getPageOfCurations from '../../resources/curations/get_page_of_curations'
 import DeleteButton from './DeleteButton.vue'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
+import { ref } from 'vue'
 
 defineProps({
     sortBy: {
@@ -112,6 +104,12 @@ defineProps({
     }
 })
 
+const store = useStore()
+const user = computed(() => {
+    // Access the user from the store
+    return store.getters.getUser || {}
+})
+
 const filterField = ref(null)
 const filter = ref(null)
 const currentPage = ref(1)
@@ -119,16 +117,60 @@ const pageLength = ref(10)
 const sortBy = ref('gene_symbol')
 const sortDesc = ref(false)
 const totalRows = ref(0)
-
-const store = useStore()
-const user = computed(() => {
-    // Access the user from the store
-    return store.getters.getUser || {}
-})
-
 const curations = ref([])
-
 const loading = ref(false)
+
+const columns = ref([
+    {
+        name: 'gene_symbol',
+        field: 'gene_symbol',
+        label: 'Gene Symbol',
+        sortable: true,
+    },
+    {
+        name: 'mode_of_inheritance',
+        label: 'Mode of Inheritance',
+        sortable: true,
+    },
+    {
+        name: 'mondo_id',
+        field: row => row.mondo_id,
+        label: 'Disease Entity',
+        sortable: true,
+    },
+    {
+        name: 'expert_panel',
+        field: row => row.expert_panel?.name,
+        label: 'Expert Panel',
+        sortable: true,
+    },
+    {
+        name: 'curation_status',
+        field: row => row.current_status?.name,
+        label: 'Curation Status',
+        sortable: true,
+    },
+    {
+        name: 'curator',
+        field: row => row.curator?.name,
+        label: 'Curator',
+        sortable: true,
+    },
+    {
+        name: 'current_status',
+        field: row => row.current_status?.name,
+        label: 'Status',
+    },
+    {
+        name: 'id',
+        field: 'id',
+        label: 'Precuration ID',
+    },
+    {
+        name: 'actions',
+        label: 'Actions',
+    }
+])
 
 const filterableFields = computed(() => {
     return this.fields.value.filter(f => f.filterable)

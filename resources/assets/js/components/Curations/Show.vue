@@ -10,8 +10,8 @@
             <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
                 Loading...
             </div>
-            <Card id="show-curation" v-else key="curation-details" style="max-height: 1000px">
-                <template #header>
+            <q-card id="show-curation" v-else key="curation-details" style="max-height: 1000px">
+                <q-card-section>
                     <div class="float">
                         <h3> {{ title }}</h3>
 
@@ -26,8 +26,8 @@
                                 v-if="store.state.features.transferEnabled"></transfer-curation-control>
                         </div>
                     </div>
-                </template>
-                <template #content>
+                </q-card-section>
+                <q-card-section>
                     <div v-if="curations">
                         <dl id="info">
                             <div>
@@ -189,6 +189,7 @@
                             </div>
                         </dl>
                         <hr>
+
                         <documents-card :curation="curation"></documents-card>
 
                         <hr>
@@ -196,8 +197,8 @@
                             <div slot="title">Administrative Notes</div>
                         </notes-list>
                     </div>
-                </template>
-            </Card>
+                </q-card-section>
+            </q-card>
         </transition>
     </div>
 </template>
@@ -213,7 +214,6 @@ import TransferCurationControl from './TransferCurationControl.vue'
 import GciLink from '../Curations/GciLink.vue'
 import ToggleButton from '../buttons/ToggleButton.vue'
 import ExternalLink from '../ExternalLink.vue'
-import Card from 'primevue/card'
 
 defineProps({
     id: {

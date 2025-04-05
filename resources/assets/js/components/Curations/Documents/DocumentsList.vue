@@ -9,14 +9,9 @@
                 <label for="list-filter-input">Filter:</label>&nbsp;
                 <input type="text" class="form-control form-control-sm" v-model="filter">
             </div>
-            <DataTable :value="documents" stacked="sm">
-                <Column field="id" header="ID" sortable></Column>
-                <Column field="name" header="Name" sortable></Column>
-                <Column field="category.name" header="Category" sortable></Column>
-                <Column header="Created" sortable :field="(value) => $filters.formatDate(value, 'YYYY-MM-DD')" />
-                <Column field="uploader.name" header="Uploaded by" sortable></Column>
-                <Column header="Action" field="action" sortable>
-                    <template #body="{ data: document }">
+            <q-table :columns="columns" :rows="documents" stacked="sm">
+                <template #body-cell-actions="props">
+                    <q-td :props="props">
                         <a href="#" @click.prevent="downloadFile(document)" title="Download document">
                             <i class="material-icons">cloud_download</i>
                         </a>
@@ -27,12 +22,9 @@
                             @click.prevent="deleteDocument(document)" v-if="user.canEditCuration(curation)">
                             <i class="material-icons">delete</i>
                         </a>
-                    </template>
-                </Column>
-
-                <template v-slot:cell(action)="{ item: document }">
+                    </q-td>
                 </template>
-            </DataTable>
+            </q-table>
         </div>
         <Dialog modal v-model:visible="showDetailedInfo" hide-footer v-if="currentDocument"
             :header="currentDocument.name" size="lg">
@@ -73,8 +65,6 @@
 </template>
 
 <script>
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import Dialog from 'primevue/dialog'
 import DocumentUploader from './DocumentUploader.vue'
 import getAllUploads from '../../../resources/uploads/get_all_uploads'
@@ -99,6 +89,42 @@ export default {
             loadingDocuments: false,
             documents: [],
             currentDocument: null,
+            columns: [
+                {
+                    name: 'id',
+                    field: 'id',
+                    header: 'ID',
+                    sortable: true,
+                },
+                {
+                    name: 'id',
+                    field: 'name',
+                    header: 'Name',
+                    sortable: true,
+                },
+                {
+                    name: 'category',
+                    field: row => row.category?.name,
+                    header: 'Category',
+                    sortable: true,
+                },
+                {
+                    name: 'created_at',
+                    field: row => this.$filters.formatDate(row.created_at, 'YYYY-MM-DD'),
+                    header: 'Created',
+                    sortable: true,
+                },
+                {
+                    name: 'uploader',
+                    field: row => row.uploader?.name,
+                    header: 'Uploaded by',
+                    sortable: true,
+                },
+                {
+                    name: 'action',
+                    header: 'Action',
+                }
+            ],
         }
     },
     computed: {
