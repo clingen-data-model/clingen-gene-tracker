@@ -10,7 +10,7 @@ services:
         expose:
             - "3306"
         ports:
-          - "3318:3306"
+            - '${FORWARD_DB_PORT:-3318}:3306'
         volumes:
             - db:/var/lib/mysql
             - .docker/mysql/db-init:/docker-entrypoint-initdb.d
