@@ -4,6 +4,7 @@ import path from 'path'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import tailwindcss from '@tailwindcss/vite'
+import ui from '@nuxt/ui/vite'
 
 export default defineConfig({
   plugins: [
@@ -14,21 +15,6 @@ export default defineConfig({
       'resources/assets/sass/_variables.scss',
       'resources/assets/js/app.js',
     ]),
-    AutoImport({
-      include: [/\.[jt]sx?$/, /\.vue$/,],
-      imports: [
-        'vue',
-        'vue-router',
-        '@vueuse/core',
-        // 'pinia', // maybe later...
-        'vuex',
-      ],
-      dts: 'resources/assets/js/auto-imports.d.ts',
-      // vueTemplate: true, // maybe later...
-    }),
-    tailwindcss({
-      darkMode: false, // so much inconsistant css right now, this looks awful...
-    }),
     vue({
       template: {
         transformAssetUrls: {
@@ -45,6 +31,22 @@ export default defineConfig({
           includeAbsolute: false,
         },
       },
+    }),
+    ui({
+      autoimport: {
+        include: [/\.[jt]sx?$/, /\.vue$/,],
+        imports: [
+          'vue',
+          'vue-router',
+          '@vueuse/core',
+          // 'pinia', // maybe later...
+          'vuex',
+        ],
+        dts: 'resources/assets/js/auto-imports.d.ts',
+      }
+    }),
+    tailwindcss({
+      darkMode: false, // so much inconsistant css right now, this looks awful...
     }),
   ],
   resolve: {

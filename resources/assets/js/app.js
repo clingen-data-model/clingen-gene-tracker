@@ -6,15 +6,11 @@
 
 import './bootstrap.js'
 import { createApp } from 'vue'
-import PrimeVue from 'primevue/config'
-import Material from '@primeuix/themes/material'
 import store from './store/index'
 import router from './routing.js'
 import User from './User'
 import ClingenApp from './components/ClingenApp.vue'
 import moment from 'moment/moment.js'
-
-import 'primeicons/primeicons.css'
 
 // FIMME: why is this here?
 if (user) {
@@ -56,18 +52,7 @@ axios.interceptors.response.use(
 if (document.getElementById('app')) {
     const app = createApp(ClingenApp);
     app.use(router).use(store)
-    app.use(PrimeVue, {
-        theme: {
-            preset: Material,
-            options: {
-                cssLayer: {
-                    name: 'primevue',
-                    order: 'theme, base, primevue',
-                },
-                darkModeSelector: 'gt-theme-dark',
-            },
-        }
-    })
+    app.use(ui)
     app.config.globalProperties.$filters = {
         formatDate: function(dateString, format = 'YYYY-MM-DD HH:mm') {
             if (dateString === null) {
