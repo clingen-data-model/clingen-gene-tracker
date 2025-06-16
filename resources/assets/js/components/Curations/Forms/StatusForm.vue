@@ -41,15 +41,17 @@
                                 <div v-for="message in errors.curation_status_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
-                        <td class="form-inline">
-                            <datepicker 
-                                v-model="newStatusDate"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                            ></datepicker>
+                        <td class="d-flex align-items-center">
+                            <div class="flex-grow-1 mr-2">
+                                <datepicker 
+                                    v-model="newStatusDate"
+                                    input-class="form-control"
+                                    format='yyyy-MM-dd'
+                                    calendar-class="small-calendar"
+                                    placeholder="Select a date"
+                                    :highlighted="highlighted"
+                                ></datepicker>
+                            </div>
                             <b-button 
                                 variant="primary"
                                 @click="addStatus"
@@ -62,17 +64,19 @@
                         <td>
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
-                        <td class="form-inline">
-                            <datepicker
-                                :id="'status-date-'+status.id"
-                                v-model="status.pivot.status_date"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                                @selected="updateStatusDate(status.pivot,$event)"
-                            ></datepicker>
+                        <td class="d-flex align-items-center">
+                            <div class="flex-grow-1 mr-2">
+                                <datepicker
+                                    :id="'status-date-'+status.id"
+                                    v-model="status.pivot.status_date"
+                                    input-class="form-control"
+                                    format='yyyy-MM-dd'
+                                    calendar-class="small-calendar"
+                                    placeholder="Select a date"
+                                    :highlighted="highlighted"
+                                    @selected="updateStatusDate(status.pivot,$event)"
+                                ></datepicker>
+                            </div>
                             <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
                         </td>
                     </tr>
