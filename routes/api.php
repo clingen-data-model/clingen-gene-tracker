@@ -11,58 +11,96 @@
 |
 */
 
-Route::group([
-    'middleware' => ['auth:api'],
-    'namespace' => 'Api',
-], function () {
-    Route::get('/features', 'FeaturesController@index');
-    Route::resource('/expert-panels', 'ExpertPanelController');
-    // Resources
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\FeaturesController;
+use App\Http\Controllers\Api\ExpertPanelController;
+use App\Http\Controllers\Api\CurationTransferController;
+use App\Http\Controllers\Api\CurationClassificationController;
+use App\Http\Controllers\Api\CurationCurationStatusController;
+use App\Http\Controllers\Api\CurationUploadController;
+use App\Http\Controllers\Api\CurationController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CurationStatusController;
+use App\Http\Controllers\Api\WorkingGroupController;
+use App\Http\Controllers\Api\CurationTypeController;
+use App\Http\Controllers\Api\RationaleController;
+use App\Http\Controllers\Api\ClassificationController;
+use App\Http\Controllers\Api\MoiController;
+use App\Http\Controllers\Api\BulkLookupController;
+use App\Http\Controllers\Api\OmimController;
+use App\Http\Controllers\Api\DiseaseLookupController;
+use App\Http\Controllers\Api\GeneController;
+use App\Http\Controllers\Api\DefaultApiController;
 
-    Route::post('/curations/{id}/owner', 'CurationTransferController@store');
-    Route::resource('/curations/{id}/classifications', 'CurationClassificationController')
-        ->only(['index', 'store', 'update', 'destroy'])->name('index', 'curations.classifications.index');
-    Route::resource('/curations/{id}/statuses', 'CurationCurationStatusController');
+use App\Http\Controllers\Api\client\DiseaseController as ClientDiseaseController;
+use App\Http\Controllers\Api\client\GeneController as ClientGeneController;
 
-    Route::get('curations/{curation_id}/uploads/{upload_id}/file', 'CurationUploadController@getFile')->name('curation-upload-file');
-    Route::resource('curations/{curation_id}/uploads', 'CurationUploadController')->only(['index', 'show', 'store', 'update', 'destroy']);
+Route::middleware('client')->prefix("client/v1")->group(function () {
+    Route::get('/machine-access', function () {
+        return response()->json(['message' => 'Authenticated as client']);
+    });
+        // Diseases
+    Route::post('/diseases/search', [ClientDiseaseController::class, 'search']);
+    Route::post('/diseases/mondo', [ClientDiseaseController::class, 'getDiseaseByMondoID']);
+    Route::post('/diseases/ontology', [ClientDiseaseController::class, 'getDiseaseByOntologyID']);
 
-    Route::resource('/curations', 'CurationController');
+    Route::post('/genes/search', [ClientGeneController::class, 'search']);
+    Route::post('/genes/byid', [ClientGeneController::class, 'getGeneSymbolByID']);
+    Route::post('/genes/bysymbol', [ClientGeneController::class, 'findHgncIdBySymbol']);
+});
 
-    Route::get('users/current', 'UserController@currentUser')->name('current-user');
-    Route::resource('/users', 'UserController')->only(['index']);
-    Route::resource('/curation-statuses', 'CurationStatusController')->only(['index']);
-    Route::resource('/working-groups', 'WorkingGroupController')->only(['index', 'show']);
-    Route::resource('/curation-types', 'CurationTypeController')->only(['index']);
-    Route::resource('/rationales', 'RationaleController')->only(['index']);
-    Route::resource('/classifications', 'ClassificationController')->only(['index']);
-    Route::resource('/mois', 'MoiController')->only(['index']);
-    Route::post('/bulk-lookup', 'BulkLookupController@data');
-    Route::post('/bulk-lookup/csv', 'BulkLookupController@download');
+Route::middleware(['auth:api'])->group(function () {
+    
+
+    Route::get('/features', [FeaturesController::class, 'index']);
+
+    Route::resource('/expert-panels', ExpertPanelController::class);
+
+    Route::post('/curations/{id}/owner', [CurationTransferController::class, 'store']);
+
+    Route::resource('/curations/{id}/classifications', CurationClassificationController::class)
+        ->only(['index', 'store', 'update', 'destroy'])
+        ->names(['index' => 'curations.classifications.index']);
+
+    Route::resource('/curations/{id}/statuses', CurationCurationStatusController::class);
+
+    Route::get('curations/{curation_id}/uploads/{upload_id}/file', [CurationUploadController::class, 'getFile'])
+        ->name('curation-upload-file');
+
+    Route::resource('curations/{curation_id}/uploads', CurationUploadController::class)
+        ->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    Route::resource('/curations', CurationController::class);
+
+    Route::get('users/current', [UserController::class, 'currentUser'])->name('current-user');
+    Route::resource('/users', UserController::class)->only(['index']);
+    Route::resource('/curation-statuses', CurationStatusController::class)->only(['index']);
+    Route::resource('/working-groups', WorkingGroupController::class)->only(['index', 'show']);
+    Route::resource('/curation-types', CurationTypeController::class)->only(['index']);
+    Route::resource('/rationales', RationaleController::class)->only(['index']);
+    Route::resource('/classifications', ClassificationController::class)->only(['index']);
+    Route::resource('/mois', MoiController::class)->only(['index']);
+
+    Route::post('/bulk-lookup', [BulkLookupController::class, 'data']);
+    Route::post('/bulk-lookup/csv', [BulkLookupController::class, 'download']);
 
     // OMIM
-    Route::get('/omim/entry', 'OmimController@entry');
-    Route::get('/omim/search', 'OmimController@search');
-    Route::get('/omim/gene/{geneSymbol}', 'OmimController@gene');
-    Route::get('/omim/curation/{curationId}', 'OmimController@forCuration');
+    Route::get('/omim/entry', [OmimController::class, 'entry']);
+    Route::get('/omim/search', [OmimController::class, 'search']);
+    Route::get('/omim/gene/{geneSymbol}', [OmimController::class, 'gene']);
+    Route::get('/omim/curation/{curationId}', [OmimController::class, 'forCuration']);
 
     // Diseases
-    Route::get('/diseases/search', 'DiseaseLookupController@search');
-    Route::get('/diseases/{mondoId}', 'DiseaseLookupController@show');
+    Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
+    Route::get('/diseases/{mondoId}', [DiseaseLookupController::class, 'show']);
 
     // Genes
-    Route::post('/genes', 'GeneController@index');
-    Route::post('/genes/csv', 'GeneController@download');
+    Route::post('/genes', [GeneController::class, 'index']);
+    Route::post('/genes/csv', [GeneController::class, 'download']);
 
-
-    /*
-    * Catch-all route for generic API read exposure
-    **/
-
-    // index
-    Route::get('{model}', 'DefaultApiController@index');
-
-    // show
-    Route::get('{model}/{id}', 'DefaultApiController@show');
+    // Catch-all generic API exposure
+    Route::get('{model}', [DefaultApiController::class, 'index']);
+    Route::get('{model}/{id}', [DefaultApiController::class, 'show']);
 });
+
 
