@@ -61,7 +61,9 @@ class AddStatus implements ShouldQueue
 
     private function isCurrentStatus()
     {
-        return $this->hasCurationCurationStatus() && $this->curation->curationStatuses->first()->id == $this->curationStatus->id;
+        return $this->hasCurationCurationStatus() && 
+                $this->curation->curationStatuses->first()->id == $this->curationStatus->id && 
+                Carbon::parse($this->curation->curationStatuses->first()->status_date)->format('Y-m-d') == Carbon::parse($this->date)->format('Y-m-d');
     }
 
     private function hasCurationCurationStatus()
