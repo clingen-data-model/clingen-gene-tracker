@@ -37,11 +37,6 @@ class CurationCurationStatusController extends Controller
             'curation_status_id' => [
                 'required',
                 'exists:curation_statuses,id',
-                Rule::unique('curation_curation_status')
-                    ->where(function ($query) use ($curationId, $request) {
-                        $query->where('curation_id', $curationId)
-                            ->where('status_date', $request->status_date);
-                    }),
             ],
             'status_date' => 'nullable|date_format:Y-m-d'
         ]);
@@ -56,9 +51,6 @@ class CurationCurationStatusController extends Controller
         $curationStatus = $curation->curationStatuses()
                 ->where('curation_status_id', $request->curation_status_id)
                 ->where('status_date', $status_date)
-                ->limit(1)
-                ->orderBy('curation_curation_status.updated_at', "DESC")
-                ->get()
                 ->first();
         if($curationStatus) {
             return $curationStatus;
