@@ -36,17 +36,15 @@ use App\Http\Controllers\Api\client\DiseaseController as ClientDiseaseController
 use App\Http\Controllers\Api\client\GeneController as ClientGeneController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
-    Route::get('/machine-access', function () {
-        return response()->json(['message' => 'Authenticated as client']);
-    });
-        // Diseases
+
+    // Diseases
     Route::post('/diseases/search', [ClientDiseaseController::class, 'search']);
     Route::post('/diseases/mondo', [ClientDiseaseController::class, 'getDiseaseByMondoID']);
     Route::post('/diseases/ontology', [ClientDiseaseController::class, 'getDiseaseByOntologyID']);
 
     Route::post('/genes/search', [ClientGeneController::class, 'search']);
     Route::post('/genes/byid', [ClientGeneController::class, 'getGeneSymbolByID']);
-    Route::post('/genes/bysymbol', [ClientGeneController::class, 'findHgncIdBySymbol']);
+    Route::post('/genes/bysymbol', [ClientGeneController::class, 'getGeneSymbolBySymbol']);
 });
 
 Route::middleware(['auth:api'])->group(function () {

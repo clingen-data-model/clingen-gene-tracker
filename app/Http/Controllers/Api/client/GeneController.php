@@ -32,7 +32,7 @@ class GeneController extends Controller
         try {        
             $results = Gene::where('gene_symbol', 'LIKE', '%'.$query.'%')
                             ->orWhere('hgnc_id', 'LIKE', '%'.$query.'%')
-                            ->limit(250)
+                            ->limit(50)
                             ->get();
 
             return $this->successResponse([

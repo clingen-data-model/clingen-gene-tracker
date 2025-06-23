@@ -34,5 +34,9 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
-
+    'clientapi' => [
+        'client_id'     => env('CLIENT_API_ID'),
+        'client_secret' => env('CLIENT_API_SECRET'),
+        'token_url'     => env('CLIENT_API_TOKEN_URL', env('APP_URL') . '/oauth/token'),
+    ],
 ];

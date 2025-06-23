@@ -73,17 +73,16 @@ class DiseaseController extends Controller
     public function getDiseaseByOntologyID(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ontology_id' => ['required', 'regex:/^(MONDO:|DOID:)\d{7}$/'],
-        ]);
-
+            'ontology_id' => ['required', 'regex:/^(MONDO:|DOID:)\d+$/'],
+        ]);        
         if ($validator->fails()) {
             return $this->errorResponse('Validation failed', 422, $validator->errors());
         }
-        
         $ontologyId = $validator->validated()['ontology_id'];
+        $ontology = strtolower(explode(':', $ontologyId)[0]);
 
         try {
-            $disease = Disease::select("name")->where($ontology.'_id', $ontologyId)->first();
+            $disease = Disease::selectRaw("'" . $ontology . "' AS ontology, `" . $ontology . "_id` AS ontology_id, `name`")->where($ontology.'_id', $ontologyId)->first();
             return $this->successResponse($disease, 'Ontology data found');
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse('Ontology not found', 404);
