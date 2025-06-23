@@ -89,4 +89,27 @@ class ClientApiTest extends TestCase
         $res->assertOk()
             ->assertJsonStructure(['success', 'data' => ['ontology', 'ontology_id', 'name']]);
     }
+
+    /** @test */
+    public function it_can_lookup_curations_by_gene_symbols_with_comma_and_newlines()
+    {
+        $textareaInput = "ARMC2, CFAP43, DNAH1, DNAH8,\nFANCM, CFTR, DNAH10";
+
+        $res = $this->postJsonToClientApi('client/v1/genes/curations', [
+            'gene_symbol' => $textareaInput,
+            'classifications'   => 'with',
+        ]);
+        
+        $res->assertOk()->assertJsonStructure([
+                'success',
+                'message',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'gene',
+                        'available_phenotypes',
+                    ]
+                ]
+            ]);
+    }
 }
