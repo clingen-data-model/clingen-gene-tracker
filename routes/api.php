@@ -36,7 +36,6 @@ use App\Http\Controllers\Api\client\DiseaseController as ClientDiseaseController
 use App\Http\Controllers\Api\client\GeneController as ClientGeneController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
-
     // Diseases
     Route::post('/diseases/search', [ClientDiseaseController::class, 'search']);
     Route::post('/diseases/mondo', [ClientDiseaseController::class, 'getDiseaseByMondoID']);
@@ -45,6 +44,7 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
     Route::post('/genes/search', [ClientGeneController::class, 'search']);
     Route::post('/genes/byid', [ClientGeneController::class, 'getGeneSymbolByID']);
     Route::post('/genes/bysymbol', [ClientGeneController::class, 'getGeneSymbolBySymbol']);
+    Route::post('/genes/curations', [ClientGeneController::class, 'bulkLookUp']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
