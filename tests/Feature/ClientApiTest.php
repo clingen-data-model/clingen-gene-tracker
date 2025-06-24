@@ -96,9 +96,10 @@ class ClientApiTest extends TestCase
         $textareaInput = "ARMC2, CFAP43, DNAH1, DNAH8,\nFANCM, CFTR, DNAH10";
 
         $res = $this->postJsonToClientApi('client/v1/genes/curations', [
-            'gene_symbol' => $textareaInput
+            'gene_symbol' => $textareaInput,
+            'classifications'   => 'with',
         ]);
-        dd($res->json('data')[0]);
+        
         $res->assertOk()->assertJsonStructure([
                 'success',
                 'message',
