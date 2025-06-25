@@ -12,13 +12,10 @@ class DiseaseController extends Controller
 {
 
     use ApiResponse;
-    const SUPPORTED_ONTOLOGIES = ['mondo', 'doid'];
-
     /**
-     *      
      * Called by GPM Controllers\Api\DiseaseLookupController.php
-     * 
      */
+    
     public function getDiseaseByMondoID(Request $request)
     {
          // Validate the mondo_id format
