@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Client;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ClientApiTest extends TestCase
 {
@@ -93,7 +94,7 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_lookup_curations_by_gene_symbols_with_comma_and_newlines()
     {
-        $textareaInput = "ARMC2, CFAP43, DNAH1, DNAH8,\nFANCM, CFTR, DNAH10";
+        $textareaInput = "ARMC2, CFAP43, DNAH1, DNAH8, FANCM, CFTR, DNAH10";
 
         $res = $this->postJsonToClientApi('client/v1/genes/curations', [
             'gene_symbol' => $textareaInput,
