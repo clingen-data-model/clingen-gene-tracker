@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\DefaultApiController;
 
 use App\Http\Controllers\Api\client\DiseaseController as ClientDiseaseController;
 use App\Http\Controllers\Api\client\GeneController as ClientGeneController;
+use App\Http\Controllers\Api\client\BulkUploadApiController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -44,7 +45,9 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
     Route::post('/genes/search', [ClientGeneController::class, 'search']);
     Route::post('/genes/byid', [ClientGeneController::class, 'getGeneSymbolByID']);
     Route::post('/genes/bysymbol', [ClientGeneController::class, 'getGeneSymbolBySymbol']);
-    Route::post('/genes/curations', [ClientGeneController::class, 'bulkLookUp']);
+    Route::post('/genes/curations', [ClientGeneController::class, 'geneCurationSearch']);
+
+    Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
