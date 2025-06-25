@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\BulkLookupRequest;
-use App\Http\Resources\CurationResource;
+use App\Http\Resources\CurationSimpleResource;
 use App\Services\Curations\CurationSearchService;
 
 class GeneController extends Controller
@@ -113,10 +113,12 @@ class GeneController extends Controller
         }
     }
 
-    public function bulkLookUp(BulkLookupRequest $request, CurationSearchService $search)
+    public function geneCurationSearch(BulkLookupRequest $request, CurationSearchService $search)
     {
         try {
             $validated = $request->validated();
+
+            $validated['perPage'] = 150;
 
             $results = $search->search($validated)
                 ->map(function ($curation) {
@@ -130,9 +132,9 @@ class GeneController extends Controller
                     ['gene_symbol' => ["There were no results for your search. Are you sure you're using valid HGNC gene symbols? Could the gene symbol(s) you searched be aliases or previously used symbols?"]]
                 );
             }
-
+            
             return $this->successResponse(
-                CurationResource::collection($results), 
+                CurationSimpleResource::collection($results), 
                 'Curation data found'
             );
         } catch (\Throwable $e) {
