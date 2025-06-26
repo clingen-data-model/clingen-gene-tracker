@@ -18,7 +18,7 @@ class BulkUploadApiController extends Controller
             'expert_panel_id' => 'required',
             'rows' => 'required|array|min:1',
             'rows.*.gene_symbol' => 'required|string',
-            'rows.*.curator_email' => 'required|email',
+            'rows.*.curator_email' => 'email',
             'rows.*.curation_type' => 'string',
             'rows.*omim_id1' => '',
             'rows.*omim_id2' => '',
@@ -77,7 +77,7 @@ class BulkUploadApiController extends Controller
                 return $this->errorResponse('Server error', 500, $e->getMessage());
             }
         }
-
+        
         return $this->successResponse($results, 'Bulk rows processed');        
     }
 }
