@@ -39,61 +39,34 @@ class BulkCurationUploadTest extends TestCase
 
     public function test_bulk_upload_via_json_rows_succeeds()
     {        
-        $expertPanel = ExpertPanel::factory()->create();
-        $curator = User::factory()->create(['email' => 'curator@example.com']);
+        $expertPanel = ExpertPanel::inRandomOrder()->firstOrFail();
+        $curator = User::whereNotNull('email')->inRandomOrder()->firstOrFail();
 
         $payload = [
             'expert_panel_id' => $expertPanel->id,
             'rows' => [
                 [
-                    'gene_symbol' => 'BRCA1',
-                    'curator_email' => $curator->email,                    
-                    'omim_id_1' => 605724,
-                    'omim_id_2' => null,
-                    'omim_id_3' => null,
-                    'omim_id_4' => null,
-                    'omim_id_5' => null,
-                    'omim_id_6' => null,
-                    'omim_id_7' => null,
-                    'omim_id_8' => null,
-                    'omim_id_9' => null,
-                    'omim_id_10' => null,
-                    'mondo_id' => null,
-                    'disease_entity_if_there_is_no_mondo_id' => null,
-                    'rationale_1' => 'Assertion',
-                    'rationale_2' => 'Molecular mechanism',
-                    'rationale_3' => null,
-                    'rationale_4' => null,
-                    'rationale_5' => null,
-                    'rationale_notes' => 'notes on the rationale',
-                    'pmid_1' => 819281721,
-                    'pmid_2' => 123198121,
-                    'pmid_3' => null,
-                    'pmid_4' => null,
-                    'pmid_5' => null,
-                    'pmid_6' => null,
-                    'pmid_7' => null,
-                    'pmid_8' => null,
-                    'pmid_9' => null,
-                    'pmid_10' => null,
-                    'date_uploaded' => now()->toDateString(),
-                    'precuration_date' => now()->subDays(1)->toDateString(),
-                    'disease_entity_assigned_date' => now()->subDays(2)->toDateString(),
-                    'curation_in_progress_date' => now()->subDays(3)->toDateString(),
-                    'curation_provisional_date' => now()->subDays(4)->toDateString(),
-                    'curation_approved_date' => now()->subDays(5)->toDateString(),
+                    'gene_symbol' => 'BRCA1', 
+                    // 'curator_email' => $curator->email, 
+                    // "curation_type" => "isolated-phenotype"
+                ],
+                [
+                    'gene_symbol' => 'ABCA2', 
+                    // 'curator_email' => $curator->email, 
+                    // "curation_type" => "isolated-phenotype"
                 ]
             ]
         ];
 
         // Act
-        $response = $this->postJsonToClientApi('bulk-curations', $payload);
-
+        $response = $this->postJsonToClientApi('client/v1/genes/bulkupload', $payload);
+        
         // Assert
         $response->assertStatus(200);
         $response->assertJsonStructure([
+            'success',
             'message',
-            'results' => [
+            'data' => [
                 [
                     'row',
                     'status',
@@ -102,7 +75,7 @@ class BulkCurationUploadTest extends TestCase
                 ]
             ]
         ]);
-        $this->assertEquals('GENE1', $response->json('results.0.gene_symbol'));
+        $this->assertEquals('BRCA1', $response->json('data.0.gene_symbol'));
     }
 
     public function test_bulk_upload_returns_error_for_invalid_data()
@@ -118,7 +91,7 @@ class BulkCurationUploadTest extends TestCase
             ]
         ];
 
-        $response = $this->postJsonToClientApi('bulk-curations', $payload);
+        $response = $this->postJsonToClientApi('client/v1/genes/bulkupload', $payload);
 
         $response->assertStatus(422);
         $response->assertJsonStructure([

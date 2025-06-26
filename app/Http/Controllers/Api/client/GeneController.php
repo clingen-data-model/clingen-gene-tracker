@@ -127,9 +127,9 @@ class GeneController extends Controller
                 });
 
             if ($results->isEmpty()) {
-                return $this->errorResponse(
-                    'Validation failed', 422, 
-                    ['gene_symbol' => ["There were no results for your search. Are you sure you're using valid HGNC gene symbols? Could the gene symbol(s) you searched be aliases or previously used symbols?"]]
+                return $this->successResponse(
+                    [], 
+                    'No data found'
                 );
             }
             
