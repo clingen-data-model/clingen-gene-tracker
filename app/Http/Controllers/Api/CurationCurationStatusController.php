@@ -9,6 +9,8 @@ use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\Curations\UpdateCurrentStatus;
+use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class CurationCurationStatusController extends Controller
 {
@@ -32,19 +34,32 @@ class CurationCurationStatusController extends Controller
     public function store(Request $request, $curationId)
     {
         $request->validate([
-            'curation_status_id' => 'required|exists:curation_statuses,id',
+            'curation_status_id' => [
+                'required',
+                'exists:curation_statuses,id',
+            ],
             'status_date' => 'nullable|date_format:Y-m-d'
         ]);
 
         $curation = Curation::findOrFail($curationId);
         $status = CurationStatus::find($request->curation_status_id);
         AddStatus::dispatchSync($curation, $status, $request->status_date);
-        
-        return $curation->curationStatuses()
-                ->where('curation_status_id', $curation->curation_status_id)
-                ->limit(1)
-                ->get()
-                ->last();
+
+        $status_date = Carbon::parse($request->status_date)->startOfDay();
+
+        $curation = Curation::findOrFail($curationId);
+        $curationStatus = $curation->curationStatuses()
+                ->where('curation_status_id', $request->curation_status_id)
+                ->where('status_date', $status_date)
+                ->first();
+        if($curationStatus) {
+            return $curationStatus;
+        } else {
+            return response()->json([
+                'message' => 'Data not found',
+                "errors" => [ "curation_status_id" => ["Please choose different status different from the latest status."]],
+            ], 422);
+        }
     }
 
     /**
