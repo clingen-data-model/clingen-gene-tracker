@@ -39,6 +39,40 @@ class DiseaseController extends Controller
         }
     }
 
+    public function getDiseaseByMondoIDs(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mondo_ids' => ['required', 'array', 'min:1'],
+            'mondo_ids.*' => ['required', 'regex:/^MONDO:\d{7}$/']
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation failed', 422, $validator->errors());
+        }
+
+        $mondoIds = $validator->validated()['mondo_ids'];
+
+        try {
+            $diseases = Disease::whereIn('mondo_id', $mondoIds)
+                            ->select('id', 'name', 'mondo_id', 'doid_id', 'is_obsolete', 'replaced_by')
+                            ->get()
+                            ->map(function ($d) {
+                                return [
+                                    'id' => $d->id,
+                                    'name' => $d->name,
+                                    'mondo_id' => $d->mondo_id,
+                                    'doid_id' => $d->doid_id,
+                                    'is_obsolete' => $d->is_obsolete,
+                                    'replaced_by' => $d->replaced_by,
+                                ];
+                            });
+
+            return $this->successResponse($diseases->values(), 'Disease data found');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Server error', 500, $e->getMessage());
+        }
+    }
+
     public function search(Request $request)
     {
         $validator = Validator::make($request->all(), [

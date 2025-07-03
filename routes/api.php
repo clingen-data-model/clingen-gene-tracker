@@ -40,6 +40,7 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
     Route::post('/diseases/search', [ClientDiseaseController::class, 'search']);
     Route::post('/diseases/mondo', [ClientDiseaseController::class, 'getDiseaseByMondoID']);
+    Route::post('/diseases/mondos', [ClientDiseaseController::class, 'getDiseaseByMondoIDs']);
     Route::post('/diseases/ontology', [ClientDiseaseController::class, 'getDiseaseByOntologyID']);
 
     Route::post('/genes/search', [ClientGeneController::class, 'search']);
