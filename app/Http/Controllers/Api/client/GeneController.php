@@ -118,7 +118,7 @@ class GeneController extends Controller
         try {
             $validated = $request->validated();
 
-            $validated['perPage'] = 150;
+            $validated['perPage'] = 1500; // Set a default perPage value. There's an application that has gene aver 1200 genes
 
             $results = $search->search($validated)
                 ->map(function ($curation) {
