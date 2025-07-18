@@ -84,7 +84,7 @@ class CurationUpdateRequest extends CurationCreateRequest
         });
 
         //Mondo ID
-        $validator->sometimes('mondo_id', ['nullable', 'regex:/MONDO:\d\d\d\d\d\d\d/i'], function ($input) {
+        $validator->sometimes('mondo_id', ['nullable', 'regex:/^MONDO:\d\d\d\d\d\d\d$/i'], function ($input) {
             if (! $this->shouldValidate($input)) {
                 return false;
             }

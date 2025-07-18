@@ -24,6 +24,26 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+    public function returns_404_when_disease_not_found()
+    {
+        $res = $this->actingAs($this->user, 'api')
+            ->json('GET', $this->baseUrl.'MONDO:0000000');
+        $res->assertStatus(404);
+    }
+    
+    /**
+     * @test
+     */
+    public function returns_422_with_invalid_mondo_id()
+    {
+        $res = $this->actingAs($this->user, 'api')
+            ->json('GET', $this->baseUrl.'MONDo_000000');
+        $res->assertStatus(422);
+    }
+    
+    /**
+     * @test
+     */
     public function gets_disease_data()
     {
         $this->actingAs($this->user, 'api')
