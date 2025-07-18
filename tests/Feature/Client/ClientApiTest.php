@@ -2,29 +2,36 @@
 
 namespace Tests\Feature\Client;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
+use Laravel\Passport\ClientRepository;
+use Tests\SeedsGenes;
+use Tests\SeedsDiseases;
 
 class ClientApiTest extends TestCase
 {
+    use DatabaseTransactions;
+    use SeedsGenes;
+    use SeedsDiseases;
+
     protected string $accessToken;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->seedGenes();
+        $this->seedDiseases();
 
-        $response = Http::asForm()->post(config('services.clientapi.token_url'), [
+        $client = app(ClientRepository::class)->create(null, 'test-client', '');
+
+        $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
-            'client_id' => config('services.clientapi.client_id'),
-            'client_secret' => config('services.clientapi.client_secret'),
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
             'scope' => '',
         ]);
 
-        $this->assertTrue($response->successful(), 'Failed to get token: ' . $response->body());
+        $this->assertEquals(200, $response->status(), 'Failed to get access token: ' . $response->getContent());
 
         $this->accessToken = $response->json()['access_token'];
     }
@@ -40,7 +47,7 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_search_genes()
     {
-        $res = $this->postJsonToClientApi('client/v1/genes/search', ['query' => 'BRCA']);
+        $res = $this->postJsonToClientApi('client/v1/genes/search', ['query' => 'PER']);
 
         $res->assertOk()
             ->assertJsonStructure(['success', 'data' => ['count', 'results']]);
@@ -49,25 +56,28 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_get_gene_by_id()
     {
-        $res = $this->postJsonToClientApi('client/v1/genes/byid', ['hgnc_id' => 1100]);
+        // Not the real HGNC ID for this gene, just what's in the test database seeder...
+        $res = $this->postJsonToClientApi('client/v1/genes/byid', ['hgnc_id' => 4220]);
 
         $res->assertOk()
-            ->assertJsonStructure(['success', 'data' => ['hgnc_id', 'gene_symbol']]);
+            ->assertJsonStructure(['success', 'data' => ['hgnc_id', 'gene_symbol']])
+            ->assertJsonFragment(['hgnc_id' => 4220, 'gene_symbol' => 'GDF5']);
     }
 
     /** @test */
     public function it_can_get_gene_by_symbol()
     {
-        $res = $this->postJsonToClientApi('client/v1/genes/bysymbol', ['gene_symbol' => 'TP53']);
+        $res = $this->postJsonToClientApi('client/v1/genes/bysymbol', ['gene_symbol' => 'GDF5']);
 
         $res->assertOk()
-            ->assertJsonStructure(['success', 'data' => ['hgnc_id', 'gene_symbol']]);
+            ->assertJsonStructure(['success', 'data' => ['hgnc_id', 'gene_symbol']])
+            ->assertJsonFragment(['hgnc_id' => 4220, 'gene_symbol' => 'GDF5']);
     }
 
     /** @test */
     public function it_can_search_diseases()
     {
-        $res = $this->postJsonToClientApi('client/v1/diseases/search', ['query' => 'cancer']);
+        $res = $this->postJsonToClientApi('client/v1/diseases/search', ['query' => 'hamartoma']);
 
         $res->assertOk()
             ->assertJsonStructure(['success', 'data' => ['count', 'results']]);
@@ -76,7 +86,7 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_get_disease_by_mondo_id()
     {
-        $res = $this->postJsonToClientApi('client/v1/diseases/mondo', ['mondo_id' => 'MONDO:0005148']);
+        $res = $this->postJsonToClientApi('client/v1/diseases/mondo', ['mondo_id' => 'MONDO:0017623']);
 
         $res->assertOk()
             ->assertJsonStructure(['success', 'data' => ['id', 'name']]);
@@ -85,7 +95,7 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_get_disease_by_ontology_id()
     {
-        $res = $this->postJsonToClientApi('client/v1/diseases/ontology', ['ontology_id' => 'MONDO:0005148']);
+        $res = $this->postJsonToClientApi('client/v1/diseases/ontology', ['ontology_id' => 'MONDO:0017623']);
 
         $res->assertOk()
             ->assertJsonStructure(['success', 'data' => ['ontology', 'ontology_id', 'name']]);
