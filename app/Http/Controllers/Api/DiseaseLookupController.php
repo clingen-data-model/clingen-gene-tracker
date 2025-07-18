@@ -13,12 +13,11 @@ class DiseaseLookupController extends Controller
     public function show($mondoId)
     {
         $validator = Validator::make(['mondo_id' => $mondoId], [
-            'mondo_id' => 'required|regex:/(MONDO:)?\d{7}/'
+            'mondo_id' => 'required|regex:/^(MONDO:)?\d{7}$/'
         ]);
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-
         return Disease::findByMondoIdOrFail($mondoId);
     }
 
