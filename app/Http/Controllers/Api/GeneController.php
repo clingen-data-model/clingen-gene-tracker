@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Response;
+use App\Http\Requests\BulkLookupRequest;
+use App\Http\Resources\CurationSimpleResource;
+use App\Services\Curations\CurationSearchService;
+use Illuminate\Support\Facades\Validator;
 
 class GeneController extends Controller
 {
@@ -85,6 +89,84 @@ class GeneController extends Controller
         }
 
         return $query->get();
+    }
+
+    public function searchPost(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'query' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $query = strtolower($validator->validated()['query']);
+
+        if( strlen($query) < 3) {
+            return [];
+        }
+        
+        return Gene::where('gene_symbol', 'LIKE', '%'.$query.'%')
+                        ->orWhere('hgnc_id', 'LIKE', '%'.$query.'%')
+                        ->limit(50)
+                        ->get();
+    }    
+
+    public function getGeneSymbolByID(Request $request)
+    {
+        // Validate the input
+        $validator = Validator::make($request->all(), [
+            'hgnc_id' => ['required', 'integer', 'min:1'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $hgncID = (int) $validator->validated()['hgnc_id'];
+        
+        return Gene::select('hgnc_id', 'gene_symbol')
+                    ->where('hgnc_id', $hgncID)
+                    ->firstOrFail();
+    }
+
+    public function getGeneSymbolBySymbol(Request $request)
+    {        
+        // Validate the input
+        $validator = Validator::make($request->all(), [
+            'gene_symbol' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $geneSymbol = strtoupper(trim($validator->validated()['gene_symbol']));
+
+        return Gene::select('hgnc_id', 'gene_symbol')
+                    ->where('gene_symbol', $geneSymbol)
+                    ->firstOrFail();
+                   
+    }
+
+    public function geneCurationSearch(BulkLookupRequest $request, CurationSearchService $search)
+    {
+        $validated = $request->validated();
+
+        $validated['perPage'] = 1500; // Set a default perPage value. There's an application that has gene aver 1200 genes
+
+        $results = $search->search($validated)
+            ->map(function ($curation) {
+                $curation->available_phenotypes = $curation->gene->phenotypes;
+                return $curation;
+            });
+
+        if ($results->isEmpty()) {
+            return [];
+        }
+        
+        return CurationSimpleResource::collection($results);        
     }
     
 }

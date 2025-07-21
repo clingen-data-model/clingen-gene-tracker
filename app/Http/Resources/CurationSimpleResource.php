@@ -20,6 +20,7 @@ class CurationSimpleResource extends JsonResource
             'disease' => $this->disease ? $this->disease->name : null,
             'mondo_id' => $this->disease ? $this->disease->mondo_id : null,
             'expert_panel' => $this->expertPanel ? (new ExpertPanelResource($this->expertPanel))->name : null,
+            'moi' => $this->moi ? $this->moi->abbreviation : null,
             'classification' => $this->classifications && $this->classifications->count()
                                 ? $this->classifications->pluck('name')->implode(', ')
                                 : '',

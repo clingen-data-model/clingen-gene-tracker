@@ -32,23 +32,21 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
 
-use App\Http\Controllers\Api\client\DiseaseController as ClientDiseaseController;
-use App\Http\Controllers\Api\client\GeneController as ClientGeneController;
-use App\Http\Controllers\Api\client\BulkUploadApiController;
+// use App\Http\Controllers\Api\client\BulkUploadApiController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
-    Route::post('/diseases/search', [ClientDiseaseController::class, 'search']);
-    Route::post('/diseases/mondo', [ClientDiseaseController::class, 'getDiseaseByMondoID']);
-    Route::post('/diseases/mondos', [ClientDiseaseController::class, 'getDiseaseByMondoIDs']);
-    Route::post('/diseases/ontology', [ClientDiseaseController::class, 'getDiseaseByOntologyID']);
+    Route::post('/diseases/search', [DiseaseLookupController::class, 'search']);
+    Route::post('/diseases/mondo', [DiseaseLookupController::class, 'getDiseaseByMondoID']);
+    Route::post('/diseases/mondos', [DiseaseLookupController::class, 'getDiseaseByMondoIDs']);
+    Route::post('/diseases/ontology', [DiseaseLookupController::class, 'getDiseaseByOntologyID']);
 
-    Route::post('/genes/search', [ClientGeneController::class, 'search']);
-    Route::post('/genes/byid', [ClientGeneController::class, 'getGeneSymbolByID']);
-    Route::post('/genes/bysymbol', [ClientGeneController::class, 'getGeneSymbolBySymbol']);
-    Route::post('/genes/curations', [ClientGeneController::class, 'geneCurationSearch']);
+    Route::post('/genes/search', [GeneController::class, 'searchPost']);
+    Route::post('/genes/byid', [GeneController::class, 'getGeneSymbolByID']);
+    Route::post('/genes/bysymbol', [GeneController::class, 'getGeneSymbolBySymbol']);
+    Route::post('/genes/curations', [GeneController::class, 'geneCurationSearch']);
 
-    Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
+    // Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
