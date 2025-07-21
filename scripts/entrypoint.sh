@@ -47,7 +47,7 @@ if [[ "$env" == "production" ]]; then
     php artisan notify:deployed
 else
     echo "migrating testing database..."
-    php artisan migrate --force --no-interaction --database=testing --seed
+    php artisan migrate:fresh --force --no-interaction --database=testing --seed
     echo "Clearing configuration cache..."
     php artisan config:clear
     php artisan route:clear
