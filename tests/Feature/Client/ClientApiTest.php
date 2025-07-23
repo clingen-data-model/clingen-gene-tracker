@@ -19,6 +19,8 @@ class ClientApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->seedGenes();
+        $this->seedDiseases();
 
         $client = app(ClientRepository::class)->create(null, 'test-client', '');
 
@@ -93,13 +95,14 @@ class ClientApiTest extends TestCase
     /** @test */
     public function it_can_lookup_curations_by_gene_symbols_with_comma_and_newlines()
     {
-        $textareaInput = "ARMC2, CFAP43, DNAH1, DNAH8, FANCM, CFTR, DNAH10";
+        $textareaInput = "ACAT2, CBX2\nGDF5\nPER2, PER3\nTBX22, BLNK";
 
         $res = $this->postJsonToClientApi('client/v1/genes/curations', [
             'gene_symbol' => $textareaInput,
             'classifications'   => 'with',
         ]);
         
+        dump($res->getContent());
         $res->assertOk()->assertJsonStructure([                
                 'data' => [
                     '*' => [
