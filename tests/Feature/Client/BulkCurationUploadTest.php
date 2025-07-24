@@ -2,29 +2,39 @@
 
 namespace Tests\Feature\Client;
 
-use App\Curation;
 use App\ExpertPanel;
 use App\User;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Http;
+use Laravel\Passport\ClientRepository;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\SeedsGenes;
 
 class BulkCurationUploadTest extends TestCase
 {
-
+    use SeedsGenes;
+    use DatabaseTransactions;
+    
     protected string $accessToken;
+    private $user, $expertPanel;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->seedGenes();
+        $this->user = factory(User::class)->create();
+        $this->expertPanel = factory(ExpertPanel::class)->create();
+        $this->expertPanel->users()->attach([$this->user->id => ['is_coordinator' => 1]]);
 
-        $response = Http::asForm()->post(config('services.clientapi.token_url'), [
+        $client = app(ClientRepository::class)->create(null, 'test-client', '');
+
+        $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
-            'client_id' => config('services.clientapi.client_id'),
-            'client_secret' => config('services.clientapi.client_secret'),
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
             'scope' => '',
         ]);
         
-        $this->assertTrue($response->successful(), 'Failed to get token: ' . $response->body());
+        $response->assertStatus(200, 'Failed to get access token: ' . $response->getContent());
 
         $this->accessToken = $response->json()['access_token'];
     }
@@ -39,19 +49,16 @@ class BulkCurationUploadTest extends TestCase
 
     public function test_bulk_upload_via_json_rows_succeeds()
     {        
-        $expertPanel = ExpertPanel::inRandomOrder()->firstOrFail();
-        $curator = User::whereNotNull('email')->inRandomOrder()->firstOrFail();
-
         $payload = [
-            'expert_panel_id' => $expertPanel->id,
+            'expert_panel_id' => $this->expertPanel->id,
             'rows' => [
                 [
-                    'gene_symbol' => 'BRCA1', 
+                    'gene_symbol' => 'GDF5', 
                     // 'curator_email' => $curator->email, 
                     // "curation_type" => "isolated-phenotype"
                 ],
                 [
-                    'gene_symbol' => 'ABCA2', 
+                    'gene_symbol' => 'PER2', 
                     // 'curator_email' => $curator->email, 
                     // "curation_type" => "isolated-phenotype"
                 ]
@@ -62,7 +69,7 @@ class BulkCurationUploadTest extends TestCase
         $response = $this->postJsonToClientApi('client/v1/genes/bulkupload', $payload);
         
         // Assert
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJsonStructure([
             'success',
             'message',
@@ -75,7 +82,7 @@ class BulkCurationUploadTest extends TestCase
                 ]
             ]
         ]);
-        $this->assertEquals('BRCA1', $response->json('data.0.gene_symbol'));
+        $this->assertEquals('GDF5', $response->json('data.0.gene_symbol'));
     }
 
     public function test_bulk_upload_returns_error_for_invalid_data()

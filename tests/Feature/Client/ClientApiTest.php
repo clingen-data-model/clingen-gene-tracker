@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Laravel\Passport\ClientRepository;
 use Tests\SeedsGenes;
 use Tests\SeedsDiseases;
+use App\Curation;
 
 class ClientApiTest extends TestCase
 {
@@ -97,12 +98,15 @@ class ClientApiTest extends TestCase
     {
         $textareaInput = "ACAT2, CBX2\nGDF5\nPER2, PER3\nTBX22, BLNK";
 
+        foreach (preg_split('/[\s,]+/', $textareaInput, -1, PREG_SPLIT_NO_EMPTY) as $symbol) {
+            factory(Curation::class)->create(['gene_symbol' => $symbol]);
+        }
+
         $res = $this->postJsonToClientApi('client/v1/genes/curations', [
             'gene_symbol' => $textareaInput,
             'classifications'   => 'with',
         ]);
         
-        dump($res->getContent());
         $res->assertOk()->assertJsonStructure([                
                 'data' => [
                     '*' => [
