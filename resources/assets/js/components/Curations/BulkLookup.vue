@@ -92,9 +92,9 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'mondo_name',
+                    key: 'disease',
                     label: 'Disease Entity',
-                    formatter: (value, key, item) => value ? `${item.mondo_name} (${item.mondo_id})` : null,
+                    formatter: (value, key, item) => value ? `${value.name} (${value.mondo_id})` : null,
                     sortable: true,
                     thStyle: {
                         width: '12rem'
