@@ -41,10 +41,13 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
     Route::post('/diseases/mondos', [DiseaseLookupController::class, 'getDiseaseByMondoIDs']);
     Route::post('/diseases/ontology', [DiseaseLookupController::class, 'getDiseaseByOntologyID']);
 
-    Route::post('/genes/search', [GeneController::class, 'searchPost']);
+    Route::post('/genes/search', [GeneController::class, 'searchPost']);    
     Route::post('/genes/byid', [GeneController::class, 'getGeneSymbolByID']);
     Route::post('/genes/bysymbol', [GeneController::class, 'getGeneSymbolBySymbol']);
     Route::post('/genes/curations', [GeneController::class, 'geneCurationSearch']);
+
+    Route::get('/curations', [CurationController::class, 'index']);
+    Route::get('/mois', [MoiController::class, 'index']);
 
     // Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
 });

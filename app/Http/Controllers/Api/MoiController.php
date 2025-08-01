@@ -9,6 +9,6 @@ class MoiController extends Controller
 {
     public function index()
     {
-        return ModeOfInheritance::select('id', 'name', 'hp_id', 'parent_id')->curatable()->get();
+        return ModeOfInheritance::select('id', 'name', 'abbreviation', 'hp_id', 'parent_id')->curatable()->get();
     }
 }
