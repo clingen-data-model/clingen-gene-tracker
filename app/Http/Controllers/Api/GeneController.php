@@ -94,7 +94,8 @@ class GeneController extends Controller
     public function searchPost(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'query' => ['required', 'string'],
+            'query' => ['string'],
+            'limit' => ['nullable', 'integer', 'min:10', 'max:50'],
         ]);
 
         if ($validator->fails()) {
@@ -102,6 +103,7 @@ class GeneController extends Controller
         }
 
         $query = strtolower($validator->validated()['query']);
+        $limit = $validator->validated()['limit'] ?? 10;
 
         if( strlen($query) < 3) {
             return [];
@@ -109,7 +111,7 @@ class GeneController extends Controller
         
         return Gene::where('gene_symbol', 'LIKE', '%'.$query.'%')
                         ->orWhere('hgnc_id', 'LIKE', '%'.$query.'%')
-                        ->limit(50)
+                        ->limit($limit)
                         ->get();
     }    
 
@@ -126,7 +128,7 @@ class GeneController extends Controller
 
         $hgncID = (int) $validator->validated()['hgnc_id'];
         
-        return Gene::select('hgnc_id', 'gene_symbol')
+        return Gene::select('hgnc_id', 'gene_symbol', 'omim_id', 'hgnc_name', 'hgnc_status', 'previous_symbols', 'alias_symbols')
                     ->where('hgnc_id', $hgncID)
                     ->firstOrFail();
     }
@@ -144,7 +146,7 @@ class GeneController extends Controller
 
         $geneSymbol = strtoupper(trim($validator->validated()['gene_symbol']));
 
-        return Gene::select('hgnc_id', 'gene_symbol')
+        return Gene::select('hgnc_id', 'gene_symbol', 'omim_id', 'hgnc_name', 'hgnc_status', 'previous_symbols', 'alias_symbols')
                     ->where('gene_symbol', $geneSymbol)
                     ->firstOrFail();
                    
