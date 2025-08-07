@@ -84,7 +84,7 @@ class SetOwner
     private function addNewOwner()
     {
         $this->curation->expertPanels()
-        ->attach([
+        ->syncWithoutDetaching([
             $this->expertPanelId => [
                 'start_date'=> $this->startDate,
                 'end_date' => null
