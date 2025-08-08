@@ -2,16 +2,9 @@
 
 namespace Tests\Unit\Http\Controllers\Api;
 
-use App\User;
-use Carbon\Carbon;
 use Tests\TestCase;
-use App\CurationType;
-use App\Clients\OmimClient;
-use App\Clients\Omim\OmimEntry;
-use App\Clients\Omim\OmimEntryContract;
-use App\Rules\ValidGeneSymbolRule;
 use App\Http\Resources\CurationResource;
-use App\Rules\ValidHgncGeneSymbol;
+use Laravel\Passport\ClientRepository;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
@@ -48,10 +41,35 @@ class CurationControllerTest extends TestCase
         ]);
 
         $curationResource = new CurationResource($this->curations);
-        $this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
         $this->actingAs($this->user, 'api')
             ->json('GET', '/api/curations')
              ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function api_user_cannot_access_curations_without_authentication()
+    {
+        $client = app(ClientRepository::class)->create(null, 'test-client', '');
+
+        $response = $this->postJson('/oauth/token', [
+            'grant_type' => 'client_credentials',
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
+            'scope' => '',
+        ]);
+        
+        $response->assertStatus(200, 'Failed to get access token: ' . $response->getContent());
+
+        $accessToken = $response->json()['access_token'];
+        $this->withoutExceptionHandling();
+        $this->withHeaders([
+            'Authorization' => 'Bearer ' . $accessToken,
+            'Accept' => 'application/json'])
+            ->json('GET', '/api/curations')
+            ->assertStatus(401);
     }
 
     // /**
