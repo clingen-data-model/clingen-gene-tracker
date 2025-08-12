@@ -43,49 +43,26 @@ class CreateNotificationsForStreamErrors extends Command
     public function handle()
     {
         $allAffiliations = Affiliation::with(['expertPanel.coordinators'])->get();
-
-        $byClingenId = $allAffiliations->keyBy('clingen_id');        // clingen_id -> Affiliation
-        $childrenByParentId = $allAffiliations->groupBy('parent_id'); // parent affiliations.id -> [children]
         $admins = User::role('admin')->get();
 
+        $allCoordinators = $allAffiliations
+            ->pluck('expertPanel')
+            ->filter()
+            ->flatMap->coordinators
+            ->unique('id')
+            ->values();
+        
         $groupedErrors = StreamError::unsent()
             ->with(['geneModel', 'diseaseModel', 'moiModel'])
             ->get()
             ->groupBy('affiliation_id');
 
-        $groupedErrors->each(function ($errors, $affiliation_clingen_id) use ($byClingenId, $childrenByParentId, $admins) {
-            $aff  = $byClingenId->get($affiliation_clingen_id);
-            
-            $coordinators = collect();
+        $recipients = $allCoordinators->isNotEmpty() ? $allCoordinators : $admins;
 
-            if ($aff) {
-                $isParentLike = str_starts_with((string)$affiliation_clingen_id, '1');                
-                if ($isParentLike) { // CASE WHEN THE CLINGEN IS A PARENT 1XXXX
-                    $parentAff = $byClingenId->get($affiliation_clingen_id);
-                    
-                    if ($parentAff) {
-                        $children = $childrenByParentId->get($parentAff->id, collect());
-                        
-                        $coordinators = $children
-                            ->flatMap(fn ($child) => optional($child->expertPanel)->coordinators ?? collect())
-                            ->unique('id')
-                            ->values(); 
-                    } 
-                } else { // Non-parent (e.g., 4xxxx/5xxxx): use this affiliation's EP coordinators
-                    $aff = $byClingenId->get($affiliation_clingen_id); 
-                    if ($aff && $aff->expertPanel) {
-                        $coordinators = $aff->expertPanel->coordinators ?? collect(); 
-                    } 
-                }
-            }
-
-            if ($coordinators->isNotEmpty()) { 
-                Notification::send($coordinators, new StreamErrorNotification($errors));
-            } else { 
-                Notification::send($admins, new StreamErrorNotification($errors));
-            }
+        $groupedErrors->each(function ($errors) use ($recipients) {
+            Notification::send($recipients, new StreamErrorNotification($errors));
         });
-
+        
         $groupedErrors->flatten()->each->markSent();
     }
 
