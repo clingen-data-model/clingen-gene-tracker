@@ -1,0 +1,30 @@
+[
+    {
+        "affiliation_id": "9008",
+        "affiliation_fullname": "TEST2",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "9009",
+                "fullname": "TEST2"
+            }
+        },
+        "approver": [
+            "TEST approver"
+        ]
+    },
+    {
+        "affiliation_id": "9010",
+        "affiliation_fullname": "TEST2",
+        "publish_approval": true,
+        "subgroups": {
+            "gcep": {
+                "id": "9011",
+                "fullname": "TEST2"
+            }
+        },
+        "approver": [
+            "TEST approver"
+        ]
+    }
+]

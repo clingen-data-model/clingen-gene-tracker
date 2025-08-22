@@ -11,11 +11,17 @@ class AffiliationsUpdate
     use AsCommand;
 
     public string $commandSignature = 'affiliations:update-data {--storeJson}';
+    private array $affiliationTypes;
 
-    public function handle(Client $client, Command $command)
+    public function __construct()
+    {
+        $this->affiliationTypes = config('affiliations.types');
+    }
+
+    protected function fetchData(string $uri, Client $client): array
     {
         $response = $client->get(
-            uri: config('app.affiliations_api_url'),
+            uri: $uri,
             options: [
                 'headers'=>[
                     'x-api-key' => config('app.affiliations_api_key')
@@ -23,19 +29,17 @@ class AffiliationsUpdate
             ]
         );
 
-        $affiliationData = json_decode($response->getBody()->getContents());
-        $affiliationTypes = config('affiliations.types');
+        return json_decode($response->getBody()->getContents());
+    }
 
-        if ($command->option('storeJson')) {
-            file_put_contents('affiliations.json', json_encode($affiliationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        }
-
+    public function updateAffiliationData(array $affiliationData): void
+    {
         collect($affiliationData)
-            ->each(function ($aff) use ($affiliationTypes) {
+            ->each(function ($aff) {
                 $name = $aff->affiliation_fullname .' Parent';
                 $parent = Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $aff->affiliation_id], [
                     'name' => $name,
-                    'affiliation_type_id' => $affiliationTypes['working-group'],
+                    'affiliation_type_id' => $this->affiliationTypes['working-group'],
                     'parent_id' => null
                 ]);
                 if (isset($aff->subgroups)) {
@@ -43,12 +47,24 @@ class AffiliationsUpdate
                         Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $sub->id],[
                             'clingen_id' => $sub->id,
                             'name' => $sub->fullname,
-                            'affiliation_type_id' => $affiliationTypes[$type],
+                            'affiliation_type_id' => $this->affiliationTypes[$type],
                             'parent_id' =>  $parent->id
                         ]);
                     }
                 }
             });
+        // Process the affiliation data as needed
+    }
+
+    public function handle(Client $client, Command $command)
+    {
+        $affiliationData = $this->fetchData(config('app.affiliations_api_url'), $client);
+
+        if ($command->option('storeJson')) {
+            file_put_contents('affiliations.json', json_encode($affiliationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
+
+        $this->updateAffiliationData($affiliationData);
         \Log::info('Affiliations synced from GCI/VCI api.');
     }
 
