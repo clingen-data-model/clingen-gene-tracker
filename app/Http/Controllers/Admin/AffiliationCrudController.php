@@ -54,6 +54,10 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'label' => 'Affiliation ID'
         ]);
 
+        $this->crud->setColumnDetails('name', [
+            'limit' => 80,
+        ]);
+
         // // ------ COLUMNS
         $this->crud->addColumn([
             'name' => 'id',
