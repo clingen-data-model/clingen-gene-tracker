@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use App\Curation;
 use App\Contracts\SearchService;
+use Illuminate\Support\Facades\DB;
 
 class CurationSearchService implements SearchService
 {
@@ -21,6 +22,11 @@ class CurationSearchService implements SearchService
         'hgnc_id',
         'hgnc_name',
         'moi_id',
+        
+        'curations.uuid', // USED BY GPM VCEP APPLICATION
+        'uuid', // optional alias
+        'phenotypes.mim_number', // USED BY GPM VCEP/GCEP APPLICATION REVISION MODE
+        // 'gene.phenotypes.mim_number', // CONFUSING THING. CURATION->PHENOTYPE == CURATION->GENE->PHENOTYPE 
     ];
 
     public function search($params)
@@ -35,47 +41,80 @@ class CurationSearchService implements SearchService
 
     public function buildQuery($params)
     {
-        $query = Curation::with('curationStatuses', 'rationales', 'curator', 'expertPanel', 'modeOfInheritance', 'phenotypes', 'gene.phenotypes', 'curationType')
-                    ->select('curations.*')
-                    ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
-                    // ->join('genes', 'genes.hgnc_id', '=', 'curations.hgnc_id')
-                    // ->leftJoin('gene_phenotype', 'gene_phenotype.gene_id', '=', 'genes.id')
-                    // ->leftJoin('phenotype', 'gene_phenotype.phenotype_id', '=', 'phenotypes.id')
-                    ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
-                    ->leftJoin('mode_of_inheritances', 'mode_of_inheritances.id', '=', 'curations.moi_id')
-                    ->leftJoin('diseases', 'diseases.mondo_id', '=', 'curations.mondo_id')
-                    ;
+        $query = Curation::with('curationStatuses','rationales','curator','expertPanel','modeOfInheritance','phenotypes','gene.phenotypes','curationType')        
+                        ->select('curations.*')
+                        ->distinct()
+                        ->join('expert_panels', 'curations.expert_panel_id', '=', 'expert_panels.id')
+                        ->leftJoin('users', 'curations.curator_id', '=', 'users.id')
+                        ->leftJoin('mode_of_inheritances', 'mode_of_inheritances.id', '=', 'curations.moi_id')
+                        ->leftJoin('diseases', 'diseases.mondo_id', '=', 'curations.mondo_id');
 
         foreach ($params as $key => $value) {
-            if ($key == 'with') {
-                $query->with($value);
+            if ($key === 'with') { $query->with($value); }
+
+            // 1) classifications.uuid
+            if ($key === 'uuid') {
+                $key = 'curations.uuid';
             }
 
-            if (in_array($key, $this->validFilters)) {
-                if ($key == 'mondo_id') {
-                    $key = 'curations.mondo_id';
+            // 2) curation phenotypes: phenotypes.mim_number
+            if ($key === 'phenotypes.mim_number') {
+                $mims = array_map(fn ($v) => is_numeric($v) ? (int) $v : $v, $this->parseList($value));
+                if ($mims) {
+                    $query->whereHas('phenotypes', function ($q) use ($mims) {
+                        $q->whereIn('mim_number', $mims);
+                    });
                 }
-                if ($key == 'mondo_name') {
-                    $key = 'diseases.mondo_name';
-                }
-    
-                $values = array_map(function ($item) {
-                    return trim($item);
-                }, preg_split("/,|\n| /", $value));
-                $query->whereIn($key, array_filter($values));
+                continue;
             }
 
-            if ($key == 'user_id') {
+            // Existing simple column filters
+            if (in_array($key, $this->validFilters, true)) {
+                if ($key === 'mondo_id')   { $key = 'curations.mondo_id'; }
+                if ($key === 'mondo_name') { $key = 'diseases.name'; }
+
+                $values = $this->parseList($value);
+                if ($values) {
+                    $query->whereIn($key, $values);
+                }
+            }
+
+            // Existing user filter
+            if ($key === 'user_id') {
                 $user = User::find($value);
-                if (!$user->hasRole('programmer|admin')) {
+                if ($user && !$user->hasRole('programmer|admin')) {
                     $query->where(function ($q) use ($user) {
                         $editorPanels = $user->coordinatorOrEditorPanels;
                         $q->where('curator_id', $user->id)
-                            ->orWhereIn('expert_panel_id', $editorPanels->pluck('id'));
+                        ->orWhereIn('expert_panel_id', $editorPanels->pluck('id'));
                     });
                 }
             }
         }
+
+        if (!empty($params['same_mims_as_classification'])) {
+            $uuid = trim($params['same_mims_as_classification']);
+
+            // Pull MIM set from curations that have this classification
+            $mims = DB::table('phenotypes')
+                ->join('curation_phenotype', 'phenotypes.id', '=', 'curation_phenotype.phenotype_id')
+                ->join('curations', 'curations.id', '=', 'curation_phenotype.curation_id')
+                ->where('curations.uuid', $uuid)
+                ->pluck('phenotypes.mim_number')
+                ->unique()
+                ->filter()
+                ->values()
+                ->all();
+
+            if (!empty($mims)) {
+                $query->whereHas('phenotypes', function ($q) use ($mims) {
+                    $q->whereIn('mim_number', $mims);
+                });
+            } else {
+                $query->whereRaw('1=0'); // no matches when no MIMs
+            }
+        }
+
 
         $this->applyFilter($query, $params);
 
@@ -106,52 +145,68 @@ class CurationSearchService implements SearchService
 
     private function applyFilter($query, $params)
     {
-        if (isset($params['filter'])) {
-            if (isset($params['filter_field'])) {
-                switch ($params['filter_field']) {
-                    case 'gene_symbol':
-                        $query->where('gene_symbol', 'like', '%'.$params['filter'].'%');
-                        break;
-                    case 'expert_panel':
-                        $query->where('expert_panels.name', 'like', '%'.$params['filter'].'%');
-                        break;
-                    case 'mode_of_inheritance':
-                        $query->whereHas('modeOfInheritance', function ($q) use ($params) {
-                            $q->where('abbreviation', 'like', '%'.$params['filter'].'%')
-                                ->orWhere('name', 'like', '%'.$params['filter'].'%');
-                        });
-                        break;
-                    case 'mondo_id':
-                        $query->where('curations.mondo_id', 'like', '%'.$params['filter'].'%')
-                            ->orWhere('diseases.name', 'like', '%'.$params['filter'].'%');
-                        break;
-                    default:
-                        throw new Exception('Unkown filter_field '.$params['filter_field']);
-                        break;
-                }
-                return;
-            }
-            $query->where('gene_symbol', 'like', '%'.$params['filter'].'%')
-                ->orWhere('expert_panels.name', 'like', '%'.$params['filter'].'%')
-                ->orWhere('users.name', 'like', '%'.$params['filter'].'%')
-                ->orWhere('hgnc_id', $params['filter'])
-                ->orWhere('hgnc_name', 'like', '%'.$params['filter'].'%')
-                ->orWhere('curations.mondo_id', 'like', '%'.$params['filter'].'%')
-                ->orWhere('diseases.name', 'like', '%'.$params['filter'].'%')
-                ->orWhereHas('phenotypes', function ($q) use ($params) {
-                    $q->where('mim_number', $params['filter']);
-                })
-                ->orWhereHas('modeOfInheritance', function ($q) use ($params) {
-                    $q->where('abbreviation', 'like', '%'.$params['filter'].'%')
-                        ->orWhere('name', 'like', '%'.$params['filter'].'%');
-                })
-                ;
-            if (preg_match('/hgnc:/i', $params['filter'])) {
-                $hgncId = substr($params['filter'], 5);
+        if (!isset($params['filter'])) {
+            return $query;
+        }
 
-                $query->orWhere('hgnc_id', $hgncId);
+        $filter = $params['filter'];
+
+        // Field-specific filter
+        if (isset($params['filter_field'])) {
+            switch ($params['filter_field']) {
+                case 'gene_symbol':
+                    return $query->where('gene_symbol', 'like', "%{$filter}%");
+
+                case 'expert_panel':
+                    return $query->where('expert_panels.name', 'like', "%{$filter}%");
+
+                case 'mode_of_inheritance':
+                    return $query->whereHas('modeOfInheritance', function ($q) use ($filter) {
+                        $q->where(function ($qq) use ($filter) {
+                            $qq->where('abbreviation', 'like', "%{$filter}%")
+                            ->orWhere('name', 'like', "%{$filter}%");
+                        });
+                    });
+
+                case 'mondo_id':
+                    // group the ORs
+                    return $query->where(function ($q) use ($filter) {
+                        $q->where('curations.mondo_id', 'like', "%{$filter}%")
+                        ->orWhere('diseases.name', 'like', "%{$filter}%");
+                    });
+
+                default:
+                    throw new Exception('Unkown filter_field '.$params['filter_field']);
             }
         }
+
+        // Free-text filter: group ALL ORs
+        $hgncPrefixed = null;
+        if (preg_match('/^hgnc:\s*\d+$/i', $filter)) {
+            $hgncPrefixed = trim(substr($filter, 5));
+        }
+
+        return $query->where(function ($q) use ($filter, $hgncPrefixed) {
+            $q->where('gene_symbol', 'like', "%{$filter}%")
+            ->orWhere('expert_panels.name', 'like', "%{$filter}%")
+            ->orWhere('users.name', 'like', "%{$filter}%")            
+            ->orWhere('hgnc_name', 'like', "%{$filter}%")
+            ->orWhere('curations.mondo_id', 'like', "%{$filter}%")
+            ->orWhere('diseases.name', 'like', "%{$filter}%")
+            ->orWhereHas('phenotypes', function ($r) use ($filter) {
+                $r->where('mim_number', $filter);
+            });
+            if ($hgncPrefixed) {
+                $q->orWhere('hgnc_id', $hgncPrefixed);
+            }
+        });
+    }
+
+
+    private function parseList($value): array
+    {
+        $values = array_map(fn ($v) => trim($v), preg_split('/,|\s+|\n/', (string) $value));
+        return array_values(array_filter($values, fn ($v) => $v !== ''));
     }
     
 }
