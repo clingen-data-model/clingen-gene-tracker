@@ -151,24 +151,5 @@ class GeneController extends Controller
                     ->firstOrFail();
                    
     }
-
-    public function geneCurationSearch(BulkLookupRequest $request, CurationSearchService $search)
-    {
-        $validated = $request->validated();
-
-        $validated['perPage'] = 1500; // Set a default perPage value. There's an application that has gene aver 1200 genes
-
-        $results = $search->search($validated)
-            ->map(function ($curation) {
-                $curation->available_phenotypes = $curation->gene->phenotypes;
-                return $curation;
-            });
-
-        if ($results->isEmpty()) {
-            return [];
-        }
-        
-        return CurationSimpleResource::collection($results);        
-    }
     
 }

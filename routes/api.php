@@ -37,14 +37,13 @@ use App\Http\Controllers\Api\DefaultApiController;
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
     Route::post('/diseases/search', [DiseaseLookupController::class, 'search']);
-    Route::post('/diseases/mondo', [DiseaseLookupController::class, 'getDiseaseByMondoID']);
-    Route::post('/diseases/mondos', [DiseaseLookupController::class, 'getDiseaseByMondoIDs']);
+    Route::post('/diseases/mondos', [DiseaseLookupController::class, 'lookupByMondo']);
     Route::post('/diseases/ontology', [DiseaseLookupController::class, 'getDiseaseByOntologyID']);
 
     Route::post('/genes/search', [GeneController::class, 'searchPost']);    
     Route::post('/genes/byid', [GeneController::class, 'getGeneSymbolByID']);
     Route::post('/genes/bysymbol', [GeneController::class, 'getGeneSymbolBySymbol']);
-    Route::post('/genes/curations', [GeneController::class, 'geneCurationSearch']);
+    Route::post('/bulk-lookup', [BulkLookupController::class, 'data']);
 
     Route::get('/curations', [CurationController::class, 'index']);
     Route::get('/mois', [MoiController::class, 'index']);
