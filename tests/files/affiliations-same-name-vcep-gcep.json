@@ -1,0 +1,19 @@
+[
+    {
+        "affiliation_id": "9001",
+        "affiliation_fullname": "TEST1",
+        "publish_approval": true,
+        "subgroups": {
+            "vcep": {
+                "id": "9002",
+                "fullname": "TEST1"
+            },
+            "gcep": {
+                "id": "9003",
+                "fullname": "TEST1"
+        },
+        "approver": [
+            "Bob Roberts"
+        ]
+    }
+]
