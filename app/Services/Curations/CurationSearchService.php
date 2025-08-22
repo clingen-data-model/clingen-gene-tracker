@@ -6,6 +6,7 @@ use App\User;
 use Exception;
 use App\Curation;
 use App\Contracts\SearchService;
+use Illuminate\Support\Facades\DB;
 
 class CurationSearchService implements SearchService
 {
@@ -20,8 +21,10 @@ class CurationSearchService implements SearchService
         'mondo_name',
         'hgnc_id',
         'hgnc_name',
-        'moi_id',
-        'uuid'
+        'moi_id',        
+        'curations.uuid', // USED BY GPM VCEP APPLICATION
+        'uuid', // optional alias
+        'phenotypes.mim_number', // USED BY GPM VCEP/GCEP APPLICATION REVISION MODE
     ];
 
     public function search($params)
@@ -72,7 +75,7 @@ class CurationSearchService implements SearchService
 
             if ($key === 'user_id') {
                 $user = User::find($value);
-                if (!$user->hasRole('programmer|admin')) {
+                if ($user && !$user->hasRole('programmer|admin')) {
                     $query->where(function ($q) use ($user) {
                         $editorPanels = $user->coordinatorOrEditorPanels;
                         $q->where('curations.curator_id', $user->id)
@@ -170,6 +173,34 @@ class CurationSearchService implements SearchService
             }
             $this->applyFieldFilter($query, $field, $value);
         }
+
+        // Free-text filter: group ALL ORs
+        $hgncPrefixed = null;
+        if (preg_match('/^hgnc:\s*\d+$/i', $filter)) {
+            $hgncPrefixed = trim(substr($filter, 5));
+        }
+
+        return $query->where(function ($q) use ($filter, $hgncPrefixed) {
+            $q->where('gene_symbol', 'like', "%{$filter}%")
+            ->orWhere('expert_panels.name', 'like', "%{$filter}%")
+            ->orWhere('users.name', 'like', "%{$filter}%")            
+            ->orWhere('hgnc_name', 'like', "%{$filter}%")
+            ->orWhere('curations.mondo_id', 'like', "%{$filter}%")
+            ->orWhere('diseases.name', 'like', "%{$filter}%")
+            ->orWhereHas('phenotypes', function ($r) use ($filter) {
+                $r->where('mim_number', $filter);
+            });
+            if ($hgncPrefixed) {
+                $q->orWhere('hgnc_id', $hgncPrefixed);
+            }
+        });
+    }
+
+
+    private function parseList($value): array
+    {
+        $values = array_map(fn ($v) => trim($v), preg_split('/,|\s+|\n/', (string) $value));
+        return array_values(array_filter($values, fn ($v) => $v !== ''));
     }
 
     private function applyFieldFilter($query, $field, $value)

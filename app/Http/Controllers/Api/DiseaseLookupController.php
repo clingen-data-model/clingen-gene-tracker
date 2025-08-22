@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Disease;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MondoIdsRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -21,51 +22,57 @@ class DiseaseLookupController extends Controller
         return Disease::findByMondoIdOrFail($mondoId);
     }
 
-    public function getDiseaseByMondoID(Request $request)
-    {        
-        return $this->show($request->input('mondo_id'));
+    
+    /**
+     * POST /diseases/mondos
+     * Body accepts:
+     *  - { "mondo_ids": ["MONDO:0000413", "MONDO:0000414"] }
+     * Returns a collection (even for a single id), preserving input order.
+     */
+    public function lookupByMondo(MondoIdsRequest $request)
+    {
+        $data = $request->validated();
+        $ids  = $data['mondo_ids']; // already canonical: MONDO:0000000
+
+        $items = Disease::query()
+            ->select('id', 'name', 'mondo_id', 'doid_id', 'is_obsolete', 'replaced_by')
+            ->whereIn('mondo_id', $ids)
+            ->get();
+
+        // Preserve input order
+        $order = array_flip($ids);
+        return $items->sortBy(fn ($d) => $order[$d->mondo_id] ?? PHP_INT_MAX)->values();
     }
 
     public function search(Request $request)
     {
-        $queryString = strtolower(($request->query_string ?? ''));
+        $queryString = strtolower($request->input('query_string', ''));
         if (strlen($queryString) < 3) {
             return [];
         }
-        $limit = (int) ($request->limit ?? 250);
-        $results = Disease::search($queryString)->limit($limit)->get();
-
-        return $results->toArray();
+        $limit = (int) $request->input('limit', 250);
+        return Disease::search($queryString)->limit($limit)->get()->toArray();
     }
 
-    public function getDiseaseByMondoIDs(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'mondo_ids' => ['required', 'array', 'min:1'],
-            'mondo_ids.*' => ['regex:/^MONDO:\d{7}$/']
-        ]);
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        return Disease::whereIn('mondo_id', $request->mondo_ids)
-            ->select('id', 'name', 'mondo_id', 'doid_id', 'is_obsolete', 'replaced_by')
-            ->get();
-    }
-
+    /**
+     * POST /diseases/ontology
+     * Body: { "ontology_id": "MONDO:0000413" } or { "ontology_id": "DOID:12345" }
+     * Returns a minimal record with the matched ontology id.
+     */
     public function getDiseaseByOntologyID(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ontology_id' => ['required', 'regex:/^(MONDO:|DOID:)\d+$/']
+            'ontology_id' => ['required', 'regex:/^(MONDO|DOID):\d+$/i'],
         ]);
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
 
-        $ontologyId = $validator->validated()['ontology_id'];
-        $ontology = strtoupper(explode(':', $ontologyId)[0]);
-        return Disease::selectRaw("'{$ontology}' AS ontology, `{$ontology}_id` AS ontology_id, `name`")
-                        ->where("{$ontology}_id", $ontologyId)
-                        ->firstOrFail();
+        $ontologyId = strtoupper($validator->validated()['ontology_id']);
+        [$prefix]   = explode(':', $ontologyId, 2);
+        $prefix     = strtoupper($prefix);
+        return Disease::selectRaw("'{$prefix}' AS ontology, `{$prefix}_id` AS ontology_id, `name`")
+            ->where("{$prefix}_id", $ontologyId)
+            ->firstOrFail();
     }
 }

@@ -24,7 +24,8 @@ class BulkLookupRequest extends FormRequest
     public function rules()
     {
         return [
-            'gene_symbol' => 'required',
+            'resource' => ['sometimes','in:simple,full'],
+            'gene_symbol' => 'sometimes',
             'classifications' => [],
         ];
     }
