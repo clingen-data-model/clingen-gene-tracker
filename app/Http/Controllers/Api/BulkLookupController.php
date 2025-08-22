@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BulkLookupRequest;
 use App\Http\Resources\CurationResource;
+use App\Http\Resources\CurationSimpleResource;
 use Illuminate\Support\Facades\Response;
 use App\Services\Curations\CurationSearchService;
 use Illuminate\Validation\ValidationException;
@@ -21,16 +22,20 @@ class BulkLookupController extends Controller
 
     public function data(BulkLookupRequest $request)
     {
-        $results = $this->search->search($request->all())
-                    ->map(function ($curation) {
-                        $curation->available_phenotypes = $curation->gene->phenotypes;
-                        return $curation;
-                    });
+        $useSimple = $request->input('resource') === 'simple';
+        $Resource = $useSimple ? CurationSimpleResource::class : CurationResource::class;
+        
+        $results = $this->search->search($request->all());
         if ($results->count() == 0) {
             throw ValidationException::withMessages(['gene_symbols' => ['There were no results for your search.  Are you sure you\'re using valid HGNC gene symbols? Could the gene symbol(s) you searched be aliases or previously used symbols?']]);
         }
-            
-        return CurationResource::collection($results);
+
+        $attach = function ($curation) {
+            $curation->available_phenotypes = optional($curation->gene)->phenotypes;
+            return $curation;
+        };
+        $results = $results->map($attach);
+        return $Resource::collection($results);
     }
     
     public function download(BulkLookupRequest $request)
