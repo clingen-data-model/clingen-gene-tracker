@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Eloquent Model: 'Affiliation'
@@ -33,7 +34,7 @@ class Affiliation extends Model
         'type'
     ];
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(AffiliationType::class, 'affiliation_type_id');
     }
@@ -43,7 +44,7 @@ class Affiliation extends Model
         return $this->hasOne(ExpertPanel::class);
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Affiliation::class, 'parent_id');
     }
@@ -57,11 +58,14 @@ class Affiliation extends Model
 
     public function getDescriptiveNameAttribute()
     {
-        return $this->name.' ('.$this->type->name.')';
+        $typeName = $this->type->name ?? '';
+        return trim($this->name . ($typeName ? ' ' . strtoupper($typeName) : ''));
     }
 
     public function getDescriptiveShortNameAttribute()
     {
-        return $this->short_name.' ('.$this->type->name.')';
+        $typeName = $this->type->name ?? '';
+        return trim($this->short_name . ($typeName ? ' ' . strtoupper($typeName) : ''));
     }
+
 }

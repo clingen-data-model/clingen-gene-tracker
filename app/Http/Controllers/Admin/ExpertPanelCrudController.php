@@ -50,7 +50,9 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 
         $this->crud->addField([
             'name' => 'affiliation',
-            'type' => 'relationship'
+            'type' => 'relationship',
+            'label'     => 'Affiliation',
+            'attribute' => 'descriptive_name',
         ]);
 
         // ------ COLUMNS
@@ -74,7 +76,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'type' => "select",
             'name' => 'affiliation_id', // the column that contains the ID of that connected entity;
             'entity' => 'affiliation', // the method that defines the relationship in your Model
-            'attribute' => "name", // foreign key attribute that is shown to user
+            'attribute' => "descriptive_name", // foreign key attribute that is shown to user
             'model' => Affiliation::class
          ]);
 
