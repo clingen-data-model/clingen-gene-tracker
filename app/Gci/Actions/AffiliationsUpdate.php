@@ -24,17 +24,18 @@ class AffiliationsUpdate
         );
 
         $affiliationData = json_decode($response->getBody()->getContents());
+        $affiliationTypes = config('affiliations.types');
 
         if ($command->option('storeJson')) {
             file_put_contents('affiliations.json', json_encode($affiliationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
 
         collect($affiliationData)
-            ->each(function ($aff) {
+            ->each(function ($aff) use ($affiliationTypes) {
                 $name = $aff->affiliation_fullname .' Parent';
                 $parent = Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $aff->affiliation_id], [
                     'name' => $name,
-                    'affiliation_type_id' => 1,
+                    'affiliation_type_id' => $affiliationTypes['working-group'],
                     'parent_id' => null
                 ]);
                 if (isset($aff->subgroups)) {
@@ -42,7 +43,7 @@ class AffiliationsUpdate
                         Affiliation::withTrashed()->updateOrCreate(['clingen_id' => $sub->id],[
                             'clingen_id' => $sub->id,
                             'name' => $sub->fullname,
-                            'affiliation_type_id' => ($type == 'vcep') ? 4 : 3,
+                            'affiliation_type_id' => $affiliationTypes[$type],
                             'parent_id' =>  $parent->id
                         ]);
                     }
