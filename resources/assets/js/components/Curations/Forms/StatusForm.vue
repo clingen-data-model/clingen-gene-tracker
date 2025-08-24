@@ -41,15 +41,17 @@
                                 <div v-for="message in errors.curation_status_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
-                        <td class="form-inline">
-                            <datepicker 
-                                v-model="newStatusDate"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                            ></datepicker>
+                        <td class="d-flex align-items-center">
+                            <div class="flex-grow-1 mr-2">
+                                <datepicker 
+                                    v-model="newStatusDate"
+                                    input-class="form-control"
+                                    format='yyyy-MM-dd'
+                                    calendar-class="small-calendar"
+                                    placeholder="Select a date"
+                                    :highlighted="highlighted"
+                                ></datepicker>
+                            </div>
                             <b-button 
                                 variant="primary"
                                 @click="addStatus"
@@ -58,21 +60,23 @@
                             </b-button>
                         </td>
                     </tr>
-                    <tr v-for="status in curationCopy.curation_statuses" :key="status.pivot.id">
+                    <tr v-for="status in orderedStatuses" :key="status.pivot.id">
                         <td>
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
-                        <td class="form-inline">
-                            <datepicker
-                                :id="'status-date-'+status.id"
-                                v-model="status.pivot.status_date"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                                @selected="updateStatusDate(status.pivot,$event)"
-                            ></datepicker>
+                        <td class="d-flex align-items-center">
+                            <div class="flex-grow-1 mr-2">
+                                <datepicker
+                                    :id="'status-date-'+status.id"
+                                    v-model="status.pivot.status_date"
+                                    input-class="form-control"
+                                    format='yyyy-MM-dd'
+                                    calendar-class="small-calendar"
+                                    placeholder="Select a date"
+                                    :highlighted="highlighted"
+                                    @selected="updateStatusDate(status.pivot,$event)"
+                                ></datepicker>
+                            </div>
                             <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
                         </td>
                     </tr>
@@ -128,6 +132,27 @@
             statusOptions() {
                 return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.curationCopy))
             },
+            orderedStatuses() {
+                // ON STATUS FORM, THE STATUSES ORDERED BY THE OLDEST FIRST
+                return this.curationCopy.curation_statuses
+                    ? this.curationCopy.curation_statuses.concat().sort((a, b) => {
+                        const dateA = moment(a.pivot.status_date);
+                        const dateB = moment(b.pivot.status_date);
+
+                        if (dateA.isSame(dateB)) {
+                            const updatedAtA = moment(a.pivot.updated_at);
+                            const updatedAtB = moment(b.pivot.updated_at);
+
+                            if (updatedAtA.isSame(updatedAtB)) {
+                                return 0;
+                            }
+                            return updatedAtA.isAfter(updatedAtB) ? 1 : -1; // newer updated_at first
+                        }
+
+                        return dateA.isAfter(dateB) ? 1 : -1;
+                    })
+                    : [];
+            }
         },
         methods: {
             ...mapActions('curations', {

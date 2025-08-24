@@ -33,22 +33,25 @@
             },
         },
         computed: {
+            /** THE STATUSES ORDERED BY THE NEWEST FIRST, ORDERED BASED ON STATUS_DATE DESC, UPDATED_AT DESC */
             orderedStatuses: function () {
                 if (this.curation.curation_statuses) {
                     return this.curation.curation_statuses.concat().sort((a, b) => {
-                        if (moment(a.pivot.status_date).isSame(b.pivot.status_date)) {
-                            if(a.id == b.id) {
-                                return 0
+
+                        const dateA = moment(a.pivot.status_date);
+                        const dateB = moment(b.pivot.status_date);
+
+                        if (dateA.isSame(dateB)) {
+                            const updatedAtA = moment(a.pivot.updated_at);
+                            const updatedAtB = moment(b.pivot.updated_at);
+
+                            if (updatedAtA.isSame(updatedAtB)) {
+                                return 0;
                             }
-                            if (a.id < b.id) {
-                                return 1
-                            }
-                            return -1;
+                            return updatedAtA.isBefore(updatedAtB) ? 1 : -1;
                         }
-                        if (moment(a.pivot.status_date).isBefore(b.pivot.status_date)) {
-                            return 1;
-                        }
-                        return -1;
+
+                        return dateA.isBefore(dateB) ? 1 : -1;
                     })
                 }
                 return [];
