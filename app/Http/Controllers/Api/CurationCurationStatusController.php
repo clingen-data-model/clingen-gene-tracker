@@ -9,6 +9,7 @@ use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\Curations\UpdateCurrentStatus;
+use Illuminate\Support\Facades\Log;
 
 class CurationCurationStatusController extends Controller
 {
@@ -96,13 +97,18 @@ class CurationCurationStatusController extends Controller
     {
         $curation = Curation::findOrFail($curationId);
         
-        $curation->statuses
+        $deleted = $curation->statuses
             ->firstWhere('pivot.id', $pivotId)
-            ->pivot
-            ->delete();
+            ?->pivot
+            ?->delete();
 
-        Bus::dispatchSync(new UpdateCurrentStatus($curation));
+        // Refresh the relationship to get the latest statuses
+        $curation->load('statuses');
 
-        return response()->json([], 204);
+        if ($curation->statuses->isNotEmpty()) {
+            Bus::dispatchSync(new UpdateCurrentStatus($curation));
+        } else {
+            Log::info("Skipping UpdateCurrentStatus: no statuses left for curation ID {$curation->id}");
+        }
     }
 }
