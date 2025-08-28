@@ -16,13 +16,14 @@ class CurationSimpleResource extends JsonResource
     {
         $disease    = $this->disease;
         $moiRel     = $this->modeOfInheritance;
+        $curation_status = $this->currentStatus?->name;
         $classification_id = $classification = "";
         if($this->currentClassification) {
             $classification_id  = $this->currentClassification->id;
             $classification     = $this->currentClassification->name;
         }
 
-        $hash   = hash('sha256', $this->gene_symbol . $disease?->mondo_id . $this->moi?->abbreviation . $classification);
+        $hash   = hash('sha256', $this->gene_symbol . $disease?->mondo_id . $this->moi?->abbreviation . $classification . $curation_status);
 
         return [
             'curation_id'           => $this->uuid,
@@ -46,7 +47,7 @@ class CurationSimpleResource extends JsonResource
 
             'curation_status_id'    => $this->curation_status_id,
             'curation_type'         => $this->curationType?->name,
-            'curation_status'       => $this->currentStatus?->name,
+            'curation_status'       => $curation_status,
 
             'date_approved'         => $this->currentStatusDate ?? null,
 
