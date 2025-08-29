@@ -83,6 +83,16 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'attribute' => "descriptive_name", // foreign key attribute that is shown to user
             'model' => Affiliation::class,
             'limit' => 80,
+            'searchLogic' => function ($query, $column, $searchTerm) {
+                $like = "%{$searchTerm}%";
+                $query->orWhereHas('affiliation', function ($q) use ($like) {
+                    $q->where('name', 'like', $like)
+                    ->orWhere('short_name', 'like', $like)
+                    ->orWhereHas('type', function ($t) use ($like) {
+                        $t->where('name', 'like', $like); // mirrors your accessor: name + type->name
+                    });
+                });
+            },
          ]);
 
         // ------ CRUD ACCESS
