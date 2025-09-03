@@ -27,7 +27,7 @@ class BulkLookupController extends Controller
         
         $results = $this->search->search($request->all());
         if ($results->count() == 0) {
-            throw ValidationException::withMessages(['gene_symbols' => ['There were no results for your search.  Are you sure you\'re using valid HGNC gene symbols? Could the gene symbol(s) you searched be aliases or previously used symbols?']]);
+            return $Resource::collection(collect());
         }
 
         $attach = function ($curation) {
