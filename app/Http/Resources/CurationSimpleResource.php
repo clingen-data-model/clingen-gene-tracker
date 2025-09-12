@@ -46,7 +46,8 @@ class CurationSimpleResource extends JsonResource
             'classification'        => $classification,
 
             'curation_status_id'    => $this->curation_status_id,
-            'curation_type'         => $this->curationType?->name,
+            'curation_type_short'         => $this->curationType?->name,
+            'curation_type'         => $this->curationType?->description,
             'curation_status'       => $curation_status,
 
             'date_approved'         => $this->currentStatusDate ?? null,
