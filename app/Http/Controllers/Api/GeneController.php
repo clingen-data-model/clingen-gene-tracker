@@ -86,7 +86,7 @@ class GeneController extends Controller
         }
         if ($request->orderBy) {
             foreach ($request->orderBy as $orderBy) {
-                $this->query->orderBy(...$orderBy);
+                $query->orderBy(...$orderBy);
             }
         }
 
