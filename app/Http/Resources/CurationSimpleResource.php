@@ -55,6 +55,8 @@ class CurationSimpleResource extends JsonResource
             'phenotypes'            => $this->whenLoaded('phenotypes', fn () => $this->phenotypes->map(fn ($p)   => "{$p->name} ({$p->mim_number})")->implode(', '), ''),
             'phenotypeIDs'          => $this->whenLoaded('phenotypes', fn () => $this->phenotypes->pluck('mim_number')->implode(', '), ''),
 
+            'rationales'            => $this->whenLoaded('rationales', fn () => $this->rationales->map(fn ($p)   => $p->name)->implode(', '), ''),
+
             'checkKey'              => $hash
         ];
     }
