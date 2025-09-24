@@ -111,11 +111,15 @@ class CurationCurationStatusController extends Controller
     {
         $curation = Curation::findOrFail($curationId);
         
-        $curation->statuses
-            ->firstWhere('pivot.id', $pivotId)
-            ->pivot
-            ->delete();
+        $status = $curation->statuses()->wherePivot('id', $pivotId)->first();
 
+        if (!$status) {
+            return response()->json([
+                'message' => 'Status history row not found for this curation.'
+            ], 404);
+        }
+        $status->pivot->delete();
+        
         Bus::dispatchSync(new UpdateCurrentStatus($curation));
 
         return response()->json([], 204);
