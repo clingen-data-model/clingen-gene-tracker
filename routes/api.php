@@ -32,11 +32,12 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
 
-// use App\Http\Controllers\Api\client\BulkUploadApiController;
+use App\Http\Controllers\Api\Client\BulkUploadApiController;
+use App\Http\Controllers\Api\Client\PanelMembersApiController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
-    // Diseases
-    Route::post('/diseases/search', [DiseaseLookupController::class, 'search']);
+    // Diseases    
+Route::post('/diseases/search', [DiseaseLookupController::class, 'search']);
     Route::post('/diseases/mondo', [DiseaseLookupController::class, 'getDiseaseByMondoID']);
     Route::post('/diseases/mondos', [DiseaseLookupController::class, 'getDiseaseByMondoIDs']);
     Route::post('/diseases/ontology', [DiseaseLookupController::class, 'getDiseaseByOntologyID']);
@@ -49,11 +50,12 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
     Route::get('/curations', [CurationController::class, 'index']);
     Route::get('/mois', [MoiController::class, 'index']);
 
-    // Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
+    Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
+    Route::post('/affiliations/members/sync', [PanelMembersApiController::class, 'sync']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
-    
+
 
     Route::get('/features', [FeaturesController::class, 'index']);
 
