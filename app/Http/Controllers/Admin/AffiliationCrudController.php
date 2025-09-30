@@ -39,7 +39,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         // ------ FIELDS
         $this->crud->addField([
             'type' => 'relationship',
-            'name' => 'type',
+            'name' => 'type_id',
             'attribute' => 'name',
         ]);
 

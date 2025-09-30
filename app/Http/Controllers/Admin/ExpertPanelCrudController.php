@@ -52,7 +52,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'name' => 'affiliation',
             'type' => 'relationship',
             'label'     => 'Affiliation',
-            'attribute' => 'descriptive_name',
+            'attribute' => 'name',
         ]);
 
         // ------ COLUMNS
@@ -80,7 +80,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
             'type' => "select",
             'name' => 'affiliation_id', // the column that contains the ID of that connected entity;
             'entity' => 'affiliation', // the method that defines the relationship in your Model
-            'attribute' => "descriptive_name", // foreign key attribute that is shown to user
+            'attribute' => "name", // foreign key attribute that is shown to user
             'model' => Affiliation::class,
             'limit' => 80,
             'searchLogic' => function ($query, $column, $searchTerm) {
