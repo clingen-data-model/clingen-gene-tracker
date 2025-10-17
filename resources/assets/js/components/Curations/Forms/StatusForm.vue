@@ -60,7 +60,7 @@
                             </b-button>
                         </td>
                     </tr>
-                    <tr v-for="status in orderedStatuses" :key="status.pivot.id">
+                    <tr v-for="status in curationCopy.curation_statuses" :key="status.pivot.id">
                         <td>
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
@@ -132,27 +132,6 @@
             statusOptions() {
                 return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.curationCopy))
             },
-            orderedStatuses() {
-                // ON STATUS FORM, THE STATUSES ORDERED BY THE OLDEST FIRST
-                return this.curationCopy.curation_statuses
-                    ? this.curationCopy.curation_statuses.concat().sort((a, b) => {
-                        const dateA = moment(a.pivot.status_date);
-                        const dateB = moment(b.pivot.status_date);
-
-                        if (dateA.isSame(dateB)) {
-                            const updatedAtA = moment(a.pivot.updated_at);
-                            const updatedAtB = moment(b.pivot.updated_at);
-
-                            if (updatedAtA.isSame(updatedAtB)) {
-                                return 0;
-                            }
-                            return updatedAtA.isAfter(updatedAtB) ? 1 : -1; // newer updated_at first
-                        }
-
-                        return dateA.isAfter(dateB) ? 1 : -1;
-                    })
-                    : [];
-            }
         },
         methods: {
             ...mapActions('curations', {
