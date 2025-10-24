@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\Curations\UpdateCurrentStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class CurationCurationStatusController extends Controller
@@ -113,14 +114,12 @@ class CurationCurationStatusController extends Controller
         
         $status = $curation->statuses()->wherePivot('id', $pivotId)->first();
 
-        if (!$status) {
-            return response()->json([
-                'message' => 'Status history row not found for this curation.'
-            ], 404);
+        if ($status) {
+            $status->pivot->delete();
+            Bus::dispatchSync(new UpdateCurrentStatus($curation));
+        } else {
+            Log::error("CurationCurationStatusController@destroy: Status history row with pivot ID {$pivotId} not found for curation ID {$curationId}. Maybe it was just deleted seconds ago. See GT-79/GT-81 for info.");
         }
-        $status->pivot->delete();
-        
-        Bus::dispatchSync(new UpdateCurrentStatus($curation));
 
         return response()->json([], 204);
     }
