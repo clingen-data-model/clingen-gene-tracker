@@ -13,6 +13,7 @@ use App\Jobs\Curations\SetOwner;
 use App\Gci\GciClassificationMap;
 use App\Jobs\Curations\AddStatus;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\GciSyncException;
 use Illuminate\Queue\SerializesModels;
 use App\DataExchange\Maps\GciStatusMap;
@@ -21,6 +22,7 @@ use App\Jobs\Curations\AddClassification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
+
 
 class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidityCurationUpdateJob
 {
@@ -104,19 +106,29 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
     private function transferRecord()
     {
-        $newExpertPanel = ExpertPanel::findByAffiliationId($this->gciMessage->content->transfer_to->gcep_id);
-        SetOwner::dispatch($this->curation, $newExpertPanel->id, Carbon::now());
+        $gcepID = $this->gciMessage->content->transfer_to->gcep_id;
+        $newExpertPanel = ExpertPanel::findByAffiliationId($gcepID);
+        if($newExpertPanel) {
+            SetOwner::dispatch($this->curation, $newExpertPanel->id, Carbon::now());
 
-        if ($this->gciMessage->hasContentNotes()) {
-            $job = new AddNote(
-                subject: $this->curation, 
-                content: 'Transferred from Test GCEP 2 to Test GCEP 1.',
-                topic: 'curation transfer (via GCI)',
-                author: null
-            );
+            if ($this->gciMessage->hasContentNotes()) {
+                $job = new AddNote(
+                    subject: $this->curation, 
+                    content: 'Transferred from Test GCEP 2 to Test GCEP 1.',
+                    topic: 'curation transfer (via GCI)',
+                    author: null
+                );
 
-            dispatch($job);
+                dispatch($job);
+            }
+        } else { 
+            Log::warning('GCI transfer: ExpertPanel not found for affiliation id', [
+                'gcep_id'    => $gcepID,
+                'curation_uuid'=> $this->curation->uuid ?? null,
+                'gdm_uuid'   => $this->gciMessage->uuid ?? null,
+            ]);
         }
+        
     }
 
     private function updateDisease()
