@@ -122,7 +122,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
                 dispatch($job);
             }
         } else { 
-            Log::warning('GCI transfer: ExpertPanel not found for affiliation id', [
+            Log::warning('GCI transfer: ExpertPanel not found for affiliation id, possibly related to GT-83', [
                 'gcep_id'    => $gcepID,
                 'curation_uuid'=> $this->curation->uuid ?? null,
                 'gdm_uuid'   => $this->gciMessage->uuid ?? null,
