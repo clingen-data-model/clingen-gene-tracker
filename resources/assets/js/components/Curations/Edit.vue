@@ -49,6 +49,7 @@
                                 :value="updatedCuration"  
                                 :errors="errors" 
                                 @input="updatedCuration = $event"
+                                @auto-save="handleAutoSave"
                                 ref="editPage"
                             >
                             </component>                    
@@ -224,6 +225,9 @@
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'
             }),
+            handleAutoSave () {
+                this.updateCuration();
+            },
             updateCuration (callback, nav) {
                 this.updatedCuration.nav = nav;
                 return this.storeItemUpdates(this.updatedCuration)
