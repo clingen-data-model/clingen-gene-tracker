@@ -80,8 +80,6 @@ class CurationSimpleResource extends JsonResource
 
             'rationales'            => $this->whenLoaded('rationales', fn () => $this->rationales->map(fn ($p)   => $p->name)->implode(', '), ''),
 
-            'rationales'            => $this->whenLoaded('rationales', fn () => $this->rationales->map(fn ($p)   => $p->name)->implode(', '), ''),
-
             'checkKey'              => $hash
         ];
     }
