@@ -23,11 +23,11 @@ class BulkLookupController extends Controller
     public function data(BulkLookupRequest $request)
     {
         $useSimple = $request->input('resource') === 'simple';
-        $Resource = $useSimple ? CurationSimpleResource::class : CurationResource::class;
+        $resource = $useSimple ? CurationSimpleResource::class : CurationResource::class;
         
         $results = $this->search->search($request->all());
         if ($results->count() == 0) {
-            return $Resource::collection(collect());
+            return $resource::collection(collect());
         }
 
         $attach = function ($curation) {
@@ -35,7 +35,7 @@ class BulkLookupController extends Controller
             return $curation;
         };
         $results = $results->map($attach);
-        return $Resource::collection($results);
+        return $resource::collection($results);
     }
     
     public function download(BulkLookupRequest $request)
