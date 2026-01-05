@@ -42,4 +42,31 @@ class GitHubIssuesClient
 
         return $resp->json();
     }
+
+    public function getIssue(int $issueNumber): array
+    {
+        $owner = (string) config('github_mondo.owner');
+        $repo  = (string) config('github_mondo.repo');
+
+        if ($owner === '' || $repo === '') {
+            throw new \RuntimeException('Missing GitHub repo config (owner/repo).');
+        }
+
+        $token = $this->auth->getInstallationToken();
+
+        $resp = Http::withToken($token)
+            ->withHeaders([
+                'Accept' => 'application/vnd.github+json',
+                'X-GitHub-Api-Version' => '2022-11-28',
+                'User-Agent' => 'GeneTracker',
+            ])
+            ->get("https://api.github.com/repos/{$owner}/{$repo}/issues/{$issueNumber}");
+
+        if (!$resp->successful()) {
+            throw new \RuntimeException('Failed to fetch issue: '.$resp->status().' '.$resp->body());
+        }
+
+        return $resp->json();
+    }
+
 }
