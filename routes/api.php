@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\OmimController;
 use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
+use App\Http\Controllers\Api\MondoIssueRequestController;
 
 // use App\Http\Controllers\Api\client\BulkUploadApiController;
 
@@ -71,7 +72,11 @@ Route::middleware(['auth:api'])->group(function () {
         ->name('curation-upload-file');
 
     Route::resource('curations/{curation_id}/uploads', CurationUploadController::class)
-        ->only(['index', 'show', 'store', 'update', 'destroy']);
+        ->only(['index', 'show', 'store', 'update', 'destroy']);    
+
+    Route::post('/curations/{curation}/mondo-requests/new-term', [MondoIssueRequestController::class, 'storeNewTerm']);
+    Route::get('/curations/{curation}/mondo-requests', [MondoIssueRequestController::class, 'indexForCuration']);
+    Route::get('/curations/mondo-requests/{mondoIssueRequest:uuid}', [MondoIssueRequestController::class, 'show']);
 
     Route::resource('/curations', CurationController::class);
 
@@ -105,5 +110,3 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('{model}', [DefaultApiController::class, 'index']);
     Route::get('{model}/{id}', [DefaultApiController::class, 'show']);
 });
-
-

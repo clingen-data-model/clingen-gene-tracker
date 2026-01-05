@@ -20,6 +20,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\MondoIssueRequest;
 
 /**
  * @property Classification $currentClassificiation
@@ -423,5 +424,10 @@ class Curation extends Model implements Notable
     public function addPhenotype(Phenotype $phenotype): void
     {
         $this->phenotypes()->save($phenotype);
+    }
+
+    public function mondoIssueRequests()
+    {
+        return $this->hasMany(MondoIssueRequest::class);
     }
 }
