@@ -69,4 +69,24 @@ class GitHubIssuesClient
         return $resp->json();
     }
 
+    public function listInstallationRepositories(): array
+    {
+        $token = $this->auth->getInstallationToken();
+
+        $resp = Http::withToken($token)
+            ->withHeaders([
+                'Accept' => 'application/vnd.github+json',
+                'X-GitHub-Api-Version' => '2022-11-28',
+                'User-Agent' => 'GeneTracker',
+            ])
+            ->get('https://api.github.com/installation/repositories');
+
+        if (!$resp->successful()) {
+            throw new \RuntimeException('Failed to list installation repositories: '.$resp->status().' '.$resp->body());
+        }
+
+        return $resp->json('repositories') ?? [];
+    }
+
+
 }
