@@ -8,7 +8,7 @@ class GitHubIssuesClient
 {
     public function __construct(private GitHubAppAuthService $auth) {}
 
-    public function createIssue(string $title, string $body, array $labels = []): array
+    public function createIssue(string $title, string $body): array
     {
         $owner = (string) config('github_mondo.owner');
         $repo  = (string) config('github_mondo.repo');
@@ -23,11 +23,6 @@ class GitHubIssuesClient
             'title' => $title,
             'body' => $body,
         ];
-
-        if (!empty($labels)) {
-            $payload['labels'] = array_values($labels);
-        }
-
         $resp = Http::withToken($token)
             ->withHeaders([
                 'Accept' => 'application/vnd.github+json',

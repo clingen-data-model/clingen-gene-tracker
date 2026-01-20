@@ -12,25 +12,19 @@ use Illuminate\Support\Str;
 class MondoIssueRequestController extends Controller
 {
     public function storeNewTerm(Request $request, Curation $curation, GitHubIssuesClient $github)
-    {        
+    {       
         $data = $request->validate([
-            'parent_term' => 'nullable|string|max:255',
-            'parent_term_id' => 'nullable|string|max:50',
-            'association_references' => 'nullable|string|max:5000',
-            'parent_classification_references' => 'nullable|string|max:5000',
-            'use_suggested_label' => 'nullable|string|max:50',
-            'requested_label' => 'nullable|string|max:255',
-            'requested_synonyms' => 'nullable|string|max:5000',
-            'requested_label_synonym_references' => 'nullable|string|max:5000',
-            'agree_definition' => 'nullable|string|max:50',
-            'definition_additions' => 'nullable|string|max:10000',
-            'definition_references' => 'nullable|string|max:5000',
-            'cross_references' => 'nullable|string|max:5000',
-            'child_terms' => 'array',
-            'child_terms.*.name' => 'nullable|string|max:255',
-            'child_terms.*.mondo_id' => 'nullable|string|max:50',
-            'child_terms.*.evidence' => 'nullable|string|max:5000',
+            'label' => 'required|string|max:255',
+            'definition' => 'required|string|max:10000',
+            'parent' => 'required|string|max:255',
+            'synonyms' => 'nullable|string|max:5000',
+            'synonym_type' => 'nullable|in:exact,broad,narrow,related',
+            'children' => 'nullable|string|max:5000',
+            'orcid' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:500',
+            'comments' => 'nullable|string|max:10000',
         ]);
+
 
         $reqUuid = (string) Str::uuid();
 
@@ -45,12 +39,9 @@ class MondoIssueRequestController extends Controller
         $hgncId = $curation->hgnc_id;
         $pmids = $curation->pmids;
 
-        $suggestedLabel = $this->suggestLabel($geneSymbol, $data['parent_term'] ?? null);
-        $requestedLabel = $data['requested_label'] ?? null;
-        $labelToUse = ($requestedLabel && trim($requestedLabel) !== '') ? $requestedLabel : $suggestedLabel;
+        $title = "Request for new term: {$data['label']}";
+        $body  = $this->buildNewTermMarkdown($reqUuid, $curation, $data, $pmids);
 
-        $title = "[NTR] {$labelToUse}";
-        $body = $this->buildNewTermMarkdown($reqUuid, $curation, $data, $suggestedLabel, $pmids);
 
         $owner = config('github_mondo.owner');
         $repo  = config('github_mondo.repo');
@@ -107,94 +98,73 @@ class MondoIssueRequestController extends Controller
             : "{$geneSymbol}-related disease";
     }
 
-    private function buildNewTermMarkdown(string $reqUuid, Curation $curation, array $data, string $suggestedLabel, array $pmids): string
+    private function buildNewTermMarkdown(string $reqUuid, Curation $curation, array $data, $pmids): string
     {
         $lines = [];
 
-        $lines[] = "## GeneTracker MONDO New Term Request (POC)";
-        $lines[] = "";
-        $lines[] = "**GeneTracker Request UUID:** `{$reqUuid}`";
-        $lines[] = "**Curation UUID:** `{$curation->uuid}`";
+        // Optional: short header (keep it small)
+        $lines[] = "Use this form to request a new ontology term be added to Mondo.";
         $lines[] = "";
 
-        $lines[] = "### Submitter(s)";
-        $submitters = $data['submitters'] ?? [];
-        if (!is_array($submitters) || count($submitters) === 0) {
-            $lines[] = "- (auto-submitters unavailable)";
-        } else {
-            foreach ($submitters as $s) {
-                $s = trim((string) $s);
-                if ($s !== '') {
-                    $lines[] = "- {$s}";
-                }
-            }
-            if (count($submitters) > 0 && count(array_filter($submitters, fn($x) => trim((string)$x) !== '')) === 0) {
-                $lines[] = "- (auto-submitters unavailable)";
-            }
-        }
-
-        $lines[] = "";
-
-
-        $lines[] = "### Causal gene";
-        $lines[] = "- Gene symbol: **{$curation->gene_symbol}**";
-        $lines[] = "- HGNC ID: **{$curation->hgnc_id}**";
-        $lines[] = "";
-
-        $lines[] = "### References for this gene–disease association";
-        $lines[] = "- From GT curation pmids: " . $this->formatPmidsForMondo($pmids);
-        if (!empty($data['association_references'])) {
-            $lines[] = "- Provided: {$data['association_references']}";
-        }
-        $lines[] = "";
-
-        $lines[] = "### Parent term classification";
-        $lines[] = "- Parent term: " . ($data['parent_term'] ?? '(not provided)');
-        $lines[] = "- Parent term ID: " . ($data['parent_term_id'] ?? '(not provided)');
-        if (!empty($data['parent_classification_references'])) {
-            $lines[] = "- Evidence: {$data['parent_classification_references']}";
-        }
-        $lines[] = "";
-
+        // YAML fields (in order)
         $lines[] = "### Label";
-        $lines[] = "- Automatically suggested label: **{$suggestedLabel}**";
-        $lines[] = "- Use suggested label?: " . ($data['use_suggested_label'] ?? '(not specified)');
-        $lines[] = "- Requested label: " . ($data['requested_label'] ?? '(none)');
+        $lines[] = $data['label'];
         $lines[] = "";
 
         $lines[] = "### Synonyms";
-        $lines[] = "- Requested synonym(s): " . ($data['requested_synonyms'] ?? '(none)');
-        $lines[] = "- References for label/synonym(s): " . ($data['requested_label_synonym_references'] ?? '(none)');
+        $lines[] = $data['synonyms'] ?? "";
+        $lines[] = "";
+
+        $lines[] = "### Synonym type";
+        $lines[] = $data['synonym_type'] ?? "";
         $lines[] = "";
 
         $lines[] = "### Definition";
-        $lines[] = "- Agree with suggested definition?: " . ($data['agree_definition'] ?? '(not specified)');
-        $lines[] = "- Additions / suggested definition: " . ($data['definition_additions'] ?? '(none)');
-        $lines[] = "- Definition references: " . ($data['definition_references'] ?? '(none)');
+        $lines[] = $data['definition'];
         $lines[] = "";
 
-        $lines[] = "### Cross references";
-        $lines[] = $data['cross_references'] ?? '(none)';
+        $lines[] = "### Parent term";
+        $lines[] = $data['parent'];
         $lines[] = "";
 
-        $lines[] = "### Child term(s)";
-        $childTerms = $data['child_terms'] ?? [];
-        if (is_array($childTerms) && count($childTerms)) {
-            foreach ($childTerms as $i => $ct) {
-                $lines[] = "**Child term " . ($i + 1) . "**";
-                $lines[] = "- Name: " . ($ct['name'] ?? '(none)');
-                $lines[] = "- MONDO ID: " . ($ct['mondo_id'] ?? '(none)');
-                $lines[] = "- Evidence: " . ($ct['evidence'] ?? '(none)');
-                $lines[] = "";
+        $lines[] = "### Children term(s)";
+        $lines[] = $data['children'] ?? "";
+        $lines[] = "";
+
+        $lines[] = "### ORCID Identifier";
+        $lines[] = $data['orcid'] ?? "";
+        $lines[] = "";
+
+        $lines[] = "### Website URL";
+        $lines[] = $data['website'] ?? "";
+        $lines[] = "";
+
+        $lines[] = "### Additional comments";
+        $lines[] = $data['comments'] ?? "";
+        $lines[] = "";
+
+        // Add GT context at bottom (recommended)
+        $lines[] = "---";
+        $lines[] = "### GeneTracker context (auto)";
+        $lines[] = "- GeneTracker Request UUID: `{$reqUuid}`";
+        $lines[] = "- Curation UUID: `{$curation->uuid}`";
+        $lines[] = "- Causal gene: **{$curation->gene_symbol}** (HGNC: **{$curation->hgnc_id}**)";
+        $lines[] = "- PMIDs: " . $this->formatPmidsForMondo($pmids);
+
+        // Submitters (optional but you already have it; add here)
+        $submitters = $data['submitters'] ?? [];
+        if (is_array($submitters) && count($submitters)) {
+            $lines[] = "- Submitters:";
+            foreach ($submitters as $s) {
+                $s = trim((string)$s);
+                if ($s !== '') $lines[] = "  - {$s}";
             }
-        } else {
-            $lines[] = "(none)";
         }
 
         return implode("\n", $lines);
     }
-
-    private function formatPmidsForMondo(array $pmids): string
+    
+    private function formatPmidsForMondo($pmids): string
     {
         if ($pmids === null) {
             return '(none)';

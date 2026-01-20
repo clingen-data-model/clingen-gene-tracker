@@ -55,7 +55,7 @@
                 </div>
             </transition>
             
-            <!-- ADD CONDITION LATER -->
+            <div v-if="updatedCuration.disease_entity_notes && !updatedCuration.mondo_id || true" class="alert alert-info mt-2">
                 <div class="alert alert-info mt-2">
                     <div class="d-flex justify-content-between align-items-start">
                         <div><strong>No appropriate MonDO ID?</strong> You can submit a new MonDO term request from GeneTracker.</div>
@@ -84,49 +84,110 @@
                     </div>
 
                     <!-- Modal -->
-                    <b-modal class="lg" id="mondo-request-modal" ref="mondoRequestModal" title="Request a new MonDO term" ok-title="Submit request" cancel-title="Cancel" @ok="submitMondoRequest">
+                    <b-modal size="xl" id="mondo-request-modal" ref="mondoRequestModal" title="Request a new MonDO term" ok-title="Submit request" cancel-title="Cancel" @ok="submitMondoRequest">
                         <div class="mb-2 small text-muted">
                             This will create a GitHub issue using the standard template. Your request will be tracked in GeneTracker.
                         </div>
 
-                        <b-form-group label="Causal gene" description="Auto-filled from this curation">
-                            <div class="small">
-                            <div><strong>{{ updatedCuration.gene_symbol }}</strong></div>
-                            <div>HGNC: <strong>{{ updatedCuration.hgnc_id }}</strong></div>
-                            </div>
-                        </b-form-group>
-
-                        <b-form-group label="Reference for this gene–disease association (PMIDs)" description="Pipe separated: PMID:123|PMID:456">
-                            <b-form-textarea
-                            v-model="mondoForm.association_references"
-                            rows="2"
-                            placeholder="PMID:123|PMID:567"
+                        <b-form-group label="Label" description="Preferred term label (lowercase unless proper name)" label-for="mondo-label">
+                            <b-form-input
+                                id="mondo-label"
+                                v-model="mondoForm.label"
+                                placeholder="ex. spindle cell rhabdomyosarcoma"
+                                required
                             />
-                            <div class="small text-muted mt-1">
-                            Auto from GT: {{ autoPmidsText }}
-                            <b-button size="sm" variant="link" class="p-0 ml-1" @click="useAutoPmids">Use</b-button>
+                        </b-form-group>
+
+                        <b-form-group label="Synonyms" description="Separate by comma See <a href='https://mondo.readthedocs.io/en/latest/editors-guide/f-entities/#synonym-scope'>here for more explanation of synonym scope.</a>" label-for="mondo-synonyms">
+                            <b-form-input
+                                id="mondo-synonyms"
+                                v-model="mondoForm.synonyms"
+                                placeholder="ex. SCRMS, SC rhabdomyosarcoma"
+                            />
+                        </b-form-group>
+
+                        <b-form-group label="Synonym type" description="Optional" label-for="mondo-synonym-type">
+                            <b-form-select
+                                id="mondo-synonym-type"
+                                v-model="mondoForm.synonym_type"
+                                :options="[
+                                { value: null, text: '—' },
+                                'exact',
+                                'broad',
+                                'narrow',
+                                'related',
+                                ]"
+                            />
+                        </b-form-group>
+
+                        <b-form-group
+                            label="Definition"
+                            description="Include reference if applicable, e.g. PMID:#######"
+                            label-for="mondo-definition"
+                            >
+                            <b-form-textarea
+                                id="mondo-definition"
+                                v-model="mondoForm.definition"
+                                rows="4"
+                                required
+                                placeholder="Provide a definition. Include PMID:####### if applicable."
+                            />
+                        </b-form-group>
+
+                        <b-form-group
+                            label="Parent term"
+                            description="Provide ID and label (e.g. MONDO:0005212 rhabdomyosarcoma)"
+                            label-for="mondo-parent"
+                            >
+                            <b-form-input
+                                id="mondo-parent"
+                                v-model="mondoForm.parent"
+                                required
+                                placeholder="ex. MONDO:0005212 rhabdomyosarcoma"
+                            />
+                        </b-form-group>
+
+                        <b-form-group label="Children term(s)" description="Optional; provide ID and label" label-for="mondo-children">
+                            <b-form-input
+                                id="mondo-children"
+                                v-model="mondoForm.children"
+                                placeholder="ex. MONDO:0100067 childhood spindle cell rhabdomyosarcoma"
+                            />
+                        </b-form-group>
+
+                        <b-form-group label="ORCID Identifier" description="Optional" label-for="mondo-orcid">
+                            <b-form-input
+                                id="mondo-orcid"
+                                v-model="mondoForm.orcid"
+                                placeholder="e.g. https://orcid.org/0000-0001-5208-3432"
+                            />
+                        </b-form-group>
+
+                        <b-form-group label="Website URL" description="Optional" label-for="mondo-website">
+                            <b-form-input
+                                id="mondo-website"
+                                v-model="mondoForm.website"
+                                placeholder="e.g. https://clinicalgenome.org/affiliation/40005/"
+                            />
+                        </b-form-group>
+
+                        <b-form-group label="Additional comments" description="Optional" label-for="mondo-comments">
+                            <b-form-textarea
+                                id="mondo-comments"
+                                v-model="mondoForm.comments"
+                                rows="3"
+                                placeholder="Anything else you'd like to add."
+                            />
+                            </b-form-group>
+
+                            <b-form-group label="GT context (auto)" description="Included in the issue body for context">
+                            <div class="small">
+                                <div><strong>{{ updatedCuration.gene_symbol }}</strong> (HGNC: {{ updatedCuration.hgnc_id }})</div>
+                                <div>PMIDs: {{ autoPmidsText }}</div>
+                                <div v-if="updatedCuration.uuid">Curation UUID: {{ updatedCuration.uuid }}</div>
                             </div>
                         </b-form-group>
 
-                        <b-form-group label="Parent term" description="The MonDO term under which this new term will be classified">
-                            <b-form-input v-model="mondoForm.parent_term" placeholder="exudative vitreoretinopathy"></b-form-input>
-                        </b-form-group>
-
-                        <b-form-group label="Parent term ID" description="MONDO:####">
-                            <b-form-input v-model="mondoForm.parent_term_id" placeholder="MONDO:0019516"></b-form-input>
-                        </b-form-group>
-
-                        <b-form-group label="Requested label (optional)">
-                            <b-form-input v-model="mondoForm.requested_label" placeholder="FZD4-related exudative vitreoretinopathy"></b-form-input>
-                        </b-form-group>
-
-                        <b-form-group label="Definition additions / suggested definition (optional)">
-                            <b-form-textarea v-model="mondoForm.definition_additions" rows="3" placeholder="This disease is characterized by..."></b-form-textarea>
-                        </b-form-group>
-
-                        <b-form-group label="Cross references (optional)" description="OMIM, Orphanet, etc.">
-                            <b-form-textarea v-model="mondoForm.cross_references" rows="2" placeholder="OMIM:123456"></b-form-textarea>
-                        </b-form-group>
 
                         <div v-if="mondoSubmitResult" class="alert alert-success mt-3 mb-0">
                             Created issue:
@@ -140,6 +201,7 @@
                         </div>
                     </b-modal>
                 </div>
+            </div>
 
         </b-form-group>
 
@@ -179,12 +241,15 @@
                 mondoRequestsLoading: false,
 
                 mondoForm: {
-                    association_references: '',
-                    parent_term: '',
-                    parent_term_id: '',
-                    requested_label: '',
-                    definition_additions: '',
-                    cross_references: '',
+                    label: '',
+                    synonyms: '',
+                    synonym_type: null, // exact|broad|narrow|related
+                    definition: '',
+                    parent: '',
+                    children: '',
+                    orcid: '',
+                    website: '',
+                    comments: '',
                 },
                 mondoSubmitResult: null,
                 mondoSubmitError: null,
@@ -211,7 +276,7 @@
             emitUpdated () {
                 this.$emit('input', this.updatedCuration)
             },
-            openMondoRequestModal () {
+            /* openMondoRequestModal () {
                 this.mondoSubmitResult = null
                 this.mondoSubmitError = null
 
@@ -226,7 +291,29 @@
                 }
 
                 this.$refs.mondoRequestModal.show()
+            }, */
+            openMondoRequestModal () {
+                this.mondoSubmitResult = null
+                this.mondoSubmitError = null
+
+                // Parent: if disease selected, prefill "MONDO:#### name"
+                if (this.updatedCuration?.disease?.mondo_id && this.updatedCuration?.disease?.name) {
+                    this.mondoForm.parent = `${this.updatedCuration.disease.mondo_id} ${this.updatedCuration.disease.name}`
+                } else if (this.updatedCuration?.mondo_id && this.updatedCuration?.disease?.name) {
+                    this.mondoForm.parent = `${this.updatedCuration.mondo_id} ${this.updatedCuration.disease.name}`
+                }
+
+                // Definition: optional prefill from disease_entity_notes
+                if (!this.mondoForm.definition && this.updatedCuration?.disease_entity_notes) {
+                    this.mondoForm.definition = this.updatedCuration.disease_entity_notes
+                }
+
+                // Website URL: you can prefill later if you expose an affiliation URL from API
+                // this.mondoForm.website = ...
+
+                this.$refs.mondoRequestModal.show()
             },
+
 
             useAutoPmids () {
                 this.mondoForm.association_references = this.autoPmidsText === '(none)' ? '' : this.autoPmidsText
@@ -267,6 +354,19 @@
                 this.mondoSubmitError = null
                 this.mondoSubmitResult = null
 
+                const payload = {
+                    label: this.mondoForm.label || null,
+                    synonyms: this.mondoForm.synonyms || null,
+                    synonym_type: this.mondoForm.synonym_type || null,
+                    definition: this.mondoForm.definition || null,
+                    parent: this.mondoForm.parent || null,
+                    children: this.mondoForm.children || null,
+                    orcid: this.mondoForm.orcid || null,
+                    website: this.mondoForm.website || null,
+                    comments: this.mondoForm.comments || null,
+                }
+
+                /*
                 const payload = {                    
                     parent_term: this.mondoForm.parent_term || null,
                     parent_term_id: this.mondoForm.parent_term_id || null,
@@ -275,7 +375,7 @@
                     definition_additions: this.mondoForm.definition_additions || null,
                     cross_references: this.mondoForm.cross_references || null,
                     child_terms: [],
-                }
+                } */
 
                 try {
                     const resp = await window.axios.post(`/api/curations/${curationId}/mondo-requests/new-term`, payload)
