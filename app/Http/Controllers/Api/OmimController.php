@@ -90,6 +90,7 @@ class OmimController extends Controller
             'phenotype' => $phenotype->name,
             'phenotypeMimNumber' => $phenotype->mim_number,
             'phenotypeInheritance' => $phenotype->moi,
+            'obsolete' => $phenotype->obsolete,
         ];
     }
 }
