@@ -69,7 +69,8 @@
                                     { 
                                         'id': this.phenotypes[0].id,
                                         'mim_number': this.phenotypes[0].phenotypeMimNumber, 
-                                        'name': this.phenotypes[0].phenotype 
+                                        'name': this.phenotypes[0].phenotype,
+                                        'obsolete': this.phenotypes[0].obsolete
                                     }
                                 );
                                 this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedCuration.gene_symbol+' with this single disease entity';
@@ -95,7 +96,7 @@
             },
             showRationale: function () {
                 return true;
-            }
+            },
         }
     }
 </script>
@@ -108,8 +109,10 @@
                     <p>The gene <strong>{{ updatedCuration.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
                 </div>
 
-                <b-table 
-                        v-show="showTable"
+                <div v-if="showTable && (this.phenotypes || []).some(p => p.obsolete)" class="alert alert-warning py-2">
+                    Some phenotypes are not present in the latest OMIM genemap2 file. They may have been renamed or removed.
+                </div>
+                <b-table v-show="showTable"
                     :items="phenotypes"
                     :fields="fields"
                     stacked="sm"
@@ -119,6 +122,10 @@
                 >
                     <template v-slot:head(checkbox)="data">
                         &nbsp;&nbsp;&nbsp;&nbsp;
+                    </template>
+                    <template v-slot:cell(phenotype)="data">
+                        <span>{{ data.item.phenotype }}</span>
+                        <span v-if="data.item.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                     </template>
                     <template v-slot:cell(checkbox)="data">
                         <input 
@@ -131,7 +138,6 @@
                     </template>
                 </b-table>
                 <curation-notifications :curation="updatedCuration" class="mt-2"></curation-notifications>
-
                 <div class="alert alert-info" v-show="message">{{message}}</div>
             </div>
         </div>
