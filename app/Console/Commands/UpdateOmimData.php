@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateOmimData extends Command
 {
+    use MocksGuzzleRequests;
     /**
      * The name and signature of the console command.
      *
@@ -58,8 +59,9 @@ class UpdateOmimData extends Command
                 $this->error('File not found. '.$this->option('file'). ' does not exist');
                 return;
             }
-            $testGeneMap = file_get_contents($this->option('file'));
-            $httpClient = $this->getGuzzleClient([new Response(200, [], $testGeneMap)]);
+            $filePath = $this->option('file');
+            $stream = Utils::streamFor(fopen($filePath, 'r'));
+            $httpClient = $this->getGuzzleClient([new Response(200, [], $stream)]);
             app()->instance(ClientInterface::class, $httpClient);
         }
 
@@ -67,7 +69,7 @@ class UpdateOmimData extends Command
 
         $newDateGenerated = null;
         $lastGeneMapDownload = AppState::findByName('last_genemap_download');
-        $archivePath = Storage::path('omim/genemap2.'.Carbon::now()->format('Y-m-d_H:i:s').'.txt.gz');
+        $archivePath = Storage::path('omim/genemap2.'.Carbon::now()->format('Ymd_His').'.txt.gz');
         $gzfile = gzopen($archivePath, 'wb9');
         try {
             $url = 'https://data.omim.org/downloads/'.config('app.omim_key').'/genemap2.txt';
@@ -75,6 +77,7 @@ class UpdateOmimData extends Command
             $this->info('Retrieved OMIM genemap2 file...');
 
             $keys = [];
+            $seenPhenotypeIds = [];
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
                 gzwrite($gzfile, $line);
@@ -121,51 +124,65 @@ class UpdateOmimData extends Command
                 }
 
 
-                $phenotypes = collect($phenotypes)
-                                ->map(function ($pheno) use ($gene) {
-                                    try {
-                                        // A mim_number can refer to many differently named phenotypes
-                                        // If this is the case try to get the phenotype record by mim_number 
-                                        // and name to prevent constraint failures.
-                                        $phenotype = null;
-                                        try {
-                                            $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
-                                        } catch (MultipleRecordsFoundException $e) {
-                                            $phenotype = Phenotype::mimNumber($pheno['mim_number'])
-                                                            ->where('name', $pheno['name'])
-                                                            ->first();
-                                        } catch (ModelNotFoundException $e) {
-                                        }
+                $phenotypes = collect($phenotypes)->map(function ($pheno) use ($gene, &$seenPhenotypeIds) {
+                        try {
+                            // A mim_number can refer to many differently named phenotypes
+                            // If this is the case try to get the phenotype record by mim_number 
+                            // and name to prevent constraint failures.
+                            $phenotype = null;
+                            try {
+                                $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
+                            } catch (MultipleRecordsFoundException $e) {
+                                $phenotype = Phenotype::mimNumber($pheno['mim_number'])
+                                                ->where('name', $pheno['name'])
+                                                ->first();
+                            } catch (ModelNotFoundException $e) {
+                            }
 
-                                        if ($phenotype) {
-                                            $phenotype->update([
-                                                'name' => trim($pheno['name']),
-                                                'moi' => $pheno['moi']
-                                            ]);
-                                            return $phenotype;
-                                        }
-                                        
-                                        $phenotype = Phenotype::updateOrCreate(
-                                            [
-                                                'mim_number' => $pheno['mim_number'],
-                                                'name' => trim($pheno['name']),
-                                            ],
-                                            [
-                                                'moi' => $pheno['moi']
-                                            ]
-                                        );
-                                        event(new PhenotypeAddedForGene($phenotype, $gene));
-
-                                        return $phenotype;
-                                    } catch (\Throwable $th) {
-                                        Log::warning($th->getMessage());
-                                        throw $th;
-                                        return null;
-                                    }
-                                });
+                            if ($phenotype) {
+                                $phenotype->update([
+                                    'name' => trim($pheno['name']),
+                                    'moi' => $pheno['moi'],
+                                    'obsolete' => false
+                                ]);
+                                $seenPhenotypeIds[] = $phenotype->id; 
+                                return $phenotype;
+                            }
+                            
+                            $phenotype = Phenotype::updateOrCreate(
+                                [
+                                    'mim_number' => $pheno['mim_number'],
+                                    'name' => trim($pheno['name']),
+                                ],
+                                [
+                                    'moi' => $pheno['moi'],
+                                    'obsolete' => false,
+                                ]
+                            );
+                            if ($phenotype->wasRecentlyCreated) {
+                                event(new PhenotypeAddedForGene($phenotype, $gene));
+                            }
+                            $seenPhenotypeIds[] = $phenotype->id;
+                            return $phenotype;
+                        } catch (\Throwable $th) {
+                            Log::warning($th->getMessage());
+                            throw $th;
+                            return null;
+                        }
+                    });
                                 
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
+
+            $seenPhenotypeIds = array_values(array_unique($seenPhenotypeIds));
+            if (count($seenPhenotypeIds) > 0) {
+                Phenotype::whereNull('deleted_at')
+                    ->whereNotIn('id', $seenPhenotypeIds)
+                    ->update(['obsolete' => true]);
+            } else {
+                // Log::warning('OMIM update: no phenotypes were seen, skipping obsolete update.');
+            }
+
             $lastGeneMapDownload->update(['value' => $newDateGenerated]);
             gzclose($gzfile);
         } catch (ClientException $e) {
