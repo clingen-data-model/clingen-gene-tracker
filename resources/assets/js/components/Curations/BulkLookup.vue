@@ -50,7 +50,7 @@
                     </div>
                     <template v-slot:head(available_phenotypes)="data">
                         {{data.label}}
-                        <small class="font-weight-normal">(* phenotype is in curation)</small>
+                        <small class="font-weight-normal">(* phenotype is in curation)</small>                        
                     </template>  
                     <template v-slot:cell(available_phenotypes)="{item, value}">
                         <ul class="list-unstyled" style="overflow-x: scroll; word-">
@@ -60,6 +60,7 @@
                                 :class="{curated: phenotypeIsInCuration(ph, item)}"
                             >
                                 <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
+                                <span v-if="ph.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                             </li>
                         </ul>
                     </template>
