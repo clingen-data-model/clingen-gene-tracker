@@ -129,6 +129,7 @@
                     </template>
                     <template v-slot:cell(checkbox)="data">
                         <input 
+                            v-if="!data.item.obsolete"
                             class="form-check-input form-check-input-lg"
                             type="checkbox" 
                             v-model="updatedCuration.phenotypes"

@@ -73,7 +73,8 @@ class BulkLookupController extends Controller
                                 return $ph->name.' ('.$ph->mim_number.')';
                             })->join("\n"),
                             'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
-                                return $ph->name.' ('.$ph->mim_number.')';
+                                $phenoName = $ph->obsolete ? $ph->name . ' [Not in latest OMIM]' : $ph->name;                                
+                                return $phenoName.' ('.$ph->mim_number.')';
                             })->join("; ")
                         ];
                     });

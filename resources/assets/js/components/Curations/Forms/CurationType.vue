@@ -85,12 +85,16 @@
             }
         },
         computed: {
+            nonObsoletePhenotypes () {
+                return (this.phenotypes || []).filter(p => !p.obsolete)
+            },
             options: function () {
-                if (this.phenotypesLoaded && this.phenotypes.length == 0 && this.updatedCuration.curation_type_id === null) {
+                const activePhenotypes = this.nonObsoletePhenotypes
+                if (this.phenotypesLoaded && activePhenotypes.length == 0 && this.updatedCuration.curation_type_id === null) {
                     this.updatedCuration.curation_type_id = 2;
                     return [];
                 }
-                if (this.phenotypes.length == 1) {
+                if (activePhenotypes.length == 1) {
                     return this.curationTypes
                             .filter(item => item.name != 'lumped')
                             .map(item => ({text: item.description, value: item.id}))

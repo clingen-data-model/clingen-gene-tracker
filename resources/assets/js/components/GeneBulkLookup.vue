@@ -72,7 +72,10 @@
                             <tbody>
                                 <tr v-for="(ph, idx) in value" :key="idx">
                                     <td>{{ph.mim_number}}</td>
-                                    <td>{{ph.name}}</td>
+                                    <td>
+                                        {{ph.name}}
+                                        <span v-if="ph.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                    </td>
                                     <td>{{ph.moi}}</td>
                                 </tr>
                             </tbody>
