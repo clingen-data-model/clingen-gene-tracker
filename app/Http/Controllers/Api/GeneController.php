@@ -40,9 +40,10 @@ class GeneController extends Controller
                             ]]);
                         }
                         return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
+                            $phenoName = $pheno->obsolete ? $pheno->name . ' [Not in latest OMIM]' : $pheno->name;
                             return [
                                 'Gene' => $gene->gene_symbol,
-                                'Phenotype' => $pheno->name,
+                                'Phenotype' => $phenoName,
                                 'Phenotype MIM Number' => $pheno->mim_number,
                                 'MOI' => $pheno->moi
                             ];
