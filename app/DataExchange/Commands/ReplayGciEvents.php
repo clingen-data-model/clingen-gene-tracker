@@ -3,11 +3,8 @@
 namespace App\DataExchange\Commands;
 
 use App\Curation;
-use App\Gci\GciMessage;
-use App\IncomingStreamMessage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
-use App\Contracts\GeneValidityCurationUpdateJob;
 use App\Jobs\ReplayGciEventsForCuration;
 
 class ReplayGciEvents extends Command

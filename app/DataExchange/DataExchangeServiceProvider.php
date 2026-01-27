@@ -13,7 +13,7 @@ use App\DataExchange\Kafka\KafkaConsumer;
 use App\DataExchange\Kafka\KafkaProducer;
 use App\DataExchange\Contracts\MessagePusher;
 use App\DataExchange\Contracts\MessageConsumer;
-use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\MessagePushers\MessageLogger;
 use App\Listeners\UpdateGciCurationFromGveMessage;
 use App\DataExchange\MessagePushers\DisabledPusher;

@@ -4,7 +4,7 @@ namespace App\DataExchange\Commands;
 
 use Illuminate\Console\Command;
 use App\DataExchange\Contracts\MessageConsumer;
-use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 use App\DataExchange\Jobs\DryRunUpdateFromGeneValidityMessage;
 use Illuminate\Support\Facades\Log;
 

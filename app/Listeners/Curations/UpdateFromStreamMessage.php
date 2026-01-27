@@ -3,7 +3,7 @@
 namespace App\Listeners\Curations;
 
 use App\Curation;
-use App\Contracts\GeneValidityCurationUpdateJob;
+use App\DataExchange\Contracts\GeneValidityCurationUpdateJob;
 use App\StreamError;
 use App\Gci\GciMessage;
 use App\DataExchange\Events\Received;
