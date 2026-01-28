@@ -143,7 +143,8 @@ class UpdateOmimData extends Command
                                 $phenotype->update([
                                     'name' => trim($pheno['name']),
                                     'moi' => $pheno['moi'],
-                                    'obsolete' => false
+                                    'obsolete' => false,
+                                    'obsoleted_at' => null,
                                 ]);
                                 $seenPhenotypeIds[] = $phenotype->id; 
                                 return $phenotype;
@@ -157,6 +158,7 @@ class UpdateOmimData extends Command
                                 [
                                     'moi' => $pheno['moi'],
                                     'obsolete' => false,
+                                    'obsoleted_at' => null,
                                 ]
                             );
                             if ($phenotype->wasRecentlyCreated) {
@@ -177,8 +179,12 @@ class UpdateOmimData extends Command
             $seenPhenotypeIds = array_values(array_unique($seenPhenotypeIds));
             if (count($seenPhenotypeIds) > 0) {
                 Phenotype::whereNull('deleted_at')
-                    ->whereNotIn('id', $seenPhenotypeIds)
-                    ->update(['obsolete' => true]);
+                            ->whereNotIn('id', $seenPhenotypeIds)
+                            ->where('obsolete', false)
+                            ->update([
+                                'obsolete' => true,
+                                'obsoleted_at' => now(),
+                            ]);
             } else {
                 // Log::warning('OMIM update: no phenotypes were seen, skipping obsolete update.');
             }
