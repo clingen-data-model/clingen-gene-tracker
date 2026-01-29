@@ -53,7 +53,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                                 ? $curation->curationType->toArray()
                                 : null,
             'omim_phenotypes' => $this->getOmimPhenotypes($curation),
-            'omim_phenotypes_terms' => $this->getOmimPhenotypesTerms($curation),
+            'omim_phenotype_terms' => $this->getOmimPhenotypesTerms($curation),
             // Keep using notes instead of renamed 'curation_notes' to prevent bumping schema version
             'notes' => $curation->curation_notes,
             'date_created' => $curation->created_at->toIsoString(),

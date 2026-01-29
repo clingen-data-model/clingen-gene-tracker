@@ -45,7 +45,8 @@
                             return {
                                 'id': item.id,
                                 'mim_number': item.phenotypeMimNumber,
-                                'name': item.phenotype
+                                'name': item.phenotype,
+                                'obsolete': item.obsolete ? 1 : 0,
                             }
                         }
                     }
