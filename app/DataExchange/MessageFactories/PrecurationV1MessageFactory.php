@@ -53,6 +53,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                                 ? $curation->curationType->toArray()
                                 : null,
             'omim_phenotypes' => $this->getOmimPhenotypes($curation),
+            'omim_phenotypes_terms' => $this->getOmimPhenotypesTerms($curation),
             // Keep using notes instead of renamed 'curation_notes' to prevent bumping schema version
             'notes' => $curation->curation_notes,
             'date_created' => $curation->created_at->toIsoString(),
@@ -145,6 +146,19 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
                 "excluded" => $curation->excludedPhenotypes->pluck('mim_number')->toArray()
             ];
         }
+        return null;
+    }
+
+    private function getOmimPhenotypesTerms($curation)
+    {
+        if ($curation->phenotypes->count() > 0) {
+            return [
+                "included" => $curation->phenotypes
+                    ->map(fn ($p) => ["id" => (int) $p->mim_number, "name" => $p->name])->values()->toArray(),
+                "excluded" => $curation->excludedPhenotypes->map(fn ($p) => ["id" => (int) $p->mim_number, "name" => $p->name])->values()->toArray(),
+            ];
+        }
+
         return null;
     }
 }
