@@ -32,9 +32,9 @@
                 </ul>
             </div>
 
-            <lookup-form 
+            <lookup-form
                 v-model="geneSymbols"
-                @lookup="search" 
+                @lookup="search"
                 @getCsv="downloadCsv"
                 class="mb-3"
             ></lookup-form>
@@ -42,83 +42,67 @@
 
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
-                <b-table 
-                    :fields="fields" 
-                    :items="filteredResults"
-                    primary-key="id"
-                    bordered
-                    show-empty
-                    :empty-text="emptyText"
-                    :busy="loadingResults"
-                    :small="true"
+                <DataTable
+                    :value="filteredResults"
+                    :loading="loadingResults"
+                    stripedRows
+                    showGridlines
+                    size="small"
                     class="text-small"
-                    striped
                 >
-                    <div slot="table-busy" class="text-center">
-                        Looking for curations...
-                    </div>
-                    <template v-slot:cell(phenotypes)="{value}">
-                        <strong v-if="value.length == 0" class="mb-3 d-block">
-                            No OMIM phenotypes were found for this gene.
-                        </strong>
-                        <table class="table phenotypes-table w-100" v-else>
-                            <thead>
-                                <tr>
-                                    <th width="10%">OMIM ID</th>
-                                    <th width="45%">Name</th>
-                                    <th>MOI</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(ph, idx) in value" :key="idx">
-                                    <td>{{ph.mim_number}}</td>
-                                    <td>{{ph.name}}</td>
-                                    <td>{{ph.moi}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <template #empty>
+                        {{ emptyText }}
                     </template>
-                </b-table>
+                    <template #loading>
+                        Looking for curations...
+                    </template>
+                    <Column field="gene_symbol" header="Gene" sortable></Column>
+                    <Column field="phenotypes" header="Phenotypes">
+                        <template #body="{ data }">
+                            <strong v-if="data.phenotypes.length == 0" class="mb-3 d-block">
+                                No OMIM phenotypes were found for this gene.
+                            </strong>
+                            <table class="table phenotypes-table w-100" v-else>
+                                <thead>
+                                    <tr>
+                                        <th width="10%">OMIM ID</th>
+                                        <th width="45%">Name</th>
+                                        <th>MOI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(ph, idx) in data.phenotypes" :key="idx">
+                                        <td>{{ph.mim_number}}</td>
+                                        <td>{{ph.name}}</td>
+                                        <td>{{ph.moi}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </template>
+                    </Column>
+                </DataTable>
             </div>
         </div>
     </div>
 </template>
 <script>
-import moment from 'moment';
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 import LookupForm from './Curations/BulkLookup/LookupForm.vue'
-import FilterControl from './Curations/BulkLookup/FilterControl.vue'
 
 export default {
     components: {
         LookupForm,
-        FilterControl,
-    },
-    props: {
-        
+        DataTable,
+        Column,
     },
     data() {
         return {
             geneSymbols: [],
             results: [],
-            fields: [
-                {
-                    key: 'gene_symbol',
-                    label: 'Gene',
-                    sortable: true
-                },
-                {
-                    key: 'phenotypes',
-                    label: 'Phenotypes',
-                    sortable: false
-                }
-                
-            ],
             loadingResults: false,
             filters: {
                 gene: [],
-                // expertPanel: [],
-                // classification: [],
-                // status: []
             },
             formErrors: []
         }
@@ -132,18 +116,6 @@ export default {
         },
         filteredResults: function () {
             let results = JSON.parse(JSON.stringify(this.results));
-            // if (this.filters.gene.length > 0) {
-            //     results = results.filter(item => this.filters.gene.indexOf(item.gene_symbol) > -1)
-            // }
-            // if (this.filters.expertPanel.length > 0) {
-            //     results = results.filter(item => this.filters.expertPanel.indexOf(item.expert_panel) > -1)
-            // }
-            // if (this.filters.classification.length > 0) {
-            //     results = results.filter(item => item.current_classification !== null && this.filters.classification.indexOf(item.current_classification.name) > -1)
-            // }
-            // if (this.filters.status.length > 0) {
-            //     results = results.filter(item => item.current_status !== null && this.filters.status.indexOf(item.current_status.name) > -1)
-            // }
             return results
         },
         resultsPanels: function () {
@@ -167,7 +139,7 @@ export default {
                 .map(curation => {
                     return curation.current_classification.name
                 });
-                
+
             return [...new Set(items)]
         },
         resultsStatuses: function () {
@@ -179,7 +151,7 @@ export default {
                 .map(curation => {
                     return curation.current_status ? curation.current_status.name : null
                 });
-                
+
             return [...new Set(items)]
         }
     },
@@ -188,24 +160,17 @@ export default {
             this.formErrors = [];
             this.loadingResults = true;
             axios.post('/api/genes', {
-                where: {gene_symbol: this.geneSymbols.split(/[, \n]/)}, 
+                where: {gene_symbol: this.geneSymbols.split(/[, \n]/)},
                 with: [
-                    'phenotypes', 
-                    // 'curations', 
-                    // 'curations.currentStatus',
-                    // 'curations.expertPanel', 
-                    // 'curations.classifications'
+                    'phenotypes',
                 ]
             })
                 .then(response => {
-                    console.info('response',response)
                     this.results = response.data
-                    console.info('this.results',this.results)
                     return response;
                 })
                 .catch(error => {
                     const flattenedErrors = Object.values(error.response.data.errors).flat();
-                    console.log(flattenedErrors);
                     this.formErrors = flattenedErrors;
                 })
                 .then(response => {
@@ -226,8 +191,7 @@ export default {
             }
             const list = JSON.parse(JSON.stringify(this.filters[key]));
             list.splice(idx, 1);
-            console.log(list);
-            this.$set(this.filters, key, list);
+            this.filters[key] = list;
         },
         toggleFilter(key, value) {
             if (this.filters[key].indexOf(value) < 0) {
@@ -239,21 +203,15 @@ export default {
         downloadCsv() {
             this.search();
             axios.post('/api/genes/csv', {
-                where: {gene_symbol: this.geneSymbols.split(/[, \n]/)}, 
+                where: {gene_symbol: this.geneSymbols.split(/[, \n]/)},
                 with: [
-                    'phenotypes', 
-                    // 'curations', 
-                    // 'curations.currentStatus',
-                    // 'curations.expertPanel', 
-                    // 'curations.classifications'
-                ]                
+                    'phenotypes',
+                ]
             })
                 .then(response => {
                     const a = document.createElement('a');
                     a.style.display = "none";
                     document.body.appendChild(a);
-
-                    console.log(response.data);
 
                     a.href = window.URL.createObjectURL( new Blob([response.data, { type: 'text/csv' }]));
 
@@ -264,7 +222,6 @@ export default {
                 })
                 .catch(error => {
                     const flattenedErrors = Object.values(error.response.data.errors).flat();
-                    console.log(flattenedErrors);
                     this.formErrors = flattenedErrors;
                 })
         },

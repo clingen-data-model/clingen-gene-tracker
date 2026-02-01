@@ -9,34 +9,40 @@
                 <router-link to="/curations">
                         &lt; Back to curations
                 </router-link>
-            </p>        
-            <b-card>
-                <template slot="header">
+            </p>
+            <div class="card">
+                <div class="card-header">
                     <h3>Add a curation to curate</h3>
-                </template>
-                <b-form id="new-curation-form">
-                    <info
-                        :value="updatedCuration" 
-                        :errors="errors"
-                        @input="updatedCuration = $event"
-                    ></info>         
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                </div>
+                <div class="card-body">
+                    <form id="new-curation-form" @submit.prevent>
+                        <info
+                            :modelValue="updatedCuration"
+                            :errors="errors"
+                            @update:modelValue="updatedCuration = $event"
+                        ></info>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                            </div>
+                            <div class="col-md-11 text-end">
+                                <button class="btn btn-primary" id="create-and-continue-btn" @click="createCuration()">Create curation</button>
+                            </div>
                         </div>
-                        <div class="col-md-11 text-right">
-                            <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
-                        </div>
-                    </div>
-                </b-form>
-            </b-card>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../stores/app'
+    import { useMessagesStore } from '../../stores/messages'
+    import { useCurationsStore } from '../../stores/curations'
     import Info from './Forms/Info.vue'
+
     export default {
         components: {
             Info
@@ -51,23 +57,14 @@
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'}),
-            selectedPanel: function () {
-                return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
-                    })
-            },
+            ...mapState(useAppStore, {user: 'getUser'}),
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
             },
         },
         methods: {
-            ...mapMutations('messages', [
-                'addInfo',
-                'addAlert'
-            ]),
-            ...mapActions('curations', {
+            ...mapActions(useMessagesStore, ['addInfo']),
+            ...mapActions(useCurationsStore, {
                 fetchCuration: 'fetchItem',
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'
@@ -91,8 +88,5 @@
                 this.errors = {}
             }
         },
-        mounted: function() {
-        }
-        //component definition
     }
 </script>

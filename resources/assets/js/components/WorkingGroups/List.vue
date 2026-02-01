@@ -6,77 +6,66 @@
         </div>
         <div class="card-body">
             <div class="curations-table-container">
-                <div class="row">
-                    <div class="col-md-6 form-inline">
-                        <label for="#curations-filter-input">Search:</label>&nbsp;
-                        <input v-model="filter" placeholder="search working groups" class="form-control" id="curations-filter-input" />
-                    </div>
-                    <div class="col-md-6">
-                        <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-right" />    
-                    </div>
-                </div>
-                <br>
-                
-                <b-table striped hover 
-                    :items="tableItems" 
-                    :fields="fields"
-                    :filter="filter"
-                    :per-page="pageLength"
-                    :current-page="currentPage"
-                    sort-by="name"
-                    @filtered="onFiltered"
-                    @row-clicked="handleRowClick"
-                    tbody-tr-class="crsr-pointer"
-                >            
-                </b-table>
-                <div class="float-right">Total Records: {{totalRows}}</div>
-            </div>        
+                <DataTable
+                    :value="tableItems"
+                    stripedRows
+                    :paginator="true"
+                    :rows="pageLength"
+                    :globalFilterFields="['id', 'name']"
+                    v-model:filters="dtFilters"
+                    @row-click="handleRowClick"
+                    :rowClass="() => 'crsr-pointer'"
+                    size="small"
+                >
+                    <template #header>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <label for="curations-filter-input">Search:</label>&nbsp;
+                                <input v-model="dtFilters['global'].value" placeholder="search working groups" class="form-control d-inline-block w-auto" id="curations-filter-input" />
+                            </div>
+                            <div class="text-muted align-self-center">Total Records: {{ tableItems.length }}</div>
+                        </div>
+                    </template>
+                    <Column field="id" header="Id" sortable></Column>
+                    <Column field="name" header="Name" sortable></Column>
+                </DataTable>
+            </div>
         </div>
     </div>
 </template>
 <script>
-    import {mapGetters, mapActions} from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { useWorkingGroupsStore } from '../../stores/workingGroups'
+    import DataTable from 'primevue/datatable'
+    import Column from 'primevue/column'
 
     export default {
+        components: {
+            DataTable,
+            Column,
+        },
         data() {
             return {
-                filter: null,
                 pageLength: 25,
-                currentPage: 1,
-                totalRows: 0,
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    }
-                ],
+                dtFilters: {
+                    global: { value: null, matchMode: 'contains' },
+                },
             }
         },
         computed: {
-            ...mapGetters('workingGroups', {
+            ...mapState(useWorkingGroupsStore, {
                 groups: 'Items'
             }),
             tableItems: function () {
-                let items = Object.values(this.groups)
-                this.totalRows = items.length;
-                return items;
+                return Object.values(this.groups)
             },
         },
         methods: {
-            ...mapActions('workingGroups', {
+            ...mapActions(useWorkingGroupsStore, {
                 getWorkingGroups: 'getAllItems'
             }),
-            onFiltered (filteredItems) {
-              // Trigger pagination to update the number of buttons/pages due to filtering
-              this.currentPage = 1
-              this.totalRows = filteredItems.length
-            },
-            handleRowClick($event) {
-                this.$router.push({path: '/working-groups/'+$event.id})
+            handleRowClick(event) {
+                this.$router.push({path: '/working-groups/'+event.data.id})
             }
         },
         mounted() {

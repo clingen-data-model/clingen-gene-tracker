@@ -3,7 +3,7 @@
         class="btn btn-sm btn-link" 
         title="Deactivate this user." 
         href="{{\Request::root()}}/admin/user/{{$entry->getKey()}}/reactivate" 
-        data-toggle="tooltip" 
+        data-bs-toggle="tooltip" 
         onClick="return confirm(\'Are you sure?\');"
     >
         <i class="la la-asterix"></i> 
@@ -14,7 +14,7 @@
         class="btn btn-sm btn-link" 
         title="Deactivate this user." 
         href="{{\Request::root()}}/admin/user/{{$entry->getKey()}}/deactivate" 
-        data-toggle="tooltip" 
+        data-bs-toggle="tooltip" 
         onClick="return confirm(\'Are you sure?\');"
     >
         <i class="la la-ban"></i> 

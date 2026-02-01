@@ -1,34 +1,35 @@
 <style>
     .alerts-container {
-        position:fixed; 
-        top: 70px; 
+        position:fixed;
+        top: 70px;
         right: 1em;
         min-width: 300px;
     }
 </style>
 <template>
     <div class="alerts-container">
-        <transition name="fade">
+        <transition-group name="fade">
             <notice v-for="(msg, idx) in info"
-                v-bind:key="idx"
+                :key="'info-'+idx"
                 class="alert-info"
-                v-on:cleared="removeInfo(idx)"
+                @cleared="removeInfo(idx)"
             >
                 {{msg}}
             </notice>
             <notice v-for="(msg, idx) in errors"
-                v-bind:key="idx"
+                :key="'error-'+idx"
                 class="alert-danger"
                 :auto-close="false"
-                v-on:cleared="removeError(idx)"
+                @cleared="removeError(idx)"
             >
                 {{msg}}
             </notice>
-        </transition>
+        </transition-group>
     </div>
 </template>
 <script>
-    import {mapState, mapMutations} from 'vuex';
+    import { mapState, mapActions } from 'pinia'
+    import { useMessagesStore } from '../stores/messages'
     import notice from './Notice.vue'
 
     export default {
@@ -36,19 +37,18 @@
             notice
         },
         computed: {
-            ...mapState('messages', {
+            ...mapState(useMessagesStore, {
                 info: state => state.info,
                 errors: state => state.errors
             }),
         },
         methods: {
-            ...mapMutations('messages', [
+            ...mapActions(useMessagesStore, [
                 'addInfo',
                 'addError',
                 'removeInfo',
                 'removeError'
             ])
         },
-
     }
 </script>

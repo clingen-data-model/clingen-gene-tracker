@@ -6,7 +6,6 @@
     }
 
     .search-select-container {
-        /* @apply border leading-6 px-2 flex flex-wrap py-1; */
         border: 1px solid;
         line-height: 1.5rem;
         padding: .5rem;
@@ -19,9 +18,8 @@
     .search-select-container > input {
         border: none;
     }
-    
+
     .search-select-container > .selection {
-        /* @apply bg-gray-500 text-white flex mr-1 mb-1 rounded-sm;*/
         margin: .15rem;
         border-radius: 5px;
         display: flex;
@@ -34,10 +32,8 @@
     }
 
     .search-select-container > .selection > * {
-        /* @apply px-2 leading-6; */
         padding-left: .5rem;
         padding-right: .5rem;
-        /* line-height: 1.5rem; */
     }
 
     .search-select-container > .selection > label {
@@ -45,14 +41,12 @@
     }
 
     .search-select-container > .selection > button {
-        /* @apply border-l border-gray-400; */
         border-width: 0 0 0 1px;
         background-color: transparent;
         color: white;
     }
-    
+
     .search-select-container .input {
-        /* @apply border-none block outline-none focus:outline-none p-0 flex-1; */
         display: block;
         width: 100%;
         outline: none;
@@ -75,7 +69,6 @@
     }
 
     .filtered-option {
-        /* @apply hover:bg-blue-200 cursor-pointer focus:bg-blue-200; */
         cursor:pointer;
         margin:0;
         padding: .25rem .5rem;
@@ -85,9 +78,7 @@
     }
     .filtered-option.highlighted {
         background-color: lightblue;
-    } 
-        /* 
-*/
+    }
 </style>
 
 <template>
@@ -95,18 +86,18 @@
         <div class="search-select-container border">
             <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
                 <label>
-                    <slot name="selection-label" :selection="value">
-                        {{value}}
+                    <slot name="selection-label" :selection="modelValue">
+                        {{modelValue}}
                     </slot>
-                </label>  
+                </label>
                 <button @click="removeSelection()" :disabled="disabled">x</button>
             </div>
-            <input 
-                type="text" 
-                v-model="searchText" 
-                ref="input" 
-                class="input" 
-                v-show="showInput" 
+            <input
+                type="text"
+                v-model="searchText"
+                ref="input"
+                class="input"
+                v-show="showInput"
                 @keydown="startKeydownTimer"
                 @keyup="handleKeyEvent"
                 :placeholder="placeholder"
@@ -115,8 +106,8 @@
         </div>
         <div v-show="hasOptions" class="result-container">
             <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
-                <li v-for="(opt, idx) in filteredOptions" 
-                    :key="idx" 
+                <li v-for="(opt, idx) in filteredOptions"
+                    :key="idx"
                     class="filtered-option"
                     :class="{highlighted: (idx === cursorPosition)}"
                     :id="`option-${idx}`"
@@ -129,8 +120,7 @@
     </div>
 </template>
 <script>
-import {ref, reactive, computed} from 'vue'
-import {debounce} from 'lodash'
+import { debounce } from 'lodash-es'
 
 function inView(elem)
 {
@@ -141,7 +131,7 @@ function inView(elem)
     }
     const parentBounding = elem.parentNode.getBoundingClientRect();
     if (
-        itemBounding.top >= parentBounding.top 
+        itemBounding.top >= parentBounding.top
         && itemBounding.bottom <= parentBounding.bottom
     ) {
         return true;
@@ -164,7 +154,7 @@ export default {
             type: Function,
             default: null
         },
-        value: {
+        modelValue: {
             required: true
         },
         options: {
@@ -187,12 +177,7 @@ export default {
             default: false
         }
     },
-    emits: [
-        'update:modelValue',
-    ],
-    setup(props) {
-
-    },
+    emits: ['update:modelValue'],
     data() {
         return {
             searchText: '',
@@ -226,7 +211,7 @@ export default {
             return this.filteredOptions[this.cursorPosition];
         },
         hasSelection() {
-            return Boolean(this.value)
+            return Boolean(this.modelValue)
         },
     },
     watch: {
@@ -238,39 +223,23 @@ export default {
         }
     },
     methods: {
-        defaultSearchFunction (searchText, options) {
-            if (searchText === '') {
-                return [];
-            }
-            return options.filter(o => {
-                const match = o.name.match(new RegExp(searchText, 'gi'));
-                return match !== null
-            })
-        },
-        removeSelection(    ){
-            this.$emit('input', null);
+        removeSelection(){
+            this.$emit('update:modelValue', null);
             this.$refs.input.focus();
         },
         setSelection(selection) {
-            console.info('setSelection', selection);
-            this.$emit('input', selection);
-            console.log('emitted')
+            this.$emit('update:modelValue', selection);
             this.clearInput();
-            console.log('clearedInput')
             this.resetCursor();
-            console.log('resetCursor')
         },
         clearInput() {
-            console.debug('clearInput');
             this.clearSearchText();
             this.clearOptions();
         },
         clearOptions() {
-            console.debug('clearOptions');
             this.filteredOptions = [];
         },
         clearSearchText() {
-            console.debug('clearSearchText')
             this.searchText = '';
         },
         resetCursor() {
@@ -282,12 +251,10 @@ export default {
             }
             this.cancelKeydownTimer(evt);
             if (evt.key == 'ArrowUp') {
-            console.info('start key down timer', evt.key)
                 this.keydownTimer = setInterval(() => {this.moveUp()}, 100);
                 this.currentKey = 'ArrowUp';
             }
             if (evt.key == 'ArrowDown') {
-            console.info('start key down timer', evt.key)
                 this.keydownTimer = setInterval(() => {this.moveDown()}, 100);
                 this.currentKey = 'ArrowDown';
             }
@@ -337,7 +304,6 @@ export default {
                     this.setSelection(this.filteredOptions[this.cursorPosition])
                 }
                 if (evt.key == 'Escape') {
-                    console.log('escape');
                     this.clearOptions();
                 }
             }
@@ -355,7 +321,7 @@ export default {
                 if (searchText === '') {
                     return [];
                 }
-                
+
                 this.filteredOptions = options.filter(o => {
                     const match = o.match(new RegExp(searchText, 'gi'));
                     return match !== null

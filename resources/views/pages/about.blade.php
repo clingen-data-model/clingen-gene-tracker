@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-header"><h3>{{$page->title}}</h3></div>
             <div class="card-body">
-                <div class="float-right" style="width: 300px"><criteria-table></criteria-table></div>
+                <div class="float-end" style="width: 300px"><criteria-table></criteria-table></div>
                 {{$page->content}}
             </div>
         </div>

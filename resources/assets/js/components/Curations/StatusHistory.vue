@@ -10,21 +10,20 @@
                 <th>Status</th>
                 <th>Date</th>
             </tr>
-            <tr 
-                v-for="(status, idx) in orderedStatuses" 
-                :key="status.pivot.id" 
+            <tr
+                v-for="(status, idx) in orderedStatuses"
+                :key="status.pivot.id"
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{status.name}}</td>
-                <td>{{status.pivot.status_date | formatDate('YYYY-MM-DD') }}</td>
+                <td>{{ $formatDate(status.pivot.status_date, 'YYYY-MM-DD') }}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
-    import moment from 'moment'
-    import filters from '../../filters'
-    
+    import dayjs from 'dayjs'
+
     export default {
         props: {
             curation: {
@@ -33,17 +32,16 @@
             },
         },
         computed: {
-            /** THE STATUSES ORDERED BY THE NEWEST FIRST, ORDERED BASED ON STATUS_DATE DESC, UPDATED_AT DESC */
             orderedStatuses: function () {
                 if (this.curation.curation_statuses) {
                     return this.curation.curation_statuses.concat().sort((a, b) => {
 
-                        const dateA = moment(a.pivot.status_date);
-                        const dateB = moment(b.pivot.status_date);
+                        const dateA = dayjs(a.pivot.status_date);
+                        const dateB = dayjs(b.pivot.status_date);
 
                         if (dateA.isSame(dateB)) {
-                            const updatedAtA = moment(a.pivot.updated_at);
-                            const updatedAtB = moment(b.pivot.updated_at);
+                            const updatedAtA = dayjs(a.pivot.updated_at);
+                            const updatedAtB = dayjs(b.pivot.updated_at);
 
                             if (updatedAtA.isSame(updatedAtB)) {
                                 return 0;

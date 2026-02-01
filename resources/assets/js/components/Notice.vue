@@ -2,7 +2,7 @@
 
 <template>
     <div class="alert">
-        <a class="float-right crsr-pointer" @click="$emit('cleared')">x</a>
+        <a class="float-end crsr-pointer" @click="$emit('cleared')">x</a>
         <slot></slot>
     </div>
 </template>
@@ -19,6 +19,7 @@ export default {
             default: 3000
         }
     },
+    emits: ['cleared'],
     data() {
         return {
             timer: null,
@@ -29,7 +30,7 @@ export default {
             this.timer = setTimeout(() => {
                 this.$emit('cleared')
             }, this.duration)
-        }  
+        }
     },
     mounted() {
         if (this.autoClose) {

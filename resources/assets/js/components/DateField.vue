@@ -1,44 +1,21 @@
-<style>
-    .form-control[readonly]{
-        background: #fff;
-    }
-</style>
 <template>
-    <input 
-        ref="input"
-        type="text" 
-        class="form-control" 
+    <DatePicker
+        :modelValue="modelValue"
+        @update:modelValue="$emit('update:modelValue', $event)"
+        dateFormat="mm/dd/yy"
         :placeholder="placeholder"
-        v-bind:value="formatted" 
-        v-on:input="$event.target.value = value" 
-        :readonly="readonly"/>
+        :disabled="readonly"
+        showIcon
+        class="w-100"
+    />
 </template>
 <script>
-    require('../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css')
-    
-    var moment = require('moment'),
-        datepicker = require('bootstrap-datepicker');
+    import DatePicker from 'primevue/datepicker'
 
-    module.exports = {
+    export default {
         name: 'date-field',
-        props: ['name', 'value', 'id', 'placeholder', 'readonly'],
-        data: function(){
-            return {
-            }
-        },
-        computed: {
-            formatted: function(){
-                return (this.value) ? moment(this.value).format('MM/DD/YYYY') : null;
-            },
-        },
-        mounted: function(){
-            this.$nextTick(function(){
-                jQuery(this.$el).datepicker()
-                    .on('changeDate', function(evt){
-                        jQuery(this.$el).trigger('input');
-                        this.$emit('input', moment(evt.date, 'MM/DD/YYYY').toDate());
-                    }.bind(this));
-            }.bind(this));
-        }
-    };
+        components: { DatePicker },
+        props: ['name', 'modelValue', 'id', 'placeholder', 'readonly'],
+        emits: ['update:modelValue'],
+    }
 </script>

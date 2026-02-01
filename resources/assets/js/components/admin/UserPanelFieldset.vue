@@ -42,7 +42,7 @@ export default {
             this.$emit('updated', this.updatedPanel)
         }
     },
-    mount() {
+    mounted() {
         this.updatedPanel = this.panel
     }
 }

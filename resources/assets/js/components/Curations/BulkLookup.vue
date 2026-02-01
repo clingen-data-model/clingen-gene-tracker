@@ -17,9 +17,9 @@
                 Look up gene precurations and curations by gene symbol.
             </p>
 
-            <lookup-form 
+            <lookup-form
                 v-model="geneSymbols"
-                @lookup="search" 
+                @lookup="search"
                 @getCsv="downloadCsv"
                 :errors="formErrors"
                 class="mb-3"
@@ -33,43 +33,86 @@
             </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
-                <b-table 
-                    :fields="fields" 
-                    :items="filteredResults"
-                    primary-key="id"
-                    bordered
-                    show-empty
-                    :empty-text="emptyText"
-                    :busy="loadingResults"
-                    :small="true"
+                <div v-if="loadingResults" class="text-center">
+                    Looking for curations...
+                </div>
+                <div v-if="filteredResults.length === 0 && !loadingResults" class="text-center text-muted">
+                    {{ emptyText }}
+                </div>
+                <DataTable
+                    :value="filteredResults"
+                    :loading="loadingResults"
+                    stripedRows
+                    showGridlines
+                    size="small"
                     class="text-small"
-                    striped
                 >
-                    <div slot="table-busy" class="text-center">
-                        Looking for curations...
-                    </div>
-                    <template v-slot:head(available_phenotypes)="data">
-                        {{data.label}}
-                        <small class="font-weight-normal">(* phenotype is in curation)</small>
-                    </template>  
-                    <template v-slot:cell(available_phenotypes)="{item, value}">
-                        <ul class="list-unstyled" style="overflow-x: scroll; word-">
-                            <li v-for="ph in value" 
-                                :key="ph.mim_number" 
-                                class="phenotype" 
-                                :class="{curated: phenotypeIsInCuration(ph, item)}"
-                            >
-                                <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
-                            </li>
-                        </ul>
-                    </template>
-                </b-table>
+                    <Column field="gene_symbol" header="Gene" sortable></Column>
+                    <Column field="disease" header="Disease Entity" sortable :style="{ width: '12rem' }">
+                        <template #body="{ data }">
+                            {{ data.disease ? `${data.disease.name} (${data.disease.mondo_id})` : '' }}
+                        </template>
+                    </Column>
+                    <Column header="Expert Panel" sortable field="expert_panel.name">
+                        <template #body="{ data }">
+                            {{ data.expert_panel ? data.expert_panel.name : '' }}
+                        </template>
+                    </Column>
+                    <Column header="Classification" sortable field="current_classification.name" :style="{ width: '10rem' }">
+                        <template #body="{ data }">
+                            <span v-if="data.current_classification">
+                                {{ data.current_classification.name }} - {{ $formatDate(data.current_classification.pivot.classification_date, 'MM/DD/YY') }}
+                            </span>
+                        </template>
+                    </Column>
+                    <Column header="Curation Type" sortable field="curation_type.description" :style="{ width: '12rem' }">
+                        <template #body="{ data }">
+                            {{ data.curation_type ? data.curation_type.description : '' }}
+                        </template>
+                    </Column>
+                    <Column header="Rationales" field="rationales">
+                        <template #body="{ data }">
+                            {{ data.rationales ? data.rationales.map(r => r.name).join(', ') : '' }}
+                        </template>
+                    </Column>
+                    <Column header="Status" sortable field="current_status.name" :style="{ width: '10rem' }">
+                        <template #body="{ data }">
+                            <span v-if="data.current_status">
+                                {{ data.current_status.name }}
+                                <span v-if="data.current_status_date"> - {{ $formatDate(data.current_status_date, 'MM/DD/YY') }}</span>
+                            </span>
+                        </template>
+                    </Column>
+                    <Column header="Updated" sortable field="updated_at">
+                        <template #body="{ data }">
+                            {{ data.updated_at ? $formatDate(data.updated_at, 'MM/DD/YY') : '' }}
+                        </template>
+                    </Column>
+                    <Column header="Phenotypes" field="available_phenotypes">
+                        <template #header>
+                            Phenotypes <small class="fw-normal">(* phenotype is in curation)</small>
+                        </template>
+                        <template #body="{ data }">
+                            <ul class="list-unstyled" style="overflow-x: scroll;" v-if="data.available_phenotypes">
+                                <li v-for="ph in data.available_phenotypes"
+                                    :key="ph.mim_number"
+                                    class="phenotype"
+                                    :class="{curated: phenotypeIsInCuration(ph, data)}"
+                                >
+                                    <span v-if="phenotypeIsInCuration(ph, data)">*</span>{{ph.name}} ({{ph.mim_number}})
+                                </li>
+                            </ul>
+                        </template>
+                    </Column>
+                </DataTable>
             </div>
         </div>
     </div>
 </template>
 <script>
-import moment from 'moment';
+import dayjs from 'dayjs';
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 import LookupForm from './BulkLookup/LookupForm.vue'
 import FilterControl from './BulkLookup/FilterControl.vue'
 
@@ -77,93 +120,13 @@ export default {
     components: {
         LookupForm,
         FilterControl,
-    },
-    props: {
-        
+        DataTable,
+        Column,
     },
     data() {
         return {
             geneSymbols: [],
             results: [],
-            fields: [
-                {
-                    key: 'gene_symbol',
-                    label: 'Gene',
-                    sortable: true
-                },
-                {
-                    key: 'disease',
-                    label: 'Disease Entity',
-                    formatter: (value, key, item) => value ? `${value.name} (${value.mondo_id})` : null,
-                    sortable: true,
-                    thStyle: {
-                        width: '12rem'
-                    }
-                },
-                {
-                    key: 'expert_panel.name',
-                    label: 'Expert Panel',
-                    sortable: true,
-                },
-                {
-                    key: 'current_classification.name',
-                    label: 'Classification',
-                    sortable: true,
-                    formatter: function (value, key, item) {
-                        let disp = value 
-                        if (item.current_classification) {
-                            disp += ` - ${moment(item.current_classification.pivot.classification_date).format('MM/DD/YY')}`
-                        }
-                        return disp
-                    },
-                    thStyle: {
-                        width: "10rem"
-                    }
-                },
-                {
-                    key: 'curation_type.description',
-                    label: 'Curation Type',
-                    sortable: true,
-                    thStyle: {
-                        width: "12rem"
-                    },
-                },
-                {
-                    key: 'rationales',
-                    label: 'Rationales',
-                    formatter: function (value, key, item) {
-                        return item.rationales.map(r => r.name).join(', ')
-                    },
-                    sortable: false
-                },
-                {
-                    key: 'current_status.name',
-                    label: 'Status',
-                    sortable: true,
-                    formatter: function (value, key, item) {
-                        let disp = value 
-                        if (item.current_status_date) {
-                            disp += ` - ${moment(item.current_status_date).format('MM/DD/YY')}`
-                        }
-                        return disp
-                    },
-                    thStyle: {
-                        width: "10rem"
-                    }
-                },
-                {
-                    key: 'updated_at',
-                    label: 'Updated',
-                    sortable: true,
-                    formatter: value => value ? moment(value).format('MM/DD/YY') : null,
-                },
-                {
-                    key: 'available_phenotypes',
-                    label: 'Phenotypes',
-                    sortable: false
-                }
-                
-            ],
             loadingResults: false,
             filters: {
                 gene: [],
@@ -197,42 +160,6 @@ export default {
             }
             return results
         },
-        resultsPanels: function () {
-            if (this.results.length == 0)  {
-                return [];
-            }
-            const items = this.results
-                .filter(curation => curation.expert_panel !== null)
-                .map(curation => {
-                    return curation.expert_panel.name
-                });
-
-            return [...new Set(items)]
-        },
-        resultsClassifications: function () {
-            if (this.results.length == 0)  {
-                return [];
-            }
-            const items = this.results
-                .filter(curation => curation.current_classification !== null)
-                .map(curation => {
-                    return curation.current_classification.name
-                });
-                
-            return [...new Set(items)]
-        },
-        resultsStatuses: function () {
-            if (this.results.length == 0)  {
-                return [];
-            }
-            const items = this.results
-                .filter(curation => curation.current_status !== null)
-                .map(curation => {
-                    return curation.current_status ? curation.current_status.name : null
-                });
-                
-            return [...new Set(items)]
-        }
     },
     methods: {
         clearResults () {
@@ -249,7 +176,6 @@ export default {
                 })
                 .catch(error => {
                     const flattenedErrors = Object.values(error.response.data.errors).flat();
-                    console.log(flattenedErrors);
                     this.formErrors = flattenedErrors;
                 })
                 .then(response => {
@@ -270,8 +196,7 @@ export default {
             }
             const list = JSON.parse(JSON.stringify(this.filters[key]));
             list.splice(idx, 1);
-            console.log(list);
-            this.$set(this.filters, key, list);
+            this.filters[key] = list;
         },
         toggleFilter(key, value) {
             if (this.filters[key].indexOf(value) < 0) {
@@ -297,7 +222,6 @@ export default {
                 })
                 .catch(error => {
                     const flattenedErrors = Object.values(error.response.data.errors).flat();
-                    console.log(flattenedErrors);
                     this.formErrors = flattenedErrors;
                 })
         },

@@ -8,16 +8,16 @@
             </div>
             <div>
                 <slot>
-                    <date-input 
+                    <date-input
                         v-if="type == 'date'"
-                        :value="value" 
-                        @input="emitValue" 
+                        :modelValue="modelValue"
+                        @update:modelValue="emitValue"
                     ></date-input>
-                    <input 
+                    <input
                         v-else
-                        :type="type" 
-                        :value="value" 
-                        @input="$emit('input', $event.target.value)"
+                        :type="type"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                     >
                 </slot>
@@ -54,24 +54,22 @@ export default {
             required: false,
             default: 'text'
         },
-        value: {
+        modelValue: {
             required: false,
             default: null
         },
         placeholder: {
             required: false,
-            value: null
+            default: null
         }
     },
-    emits: [
-        'update:modelValue'
-    ],
+    emits: ['update:modelValue'],
     computed: {
         colon () {
             if (this.label && [':',';','.','?', '!'].includes(this.label.substr(-1))) {
                 return '';
             }
-            return ':';    
+            return ':';
         },
         hasErrors () {
             return this.errors.length > 0;
@@ -79,8 +77,7 @@ export default {
     },
     methods: {
         emitValue(evt) {
-            console.log(evt);
-            this.$emit('input', evt)
+            this.$emit('update:modelValue', evt)
         }
     }
 }

@@ -7,7 +7,7 @@
                 @click="$emit('toggle', item)"
                 :class="{selected: selectedFilters.includes(item)}"
             >
-                <span class="btn btn-sm float-right cursor-pointer" 
+                <span class="btn btn-sm float-end cursor-pointer"
                     v-if="selectedFilters.includes(item)"
                 >
                     x
@@ -16,7 +16,7 @@
             </li>
         </ul>
     </div>
-    
+
 </template>
 <script>
     export default {
@@ -34,6 +34,7 @@
                 required: true
             }
         },
+        emits: ['toggle'],
     }
 </script>
 <style>

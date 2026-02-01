@@ -1,11 +1,16 @@
 <script>
     import CurationsTable from '../Curations/Table.vue'
-    import {startCase} from 'lodash'
+    import { startCase } from 'lodash-es'
 
     export default {
         props: ['expertPanel'],
         components: {
             CurationsTable
+        },
+        data() {
+            return {
+                activeTab: 0,
+            }
         },
         computed: {
             activeMembers: function () {
@@ -21,18 +26,26 @@
                 if (user.pivot.is_curator) {
                     roles.push('Curator');
                 }
-                // console.log(roles);
                 return roles;
             }
         }
     }
 </script>
 <template>
-    <b-tabs>
-        <b-tab title="People">
-            <template slot="title">
-                People &nbsp;<span class="badge  badge-pill badge-primary">{{activeMembers.length}}</span>
-            </template>
+    <div>
+        <ul class="nav nav-pills mb-3">
+            <li class="nav-item">
+                <button class="nav-link" :class="{ active: activeTab === 0 }" @click="activeTab = 0">
+                    People &nbsp;<span class="badge rounded-pill bg-primary">{{activeMembers.length}}</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" :class="{ active: activeTab === 1 }" @click="activeTab = 1">
+                    Curations <span class="badge rounded-pill bg-primary">{{expertPanel.curations.length}}</span>
+                </button>
+            </li>
+        </ul>
+        <div v-show="activeTab === 0">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -51,15 +64,12 @@
                     </tr>
                 </tbody>
             </table>
-        </b-tab> 
-        <b-tab>
-            <template slot="title">
-                Curations <span class="badge  badge-pill badge-primary">{{expertPanel.curations.length}}</span>
-            </template>
+        </div>
+        <div v-show="activeTab === 1">
             <ul class="list-unstyled mt-2">
                 <li class="border-bottom">
-                    <curations-table 
-                        v-if="expertPanel.curations && expertPanel.curations.length > 0" 
+                    <curations-table
+                        v-if="expertPanel.curations && expertPanel.curations.length > 0"
                         :page-length="5"
                         :search-params="{expert_panel_id: expertPanel.id}"
                     ></curations-table>
@@ -68,6 +78,6 @@
                     </div>
                 </li>
             </ul>
-        </b-tab>
-    </b-tabs>
+        </div>
+    </div>
 </template>

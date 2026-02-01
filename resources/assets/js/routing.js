@@ -1,121 +1,94 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import store from './store/index'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { useAppStore } from './stores/app'
 
-const Curations = () =>
-    import ( /* webpackChunkName: "curations" */ './components/Curations/Curation.vue')
-const CurationCreate = () =>
-    import ( /* webpackChunkName: "CurationCreate" */ './components/Curations/Create.vue')
-const CurationEdit = () =>
-    import ( /* webpackChunkName: "CurationEdit" */ './components/Curations/Edit.vue')
-const CurationShow = () =>
-    import ( /* webpackChunkName: "CurationShow" */ './components/Curations/Show.vue')
-const CurationList = () =>
-    import ( /* webpackChunkName: "CurationList" */ './components/Curations/List.vue')
-const CriteriaOverview = () =>
-    import ( /* webpackChunkName: "CriteriaOverview" */ './components/CriteriaOverview.vue')
-const WorkingGroups = () =>
-    import ( /* webpackChunkName: "WorkingGroups" */ './components/WorkingGroups/Index.vue')
-const GroupList = () =>
-    import ( /* webpackChunkName: "GroupList" */ './components/WorkingGroups/List.vue')
-const GroupShow = () =>
-    import ( /* webpackChunkName: "GroupShow" */ './components/WorkingGroups/Show.vue')
-const UserDashboard = () =>
-    import ( /* webpackChunkName: "UserDashboard" */ './components/UserDashboard.vue')
-const CurationExportForm = () =>
-    import ( /* webpackChunkName: "CurationExportForm" */ './components/Curations/ExportForm.vue')
-const BulkLookup = () =>
-    import ( /* webpackChunkName: "BulkLookup" */ './components/Curations/BulkLookup.vue')
-const GeneBulkLookup = () =>
-    import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup.vue')
+const Curations = () => import('./components/Curations/Curation.vue')
+const CurationCreate = () => import('./components/Curations/Create.vue')
+const CurationEdit = () => import('./components/Curations/Edit.vue')
+const CurationShow = () => import('./components/Curations/Show.vue')
+const CurationList = () => import('./components/Curations/List.vue')
+const CriteriaOverview = () => import('./components/CriteriaOverview.vue')
+const WorkingGroups = () => import('./components/WorkingGroups/Index.vue')
+const GroupList = () => import('./components/WorkingGroups/List.vue')
+const GroupShow = () => import('./components/WorkingGroups/Show.vue')
+const UserDashboard = () => import('./components/UserDashboard.vue')
+const CurationExportForm = () => import('./components/Curations/ExportForm.vue')
+const BulkLookup = () => import('./components/Curations/BulkLookup.vue')
+const GeneBulkLookup = () => import('./components/GeneBulkLookup.vue')
 
-Vue.use(VueRouter)
-
-const user = store.getters.getUser;
-
-const routes = [{
+const routes = [
+    {
         path: '',
         component: UserDashboard,
         beforeEnter: (to, from, next) => {
+            const appStore = useAppStore()
+            const user = appStore.getUser
             if (!user.canAddCurations() && !user.isCurator()) {
                 next({ path: '/curations' })
-                return;
+                return
             }
             next()
-        }
+        },
     },
     {
         path: '/working-groups',
         component: WorkingGroups,
-        children: [{
+        children: [
+            {
                 path: '',
-                component: GroupList
+                component: GroupList,
             },
             {
                 path: ':id',
                 component: GroupShow,
-                props: true
-            }
+                props: true,
+            },
         ],
-        // beforeEnter: (to, from, next) => {
-        //     if (!user.hasPermission('list working-groups')) {
-        //         next({path: '/curations'})
-        //         return;
-        //     }
-        //     next()
-        // }
     },
     {
         path: '/curations',
         component: Curations,
-        children: [{
+        children: [
+            {
                 path: '',
                 component: CurationList,
-                name: 'curations-index'
+                name: 'curations-index',
             },
             {
                 path: 'create',
                 component: CurationCreate,
                 name: 'curations-create',
                 beforeEnter: (to, from, next) => {
+                    const appStore = useAppStore()
+                    const user = appStore.getUser
                     if (!user.canAddCurations()) {
                         next({ path: '/curations' })
-                        return;
+                        return
                     }
-
                     next()
-                }
+                },
             },
             {
                 path: 'export',
-                component: CurationExportForm
+                component: CurationExportForm,
             },
             {
                 path: ':id',
                 component: CurationShow,
                 props: true,
-                name: 'curations-show'
+                name: 'curations-show',
             },
             {
                 path: ':id/edit',
                 component: CurationEdit,
                 props: true,
                 name: 'curations-edit',
-                // beforeEnter: (to, from, next) => {
-                //     console.log(store);
-                //     if (!user.canUpdateCurations()) {
-                //         next(from)
-                //         return;
-                //     }
-                //     next()
-                // }
             },
-        ]
+        ],
     },
     {
         name: 'GeneBulkLookup',
         path: '/bulk-lookup/genes',
-        component: GeneBulkLookup
+        component: GeneBulkLookup,
     },
     {
         name: 'BulkCurationLookup',
@@ -125,12 +98,13 @@ const routes = [{
     {
         name: 'BulkLookup',
         path: '/bulk-lookup',
-        redirect: {name: 'BulkCurationLookup'},
-    }
+        redirect: { name: 'BulkCurationLookup' },
+    },
 ]
 
-const router = new VueRouter({
-    routes
+const router = createRouter({
+    history: createWebHashHistory(),
+    routes,
 })
 
 export default router

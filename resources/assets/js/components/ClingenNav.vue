@@ -1,27 +1,32 @@
 <style></style>
 <template>
     <div class="nav-container">
-        <b-navbar toggleable="md" type="dark" variant="dark" sticky>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
             <div class="container">
-                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-                <b-navbar-brand href="/">ClinGen Curation Tracker</b-navbar-brand>
-                <b-collapse is-nav id="nav-collapse">
-                    <b-navbar-nav>
-                        <b-nav-item href="#">Genes</b-nav-item>
-                        <b-nav-item href="#">GCEPS</b-nav-item>
-                    </b-navbar-nav>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav-collapse" aria-controls="nav-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/">ClinGen Curation Tracker</a>
+                <div class="collapse navbar-collapse" id="nav-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="#">Genes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">GCEPS</a></li>
+                    </ul>
 
-                    <b-navbar-nav class="ml-auto">
-                        <b-nav-item-dropdown text="User" right>
-                            <b-dropdown-item href="/admin">Admin</b-dropdown-item>
-                            <b-dropdown-item href="/admin/logs" v-show="true">Logs</b-dropdown-item>
-                            <b-dropdown-divider></b-dropdown-divider>
-                            <b-dropdown-item href="/#logout" @click="logout()">Logout</b-dropdown-item>
-                        </b-nav-item-dropdown>
-                    </b-navbar-nav>
-                </b-collapse>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">User</a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                                <li><a class="dropdown-item" href="/admin/logs" v-show="true">Logs</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/#logout" @click="logout()">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </b-navbar>
+        </nav>
     </div>
 </template>
 <script>

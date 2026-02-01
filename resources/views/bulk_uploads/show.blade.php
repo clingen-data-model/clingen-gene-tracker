@@ -15,7 +15,7 @@
     
                 <div class="d-flex justify-content-between">
 
-                    <form action="{{route('bulk-uploads.upload')}}" method="POST" enctype="multipart/form-data" style="width: 65%" class="pr-2">
+                    <form action="{{route('bulk-uploads.upload')}}" method="POST" enctype="multipart/form-data" style="width: 65%" class="pe-2">
                         {{csrf_field()}}
                         <div class="form-group form-inline">
                             <label for="expert_panel_id">Expert Panel:</label>
@@ -32,7 +32,7 @@
                             &nbsp;
                             <input type="file" name="bulk_curations" id="upload-field" class="form-control" />
                         </div>
-                        <div class="alert alert-warning pt-1 pb-1 pl-2 pr-2">
+                        <div class="alert alert-warning pt-1 pb-1 ps-2 pe-2">
                             <small>
                                 Please note: 
                                     <ul>

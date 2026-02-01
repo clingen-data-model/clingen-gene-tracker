@@ -4,52 +4,47 @@
             <router-link to="/curations">
                 &lt; Back to curations
             </router-link>
-        
         </div>
         <transition name="fade">
-            <b-card
+            <div
                 id="show-curation"
+                class="card"
                 v-if="!loading"
                 key="curation-details"
-                style="max-heigh: 1000px"
+                style="max-height: 1000px"
             >
-                <template slot="header">
+                <div class="card-header">
                     <div class="d-float justify-content-between">
                         <h3> {{ title }}</h3>
-
                         <div class="d-flex space-x-1" v-if="!loading">
                             <router-link
                                 v-if="user.canEditCuration(curation)"
-                                :id="'edit-curation-'+curation.id+'-btn'" 
-                                class="btn btn-secondary btn-sm" 
+                                :id="'edit-curation-'+curation.id+'-btn'"
+                                class="btn btn-secondary btn-sm"
                                 :to="'/curations/'+curation.id+'/edit'"
                             >
                                 Edit
                             </router-link>
                             <delete-button class="btn btn-sm" :curation="curation"></delete-button>
-                            <transfer-curation-control 
-                                :curation="curation" 
-                                v-if="$store.state.features.transferEnabled"
+                            <transfer-curation-control
+                                :curation="curation"
+                                v-if="transferEnabled"
                             ></transfer-curation-control>
-                        </div>                
+                        </div>
                     </div>
-                </template>
-                <div v-if="this.curations">
+                </div>
+                <div class="card-body" v-if="curations">
                     <div id="info">
                         <div class="row mt-2">
                             <strong class="col-md-3">Precuration ID:</strong>
-                            <div class="col-md">
-                                {{curation.id}}
-                            </div>
+                            <div class="col-md">{{curation.id}}</div>
                         </div>
                         <div class="row mt-2">
-                            <strong class="col-md-3">Gene Symbol:</strong> 
+                            <strong class="col-md-3">Gene Symbol:</strong>
                             <div class="col-md">{{ curation.gene_symbol }} - <span v-if="curation.name">{{`hgnc:${curation.name}`}}</span> (<small v-if="curation.hgnc_id">{{`hgnc:${curation.hgnc_id}`}}</small>)</div>
                         </div>
                         <div class="row mt-2">
-                            <strong class="col-md-3">
-                                Mode Of Inheritance:
-                            </strong>
+                            <strong class="col-md-3">Mode Of Inheritance:</strong>
                             <div class="col-md">
                                 <div v-if="curation.mode_of_inheritance">
                                     {{curation.mode_of_inheritance.name}} - ({{curation.mode_of_inheritance.hp_id}})
@@ -58,12 +53,12 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <strong class="col-md-3">Disease Entity:</strong> 
+                            <strong class="col-md-3">Disease Entity:</strong>
                             <div class="col-md">
                                 <div v-if="curation.mondo_id">
                                     <external-link :href="mondoUrl" target="mondo" class="external">
                                         <span v-if="curation.disease && curation.disease.name">
-                                            {{ (curation.disease.name ? curation.disease.name : '')}} - 
+                                            {{ (curation.disease.name ? curation.disease.name : '')}} -
                                         </span>
                                         {{ (curation.mondo_id) ? curation.mondo_id : '--'}}
                                     </external-link>
@@ -72,22 +67,21 @@
                         </div>
                         <hr>
                         <div class="row mt-2">
-                            <strong class="col-md-3">Expert Panel:</strong> 
+                            <strong class="col-md-3">Expert Panel:</strong>
                             <div class="col-md">
                                 {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
-                                <div v-if="$store.state.features.transferEnabled">
-                                        <!-- <pre>{{curation.expert_panels}}</pre> -->
-                                    <toggle-button 
-                                        v-model="showOwnerHistory" 
-                                        show-label="Show history" 
+                                <div v-if="transferEnabled">
+                                    <toggle-button
+                                        v-model="showOwnerHistory"
+                                        show-label="Show history"
                                         hide-label="Hide history"
                                     ></toggle-button>
                                     <transition name="fade">
-                                        <history-table 
-                                            :items="curation.expert_panels" 
-                                            item-label="Expert Panel" 
-                                            date-field="start_date" 
-                                            v-show="showOwnerHistory" 
+                                        <history-table
+                                            :items="curation.expert_panels"
+                                            item-label="Expert Panel"
+                                            date-field="start_date"
+                                            v-show="showOwnerHistory"
                                             index-attribute="id"
                                         ></history-table>
                                     </transition>
@@ -95,7 +89,7 @@
                             </div>
                         </div>
                         <div class="row mt-2">
-                            <strong class="col-md-3">Curator:</strong> 
+                            <strong class="col-md-3">Curator:</strong>
                             <div class="col-md">{{ (curation.curator) ? curation.curator.name : '--'}}</div>
                         </div>
                         <div class="row mt-2">
@@ -130,31 +124,25 @@
                         </div>
                         <div class="row mt-2">
                             <strong class="col-md-3">Notes on Rationale</strong>
-                            <div class="col-md">
-                                {{curation.rationale_notes}}
-                            </div>
+                            <div class="col-md">{{curation.rationale_notes}}</div>
                         </div>
                         <div class="row mt-1">
-                            <strong class="col-md-3">Disease entity notes:</strong> 
+                            <strong class="col-md-3">Disease entity notes:</strong>
                             <div class="col-md">{{ (curation.disease_entity_notes) ? curation.disease_entity_notes : '--' }}</div>
                         </div>
                         <div class="row mt-3">
                             <strong class="col-md-3">Current Status:</strong>
                             <div class="col-md-6">
                                 <div class="mb-2">
-                                    {{ (curation.current_status) ? curation.current_status.name : 'No status set' }} 
+                                    {{ (curation.current_status) ? curation.current_status.name : 'No status set' }}
                                     <button class="btn btn-sm">
-                                        <small>
-                                            <small @click="showStatusHistory = !showStatusHistory">
-                                                {{statusHistoryButtonText}}
-                                            </small>
-                                        </small>
+                                        <small><small @click="showStatusHistory = !showStatusHistory">{{statusHistoryButtonText}}</small></small>
                                     </button>
                                 </div>
                                 <transition name="fade">
-                                    <history-table 
-                                        :items="curation.curation_statuses" 
-                                        item-label="Status" 
+                                    <history-table
+                                        :items="curation.curation_statuses"
+                                        item-label="Status"
                                         date-field="status_date"
                                         v-show="showStatusHistory"
                                     ></history-table>
@@ -162,7 +150,7 @@
                             </div>
                         </div>
                         <div class="row mt-2" v-if="curation.gdm_uuid">
-                            <strong class="col-md-3">GCI ID:</strong> 
+                            <strong class="col-md-3">GCI ID:</strong>
                             <div class="col-md">
                                 <gci-link :curation="curation"></gci-link>
                             </div>
@@ -171,13 +159,9 @@
                             <strong class="col-md-3">Current Classification:</strong>
                             <div class="col-md-6">
                                 <div class="mb-2">
-                                    {{ (curation.current_classification) ? curation.current_classification.name : 'Not yet classified' }} 
+                                    {{ (curation.current_classification) ? curation.current_classification.name : 'Not yet classified' }}
                                     <button class="btn btn-sm" v-if="curation.current_classification">
-                                        <small>
-                                            <small @click="showClassificationHistory = !showClassificationHistory">
-                                                {{classificationButtonText}}
-                                            </small>
-                                        </small>
+                                        <small><small @click="showClassificationHistory = !showClassificationHistory">{{classificationButtonText}}</small></small>
                                     </button>
                                 </div>
                                 <transition name="fade">
@@ -188,19 +172,19 @@
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <strong class="col-md-3">Notes:</strong> 
+                            <strong class="col-md-3">Notes:</strong>
                             <div class="col-md">{{ (curation.curation_notes) ? curation.curation_notes : '--' }}</div>
                         </div>
                     </div>
                     <hr>
                     <documents-card :curation="curation"></documents-card>
-                    
+
                     <hr>
                     <notes-list :notes="curation.notes">
-                        <div slot="title">Administrative Notes</div>
+                        <template #title>Administrative Notes</template>
                     </notes-list>
                 </div>
-            </b-card>
+            </div>
             <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
                 Loading...
             </div>
@@ -208,7 +192,9 @@
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../stores/app'
+    import { useCurationsStore } from '../../stores/curations'
     import PhenotypeList from './Phenotypes/List.vue'
     import NotesList from '../NotesList.vue'
     import HistoryTable from './HistoryTable.vue'
@@ -244,17 +230,20 @@
         },
         watch: {
             '$route' (to, from) {
-                // console.log(to);
                 this.loadCuration()
             }
         },
         computed: {
-            ...mapGetters({ user: 'getUser'}),
-            ...mapGetters('curations', {
+            ...mapState(useAppStore, {user: 'getUser'}),
+            ...mapState(useCurationsStore, {
                 curations: 'Items',
                 getCuration: 'getItemById',
                 curation: 'currentItem'
-            }),            
+            }),
+            transferEnabled() {
+                const appStore = useAppStore()
+                return appStore.features.transferEnabled
+            },
             statusHistoryButtonText: function() {
                 return (this.showStatusHistory) ? 'Hide history' : 'Show history';
             },
@@ -274,28 +263,20 @@
                 }
                 return title;
             },
-            // curation: function(){
-            //     if (this.curations.length == 0) {
-            //         return {
-            //         }
-            //     }
-            //     return this.getCuration(this.id)
-            // },
             mondoUrl: function () {
                 if (this.curation.mondo_id) {
                     return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`
                 }
             }
-
         },
         methods: {
-            ...mapActions('curations', {
+            ...mapActions(useCurationsStore, {
                 fetchCuration: 'fetchItem',
             }),
             loadCuration() {
                 this.loading = true;
                 this.fetchCuration(this.id)
-                    .then(respones => {
+                    .then(response => {
                         this.loading = false;
                     })
                     .catch(error => {

@@ -1,4 +1,5 @@
-import OmimRepo from '../repositories/OmimRepository';
+import OmimRepo from '../repositories/OmimRepository'
+import { useAppStore } from '../stores/app'
 
 export default {
     data() {
@@ -9,7 +10,8 @@ export default {
     },
     computed: {
         loading: function () {
-            return this.$store.getters.loading;
+            const appStore = useAppStore()
+            return appStore.loading
         }
     },
     methods: {
@@ -21,7 +23,7 @@ export default {
                         this.phenotypesLoaded = true
                     })
                     .catch( error => {
-                        console.error(error) 
+                        console.error(error)
                     })
             }
             return new Promise((resolve, reject) => { resolve() })

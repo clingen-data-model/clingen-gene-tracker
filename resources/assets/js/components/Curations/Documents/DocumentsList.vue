@@ -11,32 +11,45 @@
                 <label for="list-filter-input">Filter:</label>&nbsp;
                 <input type="text" class="form-control form-control-sm" v-model="filter">
             </div>
-            <b-table 
-                :fields="fields" 
-                :items="documents" 
-                :filter="filter" 
-                :filter-included-fields="filteredFields"
-                stacked="sm"
-            >
-                <template v-slot:cell(action)="{item: document}">
-                    <a href="#" @click.prevent="downloadFile(document)" title="Download document">
-                        <i class="material-icons">cloud_download</i>
-                    </a>
-                    <a href="#" @click.prevent="showDetails(document)" title="Detailed information">
-                        <i class="material-icons">info</i>
-                    </a>
-                    <a href="#" 
-                        title="Delete document" 
-                        class="text-danger" 
-                        @click.prevent="deleteDocument(document)" 
-                        v-if="user.canEditCuration(curation)"
-                    >
-                        <i class="material-icons">delete</i>
-                </a>
-                </template>    
-            </b-table>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Created</th>
+                        <th>Uploaded by</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="document in filteredDocuments" :key="document.id">
+                        <td>{{ document.id }}</td>
+                        <td>{{ document.name }}</td>
+                        <td>{{ document.category ? document.category.name : '' }}</td>
+                        <td>{{ $formatDate(document.created_at, 'YYYY-MM-DD') }}</td>
+                        <td>{{ document.uploader ? document.uploader.name : '' }}</td>
+                        <td>
+                            <a href="#" @click.prevent="downloadFile(document)" title="Download document">
+                                <i class="material-icons">cloud_download</i>
+                            </a>
+                            <a href="#" @click.prevent="showDetails(document)" title="Detailed information">
+                                <i class="material-icons">info</i>
+                            </a>
+                            <a href="#"
+                                title="Delete document"
+                                class="text-danger"
+                                @click.prevent="deleteDocument(document)"
+                                v-if="user.canEditCuration(curation)"
+                            >
+                                <i class="material-icons">delete</i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <b-modal v-model="showDetailedInfo" hide-footer v-if="currentDocument" :title="currentDocument.name" size="lg">
+        <Dialog v-model:visible="showDetailedInfo" modal v-if="currentDocument" :header="currentDocument.name" :style="{ width: '50vw' }">
             <dl class="row">
                     <dt class="col-md-2">Name:</dt>
                     <dd class="col-md-10">{{currentDocument.name}}</dd>
@@ -48,7 +61,7 @@
                     <dd class="col-md-10">{{currentDocument.category ? currentDocument.category.name : '--'}}</dd>
 
                     <dt class="col-md-2">Date uploaded:</dt>
-                    <dd class="col-md-10">{{currentDocument.created_at | formatDate('YYYY-MM-DD')}}</dd>
+                    <dd class="col-md-10">{{ $formatDate(currentDocument.created_at, 'YYYY-MM-DD') }}</dd>
 
                     <dt class="col-md-2">Uploaded by:</dt>
                     <dd class="col-md-10">{{(currentDocument.uploader) ? currentDocument.uploader.name : '--'}}</dd>
@@ -58,7 +71,7 @@
 
             </dl>
             <div class="mt-2">
-                <button 
+                <button
                     class="btn btn-primary text-middle btn-sm"
                     @click="downloadFile(currentDocument)"
                     title="Download document"
@@ -66,18 +79,19 @@
                     Download document
                 </button>
             </div>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
 <script>
-    import DocumentUploader from './DocumentUploader.vue'
+    import Dialog from 'primevue/dialog'
     import getAllUploads from '../../../resources/uploads/get_all_uploads'
-    import { mapGetters } from 'vuex';
+    import { mapState } from 'pinia';
+    import { useAppStore } from '../../../stores/app';
 
     export default {
         components: {
-            DocumentUploader
+            Dialog
         },
         props: {
             curation: {
@@ -92,44 +106,25 @@
                 documents: [],
                 currentDocument: null,
                 filter: '',
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    },
-                    {
-                        key: 'category.name',
-                        sortable: true,
-                        label: 'Category'
-                    },
-                    {
-                        key: 'created_at',
-                        label: 'Created',
-                        sortable: true,
-                        formatter: (value, key, item) => {
-                            return this.$options.filters.formatDate(value, 'YYYY-MM-DD')
-                        }
-                    },
-                    {
-                        key: 'uploader.name',
-                        label: 'Uploaded by',
-                        sortable: true
-                    },
-                    'action'
-                ],
-                filteredFields: ['name', 'id', 'category', 'uploader', 'uploader'],
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'})
+            ...mapState(useAppStore, {user: 'getUser'}),
+            filteredDocuments() {
+                if (!this.filter) {
+                    return this.documents;
+                }
+                const filterLower = this.filter.toLowerCase();
+                return this.documents.filter(doc => {
+                    return (doc.name && doc.name.toLowerCase().includes(filterLower))
+                        || (doc.id && String(doc.id).includes(filterLower))
+                        || (doc.category && doc.category.name && doc.category.name.toLowerCase().includes(filterLower))
+                        || (doc.uploader && doc.uploader.name && doc.uploader.name.toLowerCase().includes(filterLower));
+                });
+            }
         },
         watch: {
             curation() {
-
                 this.getDocuments()
             }
         },
@@ -160,7 +155,6 @@
                         responseType: 'blob'
                     })
                     .then(response => {
-                        console.log(response.data);
                         const data  = response.data;
                         let a = window.document.createElement('a');
                         let url = window.URL.createObjectURL(data);
@@ -183,7 +177,7 @@
             },
             deleteDocument(document) {
                 if (confirm('Are you sure you want to delete the document '+document.name+'?')) {
-                    this.documents.splice(this.documents.findIndex(doc => doc.id = document.id), 1);
+                    this.documents.splice(this.documents.findIndex(doc => doc.id == document.id), 1);
                     axios.delete('/api/curations/'+this.curation.id+'/uploads/'+document.id)
                         .then(response => {
                         })
@@ -197,6 +191,6 @@
         mounted() {
             this.getDocuments();
         }
-    
+
 }
 </script>

@@ -1,92 +1,114 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-require('./bootstrap');
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
-import store from './store/index'
+import './bootstrap'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
+import 'primeicons/primeicons.css'
 import router from './routing.js'
-import CriteriaTable from './components/Curations/CriteriaTable.vue'
+import { useAppStore } from './stores/app'
+import { formatDate } from './utils/formatDate'
 import User from './User'
-import ExpertPanelField from './components/admin/ExpertPanelField.vue'
-import './filters.js';
-// import configs from './configs.json';
 
-// console.log(configs);
-
-window.Vue = require('vue').default
-window.Vue.use(BootstrapVue)
-
+import ClingenApp from './components/ClingenApp.vue'
+import ClingenNav from './components/ClingenNav.vue'
+import Alerts from './components/Alerts.vue'
+import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import ExternalLink from './components/ExternalLink.vue'
-window.Vue.component('external-link', ExternalLink)
+import GciLink from './components/Curations/GciLink.vue'
+import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue'
+import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 
-import GciLink from './components/Curations/GciLink.vue';
-window.Vue.component('gci-link', GciLink)
-import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
-window.Vue.component('gci-linked-message', GciLinkedMessage)
-
-if (user) {
-    user = new User(user);
+if (window.user) {
+    window.user = new User(window.user)
 }
 
-axios.interceptors.request.use(function(config) {
-    store.commit('addRequest');
-    const apiParts = config.url.split(/[\/?&]/)
-    try {
-        store.commit('addApiRequest', apiParts[2])
-    } catch (error) {}
-    return config;
-})
-
-axios.interceptors.response.use(
-    function(response) {
-        store.commit('removeRequest');
-        const url = new URL(response.request.responseURL);
-        const apiParts = url.pathname.split(/[\/?&]/)
-        try {
-            store.commit('removeApiRequest', apiParts[2])
-        } catch (error) {}
-        return response;
-    },
-    function(error) {
-        store.commit('removeRequest');
-        const url = new URL(error.response.request.responseURL);
-        const apiParts = url.pathname.split(/[\/?&]/)
-        try {
-            store.commit('removeApiRequest', apiParts[2])
-        } catch (error) {
-            console.log(error)
-        }
-        return Promise.reject(error);
-    }
-);
-
 if (document.getElementById('app')) {
-    const app = new Vue({
-        router,
-        el: '#app',
-        store: store,
+    const pinia = createPinia()
+    const app = createApp({
         components: {
-            'clingen-app': require('./components/ClingenApp.vue').default,
-            'clingen-nav': require('./components/ClingenNav.vue').default,
-            'alerts': require('./components/Alerts.vue').default,
-            CriteriaTable
+            'clingen-app': ClingenApp,
+            'clingen-nav': ClingenNav,
+            alerts: Alerts,
+            CriteriaTable,
         },
         computed: {
-            loading: function() {
-                return this.$store.getters.loading;
+            loading() {
+                const appStore = useAppStore()
+                return appStore.loading
+            },
+        },
+    })
+
+    app.use(pinia)
+    app.use(router)
+    app.use(PrimeVue, {
+        theme: {
+            preset: Aura,
+            options: {
+                darkModeSelector: false,
+            },
+        },
+    })
+
+    app.component('external-link', ExternalLink)
+    app.component('gci-link', GciLink)
+    app.component('gci-linked-message', GciLinkedMessage)
+
+    app.config.globalProperties.$formatDate = formatDate
+
+    // Set up axios interceptors with Pinia store
+    const appStore = useAppStore()
+
+    window.axios.interceptors.request.use(function (config) {
+        appStore.addRequest()
+        const apiParts = config.url.split(/[\/?&]/)
+        try {
+            appStore.addApiRequest(apiParts[2])
+        } catch (error) {}
+        return config
+    })
+
+    window.axios.interceptors.response.use(
+        function (response) {
+            appStore.removeRequest()
+            const url = new URL(response.request.responseURL)
+            const apiParts = url.pathname.split(/[\/?&]/)
+            try {
+                appStore.removeApiRequest(apiParts[2])
+            } catch (error) {}
+            return response
+        },
+        function (error) {
+            appStore.removeRequest()
+            const url = new URL(error.response.request.responseURL)
+            const apiParts = url.pathname.split(/[\/?&]/)
+            try {
+                appStore.removeApiRequest(apiParts[2])
+            } catch (error) {
+                console.log(error)
             }
+            return Promise.reject(error)
         }
-    });
+    )
+
+    app.mount('#app')
 }
 
 if (document.getElementById('expert-panel-field')) {
-    const app = new Vue({
-        el: '#expert-panel-field',
+    const pinia = createPinia()
+    const epApp = createApp({
         components: {
-            ExpertPanelField
-        }
-    });
+            ExpertPanelField,
+        },
+    })
+    epApp.use(pinia)
+    epApp.use(PrimeVue, {
+        theme: {
+            preset: Aura,
+            options: {
+                darkModeSelector: false,
+            },
+        },
+    })
+    epApp.mount('#expert-panel-field')
 }
