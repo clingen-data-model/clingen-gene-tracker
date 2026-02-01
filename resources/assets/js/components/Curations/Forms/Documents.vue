@@ -12,11 +12,11 @@ export default {
         DocumentsCard,
     },
     mixins: [
-        curationFormMixin, // handles syncing of prop value to updatedCuration
+        curationFormMixin,
     ],
     data() {
         return {
-            page: 'documents',            
+            page: 'documents',
             curation: {}
         }
     },

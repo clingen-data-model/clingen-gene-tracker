@@ -1,4 +1,5 @@
 <script>
+    import { debounce } from 'lodash-es'
     import queryStringFromParams from '../../../http/query_string_from_params';
     import WarningAlert from '../../WarningAlert.vue'
 
@@ -47,7 +48,7 @@
             }
         },
         methods: {
-            checkForCurations: _.debounce(function() {
+            checkForCurations: debounce(function() {
                 const queryObject = {
                     gene_symbol: this.curation.gene_symbol,
                 };
@@ -76,21 +77,20 @@
                 return this.curation && this.curation.phenotypes && this.curation.phenotypes.map((ph) => ph.mim_number).indexOf(phenotype.mim_number) > -1
             },
         }
-        //component definition
     }
 </script>
 
 <template>
     <div>
         <warning-alert v-show="matchedCount > 0">
-            <div slot="summary">
-                There 
-                {{ matchedCount == 1 ? 'is' : 'are' }} 
-                already <strong>{{matchedCount}}</strong> 
-                {{ matchedCount > 1 ? 'curations' : 'curation' }} 
+            <template #summary>
+                There
+                {{ matchedCount == 1 ? 'is' : 'are' }}
+                already <strong>{{matchedCount}}</strong>
+                {{ matchedCount > 1 ? 'curations' : 'curation' }}
                 in curation or pre-curation with this gene symbol.
-            </div>
-            <div slot="details">
+            </template>
+            <template #details>
                 <table class="table table-striped table-bordered table-small bg-white">
                     <thead>
                         <tr>
@@ -138,8 +138,8 @@
                             <td>{{match.expert_panel.name}}</td>
                             <td>
                                 <ul class="list-unstyled">
-                                    <li 
-                                        v-for="(coordinator, idx) in match.expert_panel.coordinators" 
+                                    <li
+                                        v-for="(coordinator, idx) in match.expert_panel.coordinators"
                                         :key="idx"
                                     >
                                         <a :href="`mailto:${coordinator.email}`">{{coordinator.name}}</a>
@@ -149,7 +149,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </template>
         </warning-alert>
     </div>
 </template>

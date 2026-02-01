@@ -4,14 +4,14 @@
     <div class="card">
         <div class="card-header">
             <router-link
-                id="new-curation-btn" 
-                class="btn btn-secondary float-right btn-sm" 
+                id="new-curation-btn"
+                class="btn btn-secondary float-end btn-sm"
                 to="/curations/create"
                 v-if="user.canAddCurations()"
             >
                 Add new Curation
             </router-link>
- 
+
             <h3>Dashboard: Your Curations</h3>
         </div>
         <div class="card-body">
@@ -21,15 +21,16 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
-    import CurationsTable from './Curations/Table'
-    
+    import { mapState } from 'pinia'
+    import { useAppStore } from '../stores/app'
+    import CurationsTable from './Curations/Table.vue'
+
     export default {
         components: {
             CurationsTable
         },
         computed: {
-            ...mapGetters({user: 'getUser'})
+            ...mapState(useAppStore, {user: 'getUser'})
         }
     }
 </script>

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 var handleError = function(message){
     console.error(message);
     alert('There was a problem: '+message+'. Please notify the development team.');
@@ -11,7 +13,7 @@ var objectToQueryString = function(obj){
     return '?'+params.join('&');
 }
 
-module.exports = {
+export default {
     baseUrl: null,
     name: 'BaseRepository',
     dates: [],
@@ -35,7 +37,7 @@ module.exports = {
     },
 
     all: function(params){
-        var url = this.baseUrl+objectToQueryString(params);        
+        var url = this.baseUrl+objectToQueryString(params);
         return this.makeRequest('get', url)
                 .then(function (response) {
                     var data = response.data.map(function (item) {
@@ -67,10 +69,10 @@ module.exports = {
 
     save: function(data){
         for (var key in data) {
-            if(data[key] && data[key]._isAMomentObject){
+            if(data[key] && typeof data[key] === 'object' && data[key].$isDayjsObject){
                 data[key] = data[key].format('YYYY-MM-DD HH:mm:ss');
             }else if( this.dates.indexOf(key) > -1){
-                data[key] = moment(data[key]).format('YYYY-MM-DD HH:mm:ss');
+                data[key] = dayjs(data[key]).format('YYYY-MM-DD HH:mm:ss');
             }
         }
 
@@ -101,7 +103,7 @@ module.exports = {
         var data = {};
         for (var key in obj) {
             if( this.dates.indexOf(key) > -1){
-                data[key] = moment(obj[key]);
+                data[key] = dayjs(obj[key]);
             }else{
                 data[key] = obj[key]
             }

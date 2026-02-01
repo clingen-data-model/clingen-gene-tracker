@@ -6,13 +6,13 @@
             <div class="alert alert-warning">
                 <div class="justify-content-between d-flex">
                     <slot name="summary"></slot>
-                    <button type="button" class="btn btn-sm btn-warning" v-b-toggle.matching-curations-details>
+                    <button type="button" class="btn btn-sm btn-warning" @click="detailsVisible = !detailsVisible">
                         Details
                     </button>
                 </div>
-                <b-collapse id="matching-curations-details" class="mt-2">
+                <div v-show="detailsVisible" class="mt-2">
                     <slot name="details"></slot>
-                </b-collapse>
+                </div>
             </div>
         </transition>
     </div>
@@ -20,11 +20,10 @@
 
 <script>
     export default {
-        components: {},
         data() {
-            return {}
+            return {
+                detailsVisible: false
+            }
         },
-        methods: {}
-    
-}
+    }
 </script>

@@ -2,22 +2,19 @@
 
 <template>
     <div>
-        <b-button 
-            variant="info"
-            size="sm" 
-            class="form-control mb-2"
+        <button
+            class="btn btn-info btn-sm form-control mb-2"
             @click="modalVisible = true"
-        >Add or update status</b-button>
+        >Add or update status</button>
 
-        <CurationStatusHistory :curation="value"></CurationStatusHistory>
+        <CurationStatusHistory :curation="modelValue"></CurationStatusHistory>
 
-        <b-modal 
-            v-model="modalVisible"
+        <Dialog
+            v-model:visible="modalVisible"
+            header="Update Curation Status"
+            modal
             @hide="submitAll"
         >
-            <div slot="modal-header">
-                <h3>Update Curation Status</h3>
-            </div>    
             <table class="table">
                 <thead>
                     <tr>
@@ -28,7 +25,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <b-form-select id="expert-panel-select" v-model="newStatusId">
+                            <select id="expert-panel-select" class="form-control" v-model="newStatusId">
                                 <option :value="null">Select...</option>
                                 <option v-for="status in statusOptions"
                                     :key="status.id"
@@ -36,28 +33,27 @@
                                 >
                                     {{status.name}}
                                 </option>
-                            </b-form-select>
+                            </select>
                             <div class="text-danger" v-if="errors.curation_status_id">
                                 <div v-for="message in errors.curation_status_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
                         <td class="d-flex align-items-center">
-                            <div class="flex-grow-1 mr-2">
-                                <datepicker 
+                            <div class="flex-grow-1 me-2">
+                                <DatePicker
                                     v-model="newStatusDate"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
+                                    dateFormat="yy-mm-dd"
+                                    showIcon
+                                    inputClass="form-control"
                                     placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                ></datepicker>
+                                />
                             </div>
-                            <b-button 
-                                variant="primary"
+                            <button
+                                class="btn btn-primary"
                                 @click="addStatus"
                             >
                                 <strong>+</strong>
-                            </b-button>
+                            </button>
                         </td>
                     </tr>
                     <tr v-for="status in curationCopy.curation_statuses" :key="status.pivot.id">
@@ -65,68 +61,70 @@
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
                         <td class="d-flex align-items-center">
-                            <div class="flex-grow-1 mr-2">
-                                <datepicker
+                            <div class="flex-grow-1 me-2">
+                                <DatePicker
                                     :id="'status-date-'+status.id"
-                                    v-model="status.pivot.status_date"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
+                                    :modelValue="parseDate(status.pivot.status_date)"
+                                    dateFormat="yy-mm-dd"
+                                    showIcon
+                                    inputClass="form-control"
                                     placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                    @selected="updateStatusDate(status.pivot,$event)"
-                                ></datepicker>
+                                    @update:modelValue="updateStatusDate(status.pivot, $event)"
+                                />
                             </div>
-                            <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
+                            <button class="btn btn-secondary" @click="removeStatusEntry(status)"><strong>x</strong></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
-    import Datepicker from 'vuejs-datepicker'
-    import moment from 'moment'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../../stores/app'
+    import { useCurationStatusesStore } from '../../../stores/curationStatuses'
+    import { useCurationsStore } from '../../../stores/curations'
+    import DatePicker from 'primevue/datepicker'
+    import dayjs from 'dayjs'
+    import Dialog from 'primevue/dialog'
     import CurationStatusHistory from '../StatusHistory.vue'
+    import { formatDate } from '../../../utils/formatDate'
 
     export default {
         components: {
             CurationStatusHistory,
-            Datepicker
+            DatePicker,
+            Dialog
         },
         props: {
-            value: {
+            modelValue: {
                 required: true,
                 type: Object
             }
         },
+        emits: ['update:modelValue'],
         data() {
             return {
                 curationCopy: {},
                 modalVisible: false,
                 newStatusDate: new Date(),
                 newStatusId: null,
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                },
                 statusDatesUpdated: false,
                 errors: []
             }
         },
         watch: {
-            value: {
+            modelValue: {
                 handler: 'syncCuration',
                 immediate: true,
                 deep: true
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'}),
-            ...mapGetters('curationStatuses', {
+            ...mapState(useAppStore, {user: 'getUser'}),
+            ...mapState(useCurationStatusesStore, {
                 curationStatuses: 'Items',
             }),
             statusOptions() {
@@ -134,18 +132,22 @@
             },
         },
         methods: {
-            ...mapActions('curations', {
+            ...mapActions(useCurationsStore, {
                 linkNewStatus: 'linkNewStatus',
                 storeStatusDate: 'updateStatusDate',
                 unlinkStatus: 'unlinkStatus'
             }),
+            parseDate(dateStr) {
+                if (!dateStr) return null;
+                return new Date(dateStr);
+            },
             addStatus() {
                 this.linkNewStatus(
                     {
-                        curation: this.curationCopy, 
+                        curation: this.curationCopy,
                         data: {
                             curation_status_id: this.newStatusId,
-                            status_date: this.$options.filters.formatDate(this.newStatusDate, 'YYYY-MM-DD')
+                            status_date: formatDate(this.newStatusDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {
@@ -157,16 +159,17 @@
                 })
             },
             updateStatusDate(pivot, newDate) {
-                if (!pivot || moment(pivot.status_date).diff(newDate) == 0) {
+                if (!pivot || !newDate) {
+                    return;
+                }
+                const formattedDate = dayjs(newDate).format('YYYY-MM-DD');
+                if (dayjs(pivot.status_date).format('YYYY-MM-DD') === formattedDate) {
                     return;
                 }
                 this.storeStatusDate({
                     curation: this.curationCopy,
                     pivotId: pivot.id,
-                    statusDate: moment(newDate).format('YYYY-MM-DD')
-                })
-                .then(response => {
-                    console.log('status date updated')
+                    statusDate: formattedDate
                 })
                 .catch(response => {
                     this.errors = response.data.errors;
@@ -182,7 +185,7 @@
                 }
             },
             syncCuration() {
-                this.curationCopy = JSON.parse(JSON.stringify(this.value))
+                this.curationCopy = JSON.parse(JSON.stringify(this.modelValue))
             },
         },
 

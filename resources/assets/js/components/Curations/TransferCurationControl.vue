@@ -1,32 +1,25 @@
 <template>
     <div>
-        <!-- <pre>{{curation.expert_panel}}</pre> -->
-        <!-- <pre>{{user}}</pre> -->
-        <button 
-            class="btn btn-sm bg-white border" 
+        <button
+            class="btn btn-sm bg-white border"
             @click="showTransferForm = true"
             v-if="user.canEditPanelCurations(curation.expert_panel)"
         >
             Transfer Curation
         </button>
-        <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true" size="lg">
-                <!-- <div v-if="inGci" class="alert alert-secondary">
-                    <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
-                    <gci-link :curation="curation">Go to the GCI record.</gci-link>
-                </div>
-                <div v-else> -->
+        <Dialog header="Transfer Curation Ownership" v-model:visible="showTransferForm" modal :style="{ width: '50vw' }">
                 <div>
                     <div class="alert alert-info">
                         Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
                     </div>
                     <input-row label="Transfer to:" :errors="errors.expert_panel_id">
-                        <select 
-                            id="expert-panel-select" 
+                        <select
+                            id="expert-panel-select"
                             v-model="newExpertPanel"
                             class="form-control form-control-sm w-75"
                         >
                             <option :value="null">Select...</option>
-                            <option v-for="panel in filteredPanels" 
+                            <option v-for="panel in filteredPanels"
                                 :value="panel"
                                 :key="panel.id"
                             >
@@ -38,23 +31,17 @@
                     <input-row :errors="errors.notes" label="Notes">
                         <textarea class="form-control" cols="60" rows="5" v-model="notes"></textarea>
                     </input-row>
-                    <!-- <input-row label="">
-                        <label>
-                            <input type="checkbox" v-model="isHistorical">&nbsp;This is a historical entry
-                        </label>
-                    </input-row>
-                    <input-row v-model="endDate" :errors="errors.end_date" label="End date" type="date" v-show="isHistorical"></input-row> -->
-                    <div class="mt-1 border-top pt-3 text-right">
+                    <div class="mt-1 border-top pt-3 text-end">
                         <button class="btn btn-secondary" @click="cancel">Cancel</button>
                         <button class="btn btn-primary" @click="confirmTransfer()">Transfer Curation</button>
                     </div>
                 </div>
-        </b-modal>
+        </Dialog>
 
-        <b-modal v-model="showConfirmation" title="Confirm Curation Transfer" :hide-footer="true">
+        <Dialog v-model:visible="showConfirmation" header="Confirm Curation Transfer" modal>
             <div class="alert alert-info">
                 <div class="lead">You are about to transfer this curation to {{newExpertPanel.name}}.</div>
-                
+
                 Please be sure that you have communicated with the EP coordinator(s) before you continue.
                 <ul>
                     <li v-for="coord in newExpertPanel.coordinators" :key="coord.id">
@@ -62,25 +49,30 @@
                     </li>
                 </ul>
             </div>
-            <div class="mt-1 border-top pt-3 text-right">
+            <div class="mt-1 border-top pt-3 text-end">
                 <button class="btn btn-secondary" @click="cancel">Cancel</button>
                 <button class="btn btn-primary" @click="transferCuration">Transfer Curation</button>
             </div>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import { mapState, mapActions } from 'pinia';
+import { useAppStore } from '../../stores/app'
+import { usePanelsStore } from '../../stores/panels'
+import { useCurationsStore } from '../../stores/curations'
 import is_validation_error from '../../http/is_validation_error'
 import ValidationError from '../ValidationError.vue'
 import InputRow from '../forms/InputRow.vue'
 import GciLink from '../Curations/GciLink.vue'
+import Dialog from 'primevue/dialog'
 
 export default {
     components: {
         ValidationError,
         InputRow,
-        GciLink
+        GciLink,
+        Dialog
     },
     props: {
         curation: {
@@ -107,8 +99,8 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({user: 'getUser'}),
-        ...mapGetters('panels', {
+        ...mapState(useAppStore, {user: 'getUser'}),
+        ...mapState(usePanelsStore, {
             panels: 'Items',
         }),
         filteredPanels() {
@@ -119,11 +111,11 @@ export default {
         }
     },
     methods: {
-        ...mapActions('panels', {
+        ...mapActions(usePanelsStore, {
             getAllPanels: 'getAllItems',
             getPanel: 'getItem'
         }),
-        ...mapActions('curations', {
+        ...mapActions(useCurationsStore, {
             updateOwner: 'updateOwner',
         }),
         confirmTransfer() {

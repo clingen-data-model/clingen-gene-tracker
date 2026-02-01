@@ -5,28 +5,32 @@
     </div>
 </template>
 <script>
-    import { mapActions } from 'vuex'
+    import { mapActions } from 'pinia'
+    import { useCurationStatusesStore } from '../stores/curationStatuses'
+    import { useRationalesStore } from '../stores/rationales'
+    import { useAppStore } from '../stores/app'
+    import { useCurationsStore } from '../stores/curations'
 
     export default {
         methods: {
-            ...mapActions('curationStatuses', {
+            ...mapActions(useCurationStatusesStore, {
                 getAllCurationStatuses: 'getAllItems'
             }),
-            ...mapActions('rationales', {
+            ...mapActions(useRationalesStore, {
                 getAllRationales: 'getAllItems'
             }),
-            ...mapActions({
-                getFeatures: 'getFeatures'
-            })
+            ...mapActions(useAppStore, ['getFeatures']),
         },
         mounted: function () {
-            if (this.$store.state.curations.items.length == 0) {
+            const curationsStore = useCurationsStore()
+            if (curationsStore.items.length == 0) {
                 this.getAllCurationStatuses();
                 this.getAllRationales();
             }
+            const appStore = useAppStore()
             if (
-                !this.$store.state.features.transferEnabled
-                || !this.$store.state.features.sendToGciEnabled
+                !appStore.features.transferEnabled
+                || !appStore.features.sendToGciEnabled
             ) {
                 this.getFeatures();
             }

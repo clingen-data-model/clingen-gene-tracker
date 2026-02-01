@@ -1,32 +1,31 @@
-import Vue from 'vue'
 import OmimRepo from '../repositories/OmimRepository'
 
 export default {
-    props: ['value', 'errors'],
+    props: ['modelValue', 'errors'],
+    emits: ['update:modelValue'],
     data() {
         return {
             updatedCuration: {
                 gene_symbol: null,
                 ratonionales: []
             },
-            // geneSymbolInvalid: false,
             page: null
         }
     },
     watch: {
         updatedCuration: function(to, from) {
-            this.$emit('input', this.updatedCuration);
+            this.$emit('update:modelValue', this.updatedCuration);
         },
-        value: function() {
-            if (this.value != this.updatedCuration) {
+        modelValue: function() {
+            if (this.modelValue != this.updatedCuration) {
                 this.syncValue();
             }
         }
     },
     methods: {
         syncValue() {
-            if (this.value) {
-                this.updatedCuration = JSON.parse(JSON.stringify(this.value));
+            if (this.modelValue) {
+                this.updatedCuration = JSON.parse(JSON.stringify(this.modelValue));
                 this.updatedCuration.page = this.page;
             }
         },

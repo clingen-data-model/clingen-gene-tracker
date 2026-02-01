@@ -14,31 +14,30 @@
         <div v-if="loading" style="position:absolute; top:0; left: 0; bottom: 0; right: 0; background-color: rgba(256, 256, 256, .4); z-index: 10">
             <div class="alert alert-light border text-center" style="margin: auto; width: 10rem; margin-top: 25%">Loading...</div>
         </div>
-        <b-form-group horizontal id="new-gene-symbol-group"
-            label="HGNC Gene Symbol"
-            label-for="gene-symbol-input"
+        <div class="mb-3" id="new-gene-symbol-group"
             :class="{'error': fieldError('gene_symbol')}"
         >
-            <b-form-input id="gene-symbol-input"
+            <label for="gene-symbol-input">HGNC Gene Symbol</label>
+            <input id="gene-symbol-input"
                 type="text"
+                class="form-control"
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
                 :disabled="hasGdmUuid()"
             >
-            </b-form-input>
             <gci-linked-message :curation="updatedCuration" attribute-label="the gene"></gci-linked-message>
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
-        </b-form-group>
+        </div>
 
         <curation-notifications :curation="updatedCuration"></curation-notifications>
 
-        <b-form-group horizontal label="Mode of Inheritance" label-for="moi_input"
-            :class="{'error': fieldError('moi_id')}"
-        >
-            <b-form-select v-model="updatedCuration.moi_id"
+        <div class="mb-3" :class="{'error': fieldError('moi_id')}">
+            <label for="moi_input">Mode of Inheritance</label>
+            <select v-model="updatedCuration.moi_id"
                 id="moi_input"
+                class="form-control"
                 :disabled="hasGdmUuid()"
             >
                 <option :value="null">Select...</option>
@@ -47,86 +46,81 @@
                 >
                     {{`${moi.name} (${moi.hp_id})`}}
                 </option>
-            </b-form-select>
+            </select>
             <validation-error :messages="errors.moi_id"></validation-error>
             <gci-linked-message :curation="updatedCuration" attribute-label="the mode of inheritance"></gci-linked-message>
+        </div>
 
-        </b-form-group>
-        
-        <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select"
-            :class="{'error': fieldError('expert_panel_id')}"
-        >
-            <b-form-select 
-                id="expert-panel-select" 
-                v-model="updatedCuration.expert_panel_id" 
+        <div class="mb-3" id="expert-panel-select-group" :class="{'error': fieldError('expert_panel_id')}">
+            <label for="expert-panel-select">Gene Curation Expert Panel</label>
+            <select
+                id="expert-panel-select"
+                class="form-control"
+                v-model="updatedCuration.expert_panel_id"
                 :disabled="!canUpdateExpertPanel"
             >
                 <option :value="null">Select...</option>
-                <option v-for="panel in panelOptions" 
+                <option v-for="panel in panelOptions"
                     :value="panel.id"
                     :key="panel.id"
                 >
                     {{panel.name}}
                 </option>
-            </b-form-select>
-            <small class="text-muted" v-if="!canUpdateExpertPanel && $store.state.features.transferEnabled">
+            </select>
+            <small class="text-muted" v-if="!canUpdateExpertPanel && transferEnabled">
                 To change the expert panel use click the "Transfer Curation" button.
             </small>
             <validation-error :messages="errors.expert_panel_id"></validation-error>
-        </b-form-group>
-    
-        <b-form-group horizontal 
-            id="curator-select-group" 
-            label="Curator" 
-            label-for="curator-select"
-            :class="{'error': fieldError('curator_id')}"
-        >
-            <b-form-select id="curator-select" v-model="updatedCuration.curator_id">
+        </div>
+
+        <div class="mb-3" id="curator-select-group" :class="{'error': fieldError('curator_id')}">
+            <label for="curator-select">Curator</label>
+            <select id="curator-select" class="form-control" v-model="updatedCuration.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in panelCurators" 
+                <option v-for="curator in panelCurators"
                     :key="curator.id"
                     :value="curator.id"
                 >
                     {{curator.name}}
                 </option>
-            </b-form-select>
+            </select>
             <validation-error :messages="errors.curator_id"></validation-error>
-        </b-form-group>
-    
-        <b-form-group horizontal label="Notes" label-for="notes-field"
-            :class="{'error': fieldError('notes')}"
-        >
+        </div>
+
+        <div class="mb-3" :class="{'error': fieldError('notes')}">
+            <label for="notes-field">Notes</label>
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedCuration.curation_notes"></textarea>
             <validation-error :messages="errors.curation_notes"></validation-error>
-        </b-form-group>
+        </div>
 
-        <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">
+        <div class="mb-3" v-if="updatedCuration && updatedCuration.curation_statuses">
+            <label>Status</label>
             <status-form v-model="updatedCuration" class="mt-1"></status-form>
-        </b-form-group>
+        </div>
         <br>
         <div class="alert alert-info mt-3" v-if="canEditGdmUuid">
             <h5>
                 Advanced Info
-                <small class="text-muted float-right"><small>
+                <small class="text-muted float-end"><small>
                     You are seeing this b/c you are a trusted user.
                     <br>
                     Only use these fields if you know what you're doing.
                 </small></small>
             </h5>
             <hr>
-            <b-form-group
-                horizontal 
-                label="GCI UUID" 
-                label-for="gdm_uuid"
+            <div class="mb-3"
                 :class="{'error': fieldError('gdm_uuid')}"
             >
-                <b-form-input 
-                    id="gdm_uuid" 
+                <label for="gdm_uuid">GCI UUID</label>
+                <input
+                    id="gdm_uuid"
+                    type="text"
+                    class="form-control"
                     v-model="updatedCuration.gdm_uuid"
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                ></b-form-input>
+                >
                 <small>
-                    <a :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`" 
+                    <a :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`"
                         v-if="updatedCuration.gdm_uuid"
                         target="gci"
                     >
@@ -134,25 +128,29 @@
                     </a>
                 </small>
                 <validation-error :messages="errors.gdm_uuid"></validation-error>
-            </b-form-group>
+            </div>
         </div>
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import _ from 'lodash'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../../stores/app'
+    import { useMoisStore } from '../../../stores/mois'
+    import { usePanelsStore } from '../../../stores/panels'
+    import { useUsersStore } from '../../../stores/users'
+    import { useCurationStatusesStore } from '../../../stores/curationStatuses'
+    import dayjs from 'dayjs'
     import CurationNotifications from './ExistingCurationNotification.vue'
     import DateField from '../../DateField'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import ValidationError from '../../ValidationError.vue'
     import CurationStatusHistory from '../StatusHistory.vue'
     import StatusForm from './StatusForm.vue'
-    import moment from 'moment'
 
     export default {
-        name: 'test',
+        name: 'CurationInfo',
         mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
+            curationFormMixin,
         ],
         components: {
             CurationNotifications,
@@ -167,43 +165,41 @@
                 newStatusId: null,
             }
         },
-        watch: {
-            updatedCuration: function (to, from) {
-                console.log('Info.vue: updatedCuration')
-                console.log(from)
-                console.log(to)
-            }
-        },
         computed: {
             today: function () {
-                return moment();
+                return dayjs();
             },
-            ...mapGetters({user: 'getUser'}),
-            ...mapGetters('mois', {
+            ...mapState(useAppStore, {user: 'getUser'}),
+            ...mapState(useMoisStore, {
                 mois: 'Items',
             }),
-            ...mapGetters('panels', {
+            ...mapState(usePanelsStore, {
                 panels: 'Items',
             }),
-            ...mapGetters('users', {
+            ...mapState(useUsersStore, {
                 curators: 'getCurators'
             }),
-            ...mapGetters('curationStatuses', {
+            ...mapState(useCurationStatusesStore, {
                 curationStatuses: 'Items',
             }),
-            ...mapGetters({
-                loading: 'loading',
-            }),
+            loading() {
+                const appStore = useAppStore()
+                return appStore.loading
+            },
+            transferEnabled() {
+                const appStore = useAppStore()
+                return appStore.features.transferEnabled
+            },
             panelOptions: function () {
-                return this.panels.filter(panel => user.canSelectExpertPanel(panel)).sort((a, b) => a.name.localeCompare(b.name))
+                return this.panels.filter(panel => this.user.canSelectExpertPanel(panel)).sort((a, b) => a.name.localeCompare(b.name))
             },
             statusOptions: function () {
-                return this.curationStatuses.filter(status => user.canSelectCurationStatus(status, this.updatedCuration))
+                return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.updatedCuration))
             },
             panelCurators: function () {
                 const curators = this.curators.filter(user => {
                     return (
-                        user.expert_panels 
+                        user.expert_panels
                         && user.expert_panels.find(panel => panel.id == this.updatedCuration.expert_panel_id)
                     )
                 });
@@ -232,21 +228,21 @@
                 if (!this.updatedCuration.expert_panel) {
                     return false;
                 }
-                return user.hasPermission('update curation gdm_uuid') 
-                    || user.isPanelCoordinator(this.updatedCuration.expert_panel)
-                    || user.canEditPanelCurations(this.updatedCuration.expert_panel)
+                return this.user.hasPermission('update curation gdm_uuid')
+                    || this.user.isPanelCoordinator(this.updatedCuration.expert_panel)
+                    || this.user.canEditPanelCurations(this.updatedCuration.expert_panel)
             }
         },
         methods: {
             handleDateSelected(evt) {
             },
-            ...mapActions('panels', {
+            ...mapActions(usePanelsStore, {
                 getAllPanels: 'getAllItems'
             }),
-            ...mapActions('mois', {
+            ...mapActions(useMoisStore, {
                 getAllMois: 'getAllItems'
             }),
-            ...mapActions('users', {
+            ...mapActions(useUsersStore, {
                 getAllUsers: 'getAllItems'
             }),
             fieldError (field) {

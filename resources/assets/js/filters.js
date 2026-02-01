@@ -1,10 +1,4 @@
-import Vue from 'vue'
-import moment from 'moment'
-
-Vue.filter('formatDate', function (dateString, format = 'YYYY-MM-DD HH:mm') {
-    if (dateString === null) {
-        return null;
-    }
-    
-    return moment(dateString).format(format)
-})
+// Vue 2 global filters have been removed in Vue 3.
+// Use the $formatDate global property or import { formatDate } from './utils/formatDate' instead.
+import { formatDate } from './utils/formatDate'
+export { formatDate }

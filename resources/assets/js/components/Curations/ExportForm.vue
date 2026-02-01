@@ -8,14 +8,14 @@
             </div>
             <div class="card-body">
                 <form action="/curations/export" method="GET">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="expert_panel_id">Expert Panel:</label>
                         <select name="expert_panel_id" id="expert_panel_id" class="form-control">
                             <option value="">All</option>
                             <option v-for="panel in panels" :key="panel.id" :value="panel.id">{{panel.name}}</option>
                         </select>
                     </div>
-                    <div class="form-group row">
+                    <div class="mb-3 row">
                         <div class="col-sm-6">
                             <label for="start_date">Start Date</label>
                             <input type="date" name="start_date" id="start_date" class="form-control">
@@ -25,7 +25,7 @@
                             <input type="date" name="end_date" id="end_date" class="form-control">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <button class="btn btn-primary" type="submit">Download Export</button>
                     </div>
                 </form>
@@ -35,7 +35,8 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { usePanelsStore } from '../../stores/panels'
 
     export default {
         components: {},
@@ -43,18 +44,18 @@
             return {}
         },
         computed: {
-            ...mapGetters('panels', {
+            ...mapState(usePanelsStore, {
                 panels: 'Items',
             }),
         },
         methods: {
-            ...mapActions('panels', {
-                getAllPanels: 'getAllItems'                
+            ...mapActions(usePanelsStore, {
+                getAllPanels: 'getAllItems'
             })
         },
         mounted() {
             this.getAllPanels();
         }
-    
+
 }
 </script>

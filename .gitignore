@@ -1,4 +1,5 @@
 .env
+/public/build
 auth.json
 .DS_Store
 .push.settings.jsonc

@@ -10,21 +10,20 @@
                 <th>{{itemLabel}}</th>
                 <th>Date</th>
             </tr>
-            <tr 
-                v-for="(item, idx) in orderedItems" 
+            <tr
+                v-for="(item, idx) in orderedItems"
                 :key="(indexAttribute) ? item[indexAttribute] : idx"
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{item.name}}</td>
-                <td>{{item.pivot[dateField] | formatDate('YYYY-MM-DD') }}</td>
+                <td>{{ $formatDate(item.pivot[dateField], 'YYYY-MM-DD') }}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
-    import moment from 'moment'
-    import filters from '../../filters'
-    
+    import dayjs from 'dayjs'
+
     export default {
         props: {
             items: {
@@ -49,7 +48,7 @@
             orderedItems: function () {
                 if (this.items) {
                     return this.items.concat().sort((a, b) => {
-                        if (moment(a.pivot[this.dateField]).isSame(b.pivot[this.dateField])) {
+                        if (dayjs(a.pivot[this.dateField]).isSame(b.pivot[this.dateField])) {
                             if(a.id == b.id) {
                                 return 0
                             }
@@ -58,7 +57,7 @@
                             }
                             return -1;
                         }
-                        if (moment(a.pivot[this.dateField]).isBefore(b.pivot[this.dateField])) {
+                        if (dayjs(a.pivot[this.dateField]).isBefore(b.pivot[this.dateField])) {
                             return 1;
                         }
                         return -1;

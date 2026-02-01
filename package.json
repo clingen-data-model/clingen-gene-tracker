@@ -1,39 +1,28 @@
 {
     "private": true,
+    "type": "module",
     "scripts": {
-        "development": "mix",
-        "dev": "npm run development",
-        "watch": "mix watch",
-        "serve": "npm run watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "build": "npm run production",
-        "production": "mix --production"
-    },
-    "devDependencies": {
-        "axios": "^0.21.1",
-        "bootstrap": "^4.5.3",
-        "bootstrap-datepicker": "^1.8.0",
-        "bootstrap-vue": "^2.18.0",
-        "clean-webpack-plugin": "^3.0.0",
-        "cross-env": "^5.1",
-        "jquery": "^3.5.1",
-        "lodash": "^4.17.21",
-        "moment": "^2.29.1",
-        "popper.js": "^1.12",
-        "resolve-url-loader": "^3.1.2",
-        "sass": "^1.27.0",
-        "sass-loader": "^8.0.2",
-        "vue": "^2.6.12",
-        "vue-loader": "^15.11.1",
-        "vue-router": "^3.4.7",
-        "vue-template-compiler": "^2.6.12",
-        "vuejs-datepicker": "^1.2.0",
-        "vuex": "^3.5.1"
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
     },
     "dependencies": {
-        "autotrack": "^2.4.1",
-        "laravel-mix": "^6.0.43"
+        "@popperjs/core": "^2.11",
+        "@primeuix/themes": "^2.0.3",
+        "axios": "^1.7",
+        "bootstrap": "^5.3",
+        "dayjs": "^1.11",
+        "lodash-es": "^4.17",
+        "pinia": "^2.2",
+        "primeicons": "^7.0",
+        "primevue": "^4.2",
+        "vue": "^3.5",
+        "vue-router": "^4.4"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.2",
+        "laravel-vite-plugin": "^1.0",
+        "sass": "^1.80",
+        "vite": "^6.0"
     }
 }

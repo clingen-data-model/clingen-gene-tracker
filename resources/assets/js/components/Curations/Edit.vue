@@ -6,76 +6,80 @@
                 &lt; Back to curations
             </router-link>
         </p>
-        <b-card id="edit-curation-modal">
-            <template slot="header">
+        <div class="card" id="edit-curation-modal">
+            <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h3>{{ title }}</h3>
                     <div class="d-flex space-x-2">
-                        <transfer-curation-control 
+                        <transfer-curation-control
                             :curation="curation"
-                             v-if="$store.state.features.transferEnabled"
+                             v-if="transferEnabled"
                         ></transfer-curation-control>
                         <router-link :to="'/curations/'+curation.id">
                             view
                         </router-link>
                     </div>
                 </div>
-            </template>
-            <div v-if="!this.curation.id" class="alert alert-info">
-                Loading...
             </div>
-            <div v-else-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
-                Sorry.  You don't have permission to edit this curation.
-            </div>
-            <div v-if="curations && user.canEditCuration(this.curation)">
-                <b-form id="new-curation-form">
-                    <div class="row">
-                        <div class="col-md-2 border-right">
-                            <nav class="nav flex-column">
-                                <router-link 
-                                     v-for="(step, idx) in steps"
-                                     :key="idx"
-                                    :to="$route.path+'#'+idx" 
-                                    class="nav-link" 
-                                    :class="{active: (currentStep == idx)}"
+            <div class="card-body">
+                <div v-if="!curation.id" class="alert alert-info">
+                    Loading...
+                </div>
+                <div v-else-if="!user.canEditCuration(curation)" class="alert alert-danger">
+                    Sorry.  You don't have permission to edit this curation.
+                </div>
+                <div v-if="curations && user.canEditCuration(curation)">
+                    <form id="new-curation-form" @submit.prevent>
+                        <div class="row">
+                            <div class="col-md-2 border-end">
+                                <nav class="nav flex-column">
+                                    <router-link
+                                         v-for="(step, idx) in steps"
+                                         :key="idx"
+                                        :to="$route.path+'#'+idx"
+                                        class="nav-link"
+                                        :class="{active: (currentStep == idx)}"
+                                    >
+                                        {{ step.title }}
+                                    </router-link>
+                                </nav>
+                            </div>
+                            <div class="col-md-10">
+                                <component
+                                    :is="currentStep"
+                                    :modelValue="updatedCuration"
+                                    :errors="errors"
+                                    @update:modelValue="updatedCuration = $event"
+                                    ref="editPage"
                                 >
-                                    {{ step.title }}
-                                </router-link>
-                            </nav>
+                                </component>
+                            </div>
                         </div>
-                        <div class="col-md-10">
-                            <component 
-                                :is="currentStep" 
-                                :value="updatedCuration"  
-                                :errors="errors" 
-                                @input="updatedCuration = $event"
-                                ref="editPage"
-                            >
-                            </component>                    
-                        </div>
-                    </div>
                         <hr>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <!-- <delete-button :curation="curation"></delete-button> -->
-                            <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
+                            </div>
+                            <div class="col-md-8 text-end">
+                                <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
+                                <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
+                                <button class="btn btn-primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</button>
+                                <button class="btn btn-primary" @click="updateCuration(navNext, 'next')">
+                                    {{ (!nextStep) ? 'Save and exit' : 'Next'}}
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-8 text-right">
-                            <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
-                            <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" @click="updateCuration(navNext, 'next')">
-                                {{ (!nextStep) ? 'Save and exit' : 'Next'}}
-                            </b-button>
-                        </div>
-                    </div>
-                </b-form>
+                    </form>
+                </div>
             </div>
-        </b-card>
+        </div>
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../stores/app'
+    import { useMessagesStore } from '../../stores/messages'
+    import { useCurationsStore } from '../../stores/curations'
     import CurationType from './Forms/CurationType.vue'
     import Phenotypes from './Forms/Phenotypes.vue'
     import DeleteButton from './DeleteButton.vue'
@@ -116,19 +120,13 @@
                     mondo: {
                         title: 'MonDO',
                         next: 'classification',
-                        back: 'phenotypes' 
+                        back: 'phenotypes'
                     },
-                    // classification: {
-                    //     title: 'Classification',
-                    //     next: 'documents',
-                    //     back: 'mondo' 
-                    // },
                     documents: {
                         title: 'Documents',
                         next: null,
                         back: 'classification'
                     }
-
                 },
                 updatedCuration: {
                     rationals: []
@@ -152,11 +150,15 @@
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'}),
-            ...mapGetters('curations', {
+            ...mapState(useAppStore, {user: 'getUser'}),
+            ...mapState(useCurationsStore, {
                 curations: 'Items',
                 getCuration: 'getItemById',
             }),
+            transferEnabled() {
+                const appStore = useAppStore()
+                return appStore.features.transferEnabled
+            },
             title: function () {
                 let title = 'Edit Curation: ';
                 if (this.curation.gene_symbol) {
@@ -175,17 +177,8 @@
                 let curation = this.getCuration(this.id);
                 if (!curation) {
                     return this.standInCuration
-                    
                 }
                 return curation;
-            },
-            curator: () =>  (this.curation.curator) ? this.curation.curator.name : '--',
-            expertPanel: () => { return (this.expert_panel) ? this.curation.expert_panel.name : '--'; },
-            selectedPanel: () => {
-                return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
-                    })
             },
             geneSymbolError: function () {
                 return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
@@ -215,11 +208,8 @@
             }
         },
         methods: {
-            ...mapMutations('messages', [
-                'addInfo',
-                'addAlert'
-            ]),
-            ...mapActions('curations', {
+            ...mapActions(useMessagesStore, ['addInfo']),
+            ...mapActions(useCurationsStore, {
                 fetchCuration: 'fetchItem',
                 storeNewItem: 'storeNewItem',
                 storeItemUpdates: 'storeItemUpdates'

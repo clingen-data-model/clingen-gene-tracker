@@ -1,7 +1,7 @@
 <style></style>
 
 <template>
-    <button 
+    <button
         v-if="user.canDeleteCuration(curation)"
         :id="'delete-curation-'+curation.id+'-btn'"
         class="btn btn-danger"
@@ -12,7 +12,10 @@
 </template>
 
 <script>
-    import { mapMutations, mapActions, mapGetters } from 'vuex'
+    import { mapState, mapActions } from 'pinia'
+    import { useAppStore } from '../../stores/app'
+    import { useMessagesStore } from '../../stores/messages'
+    import { useCurationsStore } from '../../stores/curations'
 
     export default {
         props: {
@@ -26,7 +29,7 @@
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'}),
+            ...mapState(useAppStore, {user: 'getUser'}),
             title: function () {
                 let title = '';
                 if (this.curation && this.curation.gene_symbol) {
@@ -42,10 +45,10 @@
             },
         },
         methods: {
-            ...mapActions('curations', {
+            ...mapActions(useCurationsStore, {
                 destroyCuration: 'destroyItem'
             }),
-           ...mapMutations('messages', [
+            ...mapActions(useMessagesStore, [
                 'addInfo',
                 'addError'
             ]),
@@ -67,6 +70,6 @@
                 }
             }
         }
-    
+
 }
 </script>
