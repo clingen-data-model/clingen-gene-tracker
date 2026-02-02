@@ -37,6 +37,7 @@ class OmimObsoletePhenotypesDigest extends Notification
                                     'expertPanel' => $this->expertPanel,
                                     'curations' => $this->curations,
                                     'since' => $this->since,
+                                    'user' => $notifiable,
                                 ]);
         /*
                     ->line('The introduction to the notification.')
