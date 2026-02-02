@@ -22,12 +22,11 @@
 <body>
 
 <p>
-    Hi,
+    Hi {{ $user->name }},
 </p>
 
 <p>
-    This is a weekly GeneTracker digest. Our daily OMIM genemap2 import detected that
-    <strong>some OMIM phenotype labels currently used in your curations are no longer present in the latest OMIM genemap2 file</strong>.
+    This is a weekly GeneTracker digest. Our daily OMIM data import detected that <strong>some OMIM phenotype labels currently used in your curations are no longer present</strong>.
 </p>
 
 <div class="box">
@@ -36,8 +35,10 @@
 </div>
 
 <p class="muted small" style="margin-top: 10px;">
-    Note: genemap2 does not provide an explicit “renamed” status. A missing label usually means it was renamed/replaced in OMIM,
-    or in some cases removed. In GeneTracker we flag these as “Not in latest OMIM” so curators can review them.
+    Note: A missing label usually means it was renamed/replaced in OMIM, or in some cases removed. In GeneTracker we flag these as "Not in latest OMIM" so curators can review them.
+</p>
+<p>
+    If you are concerned about the changes to the OMIM label change, you may want to consider reviewing the precuration records (linked below) and updating as necessary with input from the expert panel.
 </p>
 <h3 style="margin-top: 18px;">Curations affected</h3>
 
