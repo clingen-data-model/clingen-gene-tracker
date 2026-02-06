@@ -6,7 +6,6 @@ use App\User;
 use Exception;
 use App\Curation;
 use App\Contracts\SearchService;
-use Illuminate\Support\Facades\DB;
 
 class CurationSearchService implements SearchService
 {
@@ -173,27 +172,6 @@ class CurationSearchService implements SearchService
             }
             $this->applyFieldFilter($query, $field, $value);
         }
-
-        // Free-text filter: group ALL ORs
-        $hgncPrefixed = null;
-        if (preg_match('/^hgnc:\s*\d+$/i', $filter)) {
-            $hgncPrefixed = trim(substr($filter, 5));
-        }
-
-        return $query->where(function ($q) use ($filter, $hgncPrefixed) {
-            $q->where('gene_symbol', 'like', "%{$filter}%")
-            ->orWhere('expert_panels.name', 'like', "%{$filter}%")
-            ->orWhere('users.name', 'like', "%{$filter}%")            
-            ->orWhere('hgnc_name', 'like', "%{$filter}%")
-            ->orWhere('curations.mondo_id', 'like', "%{$filter}%")
-            ->orWhere('diseases.name', 'like', "%{$filter}%")
-            ->orWhereHas('phenotypes', function ($r) use ($filter) {
-                $r->where('mim_number', $filter);
-            });
-            if ($hgncPrefixed) {
-                $q->orWhere('hgnc_id', $hgncPrefixed);
-            }
-        });
     }
 
     private function applyFieldFilter($query, $field, $value)
