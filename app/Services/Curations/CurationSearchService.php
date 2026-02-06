@@ -176,8 +176,8 @@ class CurationSearchService implements SearchService
 
         // Free-text filter: group ALL ORs
         $hgncPrefixed = null;
-        if (preg_match('/^hgnc:\s*\d+$/i', $filter)) {
-            $hgncPrefixed = trim(substr($filter, 5));
+        if (preg_match('/^hgnc:\s*(\d+)$/i', $filter, $matches)) {
+            $hgncPrefixed = trim($matches[1]);
         }
 
         return $query->where(function ($q) use ($filter, $hgncPrefixed) {
