@@ -87,7 +87,7 @@ services:
     mailpit:
         image: 'axllent/mailpit:latest'
         expose:
-            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_PORT:-1025}'
         ports:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8037}:8025'
 
