@@ -70,7 +70,10 @@ class DiseaseLookupController extends Controller
 
         $ontologyId = strtoupper($validator->validated()['ontology_id']);
         [$prefix]   = explode(':', $ontologyId, 2);
-        $prefix     = strtoupper($prefix);
+        $prefix     = strtolower($prefix);
+        if (!in_array($prefix, ['mondo', 'doid'], true)) {
+            throw ValidationException::withMessages(['ontology_id' => 'Invalid ontology prefix. Must be MONDO or DOID.']);
+        }
         return Disease::selectRaw("'{$prefix}' AS ontology, `{$prefix}_id` AS ontology_id, `name`")
             ->where("{$prefix}_id", $ontologyId)
             ->firstOrFail();
