@@ -150,29 +150,30 @@ class CurationSearchService implements SearchService
         }
 
         $filter = $params['filter'];
+        $escapedFilter = addcslashes($filter, '%_'); // escape % and _ for LIKE queries
 
         // Field-specific filter
         if (isset($params['filter_field'])) {
             switch ($params['filter_field']) {
                 case 'gene_symbol':
-                    return $query->where('gene_symbol', 'like', "%{$filter}%");
+                    return $query->where('gene_symbol', 'like', "%{$escapedFilter}%");
 
                 case 'expert_panel':
-                    return $query->where('expert_panels.name', 'like', "%{$filter}%");
+                    return $query->where('expert_panels.name', 'like', "%{$escapedFilter}%");
 
                 case 'mode_of_inheritance':
-                    return $query->whereHas('modeOfInheritance', function ($q) use ($filter) {
-                        $q->where(function ($qq) use ($filter) {
-                            $qq->where('abbreviation', 'like', "%{$filter}%")
-                            ->orWhere('name', 'like', "%{$filter}%");
+                    return $query->whereHas('modeOfInheritance', function ($q) use ($escapedFilter) {
+                        $q->where(function ($qq) use ($escapedFilter) {
+                            $qq->where('abbreviation', 'like', "%{$escapedFilter}%")
+                            ->orWhere('name', 'like', "%{$escapedFilter}%");
                         });
                     });
 
                 case 'mondo_id':
                     // group the ORs
-                    return $query->where(function ($q) use ($filter) {
-                        $q->where('curations.mondo_id', 'like', "%{$filter}%")
-                        ->orWhere('diseases.name', 'like', "%{$filter}%");
+                    return $query->where(function ($q) use ($escapedFilter) {
+                        $q->where('curations.mondo_id', 'like', "%{$escapedFilter}%")
+                        ->orWhere('diseases.name', 'like', "%{$escapedFilter}%");
                     });
 
                 default:
@@ -182,8 +183,8 @@ class CurationSearchService implements SearchService
 
         // Free-text filter: group ALL ORs
         $hgncPrefixed = null;
-        if (preg_match('/^hgnc:\s*\d+$/i', $filter)) {
-            $hgncPrefixed = trim(substr($filter, 5));
+        if (preg_match('/^hgnc:\s*(\d+)$/i', $filter, $matches)) {
+            $hgncPrefixed = trim($matches[1]);
         }
 
         return $query->where(function ($q) use ($filter, $hgncPrefixed) {
