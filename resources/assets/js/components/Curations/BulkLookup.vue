@@ -54,7 +54,7 @@
                     </template>  
                     <template v-slot:cell(available_phenotypes)="{item, value}">
                         <ul class="list-unstyled" style="overflow-x: scroll; word-">
-                            <li v-for="ph in value" 
+                            <li v-for="ph in (item && item.gene && item.gene.phenotypes ? item.gene.phenotypes : [])" 
                                 :key="ph.mim_number" 
                                 class="phenotype" 
                                 :class="{curated: phenotypeIsInCuration(ph, item)}"
