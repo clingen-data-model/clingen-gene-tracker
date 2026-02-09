@@ -16,8 +16,8 @@ class CurationSimpleResource extends JsonResource
     {
         $disease    = $this->disease;
         $moiRel     = $this->modeOfInheritance;
-        $curation_status = $this->currentStatus?->name;
-        $classification_id = $classification = "";
+        $curation_status    = $this->currentStatus?->name;
+        $classification_id  = $classification = "";
         if($this->currentClassification) {
             $classification_id  = $this->currentClassification->id;
             $classification     = $this->currentClassification->name;
@@ -26,21 +26,25 @@ class CurationSimpleResource extends JsonResource
         $hash   = hash('sha256', $this->uuid . $this->gene_symbol . $disease?->mondo_id . $this->moi?->abbreviation . $classification . $curation_status);
 
         $phenotypesText = '';
-        $phenotypeIDs = '';
-        $excludePhenotypes = collect($this->available_phenotypes)->values();
+        $phenotypeIDs   = '';
+        $genePhenotypes = collect();
+        if ($this->relationLoaded('gene') && $this->gene && $this->gene->relationLoaded('phenotypes')) {
+            $genePhenotypes = $this->gene->phenotypes;
+        }
+        $excludePhenotypes  = $genePhenotypes->values();
 
         if ($this->relationLoaded('phenotypes')) {
-            $phenotypes = $this->phenotypes;
-            $phenotypesText = $phenotypes->map(fn ($p) => "{$p->name} ({$p->mim_number})")->implode(', ');
-            $phenotypeIDs = $phenotypes->pluck('mim_number')->implode(', ');
+            $phenotypes     = $this->phenotypes;
+            $phenotypesText = $phenotypes->map(fn ($phenotype) => "{$phenotype->name} ({$phenotype->mim_number})")->implode(', ');
+            $phenotypeIDs   = $phenotypes->pluck('mim_number')->implode(', ');
 
-            $selectedIds = $phenotypes->pluck('id')->all();
-            $excludePhenotypesText = collect($this->available_phenotypes)
-                                        ->reject(fn ($p) => in_array(data_get($p, 'id'), $selectedIds, true))
-                                        ->map(fn ($p) => data_get($p, 'name') . ' (' . data_get($p, 'mim_number') . ')')
+            $selectedIds            = $phenotypes->pluck('id')->all();
+            $excludePhenotypesText  = $genePhenotypes
+                                        ->reject(fn ($phenotype) => in_array(data_get($phenotype, 'id'), $selectedIds, true))
+                                        ->map(fn ($phenotype) => data_get($phenotype, 'name') . ' (' . data_get($phenotype, 'mim_number') . ')')
                                         ->implode(', ');
         } else {
-            $excludePhenotypesText = $excludePhenotypes->map(fn ($p) => data_get($p, 'name') . ' (' . data_get($p, 'mim_number') . ')')->implode(', ');
+            $excludePhenotypesText = $excludePhenotypes->map(fn ($phenotype) => data_get($phenotype, 'name') . ' (' . data_get($phenotype, 'mim_number') . ')')->implode(', ');
         }
 
         return [
