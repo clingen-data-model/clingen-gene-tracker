@@ -29,12 +29,6 @@ class BulkLookupController extends Controller
         if ($results->count() == 0) {
             return $resource::collection(collect());
         }
-
-        $attach = function ($curation) {
-            $curation->available_phenotypes = optional($curation->gene)->phenotypes;
-            return $curation;
-        };
-        $results = $results->map($attach);
         return $resource::collection($results);
     }
     
