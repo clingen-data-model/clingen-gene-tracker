@@ -23,7 +23,7 @@ class CreateNotificationsForStreamErrors extends Command
      *
      * @var string
      */
-    protected $description = 'Sends notifications for errors resulting from the streaming service integeration.';
+    protected $description = 'Sends notifications for errors resulting from the streaming service integration.';
 
     /**
      * Create a new command instance.
@@ -46,17 +46,34 @@ class CreateNotificationsForStreamErrors extends Command
                             ->with('geneModel', 'diseaseModel', 'moiModel')
                             ->get()
                             ->groupBy('affiliation_id');
-        $affiliations = Affiliation::with('expertPanel')->get()->keyBy('clingen_id');
-        $groupedErrors->each(function ($errors, $affiliation_id) use ($affiliations) {
+        $affiliations = Affiliation::with([
+            'expertPanel.coordinators',
+            'children.expertPanel.coordinators'
+        ])->get()->keyBy('clingen_id');
+        $admins = User::role('admin')->get();
+        $groupedErrors->each(function ($errors, $affiliation_id) use ($affiliations, $admins) {
             $affiliation = $affiliations->get($affiliation_id);
             if (!$affiliation) {
+                // admins get messages if there is no associated affiliation in the database
+                Notification::send($admins, new StreamErrorNotification($errors));
                 return;
             }
-            if (!$affiliation->expertPanel || $affiliation->expertPanel->coordinators->count() == 0) {
-                Notification::send(User::role('admin')->get(), new StreamErrorNotification($errors));
-                return;
+            // We have to look at the expert panel coordinators for the affiliation and any child affiliations,
+            // since the streaming service errors are associated with the top-level affiliation, but the coordinators are
+            // only associated with the expert panels as "child" affiliations. For current messages, we would actually
+            // *only* need to look for coordinators of child affiliations, but it is safer to just check both levels
+            // in case of any future changes to the affiliation structure of affiliations. See GT-72 for discussion.
+            $coordinators = $affiliation->expertPanel?->coordinators ?? collect();
+            foreach ($affiliation->children as $childAffiliation) {
+                $coordinators = $coordinators->merge($childAffiliation->expertPanel?->coordinators ?? collect());
             }
-            Notification::send($affiliation->expertPanel->coordinators, new StreamErrorNotification($errors));
+            $coordinators = $coordinators->unique('id');
+            if ($coordinators->isEmpty()) {
+                // admins get messages if there are errors for an affiliation with no associated coordinators
+                Notification::send($admins, new StreamErrorNotification($errors));
+            } else {
+                Notification::send($coordinators, new StreamErrorNotification($errors));
+            }
         });
 
         $groupedErrors->flatten()->each->markSent();

@@ -7,6 +7,7 @@ use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Eloquent Model: 'Affiliation'
@@ -48,7 +49,11 @@ class Affiliation extends Model
     {
         return $this->belongsTo(Affiliation::class, 'parent_id');
     }
-    
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Affiliation::class, 'parent_id', 'id');
+    }
 
     public static function findByClingenId($clingenId)
     {
