@@ -25,7 +25,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="h2 mb-0">{{ $obsoletePhenotypesCount }}</div>
-                    <div class="text-muted">Obsoleted phenotypes</div>
+                    <div class="text-muted">Obsoleted Phenotypes</div>
                     <a class="btn btn-sm btn-link px-0" href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
                         View report &raquo;
                     </a>
@@ -36,7 +36,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="h2 mb-0">{{ $affectedCurationsCount }}</div>
-                    <div class="text-muted">Affected curations</div>
+                    <div class="text-muted">Affected Curations</div>
                     <a class="btn btn-sm btn-link px-0" href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=curations') }}">
                         View report &raquo;
                     </a>
@@ -48,7 +48,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="h2 mb-0">{{ $obsoleteUsedCount }}</div>
-                    <div class="text-muted">Obsoleted phenotypes used on curations</div>
+                    <div class="text-muted">Obsoleted Phenotypes used on Curations</div>
                     <a class="btn btn-sm btn-link px-0" href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
                         View report &raquo;
                     </a>

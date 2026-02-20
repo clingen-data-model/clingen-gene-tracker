@@ -8,7 +8,7 @@
       <div class="card">
         <div class="card-body">
           <div class="h2 mb-0">{{ $obsoletePhenotypesCount }}</div>
-          <div class="text-muted">Obsoleted phenotypes</div>
+          <div class="text-muted">Obsoleted Phenotypes</div>
         </div>
       </div>
     </div>
@@ -16,23 +16,40 @@
       <div class="card">
         <div class="card-body">
           <div class="h2 mb-0">{{ $affectedCurationsCount }}</div>
-          <div class="text-muted">Affected curations</div>
+          <div class="text-muted">Affected Curations</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="h2 mb-0">{{ $obsoleteUsedCount }}</div>
+          <div class="text-muted">Obsoleted phenotypes used on curations</div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="card mb-3">
-    <div class="card-body py-2">
-      <a class="btn btn-sm {{ $tab === 'phenotypes' ? 'btn-primary' : 'btn-outline-primary' }}"
-        href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
-        Obsoleted phenotypes
-      </a>
+    <div class="card-body py-2 d-flex justify-content-between align-items-center">
+      <div>
+        <a class="btn btn-sm {{ $tab === 'phenotypes' ? 'btn-primary' : 'btn-outline-primary' }}"
+          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
+          Obsoleted phenotypes
+        </a>
 
-      <a class="btn btn-sm {{ $tab === 'curations' ? 'btn-primary' : 'btn-outline-primary' }}"
-        href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=curations') }}">
-        Affected curations
-      </a>
+        <a class="btn btn-sm {{ $tab === 'curations' ? 'btn-primary' : 'btn-outline-primary' }}"
+          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=curations') }}">
+          Affected curations
+        </a>
+      </div>
+
+      <div>
+        <a class="btn btn-sm btn-outline-primary"
+          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab='.$tab.'&download=csv'.(request('phenotype_id') ? '&phenotype_id='.request('phenotype_id') : '')) }}">
+          Download CSV
+        </a>
+      </div>
     </div>
   </div>
 
@@ -54,7 +71,7 @@
                 <td>{{ $p->mim_number }}</td>
                 <td>{{ $p->name }}</td>
                 
-                <td class="text-right">
+                <td class="text-right" width="50%">
                   {{ $p->affected_curations > 0 ? $p->affected_curations . ' Curation(s): ' : 'N/A' }}
                   @php
                     $ids = $p->curation_ids_sample ? explode(',', $p->curation_ids_sample) : [];
@@ -62,7 +79,7 @@
 
                   @if (count($ids))
                       @foreach ($ids as $cid)
-                        <a href="{{ url('home#/curations/'.$cid) }}" target="_blank">{{ $cid }}</a>@if(!$loop->last), @endif
+                        <a href="{{ url('home#/curations/'.$cid) }}" target="_blank">{{ isset($curationGeneMap[$cid]) ? data_get($curationGeneMap, $cid, $cid) . ' #' . $cid : $cid }}</a>@if(!$loop->last), @endif
                       @endforeach
                   @endif
                 </td>
