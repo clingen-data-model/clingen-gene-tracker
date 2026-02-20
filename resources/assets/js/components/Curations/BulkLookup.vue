@@ -303,7 +303,7 @@ export default {
                 })
         },
         phenotypeIsInCuration (ph, curation) {
-            return curation.phenotypes.map(i => i.mim_number).indexOf(ph.mim_number) > -1;
+            return curation.phenotypes.map(i => i.id).indexOf(ph.id) > -1;
         }
     }
 }

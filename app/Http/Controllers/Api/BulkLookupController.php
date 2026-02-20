@@ -45,7 +45,13 @@ class BulkLookupController extends Controller
     
         $results = $this->search->search($request->all())
                     ->transform(function ($curation) {
+                        $curatedActive = $curation->phenotypes->where('obsolete', false);
+                        $curatedObsolete = $curation->phenotypes->where('obsolete', true);
+                        $availableActive = $curation->gene->phenotypes->where('obsolete', false);
+                        $availableObsolete = $curation->gene->phenotypes->where('obsolete', true);
+
                         return [
+                            'Pre-curation ID' => $curation->uuid,
                             'Gene' => $curation->gene_symbol,
                             'MonDO ID' => $curation->mondo_id,
                             'Disease entity' => $curation->mondo_name,
@@ -69,13 +75,10 @@ class BulkLookupController extends Controller
                                                 ? $curation->currentStatus->pivot->status_date 
                                                 : null,
                             'Last updated' => $curation->updated_at->format('Y-m-d H:i:s'),
-                            'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
-                                return $ph->name.' ('.$ph->mim_number.')';
-                            })->join("\n"),
-                            'Available Phenotypes' => $curation->gene->phenotypes->map(function ($ph) {
-                                $phenoName = $ph->obsolete ? $ph->name . ' [Not in latest OMIM]' : $ph->name;                                
-                                return $phenoName.' ('.$ph->mim_number.')';
-                            })->join("; ")
+                            'Curated Phenotypes' => $curatedActive->map(function ($ph) { return $ph->name.' ('.$ph->mim_number.')'; })->join("\n"),
+                            'Obsoleted Curated Phenotypes' => $curatedObsolete->map(function ($ph) { return $ph->name.' ('.$ph->mim_number.')'; })->join("\n"),
+                            'Available Phenotypes' => $availableActive->map(function ($ph) { return $ph->name.' ('.$ph->mim_number.')'; })->join("; "),
+                            'Obsolete Phenotypes' => $availableObsolete->map(function ($ph) { return $ph->name.' ('.$ph->mim_number.')'; })->join("; "),
                         ];
                     });
         if ($results->count() == 0) {
