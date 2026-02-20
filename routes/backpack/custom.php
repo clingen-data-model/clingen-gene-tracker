@@ -2,6 +2,7 @@
 
 use App\Actions\ApiClientDeleteToken;
 use App\Http\Controllers\Admin\ApiClientCrudController;
+use App\Http\Controllers\Admin\OmimObsoletePhenotypeReportController;
 
 // --------------------------
 // Custom Backpack Routes
@@ -16,25 +17,25 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes`
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('logs');
-    Route::get('/user/{id}/deactivate', 'UserCrudController@deactivate')
-        ->name('user-deactivate');
+    Route::get('/user/{id}/deactivate', 'UserCrudController@deactivate')->name('user-deactivate');
+    Route::get('/user/{id}/reactivate', 'UserCrudController@reactivate')->name('user-reactivate');
 
-    Route::get('/user/{id}/reactivate', 'UserCrudController@reactivate')
-        ->name('user-reactivate');
+    Route::crud('user', 'UserCrudController');
+    Route::crud('aff', 'AffiliationCrudController');
+    Route::crud('expert-panel', 'ExpertPanelCrudController');
+    Route::crud('curation-status', 'CurationStatusCrudController');
+    Route::crud('working-group', 'WorkingGroupCrudController');
+    Route::crud('curation-type', 'CurationTypeCrudController');
+    Route::crud('rationale', 'RationaleCrudController');
+    Route::crud('email', 'EmailCrudController');
+    Route::crud('notification', 'NotificationCrudController');
+    Route::crud('upload-category', 'UploadCategoryCrudController');
+    Route::crud('moi', 'MoiCrudController');
+    Route::crud('api-client', 'ApiClientCrudController');
+    Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
 
-        Route::crud('user', 'UserCrudController');
-        Route::crud('aff', 'AffiliationCrudController');
-        Route::crud('expert-panel', 'ExpertPanelCrudController');
-        Route::crud('curation-status', 'CurationStatusCrudController');
-        Route::crud('working-group', 'WorkingGroupCrudController');
-        Route::crud('curation-type', 'CurationTypeCrudController');
-        Route::crud('rationale', 'RationaleCrudController');
-        Route::crud('email', 'EmailCrudController');
-        Route::crud('notification', 'NotificationCrudController');
-        Route::crud('upload-category', 'UploadCategoryCrudController');
-        Route::crud('moi', 'MoiCrudController');
-        Route::crud('api-client', 'ApiClientCrudController');
-        Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
+    Route::get('reports/omim-obsolete-phenotypes', [OmimObsoletePhenotypeReportController::class, 'index'])->name('admin.omim_obsolete_phenotypes');
+    
 }); // this should be the absolute last line of this file
 
 Route::group([

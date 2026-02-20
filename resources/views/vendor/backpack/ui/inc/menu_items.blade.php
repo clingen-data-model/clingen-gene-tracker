@@ -65,6 +65,14 @@
     </li>
 @endif
 
+@if(Auth::user()->hasPermissionTo('list users'))
+    <li class="nav-item">
+        <a class="nav-link" href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
+            <i class="nav-icon la la-exclamation-triangle"></i> <span>Obsoleted Phenotypes</span>
+        </a>
+    </li>
+@endif
+
 @if(Auth::user()->hasAnyRole(['programmer', 'admin'])) 
     <li class="nav-item">
         <a class="nav-link" href="{{ url(config('backpack.base.route_prefix').'/api-client') }}">
