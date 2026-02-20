@@ -45,12 +45,13 @@ class GeneController extends Controller
                                 'Gene' => $gene->gene_symbol,
                                 'Phenotype' => $phenoName,
                                 'Phenotype MIM Number' => $pheno->mim_number,
+                                'Is Phenotype Obsolete' => $pheno->obsolete ? 'Yes' : 'No',
                                 'MOI' => $pheno->moi
                             ];
                         });
                     })->flatten(1);
 
-        $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number','MOI'];
+        $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number', 'Is Phenotype Obsolete', 'MOI'];
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
