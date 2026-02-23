@@ -15,9 +15,7 @@ import ExternalLink from './components/ExternalLink.vue'
 import GciLink from './components/Curations/GciLink.vue'
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
-import ClingenApp from './components/ClingenApp.vue'
-import ClingenNav from './components/ClingenNav.vue'
-import Alerts from './components/Alerts.vue'
+import MainApp from './components/MainApp.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
@@ -71,18 +69,16 @@ if (document.getElementById('app')) {
     const app = new Vue({
         router,
         el: '#app',
-        store: store,
-        components: {
-            'clingen-app': ClingenApp,
-            'clingen-nav': ClingenNav,
-            'alerts': Alerts,
-            CriteriaTable
-        },
-        computed: {
-            loading: function() {
-                return this.$store.getters.loading;
-            }
-        }
+        store,
+        render: h => h(MainApp),
+    });
+}
+
+if (document.getElementById('criteria-app')) {
+    new Vue({
+        el: '#criteria-app',
+        store,
+        render: h => h(CriteriaTable),
     });
 }
 
