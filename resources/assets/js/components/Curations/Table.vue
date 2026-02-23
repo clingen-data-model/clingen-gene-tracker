@@ -35,6 +35,7 @@
                     >
                         {{data.gene_symbol}}
                     </router-link>
+                    <br>
                     <small v-if="data.hgnc_id">(hgnc:{{data.hgnc_id}})</small>
                 </template>
             </Column>
