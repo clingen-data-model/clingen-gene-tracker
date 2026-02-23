@@ -1,4 +1,4 @@
-var BaseRepo = require('./Repository.js');
+import BaseRepo from './Repository.js'
 
 var OmimRepo = Object.create(BaseRepo);
 OmimRepo.baseUrl = '/api/omim';
@@ -40,4 +40,4 @@ OmimRepo.forCuration = function (curationId) {
     return this.makeRequest('get', url)
 }
 
-module.exports = OmimRepo;
+export default OmimRepo;

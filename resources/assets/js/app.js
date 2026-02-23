@@ -4,26 +4,29 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
+import './bootstrap'
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
-import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
+import ExternalLink from './components/ExternalLink.vue'
+import GciLink from './components/Curations/GciLink.vue'
+import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue'
+import CriteriaTable from './components/Curations/CriteriaTable.vue'
+import ClingenApp from './components/ClingenApp.vue'
+import ClingenNav from './components/ClingenNav.vue'
+import Alerts from './components/Alerts.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
 
-window.Vue = require('vue').default
+window.Vue = Vue
 window.Vue.use(BootstrapVue)
 
-import ExternalLink from './components/ExternalLink.vue'
 window.Vue.component('external-link', ExternalLink)
-
-import GciLink from './components/Curations/GciLink.vue';
 window.Vue.component('gci-link', GciLink)
-import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 window.Vue.component('gci-linked-message', GciLinkedMessage)
 
 if (user) {
@@ -46,7 +49,9 @@ axios.interceptors.response.use(
         const apiParts = url.pathname.split(/[\/?&]/)
         try {
             store.commit('removeApiRequest', apiParts[2])
-        } catch (error) {}
+        } catch (error) {
+            console.log(error)
+        }
         return response;
     },
     function(error) {
@@ -68,9 +73,9 @@ if (document.getElementById('app')) {
         el: '#app',
         store: store,
         components: {
-            'clingen-app': require('./components/ClingenApp.vue').default,
-            'clingen-nav': require('./components/ClingenNav.vue').default,
-            'alerts': require('./components/Alerts.vue').default,
+            'clingen-app': ClingenApp,
+            'clingen-nav': ClingenNav,
+            'alerts': Alerts,
             CriteriaTable
         },
         computed: {

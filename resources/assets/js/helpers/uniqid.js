@@ -1,4 +1,4 @@
-module.exports = function (prefix, moreEntropy) {
+export default function uniqid(prefix, moreEntropy) {
     //  discuss at: https://locutus.io/php/uniqid/
     // original by: Kevin van Zonneveld (https://kvz.io)
     //  revised by: Kankrelune (https://www.webfaktory.info/)

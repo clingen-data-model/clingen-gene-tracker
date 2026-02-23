@@ -11,7 +11,7 @@ var objectToQueryString = function(obj){
     return '?'+params.join('&');
 }
 
-module.exports = {
+export default {
     baseUrl: null,
     name: 'BaseRepository',
     dates: [],

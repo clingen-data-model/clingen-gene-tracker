@@ -14,12 +14,11 @@
         :readonly="readonly"/>
 </template>
 <script>
-    require('../../../../node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css')
-    
-    var moment = require('moment'),
-        datepicker = require('bootstrap-datepicker');
+    import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.css'
+    import moment from 'moment'
+    import 'bootstrap-datepicker'
 
-    module.exports = {
+    export default {
         name: 'date-field',
         props: ['name', 'value', 'id', 'placeholder', 'readonly'],
         data: function(){
