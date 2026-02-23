@@ -41,7 +41,7 @@ const getters = {
             return false;
         }
         if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+            return false;
         }
         return state.apiRequestCounts[apiKey] > 0
     },
@@ -68,7 +68,7 @@ const mutations = {
             return false;
         }
         if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+            return false;
         }
         state.apiRequestCounts[apiKey]++
     },
@@ -77,7 +77,7 @@ const mutations = {
             return false;
         }
         if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
+            return false;
         }
         state.apiRequestCounts[apiKey]--
     },
