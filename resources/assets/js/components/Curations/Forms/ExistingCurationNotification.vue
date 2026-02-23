@@ -83,14 +83,17 @@
 <template>
     <div>
         <warning-alert v-show="matchedCount > 0">
-            <div slot="summary">
-                There 
-                {{ matchedCount == 1 ? 'is' : 'are' }} 
-                already <strong>{{matchedCount}}</strong> 
-                {{ matchedCount > 1 ? 'curations' : 'curation' }} 
-                in curation or pre-curation with this gene symbol.
-            </div>
-            <div slot="details">
+            <template v-slot:summary>
+                <div>
+                    There
+                    {{ matchedCount == 1 ? 'is' : 'are' }}
+                    already <strong>{{matchedCount}}</strong>
+                    {{ matchedCount > 1 ? 'curations' : 'curation' }}
+                    in curation or pre-curation with this gene symbol.
+                </div>
+            </template>
+            <template v-slot:details>
+            <div>
                 <table class="table table-striped table-bordered table-small bg-white">
                     <thead>
                         <tr>
@@ -150,6 +153,7 @@
                     </tbody>
                 </table>
             </div>
+            </template>
         </warning-alert>
     </div>
 </template>

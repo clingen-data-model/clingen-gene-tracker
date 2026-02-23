@@ -91,6 +91,7 @@
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
     import CurationStatusHistory from '../StatusHistory.vue'
+    import formatDate from '../../../helpers/formatDate'
 
     export default {
         components: {
@@ -134,6 +135,7 @@
             },
         },
         methods: {
+            formatDate,
             ...mapActions('curations', {
                 linkNewStatus: 'linkNewStatus',
                 storeStatusDate: 'updateStatusDate',
@@ -145,7 +147,7 @@
                         curation: this.curationCopy, 
                         data: {
                             curation_status_id: this.newStatusId,
-                            status_date: this.$options.filters.formatDate(this.newStatusDate, 'YYYY-MM-DD')
+                            status_date: formatDate(this.newStatusDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {

@@ -48,7 +48,7 @@
                     <dd class="col-md-10">{{currentDocument.category ? currentDocument.category.name : '--'}}</dd>
 
                     <dt class="col-md-2">Date uploaded:</dt>
-                    <dd class="col-md-10">{{currentDocument.created_at | formatDate('YYYY-MM-DD')}}</dd>
+                    <dd class="col-md-10">{{formatDate(currentDocument.created_at, 'YYYY-MM-DD')}}</dd>
 
                     <dt class="col-md-2">Uploaded by:</dt>
                     <dd class="col-md-10">{{(currentDocument.uploader) ? currentDocument.uploader.name : '--'}}</dd>
@@ -74,6 +74,7 @@
     import DocumentUploader from './DocumentUploader.vue'
     import getAllUploads from '../../../resources/uploads/get_all_uploads'
     import { mapGetters } from 'vuex';
+    import formatDate from '../../../helpers/formatDate'
 
     export default {
         components: {
@@ -111,7 +112,7 @@
                         label: 'Created',
                         sortable: true,
                         formatter: (value, key, item) => {
-                            return this.$options.filters.formatDate(value, 'YYYY-MM-DD')
+                            return formatDate(value, 'YYYY-MM-DD')
                         }
                     },
                     {
@@ -134,6 +135,7 @@
             }
         },
         methods: {
+            formatDate,
             async getDocuments() {
                 if (!this.curation.id) {
                     return;

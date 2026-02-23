@@ -271,7 +271,7 @@ export default {
             const list = JSON.parse(JSON.stringify(this.filters[key]));
             list.splice(idx, 1);
             console.log(list);
-            this.$set(this.filters, key, list);
+            this.filters[key] = list;
         },
         toggleFilter(key, value) {
             if (this.filters[key].indexOf(value) < 0) {

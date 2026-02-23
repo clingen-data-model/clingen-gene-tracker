@@ -88,6 +88,7 @@
     import ClassificationHistory from '../ClassificationHistory.vue'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
+    import formatDate from '../../../helpers/formatDate'
 
     export default {
         components: {
@@ -130,6 +131,7 @@
             },
         },
         methods: {
+            formatDate,
             ...mapActions('curations', {
                 linkNewClassification: 'linkNewClassification',
                 updateClassification: 'updateClassification',
@@ -141,7 +143,7 @@
                         curation: this.curationCopy, 
                         data: {
                             classification_id: this.newClassificationId,
-                            classification_date: this.$options.filters.formatDate(this.newClassificationDate, 'YYYY-MM-DD')
+                            classification_date: formatDate(this.newClassificationDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {

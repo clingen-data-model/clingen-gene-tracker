@@ -66,17 +66,17 @@
                                 const p = this.phenotypes[0];
 
                                 if (!Array.isArray(this.updatedCuration.phenotypes)) {
-                                    Vue.set(this.updatedCuration, 'phenotypes', []);
+                                    this.updatedCuration.phenotypes = [];
                                 }
 
-                                Vue.set(this.updatedCuration.phenotypes, 0, {
+                                this.updatedCuration.phenotypes.splice(0, 1, {
                                     id: p.id,
                                     mim_number: p.phenotypeMimNumber,
                                     name: p.phenotype,
                                 });
 
                                 if (!Array.isArray(this.updatedCuration.rationales)) {
-                                    Vue.set(this.updatedCuration, 'rationales', []);
+                                    this.updatedCuration.rationales = [];
                                 }
 
                                 if (this.updatedCuration.rationales.length === 0) {

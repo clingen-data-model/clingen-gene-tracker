@@ -16,21 +16,24 @@
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{status.name}}</td>
-                <td>{{status.pivot.status_date | formatDate('YYYY-MM-DD') }}</td>
+                <td>{{formatDate(status.pivot.status_date, 'YYYY-MM-DD') }}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
     import moment from 'moment'
-    import filters from '../../filters'
-    
+    import formatDate from '../../helpers/formatDate'
+
     export default {
         props: {
             curation: {
                 type: Object,
                 required: true
             },
+        },
+        methods: {
+            formatDate
         },
         computed: {
             /** THE STATUSES ORDERED BY THE NEWEST FIRST, ORDERED BASED ON STATUS_DATE DESC, UPDATED_AT DESC */
