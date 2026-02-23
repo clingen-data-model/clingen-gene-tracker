@@ -1,4 +1,5 @@
 <script>
+    import _ from 'lodash'
     import queryStringFromParams from '../../../http/query_string_from_params';
     import WarningAlert from '../../WarningAlert.vue'
 
