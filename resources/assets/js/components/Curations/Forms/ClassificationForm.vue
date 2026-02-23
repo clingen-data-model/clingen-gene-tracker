@@ -10,7 +10,7 @@
         <classification-history :curation="value"></classification-history>
 
         <Dialog
-            :visible.sync="modalVisible"
+            v-model:visible="modalVisible"
             header="Update Classification"
             :modal="true"
             :style="{width: '50vw'}"
@@ -40,13 +40,13 @@
                             </div>
                         </td>
                         <td class="form-inline">
-                            <Calendar
+                            <DatePicker
                                 v-model="newClassificationDate"
                                 dateFormat="yy-mm-dd"
                                 :showIcon="true"
                                 placeholder="Select a date"
                                 inputClass="form-control mr-2"
-                            ></Calendar>
+                            ></DatePicker>
                             <button class="btn btn-primary" @click="addClassification">
                                 <strong>+</strong>
                             </button>
@@ -57,7 +57,7 @@
                             <label :for="'classification-date-'+classification.id"><strong>{{classification.name}}</strong></label>
                         </td>
                         <td class="form-inline">
-                            <Calendar
+                            <DatePicker
                                 :id="'classification-date-'+classification.id"
                                 v-model="classification.pivot.classification_date"
                                 dateFormat="yy-mm-dd"
@@ -65,7 +65,7 @@
                                 placeholder="Select a date"
                                 inputClass="form-control mr-2"
                                 @date-select="updateclassificationDate(classification.pivot, $event)"
-                            ></Calendar>
+                            ></DatePicker>
                             <button class="btn btn-secondary" @click="removeclassificationEntry(classification)"><strong>x</strong></button>
                         </td>
                     </tr>

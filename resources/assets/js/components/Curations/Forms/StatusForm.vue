@@ -10,7 +10,7 @@
         <CurationStatusHistory :curation="value"></CurationStatusHistory>
 
         <Dialog
-            :visible.sync="modalVisible"
+            v-model:visible="modalVisible"
             header="Update Curation Status"
             :modal="true"
             @hide="submitAll"
@@ -40,13 +40,13 @@
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <Calendar
+                                <DatePicker
                                     v-model="newStatusDate"
                                     dateFormat="yy-mm-dd"
                                     :showIcon="true"
                                     placeholder="Select a date"
                                     inputClass="form-control"
-                                ></Calendar>
+                                ></DatePicker>
                             </div>
                             <button class="btn btn-primary" @click="addStatus">
                                 <strong>+</strong>
@@ -59,7 +59,7 @@
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <Calendar
+                                <DatePicker
                                     :id="'status-date-'+status.id"
                                     v-model="status.pivot.status_date"
                                     dateFormat="yy-mm-dd"
@@ -67,7 +67,7 @@
                                     placeholder="Select a date"
                                     inputClass="form-control"
                                     @date-select="updateStatusDate(status.pivot, $event)"
-                                ></Calendar>
+                                ></DatePicker>
                             </div>
                             <button class="btn btn-secondary" @click="removeStatusEntry(status)"><strong>x</strong></button>
                         </td>

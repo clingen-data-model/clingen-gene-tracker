@@ -59,7 +59,7 @@
                                 }
 
                                 this.message = 'We have preselected the phenotype because you indicated you are curating ' + this.updatedCuration.gene_symbol + ' with this single disease entity';
-                                this.$emit('input', this.updatedCuration);
+                                this.$emit('update:modelValue', this.updatedCuration);
                                 this.$nextTick(() => {
                                     this.$emit('auto-save');
                                 });

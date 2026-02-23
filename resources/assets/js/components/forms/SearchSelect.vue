@@ -164,7 +164,7 @@ export default {
             type: Function,
             default: null
         },
-        value: {
+        modelValue: {
             required: true
         },
         options: {
@@ -226,7 +226,7 @@ export default {
             return this.filteredOptions[this.cursorPosition];
         },
         hasSelection() {
-            return Boolean(this.value)
+            return Boolean(this.modelValue)
         },
     },
     watch: {
@@ -248,12 +248,12 @@ export default {
             })
         },
         removeSelection(    ){
-            this.$emit('input', null);
+            this.$emit('update:modelValue', null);
             this.$refs.input.focus();
         },
         setSelection(selection) {
             console.info('setSelection', selection);
-            this.$emit('input', selection);
+            this.$emit('update:modelValue', selection);
             console.log('emitted')
             this.clearInput();
             console.log('clearedInput')

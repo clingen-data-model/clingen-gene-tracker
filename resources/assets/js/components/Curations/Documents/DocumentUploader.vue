@@ -8,7 +8,7 @@
         >Add Document</button>
 
         <Dialog
-            :visible.sync="showModal"
+            v-model:visible="showModal"
             header="Upload a Document"
             :modal="true"
             @hide="clearForm"

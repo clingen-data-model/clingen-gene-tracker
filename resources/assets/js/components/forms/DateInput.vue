@@ -2,7 +2,7 @@
     <div>
         <input 
             type="date" 
-            :value="formattedDate" 
+            :value="formattedDate"
             class="form-control"
             @input="setDate"
         >
@@ -11,7 +11,7 @@
 <script>
 export default {
     props: {
-        value: {
+        modelValue: {
             required: false,
             default: null
         }
@@ -26,10 +26,10 @@ export default {
     },
     computed: {
         formattedDate () {
-            if (!this.value) {
+            if (!this.modelValue) {
                 return null;
             }
-            const fmtdt = this.formatDate(this.value)
+            const fmtdt = this.formatDate(this.modelValue)
             console.log(fmtdt);
             return fmtdt
         }
@@ -39,7 +39,7 @@ export default {
             const date = new Date(Date.parse(event.target.value));
             const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000);
 
-            this.$emit('input', adjustedDate)
+            this.$emit('update:modelValue', adjustedDate)
         },
         formatDate(date) {
             var d = new Date(date),

@@ -44,7 +44,7 @@
             </DataTable>
         </div>
         <Dialog
-            :visible.sync="showDetailedInfo"
+            v-model:visible="showDetailedInfo"
             :header="currentDocument ? currentDocument.name : ''"
             :modal="true"
             :style="{width: '50vw'}"

@@ -10,7 +10,7 @@
 <script>
 export default {
     props: {
-        value: {
+        modelValue: {
             required: true,
             type: Boolean
         },
@@ -30,12 +30,12 @@ export default {
     },
     computed: {
         otherStateLabel () {
-            return this.value ? this.hideLabel : this.showLabel;
+            return this.modelValue ? this.hideLabel : this.showLabel;
         }
     },
     methods: {
         toggle () {
-            this.$emit('input', !this.value);
+            this.$emit('update:modelValue', !this.modelValue);
         }
     }
 }

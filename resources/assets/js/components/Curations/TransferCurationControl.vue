@@ -9,7 +9,7 @@
         >
             Transfer Curation
         </button>
-        <Dialog header="Transfer Curation Ownership" :visible.sync="showTransferForm" :modal="true" :style="{width: '50vw'}">
+        <Dialog header="Transfer Curation Ownership" v-model:visible="showTransferForm" :modal="true" :style="{width: '50vw'}">
                 <div>
                     <div class="alert alert-info">
                         Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
@@ -40,7 +40,7 @@
                 </div>
         </Dialog>
 
-        <Dialog header="Confirm Curation Transfer" :visible.sync="showConfirmation" :modal="true">
+        <Dialog header="Confirm Curation Transfer" v-model:visible="showConfirmation" :modal="true">
             <div class="alert alert-info">
                 <div class="lead">You are about to transfer this curation to {{newExpertPanel.name}}.</div>
                 Please be sure that you have communicated with the EP coordinator(s) before you continue.

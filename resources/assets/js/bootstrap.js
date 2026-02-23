@@ -1,9 +1,6 @@
 import _ from 'lodash'
 window._ = _
 
-import Popper from 'popper.js'
-window.Popper = Popper
-
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This

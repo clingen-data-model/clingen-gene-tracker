@@ -97,7 +97,7 @@
                 this.emitUpdated()
             },
             emitUpdated () {
-                this.$emit('input', this.updatedCuration)
+                this.$emit('update:modelValue', this.updatedCuration)
             }
        }
     }

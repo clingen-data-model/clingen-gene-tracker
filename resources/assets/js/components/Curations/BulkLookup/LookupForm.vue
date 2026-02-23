@@ -4,9 +4,9 @@
             <TabPanel header="Manual entry">
                 <label for="gene-symbol-input">Gene Symbols:</label>
                 &nbsp;
-                <textarea cols="10" rows="3" id="gene-symbol-input" :value="value" @input="$emit('input', $event.target.value)" class="form-control" maxlength="1900" placeholder="Comma, space, or new-line separated gene symboels, i.e.: BCRA1, TP53 ABSC"></textarea>
+                <textarea cols="10" rows="3" id="gene-symbol-input" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" class="form-control" maxlength="1900" placeholder="Comma, space, or new-line separated gene symboels, i.e.: BCRA1, TP53 ABSC"></textarea>
                 <div class="mt-1">
-                    <button @click="$emit('input', '')" class="btn btn-sm btn-light border">Clear</button>
+                    <button @click="$emit('update:modelValue','')" class="btn btn-sm btn-light border">Clear</button>
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
                     <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-right">Get CSV</button>
                 </div>
@@ -43,7 +43,7 @@
 
 export default {
     props: [
-        'value',
+        'modelValue',
         'errors'
     ],
     components: {
@@ -85,10 +85,10 @@ export default {
                     if (this.hasHeader) {
                         let genes = text.split("\n");
                         const header = genes.splice(0, 1);    
-                        this.$emit('input', genes.join(','));
+                        this.$emit('update:modelValue',genes.join(','));
                         return;
                     }
-                    this.$emit('input', text);
+                    this.$emit('update:modelValue',text);
                 });
                 reader.addEventListener('progress', (event) => {
                     if (event.loaded && event.total) {
