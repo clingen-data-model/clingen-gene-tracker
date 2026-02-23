@@ -83,17 +83,12 @@ export default {
 
 <template>
     <div v-if="$store.state.features.sendToGciEnabled">
-        <span id="send-to-gci-button">            
-            <button class="btn btn-primary btn-lg" 
-                :disabled="!enabled" 
-                @click="handleClick"
-                :title="popoverText"
-            >
-                Complete PreCuration and Go to GCI
-            </button>
-        </span>
-        <b-popover target="send-to-gci-button" triggers="hover" placement="top" v-if="!enabled">
-            {{popoverText}}
-        </b-popover>
+        <button class="btn btn-primary btn-lg"
+            :disabled="!enabled"
+            @click="handleClick"
+            :title="popoverText"
+        >
+            Complete PreCuration and Go to GCI
+        </button>
     </div>
 </template>

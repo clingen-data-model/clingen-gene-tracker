@@ -1,9 +1,7 @@
 <template>
     <div>
-        <b-tabs vertical pills card class="border"
-            v-model="numericCurrentTab"
-        >
-            <b-tab title="Manual entry">
+        <TabView :activeIndex="numericCurrentTab" @tab-change="e => currentTab = e.index" class="border">
+            <TabPanel header="Manual entry">
                 <label for="gene-symbol-input">Gene Symbols:</label>
                 &nbsp;
                 <textarea cols="10" rows="3" id="gene-symbol-input" :value="value" @input="$emit('input', $event.target.value)" class="form-control" maxlength="1900" placeholder="Comma, space, or new-line separated gene symboels, i.e.: BCRA1, TP53 ABSC"></textarea>
@@ -12,8 +10,8 @@
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
                     <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-right">Get CSV</button>
                 </div>
-            </b-tab>
-            <b-tab title="CSV Upload">
+            </TabPanel>
+            <TabPanel header="CSV Upload">
                 <div>
                     <label for="csv-upload">CSV file: </label>
                     <input 
@@ -36,8 +34,8 @@
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
                     <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-right">Get CSV</button>
                 </div>
-            </b-tab>
-        </b-tabs>
+            </TabPanel>
+        </TabView>
     </div>
 </template>
 <script>
