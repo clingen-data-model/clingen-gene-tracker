@@ -6,73 +6,74 @@
                 &lt; Back to curations
             </router-link>
         </p>
-        <b-card id="edit-curation-modal">
-            <template slot="header">
+        <div class="card" id="edit-curation-modal">
+            <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h3>{{ title }}</h3>
                     <div class="d-flex space-x-2">
-                        <transfer-curation-control 
+                        <transfer-curation-control
                             :curation="curation"
-                             v-if="$store.state.features.transferEnabled"
+                            v-if="$store.state.features.transferEnabled"
                         ></transfer-curation-control>
                         <router-link :to="'/curations/'+curation.id">
                             view
                         </router-link>
                     </div>
                 </div>
-            </template>
-            <div v-if="!this.curation.id" class="alert alert-info">
-                Loading...
             </div>
-            <div v-else-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
-                Sorry.  You don't have permission to edit this curation.
-            </div>
-            <div v-if="curations && user.canEditCuration(this.curation)">
-                <b-form id="new-curation-form">
-                    <div class="row">
-                        <div class="col-md-2 border-right">
-                            <nav class="nav flex-column">
-                                <router-link 
-                                     v-for="(step, idx) in steps"
-                                     :key="idx"
-                                    :to="$route.path+'#'+idx" 
-                                    class="nav-link" 
-                                    :class="{active: (currentStep == idx)}"
+            <div class="card-body">
+                <div v-if="!this.curation.id" class="alert alert-info">
+                    Loading...
+                </div>
+                <div v-else-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
+                    Sorry.  You don't have permission to edit this curation.
+                </div>
+                <div v-if="curations && user.canEditCuration(this.curation)">
+                    <form id="new-curation-form">
+                        <div class="row">
+                            <div class="col-md-2 border-right">
+                                <nav class="nav flex-column">
+                                    <router-link
+                                        v-for="(step, idx) in steps"
+                                        :key="idx"
+                                        :to="$route.path+'#'+idx"
+                                        class="nav-link"
+                                        :class="{active: (currentStep == idx)}"
+                                    >
+                                        {{ step.title }}
+                                    </router-link>
+                                </nav>
+                            </div>
+                            <div class="col-md-10">
+                                <component
+                                    :is="currentStep"
+                                    :value="updatedCuration"
+                                    :errors="errors"
+                                    @input="updatedCuration = $event"
+                                    @auto-save="handleAutoSave"
+                                    ref="editPage"
                                 >
-                                    {{ step.title }}
-                                </router-link>
-                            </nav>
+                                </component>
+                            </div>
                         </div>
-                        <div class="col-md-10">
-                            <component 
-                                :is="currentStep" 
-                                :value="updatedCuration"  
-                                :errors="errors" 
-                                @input="updatedCuration = $event"
-                                @auto-save="handleAutoSave"
-                                ref="editPage"
-                            >
-                            </component>                    
-                        </div>
-                    </div>
                         <hr>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <!-- <delete-button :curation="curation"></delete-button> -->
-                            <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
+                            </div>
+                            <div class="col-md-8 text-right">
+                                <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
+                                <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
+                                <button type="button" class="btn btn-primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</button>
+                                <button type="button" class="btn btn-primary" @click="updateCuration(navNext, 'next')">
+                                    {{ (!nextStep) ? 'Save and exit' : 'Next'}}
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-8 text-right">
-                            <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
-                            <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" @click="updateCuration(navNext, 'next')">
-                                {{ (!nextStep) ? 'Save and exit' : 'Next'}}
-                            </b-button>
-                        </div>
-                    </div>
-                </b-form>
+                    </form>
+                </div>
             </div>
-        </b-card>
+        </div>
     </div>
 </template>
 <script>
@@ -117,19 +118,13 @@
                     mondo: {
                         title: 'MonDO',
                         next: 'classification',
-                        back: 'phenotypes' 
+                        back: 'phenotypes'
                     },
-                    // classification: {
-                    //     title: 'Classification',
-                    //     next: 'documents',
-                    //     back: 'mondo' 
-                    // },
                     documents: {
                         title: 'Documents',
                         next: null,
                         back: 'classification'
                     }
-
                 },
                 updatedCuration: {
                     rationals: []
@@ -176,7 +171,6 @@
                 let curation = this.getCuration(this.id);
                 if (!curation) {
                     return this.standInCuration
-                    
                 }
                 return curation;
             },
@@ -184,8 +178,8 @@
             expertPanel: () => { return (this.expert_panel) ? this.curation.expert_panel.name : '--'; },
             selectedPanel: () => {
                 return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
+                    obj => {
+                        return obj.id == this.newPanelId
                     })
             },
             geneSymbolError: function () {

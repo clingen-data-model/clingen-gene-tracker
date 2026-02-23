@@ -9,28 +9,30 @@
                 <router-link to="/curations">
                         &lt; Back to curations
                 </router-link>
-            </p>        
-            <b-card>
-                <template slot="header">
+            </p>
+            <div class="card">
+                <div class="card-header">
                     <h3>Add a curation to curate</h3>
-                </template>
-                <b-form id="new-curation-form">
-                    <info
-                        :value="updatedCuration" 
-                        :errors="errors"
-                        @input="updatedCuration = $event"
-                    ></info>         
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                </div>
+                <div class="card-body">
+                    <form id="new-curation-form">
+                        <info
+                            :value="updatedCuration"
+                            :errors="errors"
+                            @input="updatedCuration = $event"
+                        ></info>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                            </div>
+                            <div class="col-md-11 text-right">
+                                <button type="button" class="btn btn-primary" id="create-and-continue-btn" @click="createCuration()">Create curation</button>
+                            </div>
                         </div>
-                        <div class="col-md-11 text-right">
-                            <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
-                        </div>
-                    </div>
-                </b-form>
-            </b-card>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -54,8 +56,8 @@
             ...mapGetters({user: 'getUser'}),
             selectedPanel: function () {
                 return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
+                    obj => {
+                        return obj.id == this.newPanelId
                     })
             },
             geneSymbolError: function () {
@@ -93,6 +95,5 @@
         },
         mounted: function() {
         }
-        //component definition
     }
 </script>

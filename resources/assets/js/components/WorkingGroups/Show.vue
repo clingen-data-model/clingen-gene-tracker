@@ -27,7 +27,7 @@
                     return {};
                 }
                 const group = this.getGroup(this.id)
-                
+
                 this.hasPanels = group && group.expert_panels && group.expert_panels.length > 0
                 return group
             },
@@ -54,7 +54,7 @@
     <div>
         <div>
             <router-link to="/working-groups">
-                Working groups 
+                Working groups
             </router-link>
             &gt;
             <router-link :to="`/working-groups/${group.id}`">
@@ -67,11 +67,11 @@
             </div>
             <div class="card-body">
                 <h4>Expert Panels</h4>
-                <b-tabs pills card vertical v-show="hasPanels" nav-wrapper-class="w-25">
-                    <b-tab v-for="panel in group.expert_panels" :key="panel.id" :title="panel.name">
+                <TabView v-show="hasPanels">
+                    <TabPanel v-for="panel in group.expert_panels" :key="panel.id" :header="panel.name">
                         <ExpertPanelTabs :expert-panel="panel" />
-                    </b-tab>
-                </b-tabs>
+                    </TabPanel>
+                </TabView>
                 <div class="alert alert-secondary" v-show="!hasPanels && !loading">
                     This working group does not have any expert panels
                 </div>

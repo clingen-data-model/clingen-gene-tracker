@@ -11,16 +11,36 @@
                     <omim-loading></omim-loading>
                     <transition name="fade">
                         <div v-show="phenotypes.length > 0">
-                            <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small bordered>
-                            </b-table>
+                            <table class="table table-striped table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Phenotype</th>
+                                        <th>Phenotype MIM Number</th>
+                                        <th>Inheritance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, idx) in phenotypes" :key="idx">
+                                        <td>{{ item.phenotype }}</td>
+                                        <td>{{ item.phenotypeMimNumber }}</td>
+                                        <td>{{ item.phenotypeInheritance }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <div class="form-group">
                                 <label><strong>How would you like to proceed?</strong></label>
-                                <b-form-radio-group id="btnradios2"
-                                    size="lg"
-                                    v-model="updatedCuration.curation_type_id"
-                                    :options="options"
-                                    stacked
-                                    name="radioBtnOutline" />
+                                <div v-for="option in options" :key="option.value" class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        :id="'curation-type-'+option.value"
+                                        v-model="updatedCuration.curation_type_id"
+                                        :value="option.value"
+                                    >
+                                    <label class="form-check-label" :for="'curation-type-'+option.value">
+                                        {{ option.text }}
+                                    </label>
+                                </div>
                                 <validation-error :messages="errors.curation_type_id"></validation-error>
                             </div>
                         </div>
@@ -53,21 +73,6 @@
             return {
                 page: 'curation-types',
                 curationTypes: [],
-                fields: [
-                    {
-                        key: 'phenotype',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeMimNumber',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeInheritance',
-                        sortable: true,
-                        label: 'Inheritance'
-                    },
-                ]
             }
         },
         watch: {
@@ -104,9 +109,6 @@
             }
         },
         mounted() {
-            // if (this.updatedCuration.gene_symbol) {
-            //     this.fetchPhenotypes(this.updatedCuration.gene_symbol)
-            // }
             this.fetchCurationTypes();
         }
     }

@@ -2,23 +2,20 @@
 
 <template>
     <div>
-        <b-button 
-            variant="info"
-            size="sm" 
-            class="form-control mb-2"
+        <button
+            class="btn btn-info btn-sm form-control mb-2"
             @click="modalVisible = true"
-        >Add or update classification</b-button>
+        >Add or update classification</button>
 
         <classification-history :curation="value"></classification-history>
 
-        <b-modal 
-            v-model="modalVisible"
+        <Dialog
+            :visible.sync="modalVisible"
+            header="Update Classification"
+            :modal="true"
+            :style="{width: '50vw'}"
             @hide="submitAll"
-            size="lg"
         >
-            <div slot="modal-header">
-                <h3>Update Classification</h3>
-            </div>    
             <table class="table">
                 <thead>
                     <tr>
@@ -29,7 +26,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <b-form-select v-model="newClassificationId">
+                            <select class="form-control" v-model="newClassificationId">
                                 <option :value="null">Select...</option>
                                 <option v-for="classification in classificationOptions"
                                     :key="classification.id"
@@ -37,26 +34,22 @@
                                 >
                                     {{classification.name}}
                                 </option>
-                            </b-form-select>
+                            </select>
                             <div class="text-danger" v-if="errors.classification_id">
                                 <div v-for="message in errors.classification_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
                         <td class="form-inline">
-                            <datepicker 
+                            <Calendar
                                 v-model="newClassificationDate"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
+                                dateFormat="yy-mm-dd"
+                                :showIcon="true"
                                 placeholder="Select a date"
-                                :highlighted="highlighted"
-                            ></datepicker>
-                            <b-button 
-                                variant="primary"
-                                @click="addClassification"
-                            >
+                                inputClass="form-control mr-2"
+                            ></Calendar>
+                            <button class="btn btn-primary" @click="addClassification">
                                 <strong>+</strong>
-                            </b-button>
+                            </button>
                         </td>
                     </tr>
                     <tr v-for="classification in curationCopy.classifications" :key="classification.pivot.id">
@@ -64,36 +57,33 @@
                             <label :for="'classification-date-'+classification.id"><strong>{{classification.name}}</strong></label>
                         </td>
                         <td class="form-inline">
-                            <datepicker
+                            <Calendar
                                 :id="'classification-date-'+classification.id"
                                 v-model="classification.pivot.classification_date"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
+                                dateFormat="yy-mm-dd"
+                                :showIcon="true"
                                 placeholder="Select a date"
-                                :highlighted="highlighted"
-                                @selected="updateclassificationDate(classification.pivot,$event)"
-                            ></datepicker>
-                            <b-button @click="removeclassificationEntry(classification)"><strong>x</strong></b-button>
+                                inputClass="form-control mr-2"
+                                @date-select="updateclassificationDate(classification.pivot, $event)"
+                            ></Calendar>
+                            <button class="btn btn-secondary" @click="removeclassificationEntry(classification)"><strong>x</strong></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import ClassificationHistory from '../ClassificationHistory.vue'
-    import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
     import formatDate from '../../../helpers/formatDate'
 
     export default {
         components: {
             ClassificationHistory,
-            Datepicker
         },
         props: {
             value: {
@@ -107,10 +97,6 @@
                 modalVisible: false,
                 newClassificationDate: new Date(),
                 newClassificationId: null,
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                },
                 classificationDatesUpdated: false,
                 errors: {}
             }
@@ -140,7 +126,7 @@
             addClassification() {
                 this.linkNewClassification(
                     {
-                        curation: this.curationCopy, 
+                        curation: this.curationCopy,
                         data: {
                             classification_id: this.newClassificationId,
                             classification_date: formatDate(this.newClassificationDate, 'YYYY-MM-DD')
@@ -185,6 +171,5 @@
                 this.curationCopy = JSON.parse(JSON.stringify(this.value))
             },
         },
-
     }
 </script>

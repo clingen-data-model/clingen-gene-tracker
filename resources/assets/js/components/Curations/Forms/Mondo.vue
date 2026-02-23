@@ -1,10 +1,9 @@
 <style></style>
 <template>
     <div>
-        <b-form-group horizontal label="MonDO ID" label-for="mondo-id" class="position-relative"
-            :class="{'error': errors.mondo_id}"
-        >
-            <search-select 
+        <div class="form-group position-relative" :class="{'error': errors.mondo_id}">
+            <label for="mondo-id">MonDO ID</label>
+            <search-select
                 :value="updatedCuration.disease"
                 @input="updateCurationDisease"
                 :search-function="searchMondo"
@@ -33,28 +32,18 @@
                     Alternatively, refer to <a href="https://www.ebi.ac.uk/ols/ontologies/mondo" target="mondo">MonDO</a> for a valid MonDO ID
                 </small>
             </gci-linked-message>
-            <!-- <small class="text-muted" v-else>
-                This precuration is linked to a <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">GCI record</a>.  Please update the MonDO ID <a target="gci" :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`">there</a>.
-            </small> -->
-
-            <!-- <mondo-alert v-if="updatedCuration.disease" :curation="updatedCuration"></mondo-alert> -->
             <curation-notification :curation="updatedCuration" :search-by-mondo="true"/>
-
-        </b-form-group>
+        </div>
         or
-        <b-form-group horizontal
-            :class="{'error': errors.disease_entity_notes}"
-        >
-            <template v-slot:label>
-                Disease Entity (<small>Use when no appropriate MonDO ID is available.</small>)
-            </template>
+        <div class="form-group" :class="{'error': errors.disease_entity_notes}">
+            <label>Disease Entity (<small>Use when no appropriate MonDO ID is available.</small>)</label>
             <textarea v-model="updatedCuration.disease_entity_notes" class="form-control" />
             <transition name="fade">
                 <div v-if="updatedCuration.disease_entity_notes" class="alert alert-info mt-2">
                     <a href="https://github.com/monarch-initiative/mondo/issues/new/choose" target="mondo">Request a new MonDO term</a> by submitting an issue on their <a href="https://github.com/monarch-initiative/mondo">GitHub project.</a> (GitHub account required)
                 </div>
             </transition>
-        </b-form-group>
+        </div>
 
         <send-to-gci-button :curation="updatedCuration" @saved="emitUpdated"/>
 
@@ -69,7 +58,7 @@
 
     export default {
         mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
+            curationFormMixin,
         ],
         components: {
             ValidationError,

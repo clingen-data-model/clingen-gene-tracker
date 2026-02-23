@@ -2,14 +2,13 @@
     <div>
         <div class="mt-2">
             <clingen-app></clingen-app>
-            <b-progress
-                :value="100"
-                :max="100"
-                animated
+            <div
                 v-show="loading"
-                style="position:fixed; top:0; left:0; right:0; border-radius: 0"
-                height="5px"
-            ></b-progress>
+                class="progress"
+                style="position:fixed; top:0; left:0; right:0; border-radius:0; height:5px"
+            >
+                <div class="progress-bar progress-bar-striped progress-bar-animated w-100"></div>
+            </div>
         </div>
         <alerts></alerts>
     </div>

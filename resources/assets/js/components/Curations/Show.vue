@@ -7,33 +7,33 @@
         
         </div>
         <transition name="fade">
-            <b-card
+            <div class="card"
                 id="show-curation"
                 v-if="!loading"
                 key="curation-details"
-                style="max-heigh: 1000px"
             >
-                <template slot="header">
+                <div class="card-header">
                     <div class="d-float justify-content-between">
                         <h3> {{ title }}</h3>
 
                         <div class="d-flex space-x-1" v-if="!loading">
                             <router-link
                                 v-if="user.canEditCuration(curation)"
-                                :id="'edit-curation-'+curation.id+'-btn'" 
-                                class="btn btn-secondary btn-sm" 
+                                :id="'edit-curation-'+curation.id+'-btn'"
+                                class="btn btn-secondary btn-sm"
                                 :to="'/curations/'+curation.id+'/edit'"
                             >
                                 Edit
                             </router-link>
                             <delete-button class="btn btn-sm" :curation="curation"></delete-button>
-                            <transfer-curation-control 
-                                :curation="curation" 
+                            <transfer-curation-control
+                                :curation="curation"
                                 v-if="$store.state.features.transferEnabled"
                             ></transfer-curation-control>
-                        </div>                
+                        </div>
                     </div>
-                </template>
+                </div>
+                <div class="card-body">
                 <div v-if="this.curations">
                     <div id="info">
                         <div class="row mt-2">
@@ -197,10 +197,11 @@
                     
                     <hr>
                     <notes-list :notes="curation.notes">
-                        <div slot="title">Administrative Notes</div>
+                        <template v-slot:title>Administrative Notes</template>
                     </notes-list>
                 </div>
-            </b-card>
+            </div>
+            </div>
             <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
                 Loading...
             </div>

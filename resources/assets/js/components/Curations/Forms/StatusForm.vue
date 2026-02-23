@@ -2,22 +2,19 @@
 
 <template>
     <div>
-        <b-button 
-            variant="info"
-            size="sm" 
-            class="form-control mb-2"
+        <button
+            class="btn btn-info btn-sm form-control mb-2"
             @click="modalVisible = true"
-        >Add or update status</b-button>
+        >Add or update status</button>
 
         <CurationStatusHistory :curation="value"></CurationStatusHistory>
 
-        <b-modal 
-            v-model="modalVisible"
+        <Dialog
+            :visible.sync="modalVisible"
+            header="Update Curation Status"
+            :modal="true"
             @hide="submitAll"
         >
-            <div slot="modal-header">
-                <h3>Update Curation Status</h3>
-            </div>    
             <table class="table">
                 <thead>
                     <tr>
@@ -28,7 +25,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <b-form-select id="expert-panel-select" v-model="newStatusId">
+                            <select class="form-control" id="expert-panel-select" v-model="newStatusId">
                                 <option :value="null">Select...</option>
                                 <option v-for="status in statusOptions"
                                     :key="status.id"
@@ -36,28 +33,24 @@
                                 >
                                     {{status.name}}
                                 </option>
-                            </b-form-select>
+                            </select>
                             <div class="text-danger" v-if="errors.curation_status_id">
                                 <div v-for="message in errors.curation_status_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <datepicker 
+                                <Calendar
                                     v-model="newStatusDate"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
+                                    dateFormat="yy-mm-dd"
+                                    :showIcon="true"
                                     placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                ></datepicker>
+                                    inputClass="form-control"
+                                ></Calendar>
                             </div>
-                            <b-button 
-                                variant="primary"
-                                @click="addStatus"
-                            >
+                            <button class="btn btn-primary" @click="addStatus">
                                 <strong>+</strong>
-                            </b-button>
+                            </button>
                         </td>
                     </tr>
                     <tr v-for="status in curationCopy.curation_statuses" :key="status.pivot.id">
@@ -66,29 +59,27 @@
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <datepicker
+                                <Calendar
                                     :id="'status-date-'+status.id"
                                     v-model="status.pivot.status_date"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
+                                    dateFormat="yy-mm-dd"
+                                    :showIcon="true"
                                     placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                    @selected="updateStatusDate(status.pivot,$event)"
-                                ></datepicker>
+                                    inputClass="form-control"
+                                    @date-select="updateStatusDate(status.pivot, $event)"
+                                ></Calendar>
                             </div>
-                            <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
+                            <button class="btn btn-secondary" @click="removeStatusEntry(status)"><strong>x</strong></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
     import CurationStatusHistory from '../StatusHistory.vue'
     import formatDate from '../../../helpers/formatDate'
@@ -96,7 +87,6 @@
     export default {
         components: {
             CurationStatusHistory,
-            Datepicker
         },
         props: {
             value: {
@@ -110,10 +100,6 @@
                 modalVisible: false,
                 newStatusDate: new Date(),
                 newStatusId: null,
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                },
                 statusDatesUpdated: false,
                 errors: []
             }
@@ -144,7 +130,7 @@
             addStatus() {
                 this.linkNewStatus(
                     {
-                        curation: this.curationCopy, 
+                        curation: this.curationCopy,
                         data: {
                             curation_status_id: this.newStatusId,
                             status_date: formatDate(this.newStatusDate, 'YYYY-MM-DD')
@@ -187,6 +173,5 @@
                 this.curationCopy = JSON.parse(JSON.stringify(this.value))
             },
         },
-
     }
 </script>

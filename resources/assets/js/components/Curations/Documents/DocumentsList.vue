@@ -11,54 +11,66 @@
                 <label for="list-filter-input">Filter:</label>&nbsp;
                 <input type="text" class="form-control form-control-sm" v-model="filter">
             </div>
-            <b-table 
-                :fields="fields" 
-                :items="documents" 
-                :filter="filter" 
-                :filter-included-fields="filteredFields"
-                stacked="sm"
-            >
-                <template v-slot:cell(action)="{item: document}">
-                    <a href="#" @click.prevent="downloadFile(document)" title="Download document">
-                        <i class="material-icons">cloud_download</i>
-                    </a>
-                    <a href="#" @click.prevent="showDetails(document)" title="Detailed information">
-                        <i class="material-icons">info</i>
-                    </a>
-                    <a href="#" 
-                        title="Delete document" 
-                        class="text-danger" 
-                        @click.prevent="deleteDocument(document)" 
-                        v-if="user.canEditCuration(curation)"
-                    >
-                        <i class="material-icons">delete</i>
-                </a>
-                </template>    
-            </b-table>
+            <DataTable :value="filteredDocuments" :small="true">
+                <Column field="id" header="Id" :sortable="true"></Column>
+                <Column field="name" header="Name" :sortable="true"></Column>
+                <Column field="category.name" header="Category" :sortable="true">
+                    <template #body="{data}">{{ data.category ? data.category.name : '' }}</template>
+                </Column>
+                <Column field="created_at" header="Created" :sortable="true">
+                    <template #body="{data}">{{ formatDate(data.created_at, 'YYYY-MM-DD') }}</template>
+                </Column>
+                <Column field="uploader.name" header="Uploaded by" :sortable="true">
+                    <template #body="{data}">{{ data.uploader ? data.uploader.name : '' }}</template>
+                </Column>
+                <Column header="Actions">
+                    <template #body="{data: document}">
+                        <a href="#" @click.prevent="downloadFile(document)" title="Download document">
+                            <i class="material-icons">cloud_download</i>
+                        </a>
+                        <a href="#" @click.prevent="showDetails(document)" title="Detailed information">
+                            <i class="material-icons">info</i>
+                        </a>
+                        <a href="#"
+                            title="Delete document"
+                            class="text-danger"
+                            @click.prevent="deleteDocument(document)"
+                            v-if="user.canEditCuration(curation)"
+                        >
+                            <i class="material-icons">delete</i>
+                        </a>
+                    </template>
+                </Column>
+            </DataTable>
         </div>
-        <b-modal v-model="showDetailedInfo" hide-footer v-if="currentDocument" :title="currentDocument.name" size="lg">
+        <Dialog
+            :visible.sync="showDetailedInfo"
+            :header="currentDocument ? currentDocument.name : ''"
+            :modal="true"
+            :style="{width: '50vw'}"
+            v-if="currentDocument"
+        >
             <dl class="row">
-                    <dt class="col-md-2">Name:</dt>
-                    <dd class="col-md-10">{{currentDocument.name}}</dd>
+                <dt class="col-md-2">Name:</dt>
+                <dd class="col-md-10">{{currentDocument.name}}</dd>
 
-                    <dt class="col-md-2">File name:</dt>
-                    <dd class="col-md-10">{{currentDocument.file_name ? currentDocument.file_name : '--'}}</dd>
+                <dt class="col-md-2">File name:</dt>
+                <dd class="col-md-10">{{currentDocument.file_name ? currentDocument.file_name : '--'}}</dd>
 
-                    <dt class="col-md-2">Category:</dt>
-                    <dd class="col-md-10">{{currentDocument.category ? currentDocument.category.name : '--'}}</dd>
+                <dt class="col-md-2">Category:</dt>
+                <dd class="col-md-10">{{currentDocument.category ? currentDocument.category.name : '--'}}</dd>
 
-                    <dt class="col-md-2">Date uploaded:</dt>
-                    <dd class="col-md-10">{{formatDate(currentDocument.created_at, 'YYYY-MM-DD')}}</dd>
+                <dt class="col-md-2">Date uploaded:</dt>
+                <dd class="col-md-10">{{formatDate(currentDocument.created_at, 'YYYY-MM-DD')}}</dd>
 
-                    <dt class="col-md-2">Uploaded by:</dt>
-                    <dd class="col-md-10">{{(currentDocument.uploader) ? currentDocument.uploader.name : '--'}}</dd>
+                <dt class="col-md-2">Uploaded by:</dt>
+                <dd class="col-md-10">{{(currentDocument.uploader) ? currentDocument.uploader.name : '--'}}</dd>
 
-                    <dt class="col-md-2">Notes:</dt>
-                    <dd class="col-md-10">{{currentDocument.notes ? currentDocument.notes : '--'}}</dd>
-
+                <dt class="col-md-2">Notes:</dt>
+                <dd class="col-md-10">{{currentDocument.notes ? currentDocument.notes : '--'}}</dd>
             </dl>
             <div class="mt-2">
-                <button 
+                <button
                     class="btn btn-primary text-middle btn-sm"
                     @click="downloadFile(currentDocument)"
                     title="Download document"
@@ -66,7 +78,7 @@
                     Download document
                 </button>
             </div>
-        </b-modal>
+        </Dialog>
     </div>
 </template>
 
@@ -93,44 +105,23 @@
                 documents: [],
                 currentDocument: null,
                 filter: '',
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    },
-                    {
-                        key: 'category.name',
-                        sortable: true,
-                        label: 'Category'
-                    },
-                    {
-                        key: 'created_at',
-                        label: 'Created',
-                        sortable: true,
-                        formatter: (value, key, item) => {
-                            return formatDate(value, 'YYYY-MM-DD')
-                        }
-                    },
-                    {
-                        key: 'uploader.name',
-                        label: 'Uploaded by',
-                        sortable: true
-                    },
-                    'action'
-                ],
-                filteredFields: ['name', 'id', 'category', 'uploader', 'uploader'],
             }
         },
         computed: {
-            ...mapGetters({user: 'getUser'})
+            ...mapGetters({user: 'getUser'}),
+            filteredDocuments() {
+                if (!this.filter) return this.documents;
+                const f = this.filter.toLowerCase();
+                return this.documents.filter(doc =>
+                    (doc.name && doc.name.toLowerCase().includes(f)) ||
+                    (doc.id && String(doc.id).includes(f)) ||
+                    (doc.category && doc.category.name && doc.category.name.toLowerCase().includes(f)) ||
+                    (doc.uploader && doc.uploader.name && doc.uploader.name.toLowerCase().includes(f))
+                );
+            }
         },
         watch: {
             curation() {
-
                 this.getDocuments()
             }
         },
@@ -172,14 +163,12 @@
                         a.click();
                         a.remove();
                         window.URL.revokeObjectURL(url);
-
                     })
                     .catch(error => {
                         if (error.response && error.response.status == 404) {
                             alert('We couldn\'t seem to find the file you requested.');
                             return;
                         }
-
                         throw error;
                     })
             },
@@ -199,6 +188,5 @@
         mounted() {
             this.getDocuments();
         }
-    
-}
+    }
 </script>

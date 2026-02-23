@@ -14,95 +14,70 @@
         <div v-if="loading" style="position:absolute; top:0; left: 0; bottom: 0; right: 0; background-color: rgba(256, 256, 256, .4); z-index: 10">
             <div class="alert alert-light border text-center" style="margin: auto; width: 10rem; margin-top: 25%">Loading...</div>
         </div>
-        <b-form-group horizontal id="new-gene-symbol-group"
-            label="HGNC Gene Symbol"
-            label-for="gene-symbol-input"
-            :class="{'error': fieldError('gene_symbol')}"
-        >
-            <b-form-input id="gene-symbol-input"
+
+        <div class="form-group" :class="{'error': fieldError('gene_symbol')}">
+            <label for="gene-symbol-input">HGNC Gene Symbol</label>
+            <input id="gene-symbol-input"
                 type="text"
+                class="form-control"
                 v-model="updatedCuration.gene_symbol"
                 required
                 placeholder="ATK-1"
                 :disabled="hasGdmUuid()"
             >
-            </b-form-input>
             <gci-linked-message :curation="updatedCuration" attribute-label="the gene"></gci-linked-message>
-
             <validation-error :messages="errors.gene_symbol"></validation-error>
-        </b-form-group>
+        </div>
 
         <curation-notifications :curation="updatedCuration"></curation-notifications>
 
-        <b-form-group horizontal label="Mode of Inheritance" label-for="moi_input"
-            :class="{'error': fieldError('moi_id')}"
-        >
-            <b-form-select v-model="updatedCuration.moi_id"
-                id="moi_input"
-                :disabled="hasGdmUuid()"
-            >
+        <div class="form-group" :class="{'error': fieldError('moi_id')}">
+            <label for="moi_input">Mode of Inheritance</label>
+            <select class="form-control" v-model="updatedCuration.moi_id" id="moi_input" :disabled="hasGdmUuid()">
                 <option :value="null">Select...</option>
-                <option v-for="moi in mois" :key="moi.id"
-                    :value="moi.id"
-                >
+                <option v-for="moi in mois" :key="moi.id" :value="moi.id">
                     {{`${moi.name} (${moi.hp_id})`}}
                 </option>
-            </b-form-select>
+            </select>
             <validation-error :messages="errors.moi_id"></validation-error>
             <gci-linked-message :curation="updatedCuration" attribute-label="the mode of inheritance"></gci-linked-message>
+        </div>
 
-        </b-form-group>
-        
-        <b-form-group horizontal id="expert-panel-select-group" label="Gene Curation Expert Panel" label-for="expert-panel-select"
-            :class="{'error': fieldError('expert_panel_id')}"
-        >
-            <b-form-select 
-                id="expert-panel-select" 
-                v-model="updatedCuration.expert_panel_id" 
-                :disabled="!canUpdateExpertPanel"
-            >
+        <div class="form-group" id="expert-panel-select-group" :class="{'error': fieldError('expert_panel_id')}">
+            <label for="expert-panel-select">Gene Curation Expert Panel</label>
+            <select class="form-control" id="expert-panel-select" v-model="updatedCuration.expert_panel_id" :disabled="!canUpdateExpertPanel">
                 <option :value="null">Select...</option>
-                <option v-for="panel in panelOptions" 
-                    :value="panel.id"
-                    :key="panel.id"
-                >
+                <option v-for="panel in panelOptions" :value="panel.id" :key="panel.id">
                     {{panel.name}}
                 </option>
-            </b-form-select>
+            </select>
             <small class="text-muted" v-if="!canUpdateExpertPanel && $store.state.features.transferEnabled">
                 To change the expert panel use click the "Transfer Curation" button.
             </small>
             <validation-error :messages="errors.expert_panel_id"></validation-error>
-        </b-form-group>
-    
-        <b-form-group horizontal 
-            id="curator-select-group" 
-            label="Curator" 
-            label-for="curator-select"
-            :class="{'error': fieldError('curator_id')}"
-        >
-            <b-form-select id="curator-select" v-model="updatedCuration.curator_id">
+        </div>
+
+        <div class="form-group" id="curator-select-group" :class="{'error': fieldError('curator_id')}">
+            <label for="curator-select">Curator</label>
+            <select class="form-control" id="curator-select" v-model="updatedCuration.curator_id">
                 <option :value="null">Select...</option>
-                <option v-for="curator in panelCurators" 
-                    :key="curator.id"
-                    :value="curator.id"
-                >
+                <option v-for="curator in panelCurators" :key="curator.id" :value="curator.id">
                     {{curator.name}}
                 </option>
-            </b-form-select>
+            </select>
             <validation-error :messages="errors.curator_id"></validation-error>
-        </b-form-group>
-    
-        <b-form-group horizontal label="Notes" label-for="notes-field"
-            :class="{'error': fieldError('notes')}"
-        >
+        </div>
+
+        <div class="form-group" :class="{'error': fieldError('notes')}">
+            <label for="notes-field">Notes</label>
             <textarea id="notes-field" class="form-control" placeholder="optional notes" v-model="updatedCuration.curation_notes"></textarea>
             <validation-error :messages="errors.curation_notes"></validation-error>
-        </b-form-group>
+        </div>
 
-        <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">
+        <div class="form-group" v-if="updatedCuration && updatedCuration.curation_statuses">
+            <label>Status</label>
             <status-form v-model="updatedCuration" class="mt-1"></status-form>
-        </b-form-group>
+        </div>
         <br>
         <div class="alert alert-info mt-3" v-if="canEditGdmUuid">
             <h5>
@@ -114,19 +89,15 @@
                 </small></small>
             </h5>
             <hr>
-            <b-form-group
-                horizontal 
-                label="GCI UUID" 
-                label-for="gdm_uuid"
-                :class="{'error': fieldError('gdm_uuid')}"
-            >
-                <b-form-input 
-                    id="gdm_uuid" 
+            <div class="form-group" :class="{'error': fieldError('gdm_uuid')}">
+                <label for="gdm_uuid">GCI UUID</label>
+                <input class="form-control"
+                    id="gdm_uuid"
                     v-model="updatedCuration.gdm_uuid"
                     placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-                ></b-form-input>
+                >
                 <small>
-                    <a :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`" 
+                    <a :href="`https://curation.clinicalgenome.org/curation-central/${updatedCuration.gdm_uuid}`"
                         v-if="updatedCuration.gdm_uuid"
                         target="gci"
                     >
@@ -134,7 +105,7 @@
                     </a>
                 </small>
                 <validation-error :messages="errors.gdm_uuid"></validation-error>
-            </b-form-group>
+            </div>
         </div>
     </div>
 </template>
@@ -152,7 +123,7 @@
     export default {
         name: 'test',
         mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
+            curationFormMixin,
         ],
         components: {
             CurationNotifications,
@@ -203,7 +174,7 @@
             panelCurators: function () {
                 const curators = this.curators.filter(user => {
                     return (
-                        user.expert_panels 
+                        user.expert_panels
                         && user.expert_panels.find(panel => panel.id == this.updatedCuration.expert_panel_id)
                     )
                 });
@@ -232,7 +203,7 @@
                 if (!this.updatedCuration.expert_panel) {
                     return false;
                 }
-                return user.hasPermission('update curation gdm_uuid') 
+                return user.hasPermission('update curation gdm_uuid')
                     || user.isPanelCoordinator(this.updatedCuration.expert_panel)
                     || user.canEditPanelCurations(this.updatedCuration.expert_panel)
             }

@@ -14,7 +14,7 @@
         },
         props: ['disabled'],
         mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
+            curationFormMixin,
             phenotypeListMixin
         ],
         data: function () {
@@ -22,34 +22,6 @@
                 page: 'phenotypes',
                 phenotypes: [],
                 updatedCuration: {},
-                fields: [
-                    {
-                        key: 'phenotype',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeMimNumber',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeInheritance',
-                        sortable: true,
-                        label: 'Inheritance'
-                    },
-                    {
-                        key: 'checkbox',
-                        tdClass: 'text-right w-10',
-                        sortable: false,
-                        label: ' ',
-                        formatter: (value, key, item) => {
-                            return {
-                                'id': item.id,
-                                'mim_number': item.phenotypeMimNumber,
-                                'name': item.phenotype
-                            }
-                        }
-                    }
-                ],
                 message: null,
             }
         },
@@ -101,13 +73,12 @@
                 rationales: 'Items',
             }),
             showPmids: function () {
-                return 
+                return
             },
             loading: function () {
                 return this.$store.getters.loading;
             },
             showTable: function () {
-                // Show table when curation type is single NOT on list.
                 return (this.updatedCuration.curation_type_id != 2 && this.updatedCuration.curation_type_id != 3 && this.phenotypes.length > 0)
             },
             showRationale: function () {
@@ -120,33 +91,32 @@
     <div class="component-container">
         <div>
             <div class="alert alert-info" v-show="loading && phenotypes.length < 1">Loading phenotype information...</div>
-            <div  v-show="!loading || phenotypes.length > 0">
+            <div v-show="!loading || phenotypes.length > 0">
                 <div class="alert alert-secondary clearfix" v-show="phenotypes.length == 0">
                     <p>The gene <strong>{{ updatedCuration.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
                 </div>
 
-                <b-table 
-                        v-show="showTable"
-                    :items="phenotypes"
-                    :fields="fields"
-                    stacked="sm"
-                    striped 
-                    hover 
-                    small
+                <DataTable
+                    v-show="showTable"
+                    :value="phenotypes"
+                    :small="true"
+                    stripedRows
                 >
-                    <template v-slot:head(checkbox)="data">
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    </template>
-                    <template v-slot:cell(checkbox)="data">
-                        <input 
-                            class="form-check-input form-check-input-lg"
-                            type="checkbox" 
-                            v-model="updatedCuration.phenotypes"
-                            :value="data.value"
-                            :disabled="disabled"
-                        >
-                    </template>
-                </b-table>
+                    <Column field="phenotype" header="Phenotype" :sortable="true"></Column>
+                    <Column field="phenotypeMimNumber" header="Phenotype MIM Number" :sortable="true"></Column>
+                    <Column field="phenotypeInheritance" header="Inheritance" :sortable="true"></Column>
+                    <Column header=" ">
+                        <template #body="{data}">
+                            <input
+                                class="form-check-input form-check-input-lg"
+                                type="checkbox"
+                                v-model="updatedCuration.phenotypes"
+                                :value="{id: data.id, mim_number: data.phenotypeMimNumber, name: data.phenotype}"
+                                :disabled="disabled"
+                            >
+                        </template>
+                    </Column>
+                </DataTable>
                 <curation-notifications :curation="updatedCuration" class="mt-2"></curation-notifications>
 
                 <div class="alert alert-info" v-show="message">{{message}}</div>
@@ -156,8 +126,8 @@
             <div class="col-lg-8">
                 <div class="form-group" v-if="showRationale">
                     <label for="rationale_id">What is your rationale for this curation?</label>
-                    <select v-model="updatedCuration.rationales" 
-                        multiple class="form-control" 
+                    <select v-model="updatedCuration.rationales"
+                        multiple class="form-control"
                         style="height: 8.5em"
                     >
                         <option v-for="rationale in rationales" :key="rationale.id"

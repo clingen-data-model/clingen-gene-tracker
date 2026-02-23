@@ -6,7 +6,16 @@
 
 import './bootstrap'
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import PrimeVue from 'primevue/config'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Dialog from 'primevue/dialog'
+import TabView from 'primevue/tabview'
+import TabPanel from 'primevue/tabpanel'
+import Calendar from 'primevue/calendar'
+import 'primevue/resources/themes/lara-light-blue/theme.css'
+import 'primevue/resources/primevue.min.css'
+import 'primeicons/primeicons.css'
 import store from './store/index'
 import router from './routing.js'
 import User from './User'
@@ -16,12 +25,15 @@ import GciLink from './components/Curations/GciLink.vue'
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import MainApp from './components/MainApp.vue'
-// import configs from './configs.json';
-
-// console.log(configs);
 
 window.Vue = Vue
-window.Vue.use(BootstrapVue)
+window.Vue.use(PrimeVue)
+window.Vue.component('DataTable', DataTable)
+window.Vue.component('Column', Column)
+window.Vue.component('Dialog', Dialog)
+window.Vue.component('TabView', TabView)
+window.Vue.component('TabPanel', TabPanel)
+window.Vue.component('Calendar', Calendar)
 
 window.Vue.component('external-link', ExternalLink)
 window.Vue.component('gci-link', GciLink)

@@ -1,40 +1,40 @@
 <style></style>
 <template>
     <div class="nav-container">
-        <b-navbar toggleable="md" type="dark" variant="dark" sticky>
+        <nav class="navbar navbar-dark bg-dark navbar-expand-md sticky-top">
             <div class="container">
-                <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-                <b-navbar-brand href="/">ClinGen Curation Tracker</b-navbar-brand>
-                <b-collapse is-nav id="nav-collapse">
-                    <b-navbar-nav>
-                        <b-nav-item href="#">Genes</b-nav-item>
-                        <b-nav-item href="#">GCEPS</b-nav-item>
-                    </b-navbar-nav>
-
-                    <b-navbar-nav class="ml-auto">
-                        <b-nav-item-dropdown text="User" right>
-                            <b-dropdown-item href="/admin">Admin</b-dropdown-item>
-                            <b-dropdown-item href="/admin/logs" v-show="true">Logs</b-dropdown-item>
-                            <b-dropdown-divider></b-dropdown-divider>
-                            <b-dropdown-item href="/#logout" @click="logout()">Logout</b-dropdown-item>
-                        </b-nav-item-dropdown>
-                    </b-navbar-nav>
-                </b-collapse>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#clingen-nav-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/">ClinGen Curation Tracker</a>
+                <div class="collapse navbar-collapse" id="clingen-nav-collapse">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"><a class="nav-link" href="#">Genes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">GCEPS</a></li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">User</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="/admin">Admin</a>
+                                <a class="dropdown-item" href="/admin/logs">Logs</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/#logout" @click="logout()">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </b-navbar>
+        </nav>
     </div>
 </template>
 <script>
     export default {
         methods: {
-            logout: function () {
+            logout() {
                 window.axios.post('/logout')
-                    .then(function (response) {
-                        window.location.reload();
-                    })
-                    .catch(function (error) {
-                        console.error('error');
-                    });
+                    .then(() => window.location.reload())
+                    .catch(() => console.error('logout error'));
             }
         }
     }

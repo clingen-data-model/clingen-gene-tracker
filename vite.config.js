@@ -10,6 +10,9 @@ export default defineConfig({
             }
         }
     },
+    resolve: {
+        extensions: ['.vue', '.mjs', '.js', '.mts', '.ts', '.jsx', '.tsx', '.json'],
+    },
     plugins: [
         laravel({
             input: ['resources/assets/js/app.js', 'resources/assets/sass/app.scss'],
