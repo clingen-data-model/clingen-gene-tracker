@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\MondoClingenLabelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,8 @@ use App\Http\Controllers\Auth\LoginController;
 */
 
 Route::get('/org-chart', 'Api\OrgChartController@index');
+
+Route::get('/mondo/clingen_preferred_label.tsv', [MondoClingenLabelController::class, 'show']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('auth/timeout-test', 'Api\TimeoutTestController@index');
