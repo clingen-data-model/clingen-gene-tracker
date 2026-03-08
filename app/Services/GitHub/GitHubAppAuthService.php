@@ -19,9 +19,9 @@ class GitHubAppAuthService
             return $cached;
         }
 
-        $appId = (int) config('github_mondo.app_id');
-        $installationId = (int) config('github_mondo.installation_id');
-        $privateKeyPath = (string) config('github_mondo.private_key_path');
+        $appId = (int) config('mondo.github.app.app_id');
+        $installationId = (int) config('mondo.github.app.installation_id');
+        $privateKeyPath = (string) config('mondo.github.app.private_key_path');
 
         if (!$appId || !$installationId || !$privateKeyPath) {
             throw new \RuntimeException('Missing GitHub MONDO config (app_id, installation_id, private_key_path).');

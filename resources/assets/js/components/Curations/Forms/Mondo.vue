@@ -56,31 +56,32 @@
             </transition>
             
             <div v-if="updatedCuration.disease_entity_notes && !updatedCuration.mondo_id || true" class="alert alert-info mt-2">
-                <div class="alert alert-info mt-2">
-                    <div class="d-flex justify-content-between align-items-start">
+                <div class="alert alert-info mt-2">                    
+                    <template v-if="mondoRequests.length">
+                        <div v-if="mondoRequestsLoading" class="mt-2 text-muted">Loading requests...</div>
+                        <div v-else-if="mondoRequests.length  > 0" class="mt-2">
+                            <div class="small text-muted mb-1">Previous requests for this curation:</div>
+                            <ul class="mb-0 pl-3">
+                                <li v-for="r in mondoRequests" :key="r.uuid" class="mb-1">
+                                <span class="font-weight-bold">{{ r.title }}</span>
+                                <span class="ml-2 badge" :class="badgeClass(r)">
+                                    {{ r.github_state || r.status }}
+                                </span>
+
+                                <template v-if="r.github_issue_url">
+                                    — <a :href="r.github_issue_url" target="_blank">GitHub #{{ r.github_issue_number }}</a>
+                                </template>
+
+                                <template v-if="r.status === 'failed' && r.last_error">
+                                    <div class="text-danger small mt-1">{{ r.last_error }}</div>
+                                </template>
+                                </li>
+                            </ul>
+                        </div>
+                    </template>
+                    <div v-else class="d-flex justify-content-between align-items-start">
                         <div><strong>No appropriate MonDO ID?</strong> You can submit a new MonDO term request from GeneTracker.</div>
                         <b-button size="sm" variant="primary" @click="openMondoRequestModal">Request new MonDO term</b-button>
-                    </div>
-                    <div v-if="mondoRequestsLoading" class="mt-2 text-muted">Loading requests...</div>
-                    <div v-else-if="mondoRequests.length" class="mt-2">
-                        <div class="small text-muted mb-1">Previous requests for this curation:</div>
-
-                        <ul class="mb-0 pl-3">
-                            <li v-for="r in mondoRequests" :key="r.uuid" class="mb-1">
-                            <span class="font-weight-bold">{{ r.title }}</span>
-                            <span class="ml-2 badge" :class="badgeClass(r)">
-                                {{ r.github_state || r.status }}
-                            </span>
-
-                            <template v-if="r.github_issue_url">
-                                — <a :href="r.github_issue_url" target="_blank">GitHub #{{ r.github_issue_number }}</a>
-                            </template>
-
-                            <template v-if="r.status === 'failed' && r.last_error">
-                                <div class="text-danger small mt-1">{{ r.last_error }}</div>
-                            </template>
-                            </li>
-                        </ul>
                     </div>
 
                     <!-- Modal -->

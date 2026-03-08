@@ -3,6 +3,7 @@
 namespace App\Services\GitHub;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GitHubIssuesClient
 {
@@ -10,8 +11,8 @@ class GitHubIssuesClient
 
     public function createIssue(string $title, string $body): array
     {
-        $owner = (string) config('github_mondo.owner');
-        $repo  = (string) config('github_mondo.repo');
+        $owner = (string) config('mondo.github.owner');
+        $repo  = (string) config('mondo.github.repo');
 
         if ($owner === '' || $repo === '') {
             throw new \RuntimeException('Missing GitHub repo config (owner/repo).');
@@ -19,10 +20,12 @@ class GitHubIssuesClient
 
         $token = $this->auth->getInstallationToken();
 
+        $labels = (array) config('mondo.github.issue.labels', []);
         $payload = [
             'title' => $title,
             'body' => $body,
         ];
+
         $resp = Http::withToken($token)
             ->withHeaders([
                 'Accept' => 'application/vnd.github+json',
@@ -40,8 +43,8 @@ class GitHubIssuesClient
 
     public function getIssue(int $issueNumber): array
     {
-        $owner = (string) config('github_mondo.owner');
-        $repo  = (string) config('github_mondo.repo');
+        $owner = (string) config('mondo.github.owner');
+        $repo  = (string) config('mondo.github.repo');
 
         if ($owner === '' || $repo === '') {
             throw new \RuntimeException('Missing GitHub repo config (owner/repo).');
