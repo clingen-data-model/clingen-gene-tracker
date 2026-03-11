@@ -37,8 +37,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('omim:update-data')
             ->dailyAt("03:00:00")
+            ->withoutOverlapping()
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
+                Artisan::call('omim:notify-obsolete-phenotypes');
             });
         
         if (config('dx.consume', true)) {
