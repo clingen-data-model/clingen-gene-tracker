@@ -30,7 +30,6 @@ class CurationNotificationsDigest extends Notification
      */
     public function __construct(Collection $groupedNotifications)
     {
-        //
         $this->groupedNotifications = $groupedNotifications;
     }
 
@@ -53,7 +52,9 @@ class CurationNotificationsDigest extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->view('email.curation_notifications_digest', ['groups' => $this->groupedNotifications]);
+        return (new MailMessage)->view('email.curation_notifications_digest', [
+            'groups' => $this->groupedNotifications,
+            'user'   => $notifiable,
+        ]);
     }
 }
