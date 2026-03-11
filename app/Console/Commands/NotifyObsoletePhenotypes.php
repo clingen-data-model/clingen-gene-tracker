@@ -9,8 +9,8 @@ use App\Phenotype;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\User;
-use App\Notifications\OmimObsoletePhenotypesDigest;
 use Carbon\Carbon;
+use App\Notifications\Curations\OmimObsoletePhenotypesNotification;
 
 class NotifyObsoletePhenotypes extends Command
 {
@@ -96,8 +96,31 @@ class NotifyObsoletePhenotypes extends Command
                 continue;
             }
 
+            $baseUrl = rtrim(config('app.url'), '/');
+            $payload = [
+                'digest_key' => sha1('omim_obsolete|'.$epId.'|'.Carbon::parse($since)->toDateTimeString().'|'.implode(',', $curations->pluck('id')->sort()->values()->all())),
+                'since' => Carbon::parse($since)->toDateTimeString(),
+                'expert_panel' => [
+                    'id' => $expertPanel->id,
+                    'name' => $expertPanel->name,
+                ],
+                'curations' => $curations->map(function ($c) use ($baseUrl) {
+                    return [
+                        'id' => $c->id,
+                        'gene_symbol' => $c->gene_symbol,
+                        'link' => $baseUrl.'/home#/curations/'.$c->id,
+                        'link_text' => 'Open curation',
+                        'phenotypes' => $c->phenotypes->map(fn ($p) => [
+                            'id' => $p->id,
+                            'mim_number' => $p->mim_number,
+                            'name' => $p->name,
+                        ])->values()->all(),
+                    ];
+                })->values()->all(),
+            ];
+
             foreach ($users as $user) {
-                $user->notify(new OmimObsoletePhenotypesDigest($expertPanel, $curations, Carbon::parse($since)));
+                $user->notify(new OmimObsoletePhenotypesNotification($payload));
             }
         }
 
