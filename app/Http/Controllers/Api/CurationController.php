@@ -39,11 +39,13 @@ class CurationController extends Controller
      */
     public function index(Request $request)
     {
-        $curations = $this->search->search($request->all());
-
-        $resourceResponse = CurationResource::collection($curations);
-
-        return $resourceResponse;
+        $params = $request->all();
+        if (isset($params['filters']) && is_string($params['filters'])) {
+            $decoded = json_decode($params['filters'], true);
+            $params['filters'] = is_array($decoded) ? $decoded : [];
+        }
+        $curations = $this->search->search($params);
+        return CurationResource::collection($curations);
     }
 
     /**
