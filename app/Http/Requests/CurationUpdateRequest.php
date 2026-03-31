@@ -19,6 +19,8 @@ class CurationUpdateRequest extends CurationCreateRequest
         $rules['rationale_other'] = 'sometimes';
         $rules['isolated_phenotype'] = 'sometimes';
         $rules['mondo_id'] = 'sometimes';
+        $rules['archived_curation_ids'] = ['nullable', 'array'];
+        $rules['archived_curation_ids.*'] = ['integer', 'exists:curations,id'];
 
         return $rules;
     }

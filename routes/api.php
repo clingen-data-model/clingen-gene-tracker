@@ -59,20 +59,16 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::resource('/expert-panels', ExpertPanelController::class);
 
+    // Archived curations
+    Route::patch('/curations/{curation}/archive', [CurationController::class, 'archive']);
+    Route::patch('/curations/{curation}/unarchive', [CurationController::class, 'unarchive']);
+    Route::get('/curations/archived-curation-options', [CurationController::class, 'searchArchivedCurations']);
+
     Route::post('/curations/{id}/owner', [CurationTransferController::class, 'store']);
-
-    Route::resource('/curations/{id}/classifications', CurationClassificationController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->names(['index' => 'curations.classifications.index']);
-
+    Route::resource('/curations/{id}/classifications', CurationClassificationController::class)->only(['index', 'store', 'update', 'destroy'])->names(['index' => 'curations.classifications.index']);
     Route::resource('/curations/{id}/statuses', CurationCurationStatusController::class);
-
-    Route::get('curations/{curation_id}/uploads/{upload_id}/file', [CurationUploadController::class, 'getFile'])
-        ->name('curation-upload-file');
-
-    Route::resource('curations/{curation_id}/uploads', CurationUploadController::class)
-        ->only(['index', 'show', 'store', 'update', 'destroy']);
-
+    Route::get('curations/{curation_id}/uploads/{upload_id}/file', [CurationUploadController::class, 'getFile'])->name('curation-upload-file');
+    Route::resource('curations/{curation_id}/uploads', CurationUploadController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
     Route::resource('/curations', CurationController::class);
 
     Route::get('users/current', [UserController::class, 'currentUser'])->name('current-user');

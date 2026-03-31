@@ -29,7 +29,7 @@
                         title="Delete document" 
                         class="text-danger" 
                         @click.prevent="deleteDocument(document)" 
-                        v-if="user.canEditCuration(curation)"
+                        v-if="user.canEditCuration(curation) && !curation.is_archived"
                     >
                         <i class="material-icons">delete</i>
                 </a>

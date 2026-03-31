@@ -7,7 +7,7 @@
                 :curation="curation" 
                 class="float-right"
                 v-on:uploaded="$refs.docList.getDocuments()"
-                v-if="user.canEditCuration(curation)"
+                v-if="user.canEditCuration(curation) && !curation.is_archived"
             ></document-uploader>
             Documents
         </h4>

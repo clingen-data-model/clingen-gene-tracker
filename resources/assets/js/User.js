@@ -43,10 +43,13 @@ class User {
         return this.user.id == curation.curator_id
     }
 
+    canManageArchive() {
+        return this.hasRole('programmer') || this.hasRole('admin')
+    }
+
     canSelectExpertPanel(expertPanel) {
         return this.inExpertPanel(expertPanel) || this.hasRole('programmer') || this.hasRole('admin')
     }
-
 
     canEditPanelCurations(expertPanel) {
         if (this.hasRole('programmer') || this.hasRole('admin')) {
@@ -67,9 +70,18 @@ class User {
     }
 
     canEditCuration(curation) {
-        if (curation && curation.curator_id == this.user.id) {
+        if (!curation) {
+            return false
+        }
+
+        if (curation.is_archived) {
+            return this.canManageArchive()
+        }
+
+        if (curation.curator_id == this.user.id) {
             return true
         }
+
         if (this.hasRole('programmer') || this.hasRole('admin')) {
             return true;
         }
@@ -99,6 +111,10 @@ class User {
             return true;
         }
 
+        if (curation.is_archived) {
+            return this.canManageArchive()
+        }
+
         if (this.hasPermission('delete curations') && this.canEditCuration(curation)) {
             return true
         }
@@ -109,7 +125,6 @@ class User {
 
         return false;
     }
-
 }
 
 export default User

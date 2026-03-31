@@ -50,6 +50,10 @@ class CurationPolicy
 
     public function update(User $user, Curation $curation)
     {
+        if ($curation->is_archived) {
+            return $this->hasPrivilegedRole($user);
+        }
+
         if ($user->id == $curation->curator_id) {
             return true;
         }
@@ -65,6 +69,10 @@ class CurationPolicy
     {
         if ($this->hasPrivilegedRole($user)) {
             return true;
+        }
+
+        if ($curation->is_archived) {
+            return $this->hasPrivilegedRole($user);
         }
 
         if ($user->isPanelCoordinator($curation->expertPanel)) {
@@ -91,6 +99,16 @@ class CurationPolicy
         }
 
         return false;
+    }
+
+    public function archive(User $user, Curation $curation)
+    {
+        return $this->hasPrivilegedRole($user);
+    }
+
+    public function unarchive(User $user, Curation $curation)
+    {
+        return $this->hasPrivilegedRole($user);
     }
     
 }

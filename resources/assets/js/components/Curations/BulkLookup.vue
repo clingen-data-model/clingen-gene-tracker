@@ -63,6 +63,17 @@
                             </li>
                         </ul>
                     </template>
+                    <template v-slot:cell(current_status.name)="{ item, value }">
+                        <div>
+                            <span>{{ formatStatus(value, item) }}</span>
+                            <span
+                                v-if="item.is_archived"
+                                class="badge badge-warning ml-2"
+                            >
+                                Archived
+                            </span>
+                        </div>
+                    </template>
                 </b-table>
             </div>
         </div>
@@ -140,13 +151,6 @@ export default {
                     key: 'current_status.name',
                     label: 'Status',
                     sortable: true,
-                    formatter: function (value, key, item) {
-                        let disp = value 
-                        if (item.current_status_date) {
-                            disp += ` - ${moment(item.current_status_date).format('MM/DD/YY')}`
-                        }
-                        return disp
-                    },
                     thStyle: {
                         width: "10rem"
                     }
@@ -303,7 +307,16 @@ export default {
         },
         phenotypeIsInCuration (ph, curation) {
             return curation.phenotypes.map(i => i.mim_number).indexOf(ph.mim_number) > -1;
-        }
+        },
+        formatStatus(value, item) {
+            let disp = value || ''
+
+            if (item.current_status_date) {
+                disp += ` - ${moment(item.current_status_date).format('MM/DD/YY')}`
+            }
+
+            return disp
+        },
     }
 }
 </script>

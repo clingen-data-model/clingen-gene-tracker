@@ -47,7 +47,7 @@
                 >
                     {{item.gene_symbol}}
                 </router-link>
-                <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>
+                <small v-if="item.hgnc_id">(hgnc:{{item.hgnc_id}})</small>                
             </template>
             <template v-slot:cell(mode_of_inheritance)="{item}">
                 <div v-if="item.mode_of_inheritance !== null">
@@ -63,7 +63,12 @@
                 <div>{{(item.curator) ? item.curator.name : null}}</div>
             </template>
             <template v-slot:cell(current_status)="{item}">
-                <div>{{(item.current_status) ? item.current_status.name : null}}</div>
+                <div>
+                    {{(item.current_status) ? item.current_status.name : null}}
+                    <b-badge v-if="item.is_archived" variant="warning" class="ml-2">
+                        Archived
+                    </b-badge>
+                </div>
             </template>
             <template v-slot:cell(mondo_id)="{item}">
                 <div>{{ getDiseaseEntityColumn(item) }}</div>

@@ -56,7 +56,7 @@ class CurationController extends Controller
     public function store(CurationCreateRequest $request)
     {
         $this->authorize('create', Curation::class);
-        $data = $request->except('phenotypes', 'curation_status_id', 'page');
+        $data = $request->except('phenotypes', 'curation_status_id', 'page', 'archived_curation_ids');
         try {
             $curation = Curation::create($data);
             if ($request->phenotypes) {
@@ -65,6 +65,7 @@ class CurationController extends Controller
             if ($request->curation_status_id) {
                 AddStatus::dispatch($curation, CurationStatus::find($request->curation_status_id));
             }
+            $this->syncArchivedCurationLinks($curation, $request->all());
         } catch (ApiServerErrorException $th) {
             report($th);
             $curation = Curation::where($data)->first();
@@ -121,6 +122,7 @@ class CurationController extends Controller
             $curation->update($data);
             $this->setPhenotypes($curation, $request);
             $this->setRationales($curation, $request->rationales);
+            $this->syncArchivedCurationLinks($curation, $request->all());
         } catch (ApiServerErrorException $e) {
             report($e);
         }
@@ -178,6 +180,83 @@ class CurationController extends Controller
 
     private function loadRelations(&$curation)
     {
-        $curation->load(['phenotypes', 'expertPanel', 'expertPanel.affiliation', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance', 'disease', 'notes', 'notes.author']);
+        $curation->load(['phenotypes', 'expertPanel', 'expertPanel.affiliation', 'expertPanels', 'curator', 'curationStatuses', 'rationales', 'curationType', 'classifications', 'modeOfInheritance', 'disease', 'notes', 'notes.author', 'linkedArchivedCurations.expertPanel', 'linkedCurrentCurations.expertPanel']);
     }
+
+    protected function syncArchivedCurationLinks(Curation $curation, array $data): void
+    {
+        if ($curation->is_archived) {
+            return;
+        }
+
+        if (!array_key_exists('archived_curation_ids', $data)) {
+            return;
+        }
+
+        $ids = collect($data['archived_curation_ids'] ?? [])
+            ->filter()
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->reject(fn ($id) => $id === (int) $curation->id)
+            ->values();
+
+        $validArchivedIds = Curation::query()
+            ->whereIn('id', $ids)
+            ->whereNotNull('archived_at')
+            ->pluck('id')
+            ->all();
+
+        $curation->linkedArchivedCurations()->sync($validArchivedIds);
+    }
+
+    public function archive(Request $request, Curation $curation)
+    {
+        $this->authorize('archive', $curation);
+        $data = $request->validate([
+            'archive_reason' => ['nullable', 'string', 'max:2000'],
+            'gcex_url' => ['nullable', 'url'],
+        ]);
+        $curation->update([
+            'archived_at' => now(),
+            'archive_reason' => $data['archive_reason'] ?? null,
+            'gcex_url' => $data['gcex_url'] ?? null,
+        ]);
+        return response()->json($curation->fresh());
+    }
+
+    public function unarchive(Request $request, Curation $curation)
+    {
+        $this->authorize('unarchive', $curation);
+        $curation->update([
+            'archived_at' => null,
+            'archive_reason' => null,
+            'gcex_url' => null,
+        ]);
+        return response()->json($curation->fresh());
+    }
+
+    public function searchArchivedCurations(Request $request, Curation $curation)    
+    {
+        $search = trim($request->get('q', ''));
+        $query = Curation::query()
+            ->whereNotNull('archived_at');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('gene_symbol', 'like', "%{$search}%")
+                    ->orWhere('id', '=', $search)
+                    ->orWhere('hgnc_id', '=', $search)
+                    ->orWhere('gdm_uuid', 'like', "%{$search}%");
+            });
+        }
+
+        return CurationResource::collection(
+            $query->with('expertPanel')
+                ->orderBy('gene_symbol')
+                ->limit(5)
+                ->get()
+        );
+    }
+
+
 }
