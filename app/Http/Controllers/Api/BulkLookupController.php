@@ -68,6 +68,7 @@ class BulkLookupController extends Controller
                             'Status date' => ($curation->currentStatus && $curation->currentStatus->pivot) 
                                                 ? $curation->currentStatus->pivot->status_date 
                                                 : null,
+                            'Is Archived?' => $curation->archived_at ? 'Yes' : 'No',
                             'Last updated' => $curation->updated_at->format('Y-m-d H:i:s'),
                             'Curated Phenotypes' => $curation->phenotypes->map(function ($ph) {
                                 return $ph->name.' ('.$ph->mim_number.')';

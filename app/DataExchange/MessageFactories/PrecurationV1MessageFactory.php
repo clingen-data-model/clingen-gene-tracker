@@ -56,6 +56,13 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
             'omim_phenotypes_terms' => $this->getOmimPhenotypesTerms($curation),
             // Keep using notes instead of renamed 'curation_notes' to prevent bumping schema version
             'notes' => $curation->curation_notes,
+
+            // new archived fields
+            'is_archived' => $curation->archived_at ? true : null,
+            'archived_at' => $curation->archived_at ? $curation->archived_at->toIsoString() : null,
+            'archive_reason' => $curation->archived_at && $curation->archive_reason ? $curation->archive_reason : null,
+            'gcex_url' => $curation->archived_at && $curation->gcex_url ? $curation->gcex_url : null,
+
             'date_created' => $curation->created_at->toIsoString(),
             'date_updated' => $curation->updated_at->toIsoString(),
         ]);

@@ -61,7 +61,7 @@
                             <!-- <delete-button :curation="curation"></delete-button> -->
                             <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
                         </div>
-                        <div class="col-md-8 text-right">
+                        <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-right">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
                             <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
                             <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
@@ -226,9 +226,16 @@
                 storeItemUpdates: 'storeItemUpdates'
             }),
             handleAutoSave () {
+                if (this.updatedCuration.is_archived && !this.user.canManageArchive()) {
+                    return;
+                }
                 this.updateCuration();
             },
             updateCuration (callback, nav) {
+                if (this.updatedCuration.is_archived && !this.user.canManageArchive()) {
+                    this.addAlert('This curation is archived and cannot be edited.')
+                    return;
+                }
                 this.updatedCuration.nav = nav;
                 return this.storeItemUpdates(this.updatedCuration)
                     .then( (response) => {

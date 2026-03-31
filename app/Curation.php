@@ -20,6 +20,8 @@ use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property Classification $currentClassificiation
@@ -56,16 +58,24 @@ class Curation extends Model implements Notable
         'pmids',
         'moi_id',
         'affiliation_id',
+        'archived_at',
+        'archive_reason',
+        'gcex_url'
     ];
 
     protected $casts = [
         'pmids' => 'array',
         'curation_date' => 'datetime',
+        'archived_at' => 'datetime'
     ];
 
     protected $with = [
         // 'currentStatus'
         'disease'
+    ];
+
+    protected $appends = [
+        'is_archived'
     ];
 
     protected $dispatchesEvents = [
@@ -423,5 +433,33 @@ class Curation extends Model implements Notable
     public function addPhenotype(Phenotype $phenotype): void
     {
         $this->phenotypes()->save($phenotype);
+    }
+
+    // Archived Curation linked to it. LUMPING/SPLITTING depends on the presence of this relationship linkedArchivedCurations
+    protected function isArchived(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => ! empty($attributes['archived_at']),
+        );
+    }
+
+    public function linkedArchivedCurations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            self::class,
+            'curation_archive_links',
+            'curation_id',
+            'archived_curation_id'
+        )->withTimestamps();
+    }
+
+    public function linkedCurrentCurations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            self::class,
+            'curation_archive_links',
+            'archived_curation_id',
+            'curation_id'
+        )->withTimestamps();
     }
 }

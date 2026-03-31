@@ -26,12 +26,28 @@
                             >
                                 Edit
                             </router-link>
-                            <delete-button class="btn btn-sm" :curation="curation"></delete-button>
+                            <delete-button v-if="user.canDeleteCuration(curation)" class="btn btn-sm" :curation="curation"></delete-button>
                             <transfer-curation-control 
                                 :curation="curation" 
-                                v-if="$store.state.features.transferEnabled"
+                                v-if="$store.state.features.transferEnabled && user.canEditCuration(curation)"
                             ></transfer-curation-control>
-                        </div>                
+                        </div>
+                        <div v-if="curation.is_archived" class="alert alert-warning mt-2 mb-0">                            
+                            <p>The group has indicated this curation is no longer applicable, and has marked the curation as archived for historical purposes.</p>
+                            
+                            <strong>This curation is archived on {{ curation.archived_at }}.</strong>
+                            <template v-if="curation.archive_reason">
+                                 <br />
+                                 <strong>Reason:</strong> {{ curation.archive_reason }}
+                            </template>
+                            <template v-if="curation.gcex_url">
+                                <br /> 
+                                <strong>GCEx URL:</strong>
+                                <external-link :href="curation.gcex_url" target="gcex_url" class="external">
+                                    {{curation.gcex_url}}
+                                </external-link>
+                            </template>
+                        </div>
                     </div>
                 </template>
                 <div v-if="this.curations">
@@ -192,6 +208,7 @@
                             <div class="col-md">{{ (curation.curation_notes) ? curation.curation_notes : '--' }}</div>
                         </div>
                     </div>
+                    <archived-curation-links :value="curation" :editable="false" />
                     <hr>
                     <documents-card :curation="curation"></documents-card>
                     
@@ -215,6 +232,7 @@
     import CurationStatusHistory from './StatusHistory.vue'
     import ClassificationHistory from './ClassificationHistory.vue'
     import DeleteButton from './DeleteButton.vue'
+    import ArchivedCurationLinks from './Forms/ArchivedCurationLinks.vue'
     import DocumentsCard from './Documents/DocumentsCard.vue'
     import TransferCurationControl from './TransferCurationControl.vue'
     import GciLink from '../Curations/GciLink.vue'
@@ -226,6 +244,7 @@
             PhenotypeList,
             CurationStatusHistory,
             DeleteButton,
+            ArchivedCurationLinks,
             ClassificationHistory,
             DocumentsCard,
             TransferCurationControl,
