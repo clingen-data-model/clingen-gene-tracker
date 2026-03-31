@@ -1,58 +1,65 @@
 {
-    "key": "2bf5282a-2cbd-45f2-bc87-e41c0d9d3737",
     "event_type": "updated",
     "schema_version": 1,
     "data": {
-        "id": 164,
-        "uuid": "c332bd48-33ec-11eb-8885-0242ac130003",
+        "id": 1287,
+        "uuid": "8e9ad861-553b-4abb-8495-7f54027e155d",
         "gene": {
-            "symbol": "PDLIM3",
-            "hgnc_id": "HGNC:20767"
+            "hgnc_id": 23336,
+            "symbol": "A2ML1"
         },
-        "mondo_id": "MONDO:0007903",
+        "disease_entity": {
+            "mondo_id": "MONDO:0009026",
+            "notes": null
+        },
         "mode_of_inheritance": {
             "name": "Autosomal dominant inheritance",
             "hp_id": "HP:0000006"
         },
+        "gdm_uuid": "8e9ad861-553b-4abb-8495-7f54027e155d",
         "group": {
-            "id": "a7152138-8142-4b40-9bab-b13e2f16ffa8",
-            "name": "UNC Biocuration Core",
-            "type": {
-                "id": "f94b04d4-67bc-467c-95fe-005f25e1532e",
-                "name": "Gene Curation Expert Panel"
-            },
-            "affiliation_id": "40035",
-            "uri": "https://clinicalgenome.org/affiliation/40035/"
-        },
-        "curator": {
-            "clingen_id": "4392eea5-45b7-4733-8ef9-c6e551860f4d",
-            "name": "Courtney Thaxton",
-            "email": "courtney_thaxton@med.unc.edu"
-        },
-        "curation_type": {
-            "name": "lumped",
-            "description": "Create a \"lumped\" disease entity from this list"
+            "id": 24,
+            "name": "RASopathy GCEP",
+            "affiliation_id": 40021
         },
         "status": {
-            "name": "precuration complete",
-            "effective_date": "2020-07-13"
+            "name": "Published",
+            "effective_date": "2020-04-06T11:48:32.000000Z"
         },
-        "rationale": {
-            "pmids": [20301488],
+        "rationales": {
+            "pmids": null,
             "rationales": [
                 "Assertion",
-                "Molecular mechanism",
-                "Phenotypic variability",
-                "Inheritance pattern"
+                "Phenotypic Variability"
             ],
-            "notes": "Li-Fraumeni syndrome is a rare, inherited disorder, that includes (but is not limited to) the potential for developing multiple types of cancers, including breast cancer, osteosarcoma, sarcomas, as well as brain tumors, leukemia, and adrenocortical carcinoma. Individuals with TP53 mutations can develop one or more of these carcinomas, and therefore w have lumped the individuals asserted cancer phenotypes into the broader Li-Fraumeni syndrome."
+            "notes": "All five RASopathy conditions were curated in order to ensure clinical utility and dispute all weak\/unsupported disease claims"
+        },
+        "curation_type": {
+            "id": 1,
+            "name": "single-omim",
+            "description": "Curate a single gene-disease entity from this list",
+            "updated_at": "2018-07-17 07:10:39"
         },
         "omim_phenotypes": {
-            "included": [202300, 618165, 151623],
-            "excluded": [614740, 114500, 137800, 259500, 114480, 114550, 607107, 260350]
+            "included": [
+                166760
+            ],
+            "excluded": []
         },
-        "created_date": {},
-        "updated_date": {}
+        "omim_phenotypes_terms": {
+            "included": [
+                {
+                    "id": 166760,
+                    "name": "{Otitis media, susceptibility to}"
+                }
+            ],
+            "excluded": []
+        },
+        "is_archived": true,
+        "archived_at": "2026-03-31T08:02:53.000000Z",
+        "archive_reason": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+        "gcex_url": "https:\/\/search.clinicalgenome.org\/kb\/gene-validity\/CGGCIEX:assertion_8503",
+        "date_created": "2018-10-18T11:15:15.000000Z",
+        "date_updated": "2026-03-31T19:31:16.000000Z"
     }
-
 }
