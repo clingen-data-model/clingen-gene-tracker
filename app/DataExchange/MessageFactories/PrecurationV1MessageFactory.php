@@ -38,7 +38,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
     private function assembleData($curation)
     {
         $curation = $curation->fresh();
-        return array_filter([
+        $data = array_filter([
             'id' => $curation->id,
             'uuid' => $curation->uuid,
             'gene' => $this->getGene($curation),
@@ -58,13 +58,17 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
             'notes' => $curation->curation_notes,
 
             // new archived fields
-            'is_archived' => $curation->archived_at ? true : null,
+            
             'archived_at' => $curation->archived_at ? $curation->archived_at->toIsoString() : null,
             'archive_reason' => $curation->archived_at && $curation->archive_reason ? $curation->archive_reason : null,
             'gcex_url' => $curation->archived_at && $curation->gcex_url ? $curation->gcex_url : null,
 
             'date_created' => $curation->created_at->toIsoString(),
             'date_updated' => $curation->updated_at->toIsoString(),
+        ]);
+
+        return array_merge($data, [
+            'is_archived' => $curation->archived_at ? true : false,
         ]);
     }
 
