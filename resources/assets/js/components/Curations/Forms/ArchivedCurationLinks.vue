@@ -44,7 +44,7 @@
                     {{ searchError }}
                 </div>
 
-                <ul v-if="searchResults.length" class="list-group mb-3">
+                <ul v-if="filteredSearchResults.length" class="list-group mb-3">
                     <li
                         v-for="result in filteredSearchResults"
                         :key="result.id"

@@ -32,10 +32,10 @@
                                 v-if="$store.state.features.transferEnabled && user.canEditCuration(curation)"
                             ></transfer-curation-control>
                         </div>
-                        <div v-if="curation.is_archived" class="alert alert-warning mt-2 mb-0">                            
+                        <div v-if="curation.is_archived" class="alert alert-warning mt-2 mb-0">
                             <p>The group has indicated this curation is no longer applicable, and has marked the curation as archived for historical purposes.</p>
                             
-                            <strong>This curation is archived on {{ curation.archived_at }}.</strong>
+                            <strong>This curation was archived on {{ curation.archived_at }}.</strong>
                             <template v-if="curation.archive_reason">
                                  <br />
                                  <strong>Reason:</strong> {{ curation.archive_reason }}

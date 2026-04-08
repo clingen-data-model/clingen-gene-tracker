@@ -235,7 +235,7 @@ class CurationController extends Controller
         return response()->json($curation->fresh());
     }
 
-    public function searchArchivedCurations(Request $request, Curation $curation)    
+    public function searchArchivedCurations(Request $request)
     {
         $search = trim($request->get('q', ''));
         $query = Curation::query()
