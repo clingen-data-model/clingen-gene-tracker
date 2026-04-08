@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('curation_archive_links', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('curation_id')->constrained('curations')->cascadeOnDelete();
-            $table->foreignId('archived_curation_id')->constrained('curations')->cascadeOnDelete();
+            $table->foreignId('curation_id')->constrained('curations');
+            $table->foreignId('archived_curation_id')->constrained('curations');
             $table->timestamps();
 
             $table->unique(['curation_id', 'archived_curation_id']);
