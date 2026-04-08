@@ -109,7 +109,7 @@
             <div v-if="updatedCuration.archive_reason" class="mt-1">
                 <strong>Reason:</strong> {{ updatedCuration.archive_reason }}
             </div>
-            <div v-if="updatedCuration.gcex_url" class="mt-1">
+            <div v-if="updatedCuration.gcex_url && updatedCuration.gcex_url.startsWith('https://')" class="mt-1">
                 <strong>GCEx URL:</strong>
                 <a :href="updatedCuration.gcex_url" target="_blank">{{ updatedCuration.gcex_url }}</a>
             </div>
@@ -380,6 +380,11 @@
         },
         mounted: function () {
             this.getAllPanels();
+            this.getAllUsers();
+            this.getAllMois();
+        }
+    }
+</script>            this.getAllPanels();
             this.getAllUsers();
             this.getAllMois();
         }
