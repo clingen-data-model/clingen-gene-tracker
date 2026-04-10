@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('curation_archive_links', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('curation_id')->constrained('curations');
-            $table->foreignId('archived_curation_id')->constrained('curations');
+
+            $table->unsignedInteger('curation_id');
+            $table->unsignedInteger('archived_curation_id');
             $table->timestamps();
+
+            $table->foreign('curation_id')->references('id')->on('curations');
+            $table->foreign('archived_curation_id')->references('id')->on('curations');
 
             $table->unique(['curation_id', 'archived_curation_id']);
             $table->index('archived_curation_id');
