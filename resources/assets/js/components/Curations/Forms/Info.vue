@@ -384,9 +384,4 @@
             this.getAllMois();
         }
     }
-</script>            this.getAllPanels();
-            this.getAllUsers();
-            this.getAllMois();
-        }
-    }
 </script>
