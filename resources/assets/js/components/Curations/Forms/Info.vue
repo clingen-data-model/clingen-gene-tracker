@@ -361,7 +361,13 @@
                 this.archiveSaving = true
                 try {
                     const response = await axios.patch(`/api/curations/${this.updatedCuration.id}/archive`, this.archiveForm)
-                    this.updatedCuration = response.data
+                    const curation = response.data.data || response.data
+                    this.updatedCuration = {
+                        ...this.updatedCuration,
+                        ...curation,
+                        page: this.updatedCuration.page || 'info',
+                    }
+
                     this.showArchiveFields = false
                 } finally {
                     this.archiveSaving = false
@@ -371,7 +377,13 @@
                 this.archiveSaving = true
                 try {
                     const response = await axios.patch(`/api/curations/${this.updatedCuration.id}/unarchive`)
-                    this.updatedCuration = response.data
+                    const curation = response.data.data || response.data
+                    this.updatedCuration = {
+                        ...this.updatedCuration,
+                        ...curation,
+                        page: this.updatedCuration.page || 'info',
+                    }
+
                     this.showArchiveFields = false
                 } finally {
                     this.archiveSaving = false
