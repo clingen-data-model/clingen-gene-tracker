@@ -18,17 +18,19 @@ class CreateStreamMessage implements ShouldQueue
     private string $topic;
     private Curation $curation;
     private string $eventType;
+    private array $context;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(String $topic, Curation $curation, string $eventType)
+    public function __construct(String $topic, Curation $curation, string $eventType, array $context = [])
     {
         $this->topic = $topic;
         $this->curation = $curation;
         $this->eventType = $eventType;
+        $this->context = $context;
     }
 
     /**
@@ -40,7 +42,7 @@ class CreateStreamMessage implements ShouldQueue
     {
         StreamMessage::create([
             'topic' => $this->topic,
-            'message' => $factory->make($this->curation, $this->eventType)
+            'message' => $factory->make($this->curation, $this->eventType, $this->context)
         ]);
     }
 }

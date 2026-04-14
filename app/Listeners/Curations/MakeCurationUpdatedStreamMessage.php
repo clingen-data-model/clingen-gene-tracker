@@ -29,6 +29,10 @@ class MakeCurationUpdatedStreamMessage
      */
     public function handle(Updated $event)
     {
-        \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'updated'));
+        $context = [
+            'include_archive_fields' => $event->curation->wasChanged('archived_at'),
+        ];
+        
+        \Bus::dispatch(new CreatePrecurationStreamMessage($event->curation, 'updated', $context));
     }
 }
