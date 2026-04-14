@@ -34,6 +34,10 @@ class CurationPolicy
 
     public function before($user, $ability)
     {
+        if ($ability === 'transfer') {
+            return null;
+        }
+
         if ($this->hasPrivilegedRole($user)) {
             return true;
         }
@@ -76,6 +80,9 @@ class CurationPolicy
 
     public function transfer(User $user, Curation $curation)
     {
+        if (!empty($curation->gdm_uuid)) {
+            return false;
+        }
         if ($this->hasPrivilegedRole($user)) {
             return true;
         }

@@ -165,6 +165,7 @@
                             <strong class="col-md-3">GCI ID:</strong> 
                             <div class="col-md">
                                 <gci-link :curation="curation"></gci-link>
+                                <div class="mt-1 small text-muted">This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></div>
                             </div>
                         </div>
                         <div class="row mt-3">

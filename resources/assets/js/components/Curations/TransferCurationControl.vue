@@ -10,45 +10,47 @@
             Transfer Curation
         </button>
         <b-modal title="Transfer Curation Ownership" v-model="showTransferForm" :hide-footer="true" size="lg">
-                <!-- <div v-if="inGci" class="alert alert-secondary">
-                    <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
-                    <gci-link :curation="curation">Go to the GCI record.</gci-link>
+            <div v-if="generalError" class="alert alert-danger">
+                {{ generalError }}
+            </div>
+            <div v-if="inGci" class="alert alert-secondary">
+                <p>This pre-curation is linked to a record in the GCI.  To transfer this record to another expert panel please contact GCI support at <a href="mailto:clingen-helpdesk@lists.stanford.edu">clingen-helpdesk@lists.stanford.edu</a></p>
+                <gci-link :curation="curation">Go to the GCI record.</gci-link>
+            </div>
+            <div v-else>
+                <div class="alert alert-info">
+                    Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
                 </div>
-                <div v-else> -->
-                <div>
-                    <div class="alert alert-info">
-                        Before transfering this record, be sure that you have contacted the coordinator receiving the curation.
-                    </div>
-                    <input-row label="Transfer to:" :errors="errors.expert_panel_id">
-                        <select 
-                            id="expert-panel-select" 
-                            v-model="newExpertPanel"
-                            class="form-control form-control-sm w-75"
+                <input-row label="Transfer to:" :errors="errors.expert_panel_id">
+                    <select 
+                        id="expert-panel-select" 
+                        v-model="newExpertPanel"
+                        class="form-control form-control-sm w-75"
+                    >
+                        <option :value="null">Select...</option>
+                        <option v-for="panel in filteredPanels" 
+                            :value="panel"
+                            :key="panel.id"
                         >
-                            <option :value="null">Select...</option>
-                            <option v-for="panel in filteredPanels" 
-                                :value="panel"
-                                :key="panel.id"
-                            >
-                                {{panel.name}}
-                            </option>
-                        </select>
-                    </input-row>
-                    <input-row v-model="startDate" :errors="errors.start_date" label="Transfer date" type="date"></input-row>
-                    <input-row :errors="errors.notes" label="Notes">
-                        <textarea class="form-control" cols="60" rows="5" v-model="notes"></textarea>
-                    </input-row>
-                    <!-- <input-row label="">
-                        <label>
-                            <input type="checkbox" v-model="isHistorical">&nbsp;This is a historical entry
-                        </label>
-                    </input-row>
-                    <input-row v-model="endDate" :errors="errors.end_date" label="End date" type="date" v-show="isHistorical"></input-row> -->
-                    <div class="mt-1 border-top pt-3 text-right">
-                        <button class="btn btn-secondary" @click="cancel">Cancel</button>
-                        <button class="btn btn-primary" @click="confirmTransfer()">Transfer Curation</button>
-                    </div>
+                            {{panel.name}}
+                        </option>
+                    </select>
+                </input-row>
+                <input-row v-model="startDate" :errors="errors.start_date" label="Transfer date" type="date"></input-row>
+                <input-row :errors="errors.notes" label="Notes">
+                    <textarea class="form-control" cols="60" rows="5" v-model="notes"></textarea>
+                </input-row>
+                <!-- <input-row label="">
+                    <label>
+                        <input type="checkbox" v-model="isHistorical">&nbsp;This is a historical entry
+                    </label>
+                </input-row>
+                <input-row v-model="endDate" :errors="errors.end_date" label="End date" type="date" v-show="isHistorical"></input-row> -->
+                <div class="mt-1 border-top pt-3 text-right">
+                    <button class="btn btn-secondary" @click="cancel">Cancel</button>
+                    <button class="btn btn-primary" @click="confirmTransfer()">Transfer Curation</button>
                 </div>
+            </div>
         </b-modal>
 
         <b-modal v-model="showConfirmation" title="Confirm Curation Transfer" :hide-footer="true">
@@ -103,6 +105,7 @@ export default {
             isHistorical: null,
             endDate: null,
             errors: {},
+            generalError: null,
             showConfirmation: false
         }
     },
@@ -127,6 +130,12 @@ export default {
             updateOwner: 'updateOwner',
         }),
         confirmTransfer() {
+            if (this.inGci) {
+                this.errors = {
+                    curation: ['This pre-curation is linked to a GCI record and cannot be transferred in GT.']
+                };
+                return;
+            }
             this.showConfirmation = true;
         },
         async transferCuration() {
@@ -143,6 +152,8 @@ export default {
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors;
+                } else {
+                    this.generalError = error.response?.data?.error || error.response?.data?.message || 'Unable to transfer this curation.';
                 }
                 this.showConfirmation = false;
             }
@@ -158,6 +169,7 @@ export default {
             this.isHistorical = null;
             this.endDate = null;
             this.errors = {};
+            this.generalError = null;
             this.showConfirmation = false;
             this.notes = null;
         },

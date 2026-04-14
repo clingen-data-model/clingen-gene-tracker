@@ -56,13 +56,29 @@ class SetOwner
         }
     }
 
-    private function setEndOfOwnerShip()
+    private function setEndOfOwnership()
     {
-        $this->curation->expertPanels()
-            ->updateExistingPivot(
-                $this->curation->expert_panel_id, 
-                ['end_date'=>($this->endDate)]
+        $currentOwnerId = $this->curation->expert_panel_id;
+
+        $existing = $this->curation->expertPanels()
+            ->where('expert_panel_id', $currentOwnerId)
+            ->first();
+
+        if ($existing) {
+            $this->curation->expertPanels()->updateExistingPivot(
+                $currentOwnerId,
+                ['end_date' => $this->endDate]
             );
+            return;
+        }
+
+        // Repair missing history row for legacy/bad data
+        $this->curation->expertPanels()->attach([
+            $currentOwnerId => [
+                'start_date' => optional($this->curation->created_at)->toDateString(),
+                'end_date' => optional($this->endDate)->toDateString(),
+            ]
+        ]);
     }
     
     private function addNewOwner()

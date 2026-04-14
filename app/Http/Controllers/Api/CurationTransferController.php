@@ -18,7 +18,7 @@ class CurationTransferController extends Controller
         $curation = Curation::findOrFail($curationId);
 
         if (!Auth::user()->can('transfer', $curation)) {
-            return response(['error' => 'You do not have permission to transfer ownership of this curation'], 403);
+            return response(['error' => 'You do not have permission to transfer ownership of this curation or the pre-curation is linked to a record in the GCI.'], 403);
         }
 
         Bus::dispatch(new SetOwner(
