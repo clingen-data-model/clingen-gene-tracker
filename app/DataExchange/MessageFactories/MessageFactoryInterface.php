@@ -6,5 +6,5 @@ use App\Curation;
 
 interface MessageFactoryInterface
 {
-    public function make(Curation $curation, $eventType): array;
+    public function make(Curation $curation, $eventType,  array $context = []): array;
 }

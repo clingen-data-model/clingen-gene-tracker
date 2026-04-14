@@ -7,7 +7,7 @@ use Ramsey\Uuid\Uuid;
 
 class PrecurationV1MessageFactory implements MessageFactoryInterface
 {
-    public function make(Curation $curation, $eventType): array
+    public function make(Curation $curation, $eventType, array $context = []): array
     {
         $message = [
             'event_type' => $eventType,
@@ -26,7 +26,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
         }
 
         return array_merge($message, [
-            'data' => $this->assembleData($curation),
+            'data' => $this->assembleData($curation, $context),
         ]);
     }
 
@@ -35,7 +35,7 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
         return 1;
     }
 
-    private function assembleData($curation)
+    private function assembleData($curation, array $context = [])
     {
         $curation = $curation->fresh();
         $data = array_filter([
@@ -49,27 +49,33 @@ class PrecurationV1MessageFactory implements MessageFactoryInterface
             'curation' => $this->getCurator($curation),
             'status' => $this->getStatus($curation),
             'rationales' => $this->getRationales($curation),
-            'curation_type' => $curation->curationType
-                                ? $curation->curationType->toArray()
-                                : null,
+            'curation_type' => $curation->curationType ? $curation->curationType->toArray() : null,
             'omim_phenotypes' => $this->getOmimPhenotypes($curation),
-            'omim_phenotypes_terms' => $this->getOmimPhenotypesTerms($curation),
-            // Keep using notes instead of renamed 'curation_notes' to prevent bumping schema version
+            'omim_phenotypes_terms' => $this->getOmimPhenotypesTerms($curation),            
             'notes' => $curation->curation_notes,
-
-            // new archived fields
-            
-            'archived_at' => $curation->archived_at ? $curation->archived_at->toIsoString() : null,
-            'archive_reason' => $curation->archived_at && $curation->archive_reason ? $curation->archive_reason : null,
-            'gcex_url' => $curation->archived_at && $curation->gcex_url ? $curation->gcex_url : null,
 
             'date_created' => $curation->created_at->toIsoString(),
             'date_updated' => $curation->updated_at->toIsoString(),
         ]);
 
-        return array_merge($data, [
-            'is_archived' => $curation->archived_at ? true : false,
-        ]);
+        if (!($context['include_archive_fields'] ?? false)) {
+            return $data;
+        }
+
+        $data['is_archived'] = (bool) $curation->archived_at;
+
+        if ($curation->archived_at) {
+            $data['archived_at'] = $curation->archived_at->toIsoString();
+
+            if ($curation->archive_reason) {
+                $data['archive_reason'] = $curation->archive_reason;
+            }
+
+            if ($curation->gcex_url) {
+                $data['gcex_url'] = $curation->gcex_url;
+            }
+        }
+        return $data;
     }
 
     private function getGene($curation)

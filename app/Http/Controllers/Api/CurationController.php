@@ -221,7 +221,8 @@ class CurationController extends Controller
             'archive_reason' => $data['archive_reason'] ?? null,
             'gcex_url' => $data['gcex_url'] ?? null,
         ]);
-        return response()->json($curation->fresh());
+        $this->loadRelations($curation);
+        return new CurationResource($curation);
     }
 
     public function unarchive(Request $request, Curation $curation)
@@ -232,7 +233,8 @@ class CurationController extends Controller
             'archive_reason' => null,
             'gcex_url' => null,
         ]);
-        return response()->json($curation->fresh());
+        $this->loadRelations($curation);
+        return new CurationResource($curation);
     }
 
     public function searchArchivedCurations(Request $request)
