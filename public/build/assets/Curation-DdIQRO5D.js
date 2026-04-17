@@ -1,0 +1,1 @@
+import{_ as o,o as t,c as r,a as n,r as c}from"./app-BV0HzbU3.js";const s={},a={id:"curations-container"};function _(i,d){const e=c("router-view");return t(),r("div",a,[n(e)])}const f=o(s,[["render",_]]);export{f as default};

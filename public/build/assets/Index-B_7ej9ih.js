@@ -1,0 +1,1 @@
+import{_ as o,o as r,c as n,a as t,r as c}from"./app-BV0HzbU3.js";const s={},_={id:"working-groups-container"};function a(i,d){const e=c("router-view");return r(),n("div",_,[t(e)])}const f=o(s,[["render",a]]);export{f as default};
