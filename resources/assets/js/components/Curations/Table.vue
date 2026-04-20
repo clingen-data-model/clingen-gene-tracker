@@ -33,6 +33,15 @@
                             >
                                 Clear
                             </button>
+                            <div class="form-check form-check-inline ml-2">
+                              <input
+                                id="exclude-archived"
+                                v-model="excludeArchived"
+                                type="checkbox"
+                                class="form-check-input"
+                              />
+                              <label for="exclude-archived" class="form-check-label">Exclude archived</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,6 +225,7 @@ export default {
                 current_status: '',
                 id: ''
             },
+            excludeArchived: false,
             fields: [
                 {
                     key: 'gene_symbol',
@@ -321,17 +331,21 @@ export default {
     },
     watch: {
         filter: function (to, from) {
-            if (to !== from) {
-                this.resetCurrentPage()
-                this.$refs.table.refresh()
-            }
+          if (to !== from) {
+            this.resetCurrentPage()
+            this.$refs.table.refresh()
+          }
+        },
+        excludeArchived: function () {
+          this.resetCurrentPage()
+          this.$refs.table.refresh()
         },
         advancedFilters: {
-            deep: true,
-            handler() {
-                this.resetCurrentPage()
-                this.$refs.table.refresh()
-            }
+          deep: true,
+          handler() {
+            this.resetCurrentPage()
+            this.$refs.table.refresh()
+          }
         }
     },
     methods: {
@@ -340,7 +354,12 @@ export default {
                 return;
             }
 
-            const context = {...ctx, ...this.searchParams, filters: JSON.stringify(this.advancedFilters)}
+            const context = {
+              ...ctx, 
+              ...this.searchParams, 
+              filters: JSON.stringify(this.advancedFilters),
+              exclude_archived: this.excludeArchived ? 1 : 0
+            }
             getPageOfCurations(context)
                 .then(response => {
                     this.totalRows = response.data.meta.total
@@ -350,6 +369,7 @@ export default {
 
         clearFilters() {
             this.filter = null
+            this.excludeArchived = false
             this.advancedFilters = {
                 gene_symbol: '',
                 mode_of_inheritance: '',

@@ -84,6 +84,7 @@ class CurationSearchService implements SearchService
 
         $this->applyKeywordFilter($query, $params);
         $this->applyAdvancedFilters($query, $params);
+        $this->applyArchiveFilter($query, $params);
 
         $sortField = 'gene_symbol';
         $sortDir = 'asc';
@@ -226,6 +227,16 @@ class CurationSearchService implements SearchService
                 throw new Exception('Unknown advanced filter ' . $field);
         }
     }
+
+    private function applyArchiveFilter($query, $params)
+    {
+        $excludeArchived = $params['exclude_archived'] ?? false;
+
+        if ((string) $excludeArchived === '1' || $excludeArchived === true || (string) $excludeArchived === 'true') {
+            $query->whereNull('curations.archived_at');
+        }
+    }
+
 
     private function escapeLike(string $value): string
     {
