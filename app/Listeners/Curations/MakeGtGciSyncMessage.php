@@ -5,9 +5,7 @@ namespace App\Listeners\Curations;
 use App\Curation;
 use App\Events\Curation\CurationEvent;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\CreateStreamMessage;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MakeGtGciSyncMessage
 {
@@ -31,35 +29,48 @@ class MakeGtGciSyncMessage
      */
     public function handle(CurationEvent $event)
     {
-        // \Log::debug('  '.__METHOD__);
-        if ($this->linkedToGciRecord($event->curation)) {
-            // \Log::debug('  already linked to gci record');
+        $curation = $event->curation;
+
+        // Archive / unarchive should be treated as a separate GT -> GCI case.
+        if ($this->archiveChanged($curation)) {
+            // We still want some way for GCI to identify the record:
+            // either already linked by gdm_uuid, or enough core data to match it.
+            if (!$this->linkedToGciRecord($curation) && !$this->hasGeneDiseaseMoi($curation)) {
+                return;
+            }
+            $eventType = $curation->archived_at ? 'curation_archived' : 'curation_unarchived';
+            Bus::dispatch(new CreateStreamMessage($this->topic, $curation, $eventType));
             return;
         }
 
-        if (!$this->hasGeneDiseaseMoi($event->curation)) {
-            // \Log::debug('  does not yet have gene, disease, or moi: ', $event->curation->only('gene_symbol', 'moi_id', 'mondo_id'));
+        // Existing GT -> GCI sync logic for normal precuration updates
+        if ($this->linkedToGciRecord($curation)) {
             return;
         }
-        
-        if (!$this->precurationCompleted($event->curation)) {
+
+        if (!$this->hasGeneDiseaseMoi($curation)) {
+            // \Log::debug('  does not yet have gene, disease, or moi: ', $curation->only('gene_symbol', 'moi_id', 'mondo_id'));
             return;
         }
-        \Log::info(' has precuration-complete status');
+
+        if (!$this->precurationCompleted($curation)) {
+            return;
+        }
+        // \Log::info(' has precuration-complete status');
 
         if (
-            $this->statusWasChanged($event->curation)
-            || $this->moiChanged($event->curation)
-            || $this->diseaseChanged($event->curation)
+            $this->statusWasChanged($curation)
+            || $this->moiChanged($curation)
+            || $this->diseaseChanged($curation)
         ) {
-            // \Log::debug('  meets criteria');
+            // Log::debug('  meets criteria');
             $eventType = 'precuration_completed';
-            // \Log::debug('  $this->moiUpdated($event->curation)', [$this->moiUpdated($event->curation)]);
-            if ($this->moiUpdated($event->curation) || $this->diseaseUpdated($event->curation)) {
+            // \Log::debug('  $this->moiUpdated($curation)', [$this->moiUpdated($curation)]);
+            if ($this->moiUpdated($curation) || $this->diseaseUpdated($curation)) {
                 // \Log::debug('  moi or mondo updated.');
                 $eventType = 'gdm_updated';
             }
-            Bus::dispatch(new CreateStreamMessage($this->topic, $event->curation, $eventType));
+            Bus::dispatch(new CreateStreamMessage($this->topic, $curation, $eventType));
             return;
         }
     }
@@ -73,7 +84,7 @@ class MakeGtGciSyncMessage
     private function hasGeneDiseaseMoi(Curation $curation)
     {
         if (!$curation->hgnc_id) {
-            return false; 
+            return false;
         }
 
         if (!$curation->mondo_id) {
@@ -134,5 +145,9 @@ class MakeGtGciSyncMessage
         }
 
         return true;
+    }
+    private function archiveChanged(Curation $curation)
+    {
+        return $curation->wasChanged('archived_at');
     }
 }
