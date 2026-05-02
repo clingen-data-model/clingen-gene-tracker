@@ -119,10 +119,10 @@
         </div>
 
         <div v-if="updatedCuration && updatedCuration.id" class="mt-3">
-            <div class="alert alert-warning mt-2 mb-0">
+            <div v-if="!canManageArchive" class="alert alert-warning mt-2 mb-0">
                 Archiving is managed by administrators. Please contact support if this curation should be archived.
             </div>
-            <template v-if="canManageArchive">
+            <template v-else>
                 <button
                     v-if="!isArchived"
                     type="button"
@@ -144,6 +144,9 @@
         </div>
 
         <div v-if="showArchiveFields && canManageArchive" class="card mt-3">
+            <div v-if="showArchiveGciWarning" class="alert alert-warning mb-3">
+                This curation can still be archived in GeneTracker, but the archive update will not be sent to GCI because the record does not currently have a linked GCI UUID or enough identifying data (gene, disease, and mode of inheritance).
+            </div>
             <div class="card-body">
                 <b-form-group horizontal label="Archive Reason" label-for="archive_reason">
                     <textarea
@@ -163,6 +166,14 @@
                 </b-form-group>
 
                 <div class="mt-3">
+                     <button
+                        type="button"
+                        class="btn btn-outline-secondary ml-2"
+                        :disabled="archiveSaving"
+                        @click="toggleArchiveFields"
+                    >
+                        Cancel
+                    </button>
                     <button
                         type="button"
                         class="btn btn-warning"
@@ -331,6 +342,15 @@
             isArchivedReadOnly() {
                 return this.isArchived && !this.canManageArchive
             },
+            hasGciIdentification() {
+                return Boolean(
+                    this.updatedCuration?.gdm_uuid || ( this.updatedCuration?.hgnc_id && this.updatedCuration?.mondo_id && this.updatedCuration?.moi_id)
+                )
+            },
+
+            showArchiveGciWarning() {
+                return this.showArchiveFields && !this.hasGciIdentification
+            },
         },
         methods: {
             handleDateSelected(evt) {
@@ -355,6 +375,9 @@
                 if (this.showArchiveFields) {
                     this.archiveForm.archive_reason = this.updatedCuration.archive_reason || ''
                     this.archiveForm.gcex_url = this.updatedCuration.gcex_url || ''
+                }  else {
+                    this.archiveForm.archive_reason = ''
+                    this.archiveForm.gcex_url = ''
                 }
             },
             async archiveCuration() {
