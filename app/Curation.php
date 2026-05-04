@@ -133,7 +133,7 @@ class Curation extends Model implements Notable
                 ->withPivot('id', 'status_date', 'created_at', 'updated_at')
                 ->orderBy('curation_curation_status.status_date', 'DESC')
                 ->orderBy('curation_curation_status.updated_at', 'DESC')
-                ->orderBy('curation_curation_status.curation_status_id')
+                ->orderBy('curation_curation_status.curation_status_id', 'DESC')
                 ->withTimestamps();
     }
 
@@ -243,9 +243,9 @@ class Curation extends Model implements Notable
 
     public function getCurrentStatusDateAttribute()
     {
-        $lastStatus = $this->statuses->where('id', $this->curation_status_id)->last();
-        if ($lastStatus) {
-            return $lastStatus->pivot->status_date;
+        $currentStatus = $this->statuses->where('id', $this->curation_status_id)->first();
+        if ($currentStatus) {
+            return $currentStatus->pivot->status_date;
         }
         return null;
     }
@@ -461,5 +461,17 @@ class Curation extends Model implements Notable
             'archived_curation_id',
             'curation_id'
         )->withTimestamps();
+    }
+
+    public function classificationBefore($date): Classification
+    {
+        $date = Carbon::parse($date);
+
+        return $this->classifications()
+            ->wherePivot('classification_date', '<', $date->format('Y-m-d H:i:s'))
+            ->orderBy('classification_curation.classification_date', 'desc')
+            ->orderBy('classification_curation.id', 'desc')
+            ->first()
+            ?? new Classification();
     }
 }

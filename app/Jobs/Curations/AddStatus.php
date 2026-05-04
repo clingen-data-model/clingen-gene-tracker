@@ -6,13 +6,11 @@ use App\Curation;
 use Carbon\Carbon;
 use App\CurationStatus;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Jobs\Curations\UpdateCurrentStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Facades\Log;
 
 class AddStatus implements ShouldQueue
 {
@@ -24,7 +22,6 @@ class AddStatus implements ShouldQueue
     public $curation;
     public $curationStatus;
     public $date;
-    private $previousStatus;
 
     /**
      * Create a new job instance.
@@ -34,9 +31,8 @@ class AddStatus implements ShouldQueue
     public function __construct(Curation $curation, CurationStatus $curationStatus, $date = null)
     {
         $this->curation = $curation;
-        $this->previousStatus = $this->curation->fresh()->currentStatus;
         $this->curationStatus = $curationStatus;
-        $this->date = Carbon::parse($date)->startOfDay();
+        $this->date = $date ? Carbon::parse($date) : now();
     }
 
     /**
@@ -46,50 +42,43 @@ class AddStatus implements ShouldQueue
      */
     public function handle()
     {
-        if($this->hasCurationCurationStatus() && $this->isCurrentStatus()) { return; }
-        if($this->isSameStatusOnDate()) { return; }
+        if($this->isExistingDatedStatus()) { return; }
 
-        DB::transaction(function () {
-            $this->curation->statuses()->attach([
-                $this->curationStatus->id => [
-                    'status_date' => $this->date->startOfDay(),
-                ],
-            ]);
-            UpdateCurrentStatus::dispatchSync($this->curation);
-        });
+        if ($this->isCurrentStatus() && $this->isExistingSameDayStatus()) { return; }
+
+        $this->curation->statuses()->attach([
+            $this->curationStatus->id => [
+                'status_date' => $this->date,
+            ],
+        ]);
+        UpdateCurrentStatus::dispatchSync($this->curation->fresh());
     }
 
     private function isCurrentStatus()
     {
-        return $this->hasCurationCurationStatus() && 
-                $this->curation->curationStatuses->first()->id == $this->curationStatus->id && 
-                Carbon::parse($this->curation->curationStatuses->first()->status_date)->format('Y-m-d') == Carbon::parse($this->date)->format('Y-m-d');
+        $previousStatus = $this->curation->curationStatuses()
+            ->wherePivot('status_date', '<', $this->date->format('Y-m-d H:i:s'))
+            ->reorder()
+            ->orderBy('curation_curation_status.status_date', 'desc')
+            ->orderBy('curation_curation_status.id', 'desc')
+            ->first();
+
+        return $previousStatus && $previousStatus->id == $this->curationStatus->id;
     }
 
-    private function hasCurationCurationStatus()
+    private function isExistingDatedStatus()
     {
-        return $this->curation->curationStatuses->count() > 0;
+        return $this->curation->curationStatuses()
+            ->where('curation_statuses.id', $this->curationStatus->id)
+            ->wherePivot('status_date', $this->date->format('Y-m-d H:i:s'))
+            ->exists();
     }
 
-    private function isPreviousDatedStatus()
+    private function isExistingSameDayStatus()
     {
-        $filtered = $this->curation->statuses->filter(function ($status) {
-            return $status->id == $this->curationStatus->id
-                    && $status->pivot->status_date->format('Y-m-d H:i:s') == Carbon::parse($this->date)->format('Y-m-d H:i:s');
-        });
-        return $filtered->count() > 0;
+        return $this->curation->curationStatuses()
+            ->where('curation_statuses.id', $this->curationStatus->id)
+            ->whereDate('curation_curation_status.status_date', $this->date->toDateString())
+            ->exists();
     }
-
-    // CHECKING THE LATEST STATUS ON THE GIVEN DATE
-    private function isSameStatusOnDate()
-    {
-        $filtered = $this->curation->statuses->filter(function ($status) {
-            return $status->pivot->status_date->format('Y-m-d H:i:s') == Carbon::parse($this->date)->format('Y-m-d H:i:s');
-        })->first();
-        if ($filtered && $filtered->id == $this->curationStatus->id) {
-            return 1;
-        }
-        return 0;
-    }
-
 }

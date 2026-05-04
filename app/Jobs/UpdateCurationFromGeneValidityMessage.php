@@ -97,7 +97,7 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             return;
         }
 
-        AddStatus::dispatch(
+        AddStatus::dispatchSync(
             $this->curation,
             $this->statusMap->get($this->gciMessage->status),
             $this->gciMessage->statusDate

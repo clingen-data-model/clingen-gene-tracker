@@ -27,7 +27,7 @@ class AddClassification
     {
         $this->curation = $curation;
         $this->classification = $classification;
-        $this->date = Carbon::parse($date);
+        $this->date = $date ? Carbon::parse($date) : now();
     }
 
     /**
@@ -37,32 +37,39 @@ class AddClassification
      */
     public function handle()
     {
-        if ($this->isCurrentClassification() || $this->isExistingDatedClassification()) {
+        if ($this->isExistingDatedClassification()) {
+            return;
+        }
+
+        if ($this->isCurrentClassification() && $this->isExistingSameDayClassification()) {
             return;
         }
 
         $this->curation->classifications()->attach([
             $this->classification->id => [
                 'classification_date' => $this->date
-            ]
+            ],
         ]);
     }
 
     private function isCurrentClassification()
     {
-        return $this->curation->currentClassification->id == $this->classification->id;
+        return $this->curation->classificationBefore($this->date)->id == $this->classification->id;
     }
 
     private function isExistingDatedClassification()
     {
-        $filtered = $this->curation->classifications
-                        ->filter(function($classification) {
-                            return $classification->id == $this->classification->id
-                                && $classification->pivot->classification_date = $this->date;
-                        });
-
-        return $filtered->count() > 0;
+        return $this->curation->classifications()
+            ->where('classifications.id', $this->classification->id)
+            ->wherePivot('classification_date', $this->date->format('Y-m-d H:i:s'))
+            ->exists();
     }
-    
-    
+
+    private function isExistingSameDayClassification()
+    {
+        return $this->curation->classifications()
+            ->where('classifications.id', $this->classification->id)
+            ->whereDate('classification_curation.classification_date', $this->date->toDateString())
+            ->exists();
+    }
 }

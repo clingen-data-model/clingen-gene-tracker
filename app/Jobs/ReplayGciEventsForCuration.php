@@ -43,7 +43,7 @@ class ReplayGciEventsForCuration implements ShouldQueue
             return 1;
         }
 
-        $isms = IncomingStreamMessage::where('gdm_uuid', $this->curation->gdm_uuid)->get();
+        $isms = IncomingStreamMessage::where('gdm_uuid', $this->curation->gdm_uuid)->orderBy('created_at')->orderBy('id')->get();
         $isms->map(function ($msg) {
             return new GciMessage($msg->payload);
         })
