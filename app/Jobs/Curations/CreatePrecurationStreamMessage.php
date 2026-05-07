@@ -19,18 +19,16 @@ class CreatePrecurationStreamMessage implements ShouldQueue
 
     protected $curation;
     protected $eventType;
-    protected array $context;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Curation $curation, $eventType, array $context = [])
+    public function __construct(Curation $curation, $eventType)
     {
         $this->curation = $curation;
         $this->eventType = $eventType;
-        $this->context = $context;
     }
 
     /**
@@ -43,8 +41,7 @@ class CreatePrecurationStreamMessage implements ShouldQueue
         $job = new CreateStreamMessage(
                     config('dx.topics.outgoing.precuration-events'), 
                     $this->curation, 
-                    $this->eventType,
-                    $this->context
+                    $this->eventType
                 );
         Bus::dispatchSync($job);
     }
