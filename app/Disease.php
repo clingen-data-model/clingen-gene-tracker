@@ -83,7 +83,8 @@ class Disease extends Model
 
     public function scopeSearch($query, $string) {
         return $query->where('name', 'like', '%'.$string.'%')
-            ->orWhere('mondo_id', 'like', '%'.$string.'%');
+            ->orWhere('mondo_id', 'like', '%'.$string.'%')
+            ->orWhere('doid_id', 'like', '%'.$string.'%');
     }
     
 
