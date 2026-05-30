@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Api\WorkingGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::redirect('logs', 'admin/logs');
     Route::redirect('curations/{id}', '/#/curations/{id}');
+
+    Route::get('/working-groups/{id}/export', [WorkingGroupController::class, 'export'])->name('working-groups.export');
 
     /**
      * Route so GCI can easily link to pre-curation detail by GDM UUID
