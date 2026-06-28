@@ -44,10 +44,10 @@ class BulkLookupController extends Controller
     
         $results = $this->search->search($request->all())
                     ->transform(function ($curation) {
-                        $curatedActive = $curation->phenotypes->where('obsolete', false);
-                        $curatedObsolete = $curation->phenotypes->where('obsolete', true);
-                        $availableActive = $curation->gene->phenotypes->where('obsolete', false);
-                        $availableObsolete = $curation->gene->phenotypes->where('obsolete', true);
+                        $curatedActive = $curation->phenotypes->whereNull('label_obsolete_at');
+                        $curatedObsolete = $curation->phenotypes->whereNotNull('label_obsolete_at');
+                        $availableActive = $curation->gene->phenotypes->whereNull('label_obsolete_at');
+                        $availableObsolete = $curation->gene->phenotypes->whereNotNull('label_obsolete_at');
 
                         return [
                             'Pre-curation ID' => $curation->uuid,

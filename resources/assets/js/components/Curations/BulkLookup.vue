@@ -60,7 +60,7 @@
                                 :class="{curated: phenotypeIsInCuration(ph, item)}"
                             >
                                 <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
-                                <span v-if="ph.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                <span v-if="ph.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                             </li>
                         </ul>
                     </template>

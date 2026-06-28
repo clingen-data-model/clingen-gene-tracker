@@ -40,7 +40,8 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
-                Artisan::call('omim:notify-obsolete-phenotypes');
+                Artisan::call('omim:notify-outdated-phenotypes');
+                Artisan::call('omim:prune-outdated-labels');
             });
         
         if (config('dx.consume', true)) {

@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use App\Notifications\DigestibleNotificationInterface;
 
-class OmimObsoletePhenotypesNotification extends Notification implements DigestibleNotificationInterface
+class OmimOutdatedPhenotypesNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
 

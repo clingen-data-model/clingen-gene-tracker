@@ -19,7 +19,7 @@ class PhenotypeResource extends JsonResource
             'id' => $this->id,
             'mim_number' => $this->mim_number,
             'name' => $this->name,
-            'obsolete' => $this->obsolete,
+            'label_obsolete' => $this->label_obsolete,
             'curations' => CurationResource::collection($this->whenLoaded('curations'))
         ];
     }

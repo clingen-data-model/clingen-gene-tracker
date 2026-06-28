@@ -70,11 +70,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(ph, idx) in (value || []).filter(p => !p.obsolete)" :key="idx">
+                                <tr v-for="(ph, idx) in (value || []).filter(p => !p.label_obsolete)" :key="idx">
                                     <td>{{ph.mim_number}}</td>
-                                    <td>
-                                        {{ph.name}}
-                                    </td>
+                                    <td>{{ph.name}}</td>
                                     <td>{{ph.moi}}</td>
                                 </tr>
                             </tbody>

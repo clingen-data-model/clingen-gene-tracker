@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('phenotypes', function (Blueprint $table) {
-            $table->boolean('obsolete')->default(false)->after('omim_entry');
-            $table->timestamp('obsoleted_at')->nullable()->after('obsolete');
+            $table->timestamp('label_obsolete_at')->nullable()->after('omim_entry');
             $table->index(['mim_number', 'name']);
-            $table->index('obsolete');
-            $table->index('obsoleted_at');
+            $table->index('label_obsolete_at');
         });
     }
 
@@ -27,10 +25,8 @@ return new class extends Migration
     {
         Schema::table('phenotypes', function (Blueprint $table) {
             $table->dropIndex(['mim_number', 'name']);
-            $table->dropIndex(['obsolete']);
-            $table->dropColumn('obsolete');
-            $table->dropIndex(['obsoleted_at']);
-            $table->dropColumn('obsoleted_at');
+            $table->dropIndex(['label_obsolete_at']);
+            $table->dropColumn('label_obsolete_at');
         });
     }
 };

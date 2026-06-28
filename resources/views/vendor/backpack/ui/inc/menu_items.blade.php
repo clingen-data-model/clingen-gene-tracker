@@ -65,10 +65,10 @@
     </li>
 @endif
 
-@if(Auth::user()->hasPermissionTo('list users'))
+@if(Auth::user()->hasAnyRole(['programmer', 'admin'])) 
     <li class="nav-item">
-        <a class="nav-link" href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
-            <i class="nav-icon la la-exclamation-triangle"></i> <span>Obsoleted Phenotypes</span>
+        <a class="nav-link" href="{{ backpack_url('reports/omim-outdated-phenotypes?tab=phenotypes') }}">
+            <i class="nav-icon la la-exclamation-triangle"></i> <span>Outdated Phenotype Labels</span>
         </a>
     </li>
 @endif

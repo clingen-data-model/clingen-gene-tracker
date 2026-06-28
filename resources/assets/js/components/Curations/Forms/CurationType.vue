@@ -14,7 +14,7 @@
                             <b-table striped hover :items="phenotypes" :fields="fields" stacked="sm" small bordered>
                                 <template v-slot:cell(phenotype)="data">
                                     <span>{{ data.item.phenotype }}</span>
-                                    <span v-if="data.item.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                    <span v-if="data.item.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                                 </template>
                             </b-table>
                             <div class="form-group">
@@ -86,7 +86,7 @@
         },
         computed: {
             nonObsoletePhenotypes () {
-                return (this.phenotypes || []).filter(p => !p.obsolete)
+                return (this.phenotypes || []).filter(p => !p.label_obsolete)
             },
             options: function () {
                 const activePhenotypes = this.nonObsoletePhenotypes

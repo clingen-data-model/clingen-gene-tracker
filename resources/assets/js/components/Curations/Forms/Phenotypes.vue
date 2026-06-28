@@ -46,7 +46,7 @@
                                 'id': item.id,
                                 'mim_number': item.phenotypeMimNumber,
                                 'name': item.phenotype,
-                                'obsolete': item.obsolete ? 1 : 0,
+                                'label_obsolete': Boolean(item.label_obsolete),
                             }
                         }
                     }
@@ -62,27 +62,8 @@
                             const onePhenotype = Array.isArray(this.phenotypes) && this.phenotypes.length === 1;
                             const singleFromList = this.updatedCuration?.curation_type_id === 1;
                             const noPhenotypes = !Array.isArray(this.updatedCuration.phenotypes) || this.updatedCuration.phenotypes.length === 0;
-                            if (
-                                this.phenotypes?.length === 1 
-                                && this.updatedCuration?.curation_type_id === 1 
-                                && this.updatedCuration?.phenotypes?.length === 0
-                            ) {
-                                Vue.set( 
-                                    this.updatedCuration.phenotypes, 
-                                    0, 
-                                    { 
-                                        'id': this.phenotypes[0].id,
-                                        'mim_number': this.phenotypes[0].phenotypeMimNumber, 
-                                        'name': this.phenotypes[0].phenotype,
-                                        'obsolete': this.phenotypes[0].obsolete
-                                    }
-                                );
-                                this.message = 'We have preselected the phenotype because you indicated you are curating '+this.updatedCuration.gene_symbol+' with this single disease entity';
-                            }
-
                             if (onePhenotype && singleFromList && noPhenotypes) {
                                 const p = this.phenotypes[0];
-
                                 if (!Array.isArray(this.updatedCuration.phenotypes)) {
                                     Vue.set(this.updatedCuration, 'phenotypes', []);
                                 }
@@ -91,6 +72,7 @@
                                     id: p.id,
                                     mim_number: p.phenotypeMimNumber,
                                     name: p.phenotype,
+                                    label_obsolete: Boolean(p.label_obsolete),
                                 });
 
                                 if (!Array.isArray(this.updatedCuration.rationales)) {
@@ -143,8 +125,8 @@
                     <p>The gene <strong>{{ updatedCuration.value }}</strong> is not associated with a disease entity per OMIM at this time.</p>
                 </div>
 
-                <div v-if="showTable && (this.phenotypes || []).some(p => p.obsolete)" class="alert alert-warning py-2">
-                    Some phenotypes are not present in the latest OMIM genemap2 file. They may have been renamed or removed.
+                <div v-if="showTable && (phenotypes || []).some(p => p.label_obsolete)" class="alert alert-warning py-2">
+                    Some phenotypes are not present in the latest OMIM list. They may have been renamed.
                 </div>
                 <b-table v-show="showTable"
                     :items="phenotypes"
@@ -159,11 +141,11 @@
                     </template>
                     <template v-slot:cell(phenotype)="data">
                         <span>{{ data.item.phenotype }}</span>
-                        <span v-if="data.item.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                        <span v-if="data.item.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                     </template>
                     <template v-slot:cell(checkbox)="data">
                         <input 
-                            v-if="!data.item.obsolete"
+                            v-if="!data.item.label_obsolete"
                             class="form-check-input form-check-input-lg"
                             type="checkbox" 
                             v-model="updatedCuration.phenotypes"

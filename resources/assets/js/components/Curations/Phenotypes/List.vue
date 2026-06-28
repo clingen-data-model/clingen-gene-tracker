@@ -8,8 +8,8 @@
     <div class="component-container row">
         <div v-if="phenotypes.length > 0" class=" col-lg-8">
             
-            <div v-if="phenotypes.some(p => p.obsolete)" class="alert alert-warning py-2 small">
-                Some phenotypes are not present in the latest OMIM genemap2 file. They may have been renamed or removed.
+            <div v-if="phenotypes.some(p => p.label_obsolete)" class="alert alert-warning py-2 small">
+                Some phenotypes are not present in the latest OMIM file. They may have been renamed.
             </div>
 
             <table class="table table-sm table-xs mb-0">
@@ -20,7 +20,7 @@
                 <tbody>
                     <tr v-for="phenotype in phenotypes" :key="phenotype.id">
                         <td>{{ phenotype.mim_number }}</td>
-                        <td>{{ phenotype.name }} <span v-if="phenotype.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span></td>
+                        <td>{{ phenotype.name }} <span v-if="phenotype.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span></td>
                     </tr>
                 </tbody>
             </table>

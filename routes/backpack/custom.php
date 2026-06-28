@@ -2,7 +2,7 @@
 
 use App\Actions\ApiClientDeleteToken;
 use App\Http\Controllers\Admin\ApiClientCrudController;
-use App\Http\Controllers\Admin\OmimObsoletePhenotypeReportController;
+use App\Http\Controllers\Admin\OmimOutdatedPhenotypeReportController;
 
 // --------------------------
 // Custom Backpack Routes
@@ -34,7 +34,7 @@ Route::group([
     Route::crud('api-client', 'ApiClientCrudController');
     Route::get('api-client/{id}/create-token', [ApiClientCrudController::class, 'createToken']);
 
-    Route::get('reports/omim-obsolete-phenotypes', [OmimObsoletePhenotypeReportController::class, 'index'])->name('admin.omim_obsolete_phenotypes');
+    Route::get('reports/omim-outdated-phenotypes', [OmimOutdatedPhenotypeReportController::class, 'index'])->name('admin.omim_obsolete_phenotypes');
     
 }); // this should be the absolute last line of this file
 

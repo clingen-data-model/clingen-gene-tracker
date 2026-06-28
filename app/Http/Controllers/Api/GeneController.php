@@ -40,18 +40,18 @@ class GeneController extends Controller
                             ]]);
                         }
                         return $gene->phenotypes->map(function ($pheno, $key) use ($gene) {
-                            $phenoName = $pheno->obsolete ? $pheno->name . ' [Not in latest OMIM]' : $pheno->name;
+                            $phenoName = $pheno->label_obsolete ? $pheno->name . ' [Not in latest OMIM]' : $pheno->name;
                             return [
                                 'Gene' => $gene->gene_symbol,
                                 'Phenotype' => $phenoName,
                                 'Phenotype MIM Number' => $pheno->mim_number,
-                                'Is Phenotype Obsolete' => $pheno->obsolete ? 'Yes' : 'No',
+                                'Is Phenotype Label Outdated' => $pheno->label_obsolete ? 'Yes' : 'No',
                                 'MOI' => $pheno->moi
                             ];
                         });
                     })->flatten(1);
 
-        $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number', 'Is Phenotype Obsolete', 'MOI'];
+        $columns = ['Gene', 'Phenotype', 'Phenotype MIM Number', 'Is Phenotype Label Outdated', 'MOI'];
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);

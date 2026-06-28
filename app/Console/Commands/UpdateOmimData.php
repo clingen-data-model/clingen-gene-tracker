@@ -78,10 +78,12 @@ class UpdateOmimData extends Command
 
             $keys = [];
             $seenPhenotypeIds = [];
+            $processedLines = 0;
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
+                $processedLines++;                
+                if ($processedLines % 1000 === 0) { $this->info("Processed {$processedLines} lines..."); }
                 gzwrite($gzfile, $line);
-
                 $line = str_replace("\n", ',', $line);
 
                 if ($this->lineIsHeader($line)) {
@@ -125,54 +127,28 @@ class UpdateOmimData extends Command
 
 
                 $phenotypes = collect($phenotypes)->map(function ($pheno) use ($gene, &$seenPhenotypeIds) {
-                        try {
-                            // A mim_number can refer to many differently named phenotypes
-                            // If this is the case try to get the phenotype record by mim_number 
-                            // and name to prevent constraint failures.
-                            $phenotype = null;
-                            try {
-                                $phenotype = Phenotype::findSoleByMimNumber($pheno['mim_number']);
-                            } catch (MultipleRecordsFoundException $e) {
-                                $phenotype = Phenotype::mimNumber($pheno['mim_number'])
-                                                ->where('name', $pheno['name'])
-                                                ->first();
-                            } catch (ModelNotFoundException $e) {
-                            }
-
-                            if ($phenotype) {
-                                $phenotype->update([
-                                    'name' => trim($pheno['name']),
-                                    'moi' => $pheno['moi'],
-                                    'obsolete' => false,
-                                    'obsoleted_at' => null,
-                                ]);
-                                $seenPhenotypeIds[] = $phenotype->id; 
-                                return $phenotype;
-                            }
-                            
-                            $phenotype = Phenotype::updateOrCreate(
-                                [
-                                    'mim_number' => $pheno['mim_number'],
-                                    'name' => trim($pheno['name']),
-                                ],
-                                [
-                                    'moi' => $pheno['moi'],
-                                    'obsolete' => false,
-                                    'obsoleted_at' => null,
-                                ]
-                            );
-                            if ($phenotype->wasRecentlyCreated) {
-                                event(new PhenotypeAddedForGene($phenotype, $gene));
-                            }
-                            $seenPhenotypeIds[] = $phenotype->id;
-                            return $phenotype;
-                        } catch (\Throwable $th) {
-                            Log::warning($th->getMessage());
-                            throw $th;
-                            return null;
+                    try {
+                        $phenotype = Phenotype::updateOrCreate(
+                            [
+                                'mim_number' => $pheno['mim_number'],
+                                'name' => trim($pheno['name']),
+                            ],
+                            [
+                                'moi' => $pheno['moi'],
+                                'label_obsolete_at' => null,
+                            ]
+                        );
+                        if ($phenotype->wasRecentlyCreated) {
+                            event(new PhenotypeAddedForGene($phenotype, $gene));
                         }
-                    });
-                                
+                        $seenPhenotypeIds[] = $phenotype->id;
+                        return $phenotype;
+                    } catch (\Throwable $th) {
+                        Log::warning($th->getMessage());
+                        throw $th;
+                        return null;
+                    }
+                });                                
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
             }
 
@@ -180,10 +156,9 @@ class UpdateOmimData extends Command
             if (count($seenPhenotypeIds) > 0) {
                 Phenotype::whereNull('deleted_at')
                             ->whereNotIn('id', $seenPhenotypeIds)
-                            ->where('obsolete', false)
+                            ->whereNull('label_obsolete_at')
                             ->update([
-                                'obsolete' => true,
-                                'obsoleted_at' => now(),
+                                'label_obsolete_at' => now(),
                             ]);
             } else {
                 // Log::warning('OMIM update: no phenotypes were seen, skipping obsolete update.');

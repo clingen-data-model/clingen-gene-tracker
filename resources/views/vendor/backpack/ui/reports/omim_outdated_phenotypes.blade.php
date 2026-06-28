@@ -7,8 +7,8 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-body">
-          <div class="h2 mb-0">{{ $obsoletePhenotypesCount }}</div>
-          <div class="text-muted">Obsoleted Phenotypes</div>
+          <div class="h2 mb-0">{{ $outdatedPhenotypesCount }}</div>
+          <div class="text-muted">Outdated Phenotype Labels</div>
         </div>
       </div>
     </div>
@@ -23,8 +23,8 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-body">
-          <div class="h2 mb-0">{{ $obsoleteUsedCount }}</div>
-          <div class="text-muted">Obsoleted phenotypes used on curations</div>
+          <div class="h2 mb-0">{{ $outdatedUsedCount }}</div>
+          <div class="text-muted">Outdated Phenotype Labels used on Curations</div>
         </div>
       </div>
     </div>
@@ -34,19 +34,19 @@
     <div class="card-body py-2 d-flex justify-content-between align-items-center">
       <div>
         <a class="btn btn-sm {{ $tab === 'phenotypes' ? 'btn-primary' : 'btn-outline-primary' }}"
-          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=phenotypes') }}">
-          Obsoleted phenotypes
+          href="{{ backpack_url('reports/omim-outdated-phenotypes?tab=phenotypes') }}">
+          Outdated Phenotype Labels
         </a>
 
         <a class="btn btn-sm {{ $tab === 'curations' ? 'btn-primary' : 'btn-outline-primary' }}"
-          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab=curations') }}">
-          Affected curations
+          href="{{ backpack_url('reports/omim-outdated-phenotypes?tab=curations') }}">
+          Affected Curations
         </a>
       </div>
 
       <div>
         <a class="btn btn-sm btn-outline-primary"
-          href="{{ backpack_url('reports/omim-obsolete-phenotypes?tab='.$tab.'&download=csv'.(request('phenotype_id') ? '&phenotype_id='.request('phenotype_id') : '')) }}">
+          href="{{ backpack_url('reports/omim-outdated-phenotypes?tab='.$tab.'&download=csv'.(request('phenotype_id') ? '&phenotype_id='.request('phenotype_id') : '')) }}">
           Download CSV
         </a>
       </div>
@@ -55,7 +55,7 @@
 
   @if ($tab === 'phenotypes')
     <div class="card mb-3">
-      <div class="card-header">Obsoleted phenotypes</div>
+      <div class="card-header">Outdated Phenotype Labels</div>
       <div class="card-body p-0">
         <table class="table table-sm mb-0">
           <thead>
@@ -66,7 +66,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($obsoletePhenotypes as $p)
+            @foreach ($outdatedPhenotypes as $p)
               <tr>
                 <td>{{ $p->mim_number }}</td>
                 <td>{{ $p->name }}</td>
@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    {{ $obsoletePhenotypes->appends(['tab' => $tab])->links('pagination::simple-tailwind') }}
+    {{ $outdatedPhenotypes->appends(['tab' => $tab])->links('pagination::simple-tailwind') }}
   @endif
 
   @if ($tab === 'curations')
@@ -104,7 +104,7 @@
               <th>Gene</th>
               <th>MONDO</th>
               <th>Expert Panel</th>
-              <th>Obsolete phenotypes</th>
+              <th>Outdated Phenotype Labels</th>
             </tr>
           </thead>
           <tbody>

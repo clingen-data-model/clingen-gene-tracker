@@ -26,14 +26,19 @@ class Phenotype extends Model
         'omim_status',
         'moved_to_mim_number',
         'moi',
-        'obsolete'
+        'label_obsolete_at'
     ];
 
     protected $touches = ['curations'];
 
     protected $casts = [
         'omim_entry' => 'array',
-        'moved_to_mim_number' => 'array'
+        'moved_to_mim_number' => 'array',
+        'label_obsolete_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'label_obsolete',
     ];
 
     public static function boot()
@@ -74,17 +79,17 @@ class Phenotype extends Model
     }
 
     public static function findByMimNumber($mimNumber): ?self
-    {
+{
         return static::mimNumber($mimNumber)->first();
-    }
-
-    public static function findSoleByMimNumber($mimNumber)
-    {
-        static::mimNumber($mimNumber)->sole();
     }
 
     public function getMovedToPhenotypesAttribute(): Collection
     {
         return Phenotype::whereIn('mim_number', $this->moved_to_mim_number)->get() ?? new Collection();
+    }
+
+    public function getLabelObsoleteAttribute(): bool
+    {
+        return !is_null($this->label_obsolete_at);
     }
 }

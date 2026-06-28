@@ -132,7 +132,7 @@
                                     <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
                                         <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
                                         <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>
-                                        <span v-if="phenotype.obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                        <span v-if="phenotype.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
                                     </li>
                                 </ul>
                             </td>

@@ -153,7 +153,7 @@ class CurationController extends Controller
     private function setPhenotypes(Curation $curation, $request)
     {
         if ($request->has('phenotypes')) {
-            $phenotypeIds = collect($request->input('phenotypes', []))->reject(fn ($p) => !empty($p['obsolete']))->pluck('id')->filter()->unique()->values()->all();
+            $phenotypeIds = collect($request->input('phenotypes', []))->reject(fn ($p) => !empty($p['label_obsolete']))->pluck('id')->filter()->unique()->values()->all();
             SyncPhenotypes::dispatchSync($curation, $phenotypeIds);
         }
 
