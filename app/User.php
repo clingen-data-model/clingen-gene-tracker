@@ -36,7 +36,7 @@ class User extends Authenticatable
         'email',
         'password',
         'deactivated_at',
-        'gci_uuid',
+        'gpm_uuid',
         'affiliation_id',
     ];
 
@@ -140,7 +140,7 @@ class User extends Authenticatable
         }
         if (is_object($panel) && get_class($panel) == ExpertPanel::class) {
             return $this->expertPanels->contains(function ($ep) use ($panel) {
-                return $ep->id = $panel->id;
+                return $ep->id == $panel->id;
             });
         }
     }
@@ -235,6 +235,6 @@ class User extends Authenticatable
 
     public function scopeDeactivated($query)
     {
-        return $query->whereNotNull('deactivate_at');
+        return $query->whereNotNull('deactivated_at');
     }
 }

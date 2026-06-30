@@ -42,11 +42,9 @@ class Kernel extends ConsoleKernel
             });
         
         if (config('dx.consume', true)) {
-            $schedule->command('gci:consume')
-                ->everyTenMinutes()
-                ->withoutOverlapping();
-            $schedule->command('dx:consume-mondo')
-                ->weekly()->mondays()->at('5:10');
+            $schedule->command('gci:consume')->everyTenMinutes()->withoutOverlapping();
+            $schedule->command('dx:consume-gpm')->everyTenMinutes()->withoutOverlapping();
+            $schedule->command('dx:consume-mondo')->weekly()->mondays()->at('5:10');
         }
 
         $schedule->command('notifications:delete-duplicates')

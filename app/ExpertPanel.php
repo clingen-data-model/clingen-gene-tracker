@@ -36,7 +36,7 @@ class ExpertPanel extends Model implements HasAffiliation
     public function users()
     {
         return $this->belongsToMany(User::class)
-                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator');
+                ->withPivot('can_edit_curations', 'is_curator', 'is_coordinator')->withTimestamps();
     }
 
     public function curators()

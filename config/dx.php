@@ -1,4 +1,9 @@
 <?php
+use App\DataExchange\Actions\GcepFinalApprovalHandler;
+use App\DataExchange\Actions\GenesAddedHandler;
+use App\DataExchange\Actions\RemoveGpmMemberHandler;
+use App\DataExchange\Actions\SyncGpmMemberHandler;
+use App\DataExchange\Actions\GeneRemovedHandler;
 
 return [
     /**
@@ -44,12 +49,27 @@ return [
     'topics' => [
         'incoming' => [
             'gene-validity-events' => env('DX_INCOMING_GCI', 'gene_validity_events'),
-            'mondo-notifications' => env('DX_INCOMING_MONDO', 'mondo-notifications')
+            'mondo-notifications' => env('DX_INCOMING_MONDO', 'mondo-notifications'),
+            'gpm-general-events' => env('DX_INCOMING_GPM_GENERAL','gpm-general-events'),
         ],
         'outgoing' => [
             'precuration-events' => env('DX_OUTGOING_PRECURATION', 'gt-precuration-events'),
             'gt-gci-sync' => env('DX_OUTGOING_GT_GCI_SYNC', 'gt-gci'),
         ]
+    ],
+
+    'gpm_event_handlers' => [
+        'gcep_final_approval' => GcepFinalApprovalHandler::class,
+        'genes_added' => GenesAddedHandler::class,
+        'gene_removed' => GeneRemovedHandler::class,
+
+        'member_added' => SyncGpmMemberHandler::class,
+        'member_role_assigned' => SyncGpmMemberHandler::class,
+        'member_role_removed' => SyncGpmMemberHandler::class,
+        'member_unretired' => SyncGpmMemberHandler::class,
+
+        'member_removed' => RemoveGpmMemberHandler::class,
+        'member_retired' => RemoveGpmMemberHandler::class,
     ],
 
 ];

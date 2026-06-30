@@ -60,7 +60,8 @@ class Curation extends Model implements Notable
         'affiliation_id',
         'archived_at',
         'archive_reason',
-        'gcex_url'
+        'gcex_url',
+        'incoming_stream_message_id'
     ];
 
     protected $casts = [
@@ -473,5 +474,10 @@ class Curation extends Model implements Notable
             ->orderBy('classification_curation.id', 'desc')
             ->first()
             ?? new Classification();
+    }
+
+    public function sourceMessage(): BelongsTo
+    {
+        return $this->belongsTo(IncomingStreamMessage::class, 'incoming_stream_message_id');
     }
 }

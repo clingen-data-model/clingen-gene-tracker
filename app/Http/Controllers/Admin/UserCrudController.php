@@ -54,7 +54,7 @@ use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
         $this->crud->setEntityNameStrings('user', 'users');
 
         $this->crud->setFromDb();
-        $this->crud->removeColumn('gci_uuid'); // always null anyway?
+        $this->crud->removeColumn('gpm_uuid'); // always null anyway?
         $this->crud->addColumn($roleInfo);
 
         // ------ CRUD FIELDS
