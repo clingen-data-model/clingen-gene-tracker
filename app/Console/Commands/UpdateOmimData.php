@@ -79,6 +79,7 @@ class UpdateOmimData extends Command
             $keys = [];
             $seenPhenotypeIds = [];
             $processedLines = 0;
+            $footerReached = false;
             while (!$request->getBody()->eof()) {
                 $line = Utils::readLine($request->getBody());
                 $processedLines++;                
@@ -101,6 +102,11 @@ class UpdateOmimData extends Command
                     }
                 }
                 
+                if ($this->lineIsFooter($line)) {
+                    $footerReached = true;
+                    continue;
+                }
+
                 if ($this->lineIsGarbage($line)) {
                     continue;
                 }
@@ -145,11 +151,19 @@ class UpdateOmimData extends Command
                         return $phenotype;
                     } catch (\Throwable $th) {
                         Log::warning($th->getMessage());
-                        throw $th;
                         return null;
                     }
                 });                                
                 $gene->phenotypes()->syncWithoutDetaching($phenotypes->pluck('id')->filter());
+            }
+
+            if (!$footerReached) {
+                gzclose($gzfile);
+                $message = 'OMIM genemap2 download appears truncated (footer not reached); '
+                    .'skipping obsolete update and last-download timestamp.';
+                $this->error($message);
+                \Log::error($message);
+                return;
             }
 
             $seenPhenotypeIds = array_values(array_unique($seenPhenotypeIds));
@@ -194,6 +208,11 @@ class UpdateOmimData extends Command
     private function lineIsGarbage($line)
     {
         return substr($line, 0, 1) == '#' && substr($line, 0, 35) != '# Chromosome	Genomic Position Start';
+    }
+
+    private function lineIsFooter($line)
+    {
+        return Str::startsWith($line, '# Genomic Coordinates');
     }
 
     private function lineIsDateGenerated($line)
