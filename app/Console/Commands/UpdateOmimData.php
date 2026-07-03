@@ -60,7 +60,14 @@ class UpdateOmimData extends Command
                 return;
             }
             $filePath = $this->option('file');
-            $stream = Utils::streamFor(fopen($filePath, 'r'));
+            $resource = Str::endsWith(strtolower($filePath), '.gz')
+                ? fopen('compress.zlib://'.$filePath, 'r')
+                : fopen($filePath, 'r');
+            if ($resource === false) {
+                $this->error('Could not open file. '.$filePath);
+                return;
+            }
+            $stream = Utils::streamFor($resource);
             $httpClient = $this->getGuzzleClient([new Response(200, [], $stream)]);
             app()->instance(ClientInterface::class, $httpClient);
         }
@@ -232,7 +239,19 @@ class UpdateOmimData extends Command
         if ($values[0] == '') {
             return [];
         }
-        return array_combine($keys, array_pad($values, count($keys), null));
+
+        if (count($keys) === 0) {
+            throw new \ValueError('OMIM genemap2 header keys were not parsed before data rows were encountered.');
+        }
+
+        if (count($keys) !== count($values)) {
+            throw new \ValueError(
+                'OMIM genemap2 column mismatch: expected '.count($keys)
+                .' columns, got '.count($values).'.'
+            );
+        }
+
+        return array_combine($keys, $values);
     }
 
     private function getGene($data)
