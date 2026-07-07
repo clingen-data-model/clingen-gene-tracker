@@ -39,7 +39,7 @@
     <div><strong>Time window:</strong> {{ $sinceDate->toDateString() }} – {{ $toDate->toDateString() }}</div>
   </div>
 
-  <h3 style="margin-top: 18px;">Curations affected</h3>
+  <h3 style="margin-top: 18px;">Curations with obsolete OMIM phenotype labels</h3>
 
   @foreach ($curations as $c)
     @php
@@ -59,11 +59,12 @@
 
       @if (!empty($phenos))
         <div style="margin-top: 6px;">
-          <strong>Newly flagged phenotypes:</strong>
+          <strong>Newly flagged obsolete phenotype labels:</strong>
           <ul style="margin: 6px 0 0 18px;">
             @foreach ($phenos as $p)
-              <li>{{ $p['mim_number'] ?? '' }} — {{ $p['name'] ?? '' }}</li>
+              <li><a href="https://omim.org/entry/{{ $p['mim_number'] ?? '' }}" target="_blank">{{ $p['mim_number'] ?? '' }}</a> — {{ $p['name'] ?? '' }}</li>
             @endforeach
+            <!-- TODO: Consider adding list of current labels for this phenotype id, if any -->
           </ul>
         </div>
       @endif
