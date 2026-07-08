@@ -63,8 +63,22 @@
           <ul style="margin: 6px 0 0 18px;">
             @foreach ($phenos as $p)
               <li><a href="https://omim.org/entry/{{ $p['mim_number'] ?? '' }}" target="_blank">{{ $p['mim_number'] ?? '' }}</a> — {{ $p['name'] ?? '' }}</li>
+
+              @if (!empty($p['current_phenotypes']))
+                <div style="margin-top: 4px; color:#555;">
+                  Current label(s) with the same MIM:
+                  <ul style="margin: 4px 0 8px 18px;">
+                    @foreach ($p['current_phenotypes'] as $current)
+                      <li>{{ $current['mim_number'] ?? '' }} — {{ $current['name'] ?? '' }}</li>
+                    @endforeach
+                  </ul>
+                </div>
+              @else
+                <div style="margin-top: 4px; color:#777;">
+                  No current label with the same MIM was found in GeneTracker.
+                </div>
+              @endif
             @endforeach
-            <!-- TODO: Consider adding list of current labels for this phenotype id, if any -->
           </ul>
         </div>
       @endif

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\User;
 use Carbon\Carbon;
 use App\Notifications\Curations\OmimOutdatedPhenotypesNotification;
+use App\Phenotype;
 
 class NotifyOutdatedPhenotypes extends Command
 {
@@ -95,6 +96,10 @@ class NotifyOutdatedPhenotypes extends Command
             }
 
             $baseUrl = rtrim(config('app.url'), '/');
+
+            $outdatedMimNumbers = $curations->flatMap(fn ($curation) => $curation->phenotypes->pluck('mim_number'))->filter()->unique()->values();
+            $currentPhenotypesByMim = Phenotype::query()->whereIn('mim_number', $outdatedMimNumbers)->whereNull('label_obsolete_at')->get()->groupBy('mim_number');
+                
             $payload = [
                 'digest_key' => sha1('omim_label_obsolete|'.$epId.'|'.$since->toDateTimeString().'|'.implode(',', $curations->pluck('id')->sort()->values()->all())),
                 'since' => $since->toDateTimeString(),
@@ -102,18 +107,26 @@ class NotifyOutdatedPhenotypes extends Command
                     'id' => $expertPanel->id,
                     'name' => $expertPanel->name,
                 ],
-                'curations' => $curations->map(function ($curation) use ($baseUrl) {
+                'curations' => $curations->map(function ($curation) use ($baseUrl, $currentPhenotypesByMim) {
                         return [
                             'id' => $curation->id,
                             'gene_symbol' => $curation->gene_symbol,
                             'link' => $baseUrl.'/home#/curations/'.$curation->id,
                             'link_text' => 'Open curation',
-                            'phenotypes' => $curation->phenotypes->map(function ($phenotype) {
+                            'phenotypes' => $curation->phenotypes->map(function ($phenotype) use ($currentPhenotypesByMim) {
+                                $currentPhenotypes = $currentPhenotypesByMim->get($phenotype->mim_number, collect())->map(function ($currentPhenotype) {
+                                        return [
+                                            'id' => $currentPhenotype->id,
+                                            'mim_number' => $currentPhenotype->mim_number,
+                                            'name' => $currentPhenotype->name,
+                                        ];
+                                    })->values()->all();
                                 return [
                                     'id' => $phenotype->id,
                                     'mim_number' => $phenotype->mim_number,
                                     'name' => $phenotype->name,
                                     'label_obsolete_at' => $phenotype->label_obsolete_at,
+                                    'current_phenotypes' => $currentPhenotypes,
                                 ];
                             })->values()->all(),
                         ];
