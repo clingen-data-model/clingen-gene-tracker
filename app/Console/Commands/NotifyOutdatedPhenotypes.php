@@ -33,7 +33,7 @@ class NotifyOutdatedPhenotypes extends Command
      */
     public function handle()
     {
-        Log::info('OMIM Outdated Phenotype Labels notification starting.');
+        $this->info('OMIM Outdated Phenotype Labels notification starting.');
         $scanStartedAt = now();
         $days = max(1, (int) $this->option('days'));
 
@@ -72,7 +72,7 @@ class NotifyOutdatedPhenotypes extends Command
         foreach ($curationsByEp as $epId => $curations) {
             $expertPanel = $curations->first()->expertPanel;
             if (!$expertPanel) {
-                Log::warning("No expert panel found for expert_panel_id={$epId}");
+                $this->warning("No expert panel found for expert_panel_id={$epId}");
                 continue;
             }
             $coordinatorIds = DB::table('expert_panel_user')
@@ -84,7 +84,7 @@ class NotifyOutdatedPhenotypes extends Command
                 ->pluck('users.id');
 
             if ($coordinatorIds->isEmpty()) {
-                Log::warning("No coordinators found for expert_panel_id={$epId}");
+                $this->warning("No coordinators found for expert_panel_id={$epId}");
                 continue;
             }
 
@@ -142,7 +142,7 @@ class NotifyOutdatedPhenotypes extends Command
             $state->update(['value' => $scanStartedAt]);
         }
 
-        Log::info('OMIM Outdated Phenotype Labels notification finished.');
+        $this->info('OMIM Outdated Phenotype Labels notification finished.');
         return 0;
 
     }
