@@ -92,4 +92,25 @@ class Phenotype extends Model
     {
         return !is_null($this->label_obsolete_at);
     }
+
+    public static function outdatedCount(): int
+    {
+        return static::whereNotNull('label_obsolete_at')->count();
+    }
+
+    public static function outdatedInUseCount(): int
+    {
+        return static::query()
+            ->join('curation_phenotype', 'curation_phenotype.phenotype_id', '=', 'phenotypes.id')
+            ->whereNotNull('phenotypes.label_obsolete_at')
+            ->distinct('phenotypes.id')
+            ->count('phenotypes.id');
+    }
+
+    public static function affectedCurationsCount(): int
+    {
+        return Curation::whereHas('phenotypes', function ($q) {
+            $q->whereNotNull('phenotypes.label_obsolete_at');
+        })->count();
+    }
 }

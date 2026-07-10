@@ -22,17 +22,11 @@ class OmimOutdatedPhenotypeReportController extends Controller
             return $this->downloadCsv($tab);
         }
 
-        $outdatedPhenotypesCount = Phenotype::whereNotNull('label_obsolete_at')->count();
+        $outdatedPhenotypesCount = Phenotype::outdatedCount();
 
-        $affectedCurationsCount = Curation::whereHas('phenotypes', function ($q) {
-            $q->whereNotNull('phenotypes.label_obsolete_at');
-        })->count();
+        $affectedCurationsCount = Phenotype::affectedCurationsCount();
 
-        $outdatedUsedCount = Phenotype::query()
-            ->join('curation_phenotype', 'curation_phenotype.phenotype_id', '=', 'phenotypes.id')
-            ->whereNotNull('phenotypes.label_obsolete_at')
-            ->distinct()
-            ->count('phenotypes.id');
+        $outdatedUsedCount = Phenotype::outdatedInUseCount();
 
         $outdatedPhenotypes = null;
         $affectedCurations = null;

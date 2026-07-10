@@ -4,19 +4,10 @@
 @section('content')
 @php
     use App\Phenotype;
-    use App\Curation;
 
-    $outdatedPhenotypesCount = Phenotype::whereNotNull('label_obsolete_at')->count();
-
-    $affectedCurationsCount = Curation::whereHas('phenotypes', function ($q) {
-        $q->whereNotNull('label_obsolete_at');
-    })->count();
-
-    $outdatedUsedCount = Phenotype::query()
-        ->join('curation_phenotype', 'curation_phenotype.phenotype_id', '=', 'phenotypes.id')
-        ->whereNotNull('phenotypes.label_obsolete_at')
-        ->distinct('phenotypes.id')
-        ->count('phenotypes.id');
+    $outdatedPhenotypesCount = Phenotype::outdatedCount();
+    $affectedCurationsCount = Phenotype::affectedCurationsCount();
+    $outdatedUsedCount = Phenotype::outdatedInUseCount();
 @endphp
 
 <div class="container-fluid">
