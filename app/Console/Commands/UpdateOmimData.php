@@ -187,7 +187,7 @@ class UpdateOmimData extends Command
 
             $lastGeneMapDownload->update(['value' => $newDateGenerated]);
             gzclose($gzfile);
-        } catch (ClientException $e) {
+        } catch (ClientException|\ValueError $e) {
             gzclose($gzfile);
             unlink($archivePath);
             $this->error($e->getMessage());
@@ -244,14 +244,7 @@ class UpdateOmimData extends Command
             throw new \ValueError('OMIM genemap2 header keys were not parsed before data rows were encountered.');
         }
 
-        if (count($keys) !== count($values)) {
-            throw new \ValueError(
-                'OMIM genemap2 column mismatch: expected '.count($keys)
-                .' columns, got '.count($values).'.'
-            );
-        }
-
-        return array_combine($keys, $values);
+        return array_combine($keys, array_pad($values, count($keys), null));
     }
 
     private function getGene($data)
