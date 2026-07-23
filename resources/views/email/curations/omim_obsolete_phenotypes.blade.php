@@ -19,7 +19,7 @@
 </p>
 
 <p>
-  If you are concerned about the changes to the OMIM label change, you may want to consider reviewing the precuration records (linked below) and updating as necessary with input from the expert panel.
+  Please review the changes to the OMIM label with your Expert Panel and make any necessary updates to the precuration record.
   <strong>Action requested:</strong> For each curation listed below, open the curation in GeneTracker, review the phenotype(s) marked <strong>Not in latest OMIM</strong>, and replace or remove them if needed. Use the links provided.
 </p>
 
