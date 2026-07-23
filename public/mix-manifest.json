@@ -1,9 +1,9 @@
 {
-    "/js/app.js": "/js/app.js?id=959f94f4bd1534728ad323f64c81ec47",
+    "/js/app.js": "/js/app.js?id=5eaf749382ccc3bb29f191394ad96363",
     "/js/modules/curations.39e2ba0f9f816358.js": "/js/modules/curations.39e2ba0f9f816358.js?id=6cf718bda3bcb37cb287f8bc8d72c312",
-    "/js/modules/CurationCreate.2076f488a7cf1ec4.js": "/js/modules/CurationCreate.2076f488a7cf1ec4.js?id=5b2477266e1e6f5a6dbc4ee11479220d",
-    "/js/modules/CurationEdit.7f95b9f51a14eb94.js": "/js/modules/CurationEdit.7f95b9f51a14eb94.js?id=dd54eccefad0bbd5ac4e65ca6a13262e",
-    "/js/modules/CurationShow.612645174933d36f.js": "/js/modules/CurationShow.612645174933d36f.js?id=f4511694bd73c6bdfd0d72c54c5449fb",
+    "/js/modules/CurationCreate.a486ab96bef458bb.js": "/js/modules/CurationCreate.a486ab96bef458bb.js?id=5776d487583d42f5f73dbb381b4de97c",
+    "/js/modules/CurationEdit.c90fd9d18d6f434f.js": "/js/modules/CurationEdit.c90fd9d18d6f434f.js?id=d50b1fac20936374260f5f8c7a3e1c97",
+    "/js/modules/CurationShow.ee19720eababa973.js": "/js/modules/CurationShow.ee19720eababa973.js?id=5f8dc15bf3f33bc61a60c8368ede4c68",
     "/js/modules/CurationList.fb00a53a98835158.js": "/js/modules/CurationList.fb00a53a98835158.js?id=db2c195263c9de4a2a09a1f4cbb8ebe5",
     "/js/modules/CriteriaOverview.22b18c1ca928f81e.js": "/js/modules/CriteriaOverview.22b18c1ca928f81e.js?id=8aa413e767cc63e763317266ba596a72",
     "/js/modules/WorkingGroups.41d328805b52a632.js": "/js/modules/WorkingGroups.41d328805b52a632.js?id=445721c04d49f621865d8d290e3f58ea",
@@ -11,7 +11,7 @@
     "/js/modules/GroupShow.eedf8e4b0a7fb198.js": "/js/modules/GroupShow.eedf8e4b0a7fb198.js?id=1f21af13caa92c2711535069814b988e",
     "/js/modules/UserDashboard.037861c790d7e77b.js": "/js/modules/UserDashboard.037861c790d7e77b.js?id=9a53ddf4354b4a0975361e996a84acce",
     "/js/modules/CurationExportForm.2d1231ce19e2b583.js": "/js/modules/CurationExportForm.2d1231ce19e2b583.js?id=beee26fd138a7f8a90b47bd05e6917d6",
-    "/js/modules/BulkLookup.c735ba12f671ba59.js": "/js/modules/BulkLookup.c735ba12f671ba59.js?id=15ae5ad8fe4185a13e2e70ff34a34d5b",
-    "/js/modules/GeneBulkLookup.fcb1f9e82d081e5b.js": "/js/modules/GeneBulkLookup.fcb1f9e82d081e5b.js?id=21454c3e1428ebfc26d1e846008736b3",
+    "/js/modules/BulkLookup.2a6603523e457777.js": "/js/modules/BulkLookup.2a6603523e457777.js?id=b1c096159d7f143882fd8511d1c329ec",
+    "/js/modules/GeneBulkLookup.3ec528ba299a8299.js": "/js/modules/GeneBulkLookup.3ec528ba299a8299.js?id=4758d19d195b04c02f57cf3aca9f0f85",
     "/css/app.css": "/css/app.css?id=3bf311758d1ec5609493b4b13701076e"
 }
