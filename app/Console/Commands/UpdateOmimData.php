@@ -10,7 +10,9 @@ use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 use Illuminate\Support\Str;
 use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +23,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateOmimData extends Command
 {
-    use MocksGuzzleRequests;
     /**
      * The name and signature of the console command.
      *
@@ -55,20 +56,23 @@ class UpdateOmimData extends Command
     {
         Log::info('Starting Omim genemap2 update...');
         if ($this->option('file')) {
-            if (!file_exists($this->option('file'))) {
-                $this->error('File not found. '.$this->option('file'). ' does not exist');
+            $filePath = $this->option('file');
+
+            if (!file_exists($filePath)) {
+                $this->error('File not found. '.$filePath.' does not exist');
                 return;
             }
-            $filePath = $this->option('file');
-            $resource = Str::endsWith(strtolower($filePath), '.gz')
-                ? fopen('compress.zlib://'.$filePath, 'r')
-                : fopen($filePath, 'r');
+
+            $resource = Str::endsWith(strtolower($filePath), '.gz') ? fopen('compress.zlib://'.$filePath, 'r') : fopen($filePath, 'r');
             if ($resource === false) {
                 $this->error('Could not open file. '.$filePath);
                 return;
             }
             $stream = Utils::streamFor($resource);
-            $httpClient = $this->getGuzzleClient([new Response(200, [], $stream)]);
+
+            $mockHandler = new MockHandler([new Response(200, [], $stream)]);
+            $httpClient = new Client(['handler' => HandlerStack::create($mockHandler)]);
+
             app()->instance(ClientInterface::class, $httpClient);
         }
 
