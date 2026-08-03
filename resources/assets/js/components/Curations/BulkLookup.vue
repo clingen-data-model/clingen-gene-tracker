@@ -31,6 +31,13 @@
                     <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
                 </ul>
             </div>
+            <div
+                v-if="notFoundGenes.length > 0"
+                class="alert alert-warning"
+            >
+                <strong>No curations found for:</strong>
+                {{ notFoundGenes.join(', ') }}
+            </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
                 <b-table 
@@ -97,6 +104,7 @@ export default {
         return {
             geneSymbols: [],
             results: [],
+            notFoundGenes: [],
             fields: [
                 {
                     key: 'gene_symbol',
@@ -240,8 +248,9 @@ export default {
         }
     },
     methods: {
-        clearResults () {
-            this.results = []
+        clearResults() {
+            this.results = [];
+            this.notFoundGenes = [];
         },
         search() {
             this.formErrors = [];
@@ -249,15 +258,14 @@ export default {
             this.loadingResults = true;
             axios.post('/api/bulk-lookup', {'gene_symbol': this.geneSymbols, with: 'classifications'})
                 .then(response => {
-                    this.results = response.data.data
-                    return response;
+                    this.results = response.data.data || [];
+                    this.notFoundGenes = response.data.meta ? response.data.meta.not_found_genes || [] : [];
                 })
                 .catch(error => {
-                    const flattenedErrors = Object.values(error.response.data.errors).flat();
-                    console.log(flattenedErrors);
-                    this.formErrors = flattenedErrors;
+                    const errors = error.response && error.response.data && error.response.data.errors ? error.response.data.errors : {};
+                    this.formErrors = Object.values(errors).flat();
                 })
-                .then(response => {
+                .finally(() => {
                     this.loadingResults = false;
                 });
         },

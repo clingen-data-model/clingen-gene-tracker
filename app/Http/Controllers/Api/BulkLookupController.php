@@ -24,12 +24,17 @@ class BulkLookupController extends Controller
     {
         $useSimple = $request->input('resource') === 'simple';
         $resource = $useSimple ? CurationSimpleResource::class : CurationResource::class;
-        
+
+        $requestedGenes = collect($request->input('gene_symbol', []))->map(fn ($gene) => strtoupper(trim($gene)))->filter()->unique()->values();
         $results = $this->search->search($request->all());
-        if ($results->count() == 0) {
-            return $resource::collection(collect());
-        }
-        return $resource::collection($results);
+        $foundGenes = $results->pluck('gene_symbol')->map(fn ($gene) => strtoupper(trim($gene)))->filter()->unique()->values();
+        $notFoundGenes = $requestedGenes->diff($foundGenes)->values();
+        return $resource::collection($results)->additional([
+            'meta' => [
+                'requested_genes' => $requestedGenes->all(),
+                'not_found_genes' => $notFoundGenes->all(),
+            ],
+        ]);
     }
     
     public function download(BulkLookupRequest $request)
@@ -81,9 +86,7 @@ class BulkLookupController extends Controller
                             'Obsolete Phenotypes' => $availableObsolete->map(function ($ph) { return $ph->name.' ('.$ph->mim_number.')'; })->join("; "),
                         ];
                     });
-        if ($results->count() == 0) {
-            throw ValidationException::withMessages(['gene_symbols' => ['There were no results for your search.  Are you sure you\'re using valid HGNC gene symbols?']]);
-        }
+
         $columns = array_keys($results->first());
         $callback = function () use ($results, $columns) {
             $file = fopen('php://output', 'w');
