@@ -25,7 +25,8 @@ class BulkLookupController extends Controller
         $useSimple = $request->input('resource') === 'simple';
         $resource = $useSimple ? CurationSimpleResource::class : CurationResource::class;
 
-        $requestedGenes = collect($request->input('gene_symbol', []))->map(fn ($gene) => strtoupper(trim($gene)))->filter()->unique()->values();
+        $geneInput = $request->input('gene_symbol', '');
+        $requestedGenes = collect(is_array($geneInput) ? $geneInput : preg_split('/[\s,]+/', $geneInput, -1, PREG_SPLIT_NO_EMPTY))->map(fn ($gene) => strtoupper(trim($gene)))->filter()->unique()->values();
         $results = $this->search->search($request->all());
         $foundGenes = $results->pluck('gene_symbol')->map(fn ($gene) => strtoupper(trim($gene)))->filter()->unique()->values();
         $notFoundGenes = $requestedGenes->diff($foundGenes)->values();

@@ -31,12 +31,13 @@
                     <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
                 </ul>
             </div>
-            <div
-                v-if="notFoundGenes.length > 0"
-                class="alert alert-warning"
-            >
-                <strong>No curations found for:</strong>
-                {{ notFoundGenes.join(', ') }}
+            <div v-if="notFoundGenes.length > 0" class="alert alert-warning">
+                <strong>
+                    No curations found for {{ notFoundGenes.length }} {{ notFoundGenes.length === 1 ? 'gene' : 'genes' }}:
+                </strong>
+                <div class="mt-2">
+                    <span v-for="gene in notFoundGenes" :key="gene" class="badge badge-light border mr-1 mb-1">{{ gene }}</span>
+                </div>
             </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
