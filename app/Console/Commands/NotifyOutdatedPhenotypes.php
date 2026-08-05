@@ -72,7 +72,7 @@ class NotifyOutdatedPhenotypes extends Command
         foreach ($curationsByEp as $epId => $curations) {
             $expertPanel = $curations->first()->expertPanel;
             if (!$expertPanel) {
-                $this->warning("No expert panel found for expert_panel_id={$epId}");
+                $this->warn("No expert panel found for expert_panel_id={$epId}");
                 continue;
             }
             $coordinatorIds = DB::table('expert_panel_user')
@@ -84,7 +84,7 @@ class NotifyOutdatedPhenotypes extends Command
                 ->pluck('users.id');
 
             if ($coordinatorIds->isEmpty()) {
-                $this->warning("No coordinators found for expert_panel_id={$epId}");
+                $this->warn("No coordinators found for expert_panel_id={$epId}");
                 continue;
             }
 
