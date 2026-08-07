@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Mail\Curations\TransferNotification;
 use App\Jobs\NotifyCoordinatorsAboutCuration;
+use App\CurationExpertPanel;
 
 class SetOwner
 {
@@ -24,7 +25,7 @@ class SetOwner
         $this->curation = $curation;
         $this->expertPanelId = $expertPanelId;
         $this->startDate = Carbon::parse($startDate);
-        $this->endDate = Carbon::parse($endDate);
+        $this->endDate = $endDate ? Carbon::parse($endDate) : null;
     }
 
     /**
@@ -34,41 +35,31 @@ class SetOwner
      */
     public function handle()
     {
-        if (
-            ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)
-            || $this->curation->isDirty('expert_panel_id')
-        ) {
-            \DB::transaction(function () {
-                $originalOwner = $this->curation->expertPanel;
-                
-                $this->setEndOfOwnership();
-                $this->addNewOwner();
-
-                $this->curation->refresh();
-                if ($this->curation->expertPanel->hasCoordinators()) {
-                    Mail::to($this->curation->expertPanel->coordinators)
-                            ->cc($originalOwner->coordinators)
-                            ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
-                }
-
-            });
-
+        if ($this->curation->expert_panel_id == $this->expertPanelId) {
+            $this->ensureCurrentOwnerHistory();
+            return;
         }
+
+        \DB::transaction(function () {
+            $originalOwner = $this->curation->expertPanel;
+
+            $this->setEndOfOwnership();
+            $this->addNewOwner();
+
+            $this->curation->refresh();
+            if ($this->curation->expertPanel->hasCoordinators()) {
+                Mail::to($this->curation->expertPanel->coordinators)->cc($originalOwner->coordinators)->send(new TransferNotification($this->curation->fresh(), $originalOwner));
+            }
+
+        });
     }
 
     private function setEndOfOwnership()
     {
         $currentOwnerId = $this->curation->expert_panel_id;
-
-        $existing = $this->curation->expertPanels()
-            ->where('expert_panel_id', $currentOwnerId)
-            ->first();
-
+        $existing = $this->curation->expertPanels()->where('expert_panels.id', $currentOwnerId)->wherePivotNull('end_date')->first();
         if ($existing) {
-            $this->curation->expertPanels()->updateExistingPivot(
-                $currentOwnerId,
-                ['end_date' => $this->endDate]
-            );
+            CurationExpertPanel::where('id', $existing->pivot->id)->update(['end_date' => $this->endDate]);
             return;
         }
 
@@ -83,8 +74,7 @@ class SetOwner
     
     private function addNewOwner()
     {
-        $this->curation->expertPanels()
-        ->syncWithoutDetaching([
+        $this->curation->expertPanels()->attach([
             $this->expertPanelId => [
                 'start_date'=> $this->startDate,
                 'end_date' => null
@@ -94,6 +84,19 @@ class SetOwner
         if ($this->curation->expert_panel_id != $this->expertPanelId) {
             $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
         }
+    }
+
+    private function ensureCurrentOwnerHistory()
+    {
+        $existing = $this->curation->expertPanels()->where('expert_panels.id', $this->expertPanelId)->wherePivotNull('end_date')->exists();
+        if ($existing) { return; }
+
+        $this->curation->expertPanels()->attach([
+            $this->expertPanelId => [
+                'start_date' => $this->startDate,
+                'end_date' => null,
+            ]
+        ]);
     }
     
 }
