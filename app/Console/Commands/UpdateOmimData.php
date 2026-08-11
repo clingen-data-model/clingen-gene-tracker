@@ -244,11 +244,13 @@ class UpdateOmimData extends Command
                             ]
                         );
 
+                        // Record before dispatching: a listener throwing must not drop the
+                        // phenotype from the seen set and leave it for the obsoletion sweep.
+                        $seenPhenotypeIds[] = $phenotype->id;
+
                         if ($phenotype->wasRecentlyCreated) {
                             event(new PhenotypeAddedForGene($phenotype, $gene));
                         }
-
-                        $seenPhenotypeIds[] = $phenotype->id;
 
                         return $phenotype;
                     } catch (\Throwable $th) {
