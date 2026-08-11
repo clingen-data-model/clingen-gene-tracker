@@ -49,7 +49,12 @@ class UpdateOmimData extends Command
     {
         Log::info('Starting Omim genemap2 update...');
 
-        $lastGeneMapDownload = AppState::findByName('last_genemap_download');
+        // Absent in a freshly migrated environment. Default it to the epoch so any
+        // genemap2 file looks newer and the first run does a full import.
+        $lastGeneMapDownload = AppState::firstOrCreate(
+            ['name' => 'last_genemap_download'],
+            config('app_state.last_genemap_download') + ['value' => Carbon::createFromTimestamp(0)]
+        );
         $timestamp = Carbon::now()->format('Ymd_His_v');
         $archivePath = Storage::path("omim/genemap2.{$timestamp}.txt.gz");
         $downloadPath = null;
