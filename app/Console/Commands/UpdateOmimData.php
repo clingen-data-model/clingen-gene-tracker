@@ -50,7 +50,7 @@ class UpdateOmimData extends Command
         Log::info('Starting Omim genemap2 update...');
 
         $lastGeneMapDownload = AppState::findByName('last_genemap_download');
-        $timestamp = Carbon::now()->format('Ymd_His');
+        $timestamp = Carbon::now()->format('Ymd_His_v');
         $archivePath = Storage::path("omim/genemap2.{$timestamp}.txt.gz");
         $downloadPath = null;
 
