@@ -43,7 +43,7 @@ class UpdateOmimData extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle()
     {
@@ -59,7 +59,7 @@ class UpdateOmimData extends Command
                 $sourcePath = $this->option('file');
                 if (!file_exists($sourcePath)) {
                     $this->error('File not found. '.$sourcePath.' does not exist');
-                    return;
+                    return Command::FAILURE;
                 }
             } else {
                 $downloadPath = Storage::path("omim/genemap2.{$timestamp}.download.txt");
@@ -90,11 +90,11 @@ class UpdateOmimData extends Command
 
                 $this->error($message);
                 Log::error($message);
-                return;
+                return Command::FAILURE;
             }
 
             if (!is_null($lastGeneMapDownload->value) && $lastGeneMapDownload->value->gte($newDateGenerated)) {
-                return;
+                return Command::SUCCESS;
             }
 
             // Archive the complete validated file. Do we want to keep archiving the file?
@@ -119,6 +119,7 @@ class UpdateOmimData extends Command
         } catch (GuzzleException|\RuntimeException|\ValueError $e) {
             $this->error($e->getMessage());
             Log::error($e->getMessage());
+            return Command::FAILURE;
         } finally {
             // The plain downloaded file is temporary.
             if ($downloadPath && file_exists($downloadPath)) {
@@ -127,6 +128,8 @@ class UpdateOmimData extends Command
         }
 
         Log::info('Finished Omim genemap2 update.');
+
+        return Command::SUCCESS;
     }
 
     private function inspectOmimFile($filePath)
