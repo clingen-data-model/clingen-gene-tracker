@@ -58,8 +58,8 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
 
         $this->curation->update([
             'gdm_uuid' => $this->gciMessage->uuid,
-            'affiliation_id' => ($affiliation) ? $affiliation->id : null,
-            'moi_id' => $moi->id,
+            'affiliation_id' => $affiliation?->id,
+            'moi_id' => $moi?->id,
             'mondo_id' => $this->gciMessage->mondoId
         ]);
 
@@ -81,14 +81,35 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         }
     }
 
-    private function findAffiliation(): Affiliation
+    private function findAffiliation(): ?Affiliation
     {
-        return Affiliation::findByClingenId($this->gciMessage->affiliation->id);
+        $clingenId = $this->gciMessage->affiliation->id;
+        $affiliation = Affiliation::findByClingenId($clingenId);
+
+        if (!$affiliation) {
+            Log::warning('GCI sync: Affiliation not found for ClinGen affiliation id', [
+                'affiliation_id' => $clingenId,
+                'curation_uuid' => $this->curation->uuid ?? null,
+                'gdm_uuid' => $this->gciMessage->uuid ?? null,
+            ]);
+        }
+
+        return $affiliation;
     }
 
-    private function findMoi(): ModeOfInheritance
+    private function findMoi(): ?ModeOfInheritance
     {
-        return ModeOfInheritance::findByHpId($this->gciMessage->moi);
+        $moi = ModeOfInheritance::findByHpId($this->gciMessage->moi);
+
+        if (!$moi) {
+            Log::warning('GCI sync: Mode of inheritance not found', [
+                'moi' => $this->gciMessage->moi,
+                'curation_uuid' => $this->curation->uuid ?? null,
+                'gdm_uuid' => $this->gciMessage->uuid ?? null,
+            ]);
+        }
+
+        return $moi;
     }
 
     private function addStatus()
