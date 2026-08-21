@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit 
-  cacheResult="true"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  backupGlobals="false"
-  backupStaticAttributes="false"
-  bootstrap="vendor/autoload.php"
-  colors="true"
-  convertErrorsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertWarningsToExceptions="true"
-  processIsolation="false"
-  stopOnFailure="false"
-  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
->
-
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">./app</directory>
-    </include>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" cacheResult="true" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.5/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
   <testsuites>
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
@@ -36,4 +17,9 @@
     <env name="LOG_CHANNEL" value="test"/>
     <env name="DX_ENABLE_PUSH" value="false"/>
   </php>
+  <source>
+    <include>
+      <directory suffix=".php">./app</directory>
+    </include>
+  </source>
 </phpunit>

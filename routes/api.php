@@ -32,8 +32,6 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
 
-// use App\Http\Controllers\Api\client\BulkUploadApiController;
-
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
     Route::post('/diseases/search', [DiseaseLookupController::class, 'search']);
@@ -48,8 +46,6 @@ Route::middleware('client')->prefix("client/v1")->group(function () {
 
     Route::get('/curations', [CurationController::class, 'index']);
     Route::get('/mois', [MoiController::class, 'index']);
-
-    // Route::post('/genes/bulkupload', [BulkUploadApiController::class, 'uploadJsonRows']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
