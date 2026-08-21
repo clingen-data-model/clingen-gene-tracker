@@ -11,6 +11,7 @@ use App\Jobs\Curations\AddStatus;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 
 class CurationCurationStatusControllerTest extends TestCase
 {
@@ -19,16 +20,41 @@ class CurationCurationStatusControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Event::fake([
+            \App\Events\Curation\Created::class,
+            \App\Events\Curation\Saved::class,
+            \App\Events\Curation\Updated::class,
+            \App\Events\Curation\Deleted::class,
+        ]);
+
+        // This test expects status IDs 1-4 to exist.
+        foreach ([1, 2, 3, 4] as $statusId) {
+            if (! CurationStatus::find($statusId)) {
+                $status = new CurationStatus([
+                    'name' => 'Test Status '.$statusId,
+                ]);
+                $status->id = $statusId;
+                $status->save();
+            }
+        }
+
         $this->user = factory(User::class)->create();
+
         $this->curation = factory(Curation::class)->make();
         $this->curation->created_at = '1977-01-01';
         $this->curation->save();
 
-        $curationStatuses = CurationStatus::find([2,3])->keyBy('id');
-        // not including id 1 b/c it's added on creation -tjw
+        $curationStatuses = CurationStatus::find([2, 3])->keyBy('id');
+
         foreach ([2, 3] as $statusId) {
-            AddStatus::dispatchSync($this->curation, $curationStatuses->get($statusId), '1977-01-01');
+            AddStatus::dispatchSync(
+                $this->curation,
+                $curationStatuses->get($statusId),
+                '1977-01-01'
+            );
         }
+
         $this->actingAs($this->user, 'api');
     }
     
@@ -50,7 +76,10 @@ class CurationCurationStatusControllerTest extends TestCase
             ->assertStatus(200);
 
         $this->assertEquals(4, $this->curation->fresh()->curationStatuses->count());
-        $this->assertEquals('1977-09-16', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
+        
+        $curation = $this->curation->fresh();
+        $status = $curation->statuses->firstWhere('id', 4);
+        $this->assertEquals('1977-09-16', $status->pivot->status_date->format('Y-m-d'));
     }
 
     public function test_validates_create_data()
