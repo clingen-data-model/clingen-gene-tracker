@@ -19,6 +19,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group mondo
  * @group mondo-notifications
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
+#[\PHPUnit\Framework\Attributes\Group('mondo-notifications')]
+
 class NameChangeNotificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -33,6 +36,8 @@ class NameChangeNotificationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function notification_sent_to_coordinators_of_curations_with_disease_if_not_obsolete()
     {
         Notification::fake();
@@ -48,6 +53,8 @@ class NameChangeNotificationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function notification_not_sent_if_desease_is_obsolete()
     {
         Notification::fake();

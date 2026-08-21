@@ -16,6 +16,9 @@ use App\Notifications\Disease\MondoTermObsoleteNotification;
  * @group mondo
  * @group mondo-notifications
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
+#[\PHPUnit\Framework\Attributes\Group('mondo-notifications')]
+
 class MondoTermObsoletedNotificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,6 +35,8 @@ class MondoTermObsoletedNotificationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sends_notifiation_if_disease_made_obsolete()
     {
         Notification::fake();
@@ -50,6 +55,8 @@ class MondoTermObsoletedNotificationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function renders_obsoletion_mail_template()
     {
         $view = View::make('email.curations.mondo_term_obsoleted', ['curation' => $this->curation, 'notifiable' => $this->user1]);

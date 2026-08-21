@@ -18,6 +18,8 @@ class CheckMondoForUpdatesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function it_can_send_notifications_for_a_collection_of_curations()
     {
         $ep = factory(ExpertPanel::class)->create();

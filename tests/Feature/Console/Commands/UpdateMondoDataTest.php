@@ -16,6 +16,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group mondo
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
+
 class UpdateMondoDataTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,6 +34,8 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function does_nothing_if_version_data_lte_mondo_date_in_app_state()
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-06-01']);
@@ -43,6 +47,8 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function imports_new_mondo_data_if_last_mondo_update_before_date_in_file()
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-05-01']);
@@ -54,6 +60,8 @@ class UpdateMondoDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sets_last_mondo_update_app_state()
     {
         AppState::findByName('last_mondo_update')->update(['value' => '2021-05-01']);

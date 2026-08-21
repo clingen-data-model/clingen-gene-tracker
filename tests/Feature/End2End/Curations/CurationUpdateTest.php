@@ -29,6 +29,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function requires_existing_curation_type_id_on_update()
     {
         $data = [
@@ -62,6 +64,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updates_phenotypes_for_new_curation()
     {
         $phenotype = factory(\App\Phenotype::class)->create();
@@ -88,6 +92,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function store_transforms_comma_separated_pmds_into_array()
     {
         $this->assumeGeneSymbolValid();
@@ -107,6 +113,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function stores_isolated_phenotype_on_isolated_phenotype_curation()
     {
         $this->assumeGeneSymbolValid();
@@ -142,6 +150,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function update_syncs_rationales_when_given()
     {
         $curation = $this->curation;
@@ -164,6 +174,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function rationales_even_required_when_page_not_phenotypes()
     {
         $this->markTestSkipped('No idea why we would want this to be the case');
@@ -186,6 +199,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function rationales_required_when_curation_type_not_single_and_1_phenotype()
     {
         app()->bind(ContractsOmimClient::class, function () {
@@ -231,6 +247,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function rationales_required_if_1_phenotype_and_type_single_omim()
     {
         $curation = $this->curation;
@@ -270,6 +289,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function rationales_required_if_1_phenotype_and_curation_type_other_than_single_omim()
     {
         $curation = $this->curation;
@@ -304,6 +326,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function rationales_required_when_gene_has_more_than_1_phenotype()
     {
         app()->bind('App\Contracts\OmimClient', function ($app) {
@@ -339,6 +364,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function isolated_phenotype_required_when_curation_type_id_is_3()
     {
         $curation = $this->curation;
@@ -364,6 +392,9 @@ class CurationUpdateTest extends TestCase
      * @test
      * @group curation-validation
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('curation-validation')]
+
     public function isolated_phenotype_must_be_valid_mim_number_when_present()
     {
         $curation = $this->curation;
@@ -388,6 +419,8 @@ class CurationUpdateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function hgnc_id_and_hgnc_name_are_ignored_when_updating_data()
     {
         $status = factory(\App\CurationStatus::class)->create();

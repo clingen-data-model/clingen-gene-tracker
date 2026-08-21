@@ -38,6 +38,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updates_phenotype_status_if_removed()
     {
         $this->bindRemoveResponse();
@@ -53,6 +55,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updates_phenotype_status_and_moved_to_mim_number_if_moved()
     {
         $this->bindMovedResponse();
@@ -70,6 +74,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function creates_movedTo_phenotype_model_if_not_found()
     {
         Phenotype::findByMimNumber(607084)->forceDelete();
@@ -96,6 +102,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function coordinator_notified_when_phenotype_related_to_curation_is_removed()
     {
         $ep = $this->makeEpAndCoordinator();
@@ -112,6 +120,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function coordinator_notified_when_phenotype_related_to_curation_is_moved()
     {
         $ep = $this->makeEpAndCoordinator();
@@ -128,6 +138,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function curation_phenotypes_updated_when_phenotype_related_to_curation_is_moved()
     {
         factory(Phenotype::class)->create([
@@ -150,6 +162,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function curation_phenotype_removed_when_phenotype_related_to_curation_is_removed()
     {
         $ep = $this->makeEpAndCoordinator();
@@ -166,6 +180,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updates_last_omim_moved_check_state()
     {
         AppState::findByName('last_omim_moved_check')->update(['value' => Carbon::yesterday()]);
@@ -182,6 +198,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function handles_moved_to_multiple_new_mim_numbers()
     {
         factory(Phenotype::class)->create([
@@ -201,6 +219,8 @@ class UpdateOmimMovedAndRemovedTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function handle_all_pages_if_paginated()
     {
         factory(Phenotype::class)->create([
