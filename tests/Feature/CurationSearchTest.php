@@ -17,6 +17,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * @group search
  * @group curations
  */
+#[\PHPUnit\Framework\Attributes\Group('search')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+
 class CurationSearchTest extends TestCase
 {
     public function setup():void
@@ -34,6 +37,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function implements_SearchService_interface()
     {
         $this->assertInstanceOf(SearchService::class, $this->search);
@@ -42,6 +47,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function index_lists_curations_filtered_by_gene_symbol()
     {
         $this->withoutExceptionHandling();
@@ -57,6 +64,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_filter_results_by_mondo_id()
     {
         factory(Disease::class)->create(['mondo_id' => 'MONDO:12345']);
@@ -82,6 +91,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_filter_results_by_hgnc_id()
     {
         $curation1 = $this->curations->shift();
@@ -98,6 +109,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_filter_results_by_phenotype_mim_number()
     {
         [$ph1, $ph2, $ph3] = factory(Phenotype::class, 3)->create([]);
@@ -113,6 +126,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_eager_load_specified_relations()
     {
         $user = factory(User::class)->create();
@@ -126,6 +141,8 @@ class CurationSearchTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_filter_by_specific_field()
     {
         \DB::table('curations')->delete();

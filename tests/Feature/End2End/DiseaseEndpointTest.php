@@ -11,6 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * @group mondo
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
+
 class DiseaseEndpointTest extends TestCase
 {
     public function setup():void
@@ -24,6 +26,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function returns_404_when_disease_not_found()
     {
         $res = $this->actingAs($this->user, 'api')
@@ -34,6 +38,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function returns_422_with_invalid_mondo_id()
     {
         $res = $this->actingAs($this->user, 'api')
@@ -44,6 +50,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function gets_disease_data()
     {
         $this->actingAs($this->user, 'api')
@@ -55,6 +63,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function validates_mondo_id_format()
     {
         $this->actingAs($this->user, 'api')
@@ -65,6 +75,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function gets_mondo_ids_matching_string()
     {        $d2 = factory(Disease::class)->create([
             'mondo_id' => 'MONDO:2234567',
@@ -90,6 +102,8 @@ class DiseaseEndpointTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function searches_name()
     {
         $d2 = factory(Disease::class)->create([

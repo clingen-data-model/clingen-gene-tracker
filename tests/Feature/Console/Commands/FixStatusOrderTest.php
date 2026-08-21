@@ -35,6 +35,8 @@ class FixStatusOrderTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function adjusts_uploaded_at_date_if_current_status_and_after_more_advance_status()
     {
         Artisan::call('curations:order-statuses');
