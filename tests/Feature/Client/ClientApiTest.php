@@ -23,7 +23,7 @@ class ClientApiTest extends TestCase
         $this->seedGenes();
         $this->seedDiseases();
 
-        $client = app(ClientRepository::class)->create(null, 'test-client', '');
+        $client = app(ClientRepository::class)->createClientCredentialsGrantClient('test-client');
 
         $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
