@@ -36,10 +36,10 @@ class CheckIfAdmin
     private function respondToUnauthorizedRequest($request)
     {
         if ($request->ajax() || $request->wantsJson()) {
-            return response(trans('backpack::base.unauthorized'), 401);
+            abort(403, 'Unauthorized');
         }
 
-        return redirect()->guest(backpack_url('login'));
+        return redirect()->guest(route('login'));
     }
 
     /**

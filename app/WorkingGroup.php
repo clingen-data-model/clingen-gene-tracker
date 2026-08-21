@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
 use App\Model;
@@ -13,7 +12,6 @@ class WorkingGroup extends Model implements HasAffiliation
 {
     use SoftDeletes;
     use RevisionableTrait;
-    use CrudTrait;
     use HasAffiliationTrait;
 
 

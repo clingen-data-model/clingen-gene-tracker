@@ -35,7 +35,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('curations/export/form', 'CurationExportController@getForm')->name('curations.export');
     Route::get('curations/export', 'CurationExportController@getCsv')->name('curations.export.download');
 
-    Route::redirect('logs', 'admin/logs');
     Route::redirect('curations/{id}', '/#/curations/{id}');
 
     Route::get('/working-groups/{id}/export', [WorkingGroupController::class, 'export'])->name('working-groups.export');

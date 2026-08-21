@@ -46,7 +46,6 @@ services:
             SANCTUM_STATEFUL_DOMAINS: localhost:${APP_PORT:-8012},127.0.0.1:${APP_PORT:-8012}
             CONTAINER_ENV: ${CONTAINER_ENV:-local}
             COMPOSER_NO_DEV: "0"
-            COMPOSER_AUTH: ${COMPOSER_AUTH:?You must provide valid Backpack credentials in COMPOSER_AUTH (see the .env.example)}
             XDEBUG_MODE: ${XDEBUG_MODE:-debug,develop}
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}

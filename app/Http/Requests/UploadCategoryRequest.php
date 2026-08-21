@@ -13,8 +13,9 @@ class UploadCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return backpack_auth()->check();
+        // Backpack's admin guard defaulted to the standard web guard, so this matches the
+        // previous authenticated-user semantics without adding a role restriction.
+        return auth()->guard('web')->check();
     }
 
     /**

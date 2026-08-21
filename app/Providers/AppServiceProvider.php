@@ -25,13 +25,6 @@ class AppServiceProvider extends ServiceProvider
         Log::pushProcessor(new ContainerRoleProcessor());
 
         date_default_timezone_set('America/New_York');
-        if ($this->app->environment('production')) {
-            config(['backpack.base.skin' => 'skin-blue']);
-        }
-
-        if ($this->app->environment('local', 'demo')) {
-            config(['backpack.base.logo_lg' => '<b>ClinGen</b> - '.$this->app->environment()]);
-        }
 
         if (config('app.url_scheme')) {
             URL::forceScheme(config('app.url_scheme'));
