@@ -63,6 +63,8 @@ class DeleteDuplicateNotificationsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function test_sets_up_expected_notifications()
     {
         $this->assertEquals(26, $this->notifications->count());
@@ -71,6 +73,8 @@ class DeleteDuplicateNotificationsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function it_deletes_duplicates_and_keeps_one_of_each()
     {
         Artisan::call('notifications:delete-duplicates --chunk-size=5');

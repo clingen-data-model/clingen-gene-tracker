@@ -16,6 +16,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group curation-transfer
  */
+#[\PHPUnit\Framework\Attributes\Group('curation-transfer')]
+
 class CurationTransferTest extends TestCase
 {
     use DatabaseTransactions;
@@ -46,6 +48,8 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function an_unpriveleged_user_cannot_transfer_a_curation()
     {
         // $this->withoutExceptionHandling();
@@ -66,6 +70,8 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function a_privileged_user_can_transfer_a_curation()
     {
         $this->withoutExceptionHandling();
@@ -107,6 +113,8 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function receiving_ep_coordinators_are_emailed_on_transfer()
     {
         $this->withoutExceptionHandling();
@@ -134,6 +142,8 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function adds_a_note_if_notes_field_not_null()
     {
         $this->withoutExceptionHandling();
@@ -162,6 +172,8 @@ class CurationTransferTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function does_not_create_a_test_if_notes_field_is_null()
     {
         $this->actingAs($this->ep1User, 'api')

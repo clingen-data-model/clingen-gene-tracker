@@ -50,6 +50,8 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function consumes_mondo_topic_and_dispatches_notifications()
     {
         app()->bind(MessageConsumer::class, function () {
@@ -88,6 +90,8 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function notifies_coordinators_of_curations_with_mondo_id()
     {
         Notification::fake();
@@ -101,6 +105,8 @@ class MondoObsoletionCandidateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function digest_notification_renders_correctly()
     {
         // Send the notification via the action.

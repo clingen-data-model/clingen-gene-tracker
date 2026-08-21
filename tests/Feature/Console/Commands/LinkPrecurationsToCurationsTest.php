@@ -21,6 +21,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group gci
  * @group curations
  */
+#[\PHPUnit\Framework\Attributes\Group('gci')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+
 class LinkPrecurationsToCurationsTest extends TestCase
 {
     use DatabaseTransactions;
@@ -47,6 +50,8 @@ class LinkPrecurationsToCurationsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match()
     {
         Bus::fake();

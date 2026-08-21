@@ -23,6 +23,8 @@ class HgncInfoAddedToCurationOnSavingTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function adds_hgnc_info_if_hgnc_id_is_null()
     {
         $this->curation->save();

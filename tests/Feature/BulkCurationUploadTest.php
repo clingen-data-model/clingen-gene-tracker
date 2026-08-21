@@ -12,6 +12,8 @@ use Tests\TestCase;
 /**
  * @group bulk-curations
  */
+#[\PHPUnit\Framework\Attributes\Group('bulk-curations')]
+
 class BulkCurationUploadTest extends TestCase
 {
     use DatabaseTransactions;
@@ -29,6 +31,8 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function bulk_upload_page_exists_and_has_link_to_template()
     {
         $this->withoutExceptionHandling();
@@ -43,6 +47,8 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function bulkUploadHandler_creates_curations_from_file()
     {
         \DB::table('curations')->delete();
@@ -67,6 +73,8 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function bulkUploadValidatesRows()
     {
         $this->actingAs($this->user)
@@ -86,6 +94,8 @@ class BulkCurationUploadTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function confirms_duplicates_before_saving_file()
     {
         \DB::table('curations')->delete();
