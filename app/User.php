@@ -10,7 +10,6 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -19,7 +18,6 @@ class User extends Authenticatable
     use HasApiTokens;
     use Notifiable;
     use RevisionableTrait;
-    use CrudTrait;
     use SoftDeletes;
     use HasRoles;
     use Impersonate;

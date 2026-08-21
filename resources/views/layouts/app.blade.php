@@ -103,14 +103,6 @@
                                         <a class="dropdown-item" href="/bulk-uploads">Bulk Upload</a>
                                         <div class="dropdown-divider"></div>
                                     @endif 
-                                    @role('programmer|admin')
-                                        <a href="{{ route('backpack') }}" class="dropdown-item">Admin</a>
-                                        @role('programmer')
-                                            <a class="dropdown-item" href="{{ route('logs') }}" target="logs">Logs</a>
-                                        @endrole
-                                        <div class="dropdown-divider"></div>
-                                    @endrole
-
                                     <a class="dropdown-item" href="https://docs.google.com/document/d/1b0mW4N19cWBIHccodYJ34Gp3BoDyiYkRuqhbjfrUrOA/" target="sop">SOP</a>
 
                                     <div class="dropdown-divider"></div>

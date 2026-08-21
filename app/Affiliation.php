@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -19,7 +18,6 @@ class Affiliation extends Model
 {
     use SoftDeletes;
     use RevisionableTrait;
-    use CrudTrait;
 
     protected $revisionCreationsEnabled = true;
     
