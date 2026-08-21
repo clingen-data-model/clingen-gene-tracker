@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\URL;
 use App\Logging\ContainerRoleProcessor;
 use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
+use Illuminate\Auth\Middleware\Authenticate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Authenticate::redirectUsing(function () { return route('login'); });
         Log::pushProcessor(new ContainerRoleProcessor());
 
         date_default_timezone_set('America/New_York');
