@@ -27,7 +27,7 @@ class CurationCurationStatusControllerTest extends TestCase
         $curationStatuses = CurationStatus::find([2,3])->keyBy('id');
         // not including id 1 b/c it's added on creation -tjw
         foreach ([2, 3] as $statusId) {
-            AddStatus::dispatch($this->curation, $curationStatuses->get($statusId), '1977-01-01');
+            AddStatus::dispatchSync($this->curation, $curationStatuses->get($statusId), '1977-01-01');
         }
         $this->actingAs($this->user, 'api');
     }

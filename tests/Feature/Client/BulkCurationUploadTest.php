@@ -25,7 +25,7 @@ class BulkCurationUploadTest extends TestCase
         $this->expertPanel = factory(ExpertPanel::class)->create();
         $this->expertPanel->users()->attach([$this->user->id => ['is_coordinator' => 1]]);
 
-        $client = app(ClientRepository::class)->create(null, 'test-client', '');
+        $client = app(ClientRepository::class)->createClientCredentialsGrantClient('test-client');
 
         $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
