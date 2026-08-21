@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use App\Contracts\HasAffiliation;
 use App\Traits\HasAffiliationTrait;
 use App\Model;
@@ -13,7 +12,6 @@ use phpDocumentor\Reflection\Types\Boolean;
 class ExpertPanel extends Model implements HasAffiliation
 {
     use RevisionableTrait;
-    use CrudTrait;
     use HasAffiliationTrait;
 
     protected $revisionCreationsEnabled = true;

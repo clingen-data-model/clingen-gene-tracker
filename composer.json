@@ -9,13 +9,9 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "backpack/crud": "^6.0",
-        "backpack/pro": "2.2.20",
-        "backpack/revise-operation": "^2.0",
-        "backpack/theme-coreuiv2": "^1.2",
         "box/spout": "^3.0",
         "lab404/laravel-impersonate": "^1.3",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/helpers": "^1.3",
         "laravel/legacy-factories": "^1.1",
         "laravel/passport": "^12.0",
@@ -33,7 +29,6 @@
         "zircote/swagger-php": "^5.0"
     },
     "require-dev": {
-        "backpack/generators": "^4.0",
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^3.5",
         "fakerphp/faker": "^1.9.1",
@@ -106,11 +101,5 @@
         "optimize-autoloader": true
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "repositories": {
-        "backpack": {
-            "type": "composer",
-            "url": "https://repo.backpackforlaravel.com/"
-        }
-    }
+    "prefer-stable": true
 }

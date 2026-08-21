@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-
 return [
     'name' => env('APP_NAME', 'ClinGen Tracker'),
     'env' => env('APP_ENV', 'production'),
@@ -102,10 +99,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
-        // For Backpack
-        'Arr' => Arr::class,
-        'Str' => Str::class,
     ],
 
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID', null),
