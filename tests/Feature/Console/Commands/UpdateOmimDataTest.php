@@ -21,6 +21,9 @@ use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
  * @group omim
  * @group phenotypes
  */
+#[\PHPUnit\Framework\Attributes\Group('omim')]
+#[\PHPUnit\Framework\Attributes\Group('phenotypes')]
+
 class UpdateOmimDataTest extends TestCase
 {
     use DatabaseTransactions;
@@ -41,6 +44,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function downloads_omim_geneamp2_file_and_stores_phenotypes()
     {
         $this->artisan('omim:update-data');
@@ -51,6 +56,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function adds_phenotype_moi_if_exists_on_row()
     {
         $this->artisan('omim:update-data');
@@ -64,6 +71,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function processes_if_newer_than_last_download()
     {
         AppState::findByName('last_genemap_download')->update(['value'=>Carbon::parse('2021-03-28')]);
@@ -75,6 +84,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updates_phenotype_if_already_exists()
     {
         factory(Phenotype::class)->create([
@@ -92,6 +103,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function queries_phenotype_by_name_if_multiple_with_same_mim_number()
     {
         factory(Phenotype::class)->create([
@@ -114,6 +127,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sets_new_last_genemap_download_if_newer()
     {
         AppState::findByName('last_genemap_download')->update(['value'=>Carbon::parse('2021-03-28')]);
@@ -128,6 +143,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function does_not_process_if_not_newer_than_last_download()
     {
         AppState::findByName('last_genemap_download')->update(['value'=>Carbon::parse('2021-03-29')]);
@@ -139,6 +156,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function gets_gene_symbol_from_approved_symbol_or_approved_gene_symbol_index()
     {
         $command = new UpdateOmimData();
@@ -150,6 +169,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function fires_PhenotypeAddedForGene_if_new_phenotype_added_to_gene()
     {
         Event::fake();
@@ -160,6 +181,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function notification_staged_for_coordinator_when_phenotype_added_to_curated_gene()
     {
         $user = $this->setupUser();
@@ -176,6 +199,8 @@ class UpdateOmimDataTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function phenotype_added_email_template_renders()
     {
         $curation = $this->setupCuration(['hgnc_id' => 30478]);

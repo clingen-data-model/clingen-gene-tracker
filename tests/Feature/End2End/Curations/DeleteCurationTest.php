@@ -21,6 +21,9 @@ class DeleteCurationTest extends TestCase
      * @test
      * @group authorization
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('authorization')]
+
     public function must_have_delete_permissions_to_delete_curation()
     {
         $this->curation
@@ -44,6 +47,9 @@ class DeleteCurationTest extends TestCase
      * @test
      * @group authorization
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('authorization')]
+
     public function user_can_delete_a_curation_if_they_are_the_curator_of_curation_and_has_delete_permission()
     {
         $this->user->givePermissionTo('delete curations');
@@ -57,6 +63,9 @@ class DeleteCurationTest extends TestCase
      * @test
      * @group authorization
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('authorization')]
+
     public function user_can_delete_a_curation_if_they_are_a_coordinator_of_expert_panel_that_owns_the_curation()
     {
         //create a coordinator who's not the curator
@@ -75,6 +84,9 @@ class DeleteCurationTest extends TestCase
      * @test
      * @group authorization
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('authorization')]
+
     public function user_with_panel_curation_edit_perms_and_delete_curation_permission_can_delete_a_curation()
     {
         //create a user who's not the curator

@@ -18,6 +18,9 @@ class StoresOutgoingEmailInDatabaseTest extends TestCase
      * @test
      * @group mail
      */
+#[\PHPUnit\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Group('mail')]
+
     public function stores_outgoing_mail_in_database()
     {
         $user = factory(User::class)->create();

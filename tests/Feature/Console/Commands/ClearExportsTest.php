@@ -25,6 +25,8 @@ final class ClearExportsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function it_removes_files_more_than_15_minutes_old():void
     {
         foreach ($this->testFileNames as $name) {

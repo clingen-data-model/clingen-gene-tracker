@@ -19,6 +19,8 @@ use App\Listeners\Curations\AugmentWithMondoInfo;
 /**
  * @group hgnc
  */
+#[\PHPUnit\Framework\Attributes\Group('hgnc')]
+
 class GeneSymbolChangedNotificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -36,6 +38,8 @@ class GeneSymbolChangedNotificationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function coordinator_is_notified_when_gene_symbol_changes()
     {
         Notification::fake();

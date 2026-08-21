@@ -20,6 +20,9 @@ use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
  * @group notifications
  * @group mail
  */
+#[\PHPUnit\Framework\Attributes\Group('notifications')]
+#[\PHPUnit\Framework\Attributes\Group('mail')]
+
 class SendNotificationDigestTest extends TestCase
 {
     use DatabaseTransactions;
@@ -52,6 +55,8 @@ class SendNotificationDigestTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sends_an_email_with_aggregated_notifications()
     {
         Notification::fake();
@@ -68,6 +73,8 @@ class SendNotificationDigestTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function marks_notifications_read_when_sent()
     {
         $this->artisan('send-notifications');

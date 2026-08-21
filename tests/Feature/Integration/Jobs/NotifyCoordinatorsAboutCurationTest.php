@@ -29,6 +29,8 @@ class NotifyCoordinatorsAboutCurationTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function only_notifies_active_coordinators()
     {
         $inactiveCoord = factory(User::class)->create(['deactivated_at' => Carbon::now()]);

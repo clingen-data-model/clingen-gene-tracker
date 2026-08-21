@@ -14,6 +14,8 @@ use Illuminate\Testing\TestResponse;
 /**
  * @group external-api
  */
+#[\PHPUnit\Framework\Attributes\Group('external-api')]
+
 class CurationShowTest extends ExternalApiTest
 {
     private Curation $curation;
@@ -35,6 +37,8 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function guest_cannot_get_a_precuration()
     {
         $this->makeExternalApiRequestAsGuest(
@@ -47,6 +51,8 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_get_precuration_by_numeric_id()
     {
         $this->makeRequest()
@@ -59,6 +65,8 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_get_precuration_by_uuid()
     {
         $this->makeRequest($this->curation->uuid)
@@ -71,6 +79,8 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function can_get_precuration_by_gdm_uuid()
     {
         $this->makeRequest($this->curation->gdm_uuid)
@@ -83,6 +93,8 @@ class CurationShowTest extends ExternalApiTest
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function responds_with_404_if_not_found()
     {
         $otherUuid = $this->faker()->uuid();

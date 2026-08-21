@@ -16,6 +16,9 @@ use Tests\TestCase;
  * @group notifications
  * @group gci
  */
+#[\PHPUnit\Framework\Attributes\Group('notifications')]
+#[\PHPUnit\Framework\Attributes\Group('gci')]
+
 class CreateNotificationsForStreamErrorsTest extends TestCase
 {
     use DatabaseTransactions;
@@ -38,6 +41,8 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function creates_notification_for_admin_if_no_expert_panel_for_affiliation()
     {
         Notification::fake();
@@ -49,6 +54,8 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function creates_notification_for_admin_if_no_coordinators_for_panel_related_to_affiliation()
     {
         Notification::fake();
@@ -62,6 +69,8 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function creates_notification_for_coordinator_if_affliation_related_to_coordinators_ep()
     {
         Notification::fake();
@@ -78,6 +87,8 @@ class CreateNotificationsForStreamErrorsTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function marks_pending_stream_errors_sent()
     {
         Carbon::setTestNow('2020-06-01 00:00:00');

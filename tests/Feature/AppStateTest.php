@@ -16,6 +16,8 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function accessor_casts_to_int()
     {
         $state = $this->createState(['type' => 'int', 'value' => '21']);
@@ -30,6 +32,8 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function accessor_casts_to_date()
     {
         $state = $this->createState(['type' => 'date', 'value' => '2021-01-01 12:00:00']);
@@ -40,6 +44,8 @@ class AppStateTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function accessor_casts_json_type()
     {
         $state = $this->createState(['type' => 'json', 'value' => '["a", "b", "c"]']);

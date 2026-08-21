@@ -26,6 +26,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function creation_precuration_message_created_when_curation_created()
     {
         $curation = factory(Curation::class)->create();
@@ -41,6 +43,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function updated_precuration_message_created_when_curation_updated()
     {
         $curation = factory(Curation::class)->create();
@@ -57,6 +61,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function gt_gci_message_created_when_curation_updated_with_GDM_and_curation_complete_status()
     {
         $curation = factory(Curation::class)->create();
@@ -79,6 +85,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function deleted_precuration_message_created_when_curation_deleted()
     {
         $curation = factory(Curation::class)->create();
@@ -95,6 +103,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sent_at_should_be_updated_when_message_successfully_pushed()
     {
         Carbon::setTestNow('2019-01-01');
@@ -110,6 +120,8 @@ class CurationEventsCreateStreamingMessagesTest extends TestCase
     /**
      * @test
      */
+#[\PHPUnit\Framework\Attributes\Test]
+
     public function sent_at_should_not_be_updated_when_message_send_fails()
     {
         Carbon::setTestNow('2019-01-01');
