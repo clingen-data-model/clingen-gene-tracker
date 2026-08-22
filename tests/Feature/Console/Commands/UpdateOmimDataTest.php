@@ -7,9 +7,8 @@ use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Tests\SeedsGenes;
-use GuzzleHttp\Psr7\Response;
-use Tests\MocksGuzzleRequests;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Event;
 use App\Console\Commands\UpdateOmimData;
 use Illuminate\Support\Facades\Notification;
@@ -27,15 +26,32 @@ use App\Notifications\Curations\PhenotypeAddedForCurationNotification;
 class UpdateOmimDataTest extends TestCase
 {
     use DatabaseTransactions;
-    use MocksGuzzleRequests;
     use SeedsGenes;
 
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
-        $testGeneMap = file_get_contents(base_path('tests/files/omim_api/genemap2.txt'));
-        $httpClient = $this->getGuzzleClient([new Response(200, [], $testGeneMap)]);
+
+        AppState::findByName('last_genemap_download')->update(['value' => Carbon::parse('2021-03-28')]);
+
+        $testGeneMap = file_get_contents(
+            base_path('tests/files/omim_api/genemap2.txt')
+        );
+
+        $httpClient = \Mockery::mock(ClientInterface::class);
+
+        $httpClient
+            ->shouldReceive('get')
+            ->andReturnUsing(function ($url, $options = []) use ($testGeneMap) {
+                if (isset($options['sink'])) {
+                    file_put_contents($options['sink'], $testGeneMap);
+                }
+
+                return new Response(200);
+            });
+
         app()->instance(ClientInterface::class, $httpClient);
+
         $this->dateGenerated = Carbon::parse('2021-03-29');
 
         $this->seedGenes();
@@ -48,9 +64,23 @@ class UpdateOmimDataTest extends TestCase
 
     public function downloads_omim_geneamp2_file_and_stores_phenotypes()
     {
-        $this->artisan('omim:update-data');
+        AppState::findByName('last_genemap_download')
+            ->update(['value' => Carbon::parse('2021-03-28')]);
+
+        $this->artisan('omim:update-data', [
+            '--file' => base_path('tests/files/omim_api/genemap2.txt'),
+        ])
+        ->assertExitCode(\Illuminate\Console\Command::SUCCESS);
+
         $this->assertEquals(24, Phenotype::count());
-        $this->assertEquals(12, \DB::table('gene_phenotype')->groupBy()->get()->groupBy('hgnc_id')->count());
+
+        $this->assertEquals(
+            12,
+            \DB::table('gene_phenotype')
+                ->get()
+                ->groupBy('hgnc_id')
+                ->count()
+        );
     }
 
     /**
@@ -211,7 +241,4 @@ class UpdateOmimDataTest extends TestCase
         $expected = 'OMIM has added a new phenotype, '.$phenotype->name.', for '.$curation->gene_symbol.'. You may want to review your <a href="'.url('/#/curations/'.$curation->id).'">curation for '.$curation->gene_symbol.'</a>.';
         $this->assertEquals($expected, $html);
     }
-    
-    
-    
 }

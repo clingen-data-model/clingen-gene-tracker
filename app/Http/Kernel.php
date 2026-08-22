@@ -68,7 +68,7 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-        'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'client' => \Laravel\Passport\Http\Middleware\EnsureClientIsResourceOwner::class,
     ];
 
     /**

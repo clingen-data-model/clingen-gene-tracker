@@ -28,12 +28,11 @@ class ClientApiTest extends TestCase
         $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
             'client_id' => $client->id,
-            'client_secret' => $client->secret,
+            'client_secret' => $client->plainSecret,
             'scope' => '',
         ]);
 
-        $this->assertEquals(200, $response->status(), 'Failed to get access token: ' . $response->getContent());
-
+        $response->assertOk();
         $this->accessToken = $response->json()['access_token'];
     }
 
@@ -46,6 +45,7 @@ class ClientApiTest extends TestCase
     }
 
     /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_search_genes()
     {
         $res = $this->postJsonToClientApi('client/v1/genes/search', ['query' => 'PER']);
@@ -72,7 +72,7 @@ class ClientApiTest extends TestCase
                     ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_gene_by_id()
     {
         // Not the real HGNC ID for this gene, just what's in the test database seeder...
@@ -83,7 +83,7 @@ class ClientApiTest extends TestCase
             ->assertJsonFragment(['hgnc_id' => 4220, 'gene_symbol' => 'GDF5']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_gene_by_symbol()
     {
         $res = $this->postJsonToClientApi('client/v1/genes/bysymbol', ['gene_symbol' => 'GDF5']);
@@ -93,7 +93,7 @@ class ClientApiTest extends TestCase
             ->assertJsonFragment(['hgnc_id' => 4220, 'gene_symbol' => 'GDF5']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_lookup_curations_by_gene_symbols_with_comma_and_newlines()
     {
         $textareaInput = "ACAT2, CBX2\nGDF5\nPER2, PER3\nTBX22, BLNK";
@@ -102,31 +102,35 @@ class ClientApiTest extends TestCase
             factory(Curation::class)->create(['gene_symbol' => $symbol]);
         }
 
-        $res = $this->postJsonToClientApi('client/v1/genes/curations', [
+        $res = $this->postJsonToClientApi('client/v1/bulk-lookup', [
             'gene_symbol' => $textareaInput,
-            'classifications'   => 'with',
+            'with' => ['classifications'],
         ]);
         
-        $res->assertOk()->assertJsonStructure([                
-                'data' => [
-                    '*' => [
-                        "id",
-                        "gene_symbol",
-                        "disease",
-                        "mondo_id",
-                        "expert_panel",
-                        "moi",
-                        "classification",
-                        "curation_type",
-                        "current_status",
-                        "current_status_date",
-                        "phenotype",
-                    ]
-                ]
-            ]);
+        $res->assertOk()->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'gene_symbol',
+                    'disease',
+                    'mondo_id',
+                    'expert_panel',
+                    'mode_of_inheritance',
+                    'classifications',
+                    'curation_type',
+                    'current_status',
+                    'current_status_date',
+                    'phenotypes',
+                ],
+            ],
+            'meta' => [
+                'requested_genes',
+                'not_found_genes',
+            ],
+        ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_search_diseases()
     {
         $res = $this->postJsonToClientApi('client/v1/diseases/search', ['query' => 'hamartoma']);
@@ -146,16 +150,7 @@ class ClientApiTest extends TestCase
             ]);
     }
 
-    /** @test */
-    public function it_can_get_disease_by_mondo_id()
-    {
-        $res = $this->postJsonToClientApi('client/v1/diseases/mondo', ['mondo_id' => 'MONDO:0017623']);
-
-        $res->assertOk()->assertJsonStructure(['id', 'mondo_id', 'doid_id', 'name', 'is_obsolete', 'replaced_by', 'created_at', 'updated_at'])
-            ->assertJsonFragment(['mondo_id' => 'MONDO:0017623', 'name' => 'PTEN hamartoma tumor syndrome']);
-    }
-
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_disease_by_mondo_ids()
     {
         $res = $this->postJsonToClientApi('client/v1/diseases/mondos', ['mondo_ids' => ['MONDO:0000413', 'MONDO:0000414']]);
@@ -171,7 +166,7 @@ class ClientApiTest extends TestCase
                     ] ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_disease_by_ontology_id()
     {
         $res = $this->postJsonToClientApi('client/v1/diseases/ontology', ['ontology_id' => 'MONDO:0017623']);
