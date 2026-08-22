@@ -8,7 +8,7 @@ use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-abstract class ExternalApiTest extends TestCase
+abstract class ExternalApiTestCase extends TestCase
 {
     use DatabaseTransactions;
     use WithFaker;

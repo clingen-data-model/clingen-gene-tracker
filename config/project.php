@@ -7,6 +7,12 @@ return [
         'isolated-phenotype' => 'Curate an isolated phenotype that is part of this disease entity (Discouraged)',
         'lumped' => 'Curate a “lumped” disease entity from this list',
     ],
+    'curation-type-ids' => [
+        'single-omim' => 1,
+        'single-new' => 2,
+        'isolated-phenotype' => 3,
+        'lumped' => 4,
+    ],
     'curation-statuses' => [
         'uploaded' => 1,
         'precuration' => 2,

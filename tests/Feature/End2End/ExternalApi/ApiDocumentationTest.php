@@ -11,7 +11,7 @@ use Tests\TestCase;
  */
 #[\PHPUnit\Framework\Attributes\Group('external-api')]
 
-class ApiDocumentationTest extends ExternalApiTest
+class ApiDocumentationTest extends ExternalApiTestCase
 {
     /**
      * @test

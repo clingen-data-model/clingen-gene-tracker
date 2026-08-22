@@ -122,7 +122,19 @@ class CurationSearchService implements SearchService
         if (!isset($params['filter']) || trim((string) $params['filter']) === '') {
             return;
         }
+
         $filter = $this->escapeLike($params['filter']);
+
+        if (!empty($params['filter_field'])) {
+            $this->applyKeywordFieldFilter(
+                $query,
+                $params['filter_field'],
+                $filter
+            );
+
+            return;
+        }
+
         $query->where(function ($q) use ($filter) {
             $q->where('curations.gene_symbol', 'like', '%' . $filter . '%')
                 ->orWhere('expert_panels.name', 'like', '%' . $filter . '%')
@@ -134,7 +146,8 @@ class CurationSearchService implements SearchService
                     $pq->where('mim_number', $filter);
                 })
                 ->orWhereHas('modeOfInheritance', function ($mq) use ($filter) {
-                    $mq->where('abbreviation', 'like', '%' . $filter . '%')->orWhere('name', 'like', '%' . $filter . '%');
+                    $mq->where('abbreviation', 'like', '%' . $filter . '%')
+                        ->orWhere('name', 'like', '%' . $filter . '%');
                 })
                 ->orWhereHas('currentStatus', function ($sq) use ($filter) {
                     $sq->where('name', 'like', '%' . $filter . '%');
@@ -142,7 +155,7 @@ class CurationSearchService implements SearchService
 
             if (is_numeric($filter)) {
                 $q->orWhere('curations.id', (int) $filter)
-                  ->orWhere('curations.hgnc_id', (int) $filter);
+                    ->orWhere('curations.hgnc_id', (int) $filter);
             }
 
             if (preg_match('/hgnc:/i', $filter)) {
@@ -150,6 +163,48 @@ class CurationSearchService implements SearchService
                 $q->orWhere('curations.hgnc_id', $hgncId);
             }
         });
+    }
+
+    private function applyKeywordFieldFilter($query, $field, $filter)
+    {
+        switch ($field) {
+            case 'gene_symbol':
+                $query->where(
+                    'curations.gene_symbol',
+                    'like',
+                    '%' . $filter . '%'
+                );
+                break;
+
+            case 'expert_panel':
+                $query->where(
+                    'expert_panels.name',
+                    'like',
+                    '%' . $filter . '%'
+                );
+                break;
+
+            case 'curator':
+                $query->where(
+                    'users.name',
+                    'like',
+                    '%' . $filter . '%'
+                );
+                break;
+
+            case 'hgnc_name':
+                $query->where(
+                    'curations.hgnc_name',
+                    'like',
+                    '%' . $filter . '%'
+                );
+                break;
+
+            default:
+                throw new Exception(
+                    'Unknown filter field ' . $field
+                );
+        }
     }
 
     private function applyAdvancedFilters($query, $params)
