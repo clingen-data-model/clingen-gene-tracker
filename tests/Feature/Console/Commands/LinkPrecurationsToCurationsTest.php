@@ -35,7 +35,7 @@ class LinkPrecurationsToCurationsTest extends TestCase
         $this->gene = factory(Gene::class)->create();
 
         $this->uuid = Uuid::uuid4();
-        $this->expertPanel = ExpertPanel::find(5);
+        $this->expertPanel = factory(ExpertPanel::class)->create();
 
         $this->curation = factory(Curation::class)->create([
                             'gdm_uuid' => null,

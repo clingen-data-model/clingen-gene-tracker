@@ -16,7 +16,7 @@ use Illuminate\Testing\TestResponse;
  */
 #[\PHPUnit\Framework\Attributes\Group('external-api')]
 
-class CurationShowTest extends ExternalApiTest
+class CurationShowTest extends ExternalApiTestCase
 {
     private Curation $curation;
     private string $gdmUuid;

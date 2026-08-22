@@ -10,10 +10,13 @@ class CurationTypesTableSeeder extends Seeder
     public function run()
     {
         foreach (config('project.curation-types') as $name => $description) {
-            CurationType::updateOrCreate([
-                'name' => $name,
-                'description' => $description
-            ]);
+            CurationType::updateOrCreate(
+                ['id' => config("project.curation-type-ids.{$name}")],
+                [
+                    'name' => $name,
+                    'description' => $description,
+                ]
+            );
         }
     }
 }
