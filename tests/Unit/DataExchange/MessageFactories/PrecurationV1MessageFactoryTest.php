@@ -9,6 +9,8 @@ use App\Rationale;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
+use App\Affiliation;
+use App\ExpertPanel;
 
 /**
  * @group data-exchange
@@ -18,11 +20,24 @@ use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
 #[\PHPUnit\Framework\Attributes\Group('outgoing-messages')]
 class PrecurationV1MessageFactoryTest extends TestCase
 {
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
+
         Carbon::setTestNow('2021-05-20');
-        $this->curation = factory(Curation::class)->create();
+
+        $this->affiliation = factory(Affiliation::class)->create([
+            'clingen_id' => '49997',
+        ]);
+
+        $this->expertPanel = factory(ExpertPanel::class)->create([
+            'affiliation_id' => $this->affiliation->id,
+        ]);
+
+        $this->curation = factory(Curation::class)->create([
+            'expert_panel_id' => $this->expertPanel->id,
+        ]);
+
         $this->factory = new PrecurationV1MessageFactory();
     }
 
@@ -79,8 +94,29 @@ class PrecurationV1MessageFactoryTest extends TestCase
             ],
             'omim_phenotypes' => [
                 'included' => [$phs->first()->mim_number],
-                'excluded' => $phs->take(-2)->sortBy('mim_number')->pluck('mim_number')->toArray()
-            ]
+                'excluded' => $phs->take(-2)
+                    ->sortBy('mim_number')
+                    ->pluck('mim_number')
+                    ->toArray()
+            ],
+            'omim_phenotype_terms' => [
+                'included' => [
+                    [
+                        'id' => (int) $phs->first()->mim_number,
+                        'name' => $phs->first()->name,
+                    ],
+                ],
+                'excluded' => $phs->take(-2)
+                    ->sortBy('mim_number')
+                    ->map(function ($ph) {
+                        return [
+                            'id' => (int) $ph->mim_number,
+                            'name' => $ph->name,
+                        ];
+                    })
+                    ->values()
+                    ->toArray(),
+            ],
         ]);
 
         $this->assertMessageEquals('updated', $data, $message);
@@ -138,7 +174,8 @@ class PrecurationV1MessageFactoryTest extends TestCase
                 'effective_date' => Carbon::now()->toIsoString()
             ],
             'date_created' => Carbon::now()->toIsoString(),
-            'date_updated' => Carbon::now()->toIsoString()
+            'date_updated' => Carbon::now()->toIsoString(),
+            'is_archived' => false,
         ];
     }
     
