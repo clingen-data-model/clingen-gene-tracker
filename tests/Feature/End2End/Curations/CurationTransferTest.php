@@ -64,7 +64,7 @@ class CurationTransferTest extends TestCase
                 ]
             )
             ->assertStatus(403)
-            ->assertJson(['error' => 'You do not have permission to transfer ownership of this curation']);
+            ->assertJson(['error' => 'You do not have permission to transfer ownership of this curation or the pre-curation is linked to a record in the GCI.']);
     }
     
     /**

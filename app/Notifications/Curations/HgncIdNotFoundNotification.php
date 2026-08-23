@@ -51,7 +51,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     {
         return (new MailMessage)
             ->subject('There\'s an issue with one of your curations')
-            ->view('email.digest.hgncid_not_found', ['curation' => $this->curation]);
+            ->view('email.digest.hgnc_id_not_found', ['curation' => $this->curation]);
     }
 
     /**
@@ -62,9 +62,17 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
      */
     public function toArray($notifiable)
     {
+        $this->curation->loadMissing('expertPanel');
+
         return [
-            'curation' => $this->curation,
-            'template' => 'email.digest.hgnc_id_not_found'
+            'curation' => [
+                'id' => $this->curation->id,
+                'gene_symbol' => $this->curation->gene_symbol,
+                'expert_panel' => [
+                    'name' => $this->curation->expertPanel->name,
+                ],
+            ],
+            'template' => 'email.digest.hgnc_id_not_found',
         ];
     }
 
