@@ -228,7 +228,7 @@ class CurationUpdateTest extends TestCase
         $data['rationales'] = null;
         $data['nav'] = 'next';
 
-        $mock = $this->createMock(OmimClient::class);
+        $mock = $this->createStub(OmimClient::class);
         $mock->method('getGenePhenotypes')
             ->willReturn(collect([1]));
         $mock->method('geneSymbolIsValid')
@@ -301,7 +301,7 @@ class CurationUpdateTest extends TestCase
         ]);
 
         app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
+            $stub = $this->createStub(OmimClient::class);
             $stub->method('geneSymbolIsValid')
                 ->willReturn(true);
             $stub->method('getGenePhenotypes')
@@ -332,7 +332,7 @@ class CurationUpdateTest extends TestCase
     public function rationales_required_when_gene_has_more_than_1_phenotype()
     {
         app()->bind('App\Contracts\OmimClient', function ($app) {
-            $stub = $this->createMock(OmimClient::class);
+            $stub = $this->createStub(OmimClient::class);
             $stub->method('geneSymbolIsValid')
                 ->willReturn(true);
             $stub->method('getGenePhenotypes')
