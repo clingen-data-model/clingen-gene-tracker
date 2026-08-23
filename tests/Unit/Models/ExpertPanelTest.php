@@ -13,6 +13,8 @@ use Tests\TestCase;
  * @group models
  * @group expert-panels
  */
+#[\PHPUnit\Framework\Attributes\Group('models')]
+#[\PHPUnit\Framework\Attributes\Group('expert-panels')]
 class ExpertPanelTest extends TestCase
 {
     use DatabaseTransactions;
@@ -27,6 +29,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_fillable_name()
     {
         $this->panel->update(['name' => 'test name']);
@@ -36,6 +39,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_fillable_working_group_id()
     {
         $wg = factory(\App\WorkingGroup::class)->create();
@@ -46,6 +50,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function belongsTo_WorkingGroup()
     {
         $this->assertInstanceOf(BelongsTo::class, $this->panel->workingGroup());
@@ -54,6 +59,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function panel_hasMany_curations()
     {
         $this->panel->curations()->save(factory(\App\Curation::class)->create());
@@ -64,6 +70,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function panel_belongsToMany_users()
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->panel->users());
@@ -72,6 +79,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function panel_belongsToMany_curators()
     {
         $u = factory(User::class)->create();
@@ -85,6 +93,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function panel_belongsToMany_coordinators()
     {
         $u = factory(User::class)->create();
@@ -98,6 +107,7 @@ class ExpertPanelTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_coordinator_to_EP()
     {
         $user = factory(User::class)->create();

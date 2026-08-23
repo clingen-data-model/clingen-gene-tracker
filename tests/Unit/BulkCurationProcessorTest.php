@@ -19,6 +19,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group bulk-curations
  */
+#[\PHPUnit\Framework\Attributes\Group('bulk-curations')]
 class BulkCurationProcessorTest extends TestCase
 {
     use DatabaseTransactions;
@@ -89,6 +90,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function returns_validation_errors_if_file_has_invalid_rows()
     {
         \DB::table('curations')->delete();
@@ -105,6 +107,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_new_curations_for_valid_file()
     {
         \DB::table('curations')->delete();
@@ -116,6 +119,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_curation_from_valid_row_data()
     {
         \DB::table('curations')->delete();
@@ -164,6 +168,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function validates_valid_row_data()
     {
         // known good row data
@@ -173,6 +178,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_curator_address_in_users()
     {
         $this->data['curator_email'] = null;
@@ -186,6 +192,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_curation_type_is_valid()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -200,6 +207,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_rationales_are_valid()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -214,6 +222,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_omim_ids_are_valid_mim_numbers()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -233,6 +242,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_gene_symbol_is_valid_hgnc_symbol()
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
@@ -250,6 +260,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function validates_column_headers_before_processing()
     {
         \DB::table('curations')->delete();
@@ -266,6 +277,7 @@ class BulkCurationProcessorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function validates_file_has_Curations_sheet()
     {
         \DB::table('curations')->delete();

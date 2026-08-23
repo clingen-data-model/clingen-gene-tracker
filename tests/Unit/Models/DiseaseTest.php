@@ -23,6 +23,7 @@ class DiseaseTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dispatches_DiseaseNameChanged_when_nomenclature_changes()
     {
         $oldName = $this->disease->name;
@@ -38,6 +39,7 @@ class DiseaseTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dispatches_MondoTermObsoleted_when_obsoleted_changes_from_0_to_1()
     {
 

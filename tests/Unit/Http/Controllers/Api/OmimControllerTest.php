@@ -12,6 +12,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group api
  *
  */
+#[\PHPUnit\Framework\Attributes\Group('omim')]
+#[\PHPUnit\Framework\Attributes\Group('omim-controller')]
+#[\PHPUnit\Framework\Attributes\Group('api')]
 class OmimControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -26,6 +29,7 @@ class OmimControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_an_entity_from_omim()
     {
         $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/entry_response.json')));
@@ -38,6 +42,7 @@ class OmimControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function searches_omim_entries()
     {
         $omimEntryResponse = json_decode(file_get_contents(base_path('tests/files/omim_api/search_response.json')), true);
@@ -54,6 +59,7 @@ class OmimControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_to_see_if_gene_symbol_is_valid()
     {
         $this->actingAs($this->user, 'api')

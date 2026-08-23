@@ -16,12 +16,15 @@ use App\Contracts\MondoClient as MondoClientContract;
  * @group mondo
  * @group clients
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
+#[\PHPUnit\Framework\Attributes\Group('clients')]
 class MondoClientTest extends TestCase
 {
 
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function app_resolves_abstract_MondoClient_with_Clients_MondoClient()
     {
         $client = app()->make(MondoClientContract::class);
@@ -32,6 +35,7 @@ class MondoClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_new_HttpNotFoundException_when_no_results_for_mondo_id()
     {
         $mondoClient = $this->getClient([new Response(404, [])]);
@@ -44,6 +48,7 @@ class MondoClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fetches_mondo_record_by_symbol_by_gene_symbol()
     {
         $json = file_get_contents(base_path('tests/files/mondo_api/arteritis.json'));

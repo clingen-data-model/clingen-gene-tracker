@@ -10,6 +10,8 @@ use Tests\TestCase;
  * @group models
  * @group curation-status
  */
+#[\PHPUnit\Framework\Attributes\Group('models')]
+#[\PHPUnit\Framework\Attributes\Group('curation-status')]
 class CurationStatusTest extends TestCase
 {
     use DatabaseTransactions;
@@ -17,6 +19,7 @@ class CurationStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_fillable_name()
     {
         $curation = new CurationStatus();

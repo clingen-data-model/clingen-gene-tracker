@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 /**
  * @group curations
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
 class AddStatusTest extends TestCase
 {
     public function setup():void
@@ -26,6 +27,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_status_with_status_date_today_if_status_date_not_specified()
     {
         $job = new AddStatus(
@@ -46,6 +48,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_status_to_status_history_with_date_if_specified()
     {
         $job = new AddStatus(
@@ -66,6 +69,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_add_status_if_new_status_matches_current_status()
     {
         Carbon::setTestNow('2020-01-15');
@@ -87,6 +91,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_add_previously_added_status_if_date_matches_existing_status_date()
     {
         AddStatus::dispatchSync(
@@ -109,6 +114,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function sets_curation_status_id_on_curation()
     {
         $job = new AddStatus(
@@ -128,6 +134,7 @@ class AddStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_sets_curation_status_id_on_curation_if_status_date_greater_than_last_status_date()
     {
         $job = new AddStatus(

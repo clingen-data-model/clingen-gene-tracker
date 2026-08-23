@@ -19,6 +19,7 @@ use Tests\TestCase;
 /**
  * @group hgnc
  */
+#[\PHPUnit\Framework\Attributes\Group('hgnc')]
 class AugmentWithHgncInfoTest extends TestCase
 {
     use DatabaseTransactions;
@@ -54,6 +55,7 @@ class AugmentWithHgncInfoTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_hgnc_name_hgnc_id_to_curation()
     {
         $gene = factory(Gene::class)->create([
@@ -73,6 +75,9 @@ class AugmentWithHgncInfoTest extends TestCase
      * @group notifications
      * @group mail
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('notifications')]
+    #[\PHPUnit\Framework\Attributes\Group('mail')]
     public function updates_previous_symbol_with_new_symbol_symbol_changed()
     {
         $gene = factory(Gene::class)->create([

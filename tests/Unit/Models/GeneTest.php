@@ -10,11 +10,13 @@ use App\Events\Genes\GeneSymbolChanged;
 /**
  * @group hgnc
  */
+#[\PHPUnit\Framework\Attributes\Group('hgnc')]
 class GeneTest extends TestCase
 {
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fires_GeneSymbolChanged_when_updated_and_gene_symbol_has_changed()
     {
         $gene = factory(Gene::class)->create(['gene_symbol' => 'BIRDC']);

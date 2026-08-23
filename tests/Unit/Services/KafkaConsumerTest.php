@@ -15,6 +15,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * @group streaming-service
  * @group kafka
  */
+#[\PHPUnit\Framework\Attributes\Group('streaming-service')]
+#[\PHPUnit\Framework\Attributes\Group('kafka')]
 class KafkaConsumerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -30,6 +32,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function implements_MessageConsumer()
     {
         $consumer = app()->make(KafkaConsumer::class);
@@ -40,6 +43,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_a_list_of_available_topics()
     {
         $this->markTestSkipped('No longer able to mock \RdKafka\Metadata::getTopics');
@@ -74,6 +78,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_topics_to_listen_to_once()
     {
         $consumer = app()->make(KafkaConsumer::class);
@@ -88,6 +93,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_remove_topics_to_listen_to()
     {
         $consumer = app()->make(KafkaConsumer::class);
@@ -104,6 +110,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dispatches_StreamMessages_Received_event_when_message_received_without_error()
     {
         $message = $this->makeMessage('unit_test', 1, '{"a": "monkeys"}');
@@ -130,6 +137,7 @@ class KafkaConsumerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function messages_stored_to_gci_messages_table()
     {
         $messageContents = file_get_contents(base_path('tests/files/gci_messages/approved.json'));

@@ -10,6 +10,7 @@ class ValidOmimIdTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fails_when_not_a_valid_omim_id()
     {
         $rule = new ValidOmimId();
@@ -20,6 +21,7 @@ class ValidOmimIdTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function passes_when_valid_omim_id()
     {
         $rule = new ValidOmimId();

@@ -15,6 +15,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group classifications
  * @group curations
  */
+#[\PHPUnit\Framework\Attributes\Group('classifications')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
 class AddClassificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -22,6 +24,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_a_classification_to_a_curation()
     {
         \Event::fake();
@@ -40,6 +43,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_add_current_classification_again()
     {
         \Event::fake();
@@ -69,6 +73,7 @@ class AddClassificationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_add_previously_added_classification_if_date_matches_existing_classification_date()
     {
         \Event::fake();
