@@ -365,14 +365,19 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         Carbon::setTestNow('2021-05-04');
 
-        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
-        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
-        
-        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
-        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
-        
+        $affiliation1 = factory(Affiliation::class)->create(['clingen_id' => '40001']);
+        $expertPanel1 = factory(ExpertPanel::class)->create([
+            'affiliation_id' => $affiliation1->id
+        ]);
+
+        $affiliation2 = factory(Affiliation::class)->create(['clingen_id' => '40002']);
+        $expertPanel2 = factory(ExpertPanel::class)->create([
+            'affiliation_id' => $affiliation2->id
+        ]);
+
         $curation = $this->createDICER1();
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
+
         Carbon::setTestNow('2022-07-08');
 
         $this->fireTestEvent($this->gdmTransfered);

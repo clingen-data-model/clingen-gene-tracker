@@ -77,7 +77,7 @@ class WorkingGroupControllerTest extends TestCase
     {
         $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/'.$this->group->id)
-            ->assertSee($this->group->name);
+            ->assertJsonPath('data.name', $this->group->name);
     }
 
     /**
