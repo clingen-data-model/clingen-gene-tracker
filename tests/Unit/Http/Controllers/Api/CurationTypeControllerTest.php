@@ -11,6 +11,9 @@ use Tests\TestCase;
  * @group controllers
  * @group curation-types
  */
+#[\PHPUnit\Framework\Attributes\Group('api')]
+#[\PHPUnit\Framework\Attributes\Group('controllers')]
+#[\PHPUnit\Framework\Attributes\Group('curation-types')]
 class CurationTypeControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -25,6 +28,7 @@ class CurationTypeControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_returns_all_curation_types()
     {
         $types = CurationType::all();

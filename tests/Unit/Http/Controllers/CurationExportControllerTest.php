@@ -32,6 +32,7 @@ class CurationExportControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_download_a_csv()
     {
         $response = $this->call('get', route('curations.export.download'));

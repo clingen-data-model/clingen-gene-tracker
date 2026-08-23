@@ -10,6 +10,8 @@ use Tests\TestCase;
  * @group models
  * @group rationale
  */
+#[\PHPUnit\Framework\Attributes\Group('models')]
+#[\PHPUnit\Framework\Attributes\Group('rationale')]
 class RationaleTest extends TestCase
 {
     use DatabaseTransactions;
@@ -23,6 +25,7 @@ class RationaleTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_fillable_name()
     {
         $this->rationale->update(['name' => 'beans']);
@@ -33,6 +36,7 @@ class RationaleTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function rationale_has_many_curations()
     {
         $curation = factory(\App\Curation::class)->create();

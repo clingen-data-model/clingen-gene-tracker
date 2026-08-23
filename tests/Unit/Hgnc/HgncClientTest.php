@@ -16,6 +16,8 @@ use Tests\TestCase;
  * @group hgnc
  * @group clients
  */
+#[\PHPUnit\Framework\Attributes\Group('hgnc')]
+#[\PHPUnit\Framework\Attributes\Group('clients')]
 class HgncClientTest extends TestCase
 {
     public function setUp(): void
@@ -26,6 +28,7 @@ class HgncClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function app_resolves_abstract_HgncClient_w_concrete_implementation()
     {
         $hgncClient = app()->make(\App\Hgnc\HgncClientContract::class);
@@ -35,6 +38,7 @@ class HgncClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_new_HttpNotFoundException_when_no_results_for_gene_symbol()
     {
         $json = file_get_contents(base_path('tests/files/hgnc_api/numFound0.json'));
@@ -47,6 +51,7 @@ class HgncClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fetches_hgnc_record_by_symbol_by_gene_symbol()
     {
         $json = file_get_contents(base_path('tests/files/hgnc_api/ht.json'));
@@ -61,6 +66,7 @@ class HgncClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_HttpUnexpectedResponseException_when_more_than_one_record_found_for_gene_symbol()
     {
         $json = file_get_contents(base_path('tests/files/hgnc_api/multiple_found.json'));
@@ -74,6 +80,7 @@ class HgncClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fetches_record_by_hgnc_id()
     {
         $json = file_get_contents(base_path('tests/files/hgnc_api/ht.json'));

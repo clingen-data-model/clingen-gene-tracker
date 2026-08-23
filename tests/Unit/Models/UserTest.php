@@ -13,6 +13,8 @@ use Tests\TestCase;
  * @group users
  * @group models
  */
+#[\PHPUnit\Framework\Attributes\Group('users')]
+#[\PHPUnit\Framework\Attributes\Group('models')]
 class UserTest extends TestCase
 {
     use DatabaseTransactions;
@@ -26,6 +28,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fires_UserCreated_event_when_created()
     {
         \Event::fake();
@@ -38,6 +41,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_belongsToMany_exper_panels()
     {
         $this->assertInstanceOf(BelongsToMany::class, $this->user->expertPanels());
@@ -46,6 +50,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_gets_random_password_on_creating_if_not_set()
     {
         $u = factory(User::class)->create([
@@ -57,6 +62,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_creating_with_password_gets_that_password()
     {
         $u = factory(User::class)->create([
@@ -69,6 +75,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_password_hashed_on_assignment()
     {
         $u = factory(User::class)->create([
@@ -82,6 +89,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_wether_user_can_edit_panel_curations()
     {
         $panel = factory(ExpertPanel::class)->create();
@@ -100,6 +108,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function knows_if_user_is_panel_coordinator()
     {
         $panel = factory(ExpertPanel::class)->create();
@@ -115,6 +124,7 @@ class UserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function knows_if_user_is_panel_curator()
     {
         $panel = factory(ExpertPanel::class)->create();

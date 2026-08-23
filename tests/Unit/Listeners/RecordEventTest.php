@@ -27,6 +27,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_records_event_uuid()
     {
         $this->listener->handle($this->event);
@@ -37,6 +38,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function when_no_authed_user_it_does_not_record_causer():void
     {
         $this->listener->handle($this->event);
@@ -47,6 +49,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function when_authed_user_it_records_causer():void
     {
         $user = $this->setupUser();
@@ -61,6 +64,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_records_properties():void
     {
         $this->listener->handle($this->event);
@@ -71,6 +75,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_records_the_subject():void
     {
         $this->listener->handle($this->event);
@@ -82,6 +87,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_records_the_log_entry():void
     {
         $this->listener->handle($this->event);
@@ -92,6 +98,7 @@ class RecordEventTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_sets_the_event_log_date_as_created_at():void
     {
         $this->listener->handle($this->event);

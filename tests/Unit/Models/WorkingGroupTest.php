@@ -10,6 +10,8 @@ use Tests\TestCase;
  * @group models
  * @group working-groups
  */
+#[\PHPUnit\Framework\Attributes\Group('models')]
+#[\PHPUnit\Framework\Attributes\Group('working-groups')]
 class WorkingGroupTest extends TestCase
 {
     use DatabaseTransactions;
@@ -23,6 +25,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_fillable_name()
     {
         $this->workingGroup->fill(['name'=>'test group']);
@@ -33,6 +36,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function uses_soft_deletes()
     {
         $this->workingGroup->delete();
@@ -49,6 +53,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function is_revisionable_and_tracks_create()
     {
         $this->assertNotNull($this->workingGroup->revisionHistory);
@@ -58,6 +63,7 @@ class WorkingGroupTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_many_expert_panels()
     {
         $this->assertInstanceOf(HasMany::class, $this->workingGroup->expertPanels());

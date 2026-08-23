@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group phenotypes
  */
+#[\PHPUnit\Framework\Attributes\Group('phenotypes')]
 class SyncPhenotypesTest extends TestCase
 {
     use DatabaseTransactions;
@@ -30,6 +31,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_phenotypes_to_curation()
     {
         $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id')->toArray());
@@ -43,6 +45,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_new_phenotypes_and_adds_to_curation()
     {
         
@@ -63,6 +66,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function removes_phenotypes_from_curation()
     {
         $job = new SyncPhenotypes($this->curation, $this->phs->pluck('id')->toArray());
@@ -78,6 +82,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_throws_a_validation_exception_when_a_phenotype_id_is_not_found():void
     {
         $this->expectException(ValidationException::class);
@@ -91,6 +96,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function when_phenotypes_changed_it_fires_curation_phenotypes_updated_event():void
     {
         $this->curation->phenotypes()->sync($this->phs->pluck('id')->toArray());
@@ -108,6 +114,7 @@ class SyncPhenotypesTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function when_phenotypes_unchanged_it_does_not_fire_curation_phenotypes_updated_event():void
     {
         $this->curation->phenotypes()->sync($this->phs->pluck('id')->toArray());

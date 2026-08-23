@@ -11,6 +11,7 @@ use Laravel\Passport\ClientRepository;
 /**
  * @group user-vs-system-client
  */
+#[\PHPUnit\Framework\Attributes\Group('user-vs-system-client')]
 class UserVsSystemClientTest extends TestCase
 {
     use DatabaseTransactions;
@@ -51,6 +52,7 @@ class UserVsSystemClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function allows_system_client_to_access_system_apis(): void
     {
         $response = $this->withSystemClient()->postJson('api/client/v1/diseases/mondo', ['mondo_id' => $this->disease->mondo_id]);
@@ -62,6 +64,7 @@ class UserVsSystemClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function prevents_system_client_from_accessing_user_apis(): void
     {
         $response = $this->withSystemClient()
@@ -73,6 +76,7 @@ class UserVsSystemClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function allows_user_to_access_user_apis(): void
     {
         $this->actingAs($this->user, 'api')
@@ -84,6 +88,7 @@ class UserVsSystemClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function prevents_user_from_accessing_system_apis(): void
     {
         $response = $this->actingAs($this->user, 'api')

@@ -13,6 +13,8 @@ use Tests\TestCase;
  * @group users
  * @group mail
  */
+#[\PHPUnit\Framework\Attributes\Group('users')]
+#[\PHPUnit\Framework\Attributes\Group('mail')]
 class SendWelcomeEmailTest extends TestCase
 {
     use DatabaseTransactions;
@@ -22,6 +24,9 @@ class SendWelcomeEmailTest extends TestCase
      * @group mail
      * @group notifications
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('mail')]
+    #[\PHPUnit\Framework\Attributes\Group('notifications')]
     public function sends_welcome_email_to_user()
     {
         $this->markTestSkipped('Unable to get to pass but works in real life.');

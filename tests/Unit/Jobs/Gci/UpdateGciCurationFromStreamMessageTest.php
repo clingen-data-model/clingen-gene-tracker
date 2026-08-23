@@ -34,6 +34,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_existing_gci_curation()
     {
         $ism = $this->setupIsm();
@@ -50,6 +51,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_new_gci_curation_if_status_is_created()
     {
         $this->gciCuration->forceDelete();
@@ -70,6 +72,7 @@ class UpdateGciCurationFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_new_gci_curation_if_update_and_no_existing_record()
     {
         $this->gciCuration->forceDelete();

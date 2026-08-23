@@ -8,6 +8,7 @@ use App\Mondo\OboParser;
 /**
  * @group mondo
  */
+#[\PHPUnit\Framework\Attributes\Group('mondo')]
 class OboParserTest extends TestCase
 {
     protected $parser;
@@ -22,6 +23,7 @@ class OboParserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_date_of_the_version()
     {
         $this->assertEquals('2021-06-01', $this->parser->getVersionDate());
@@ -30,6 +32,7 @@ class OboParserTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function getNextTerm_gets_next_term()
     {
         $testTerm1 = [

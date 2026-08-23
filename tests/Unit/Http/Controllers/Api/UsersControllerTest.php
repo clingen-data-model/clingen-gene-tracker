@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group api
  * @group users
  */
+#[\PHPUnit\Framework\Attributes\Group('api')]
+#[\PHPUnit\Framework\Attributes\Group('users')]
 class UsersControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -31,6 +33,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_returns_200()
     {
         $this->withoutExceptionHandling();
@@ -42,6 +45,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_lists_all_users()
     {
         $this->actingAs($this->user, 'api')
@@ -53,6 +57,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function filters_users_by_role()
     {
         $curators = factory(\App\User::class, 2)->create()
@@ -71,6 +76,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_can_return_users_with_role()
     {
         $this->withoutExceptionHandling();
@@ -87,6 +93,7 @@ class UsersControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_can_return_users_with_expert_panels()
     {
         $this->withoutExceptionHandling();

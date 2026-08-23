@@ -13,6 +13,11 @@ use Tests\TestCase;
  * @group controllers
  * @group curations-statuses-controller
  */
+#[\PHPUnit\Framework\Attributes\Group('api')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-statuses')]
+#[\PHPUnit\Framework\Attributes\Group('controllers')]
+#[\PHPUnit\Framework\Attributes\Group('curations-statuses-controller')]
 class CurationStatusControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -20,6 +25,7 @@ class CurationStatusControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_lists_curation_statuses()
     {
         $u = factory(\App\User::class)->create();

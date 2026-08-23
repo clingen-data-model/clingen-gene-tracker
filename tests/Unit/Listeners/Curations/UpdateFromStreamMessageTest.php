@@ -22,6 +22,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group gci
  * @group curations
  */
+#[\PHPUnit\Framework\Attributes\Group('gci')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
 class UpdateFromStreamMessageTest extends TestCase
 {
     use DatabaseTransactions;
@@ -46,6 +48,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_curation_with_gdm_uuid_if_found()
     {
         $gdmTrio = [
@@ -88,6 +91,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_to_missing_list_if_curation_cannot_be_matched()
     {
         $kafkaMessage = $this->makeMessage(file_get_contents($this->createMsgPath));
@@ -109,6 +113,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_gdm_uuid_moi_and_affiliation_if_create_message()
     {
         $curation = $this->createDICER1();
@@ -131,6 +136,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_uuid_moi_affiliation_on_update()
     {
         $curation = $this->createDICER1();
@@ -155,6 +161,7 @@ class UpdateFromStreamMessageTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_update_mondo_id_when_curation_not_linked_to_gdm()
     {
         $curation = $this->createDICER1();
@@ -179,6 +186,7 @@ class UpdateFromStreamMessageTest extends TestCase
      * and event with gdm_uuid has different mondo than curation.
      *
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_mondo_id_on_update_when_matched_by_gdm_uuid()
     {
         $curation = $this->createDICER1();
@@ -203,6 +211,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function adds_status_on_update_message()
     {
         $curation = $this->createDICER1();
@@ -223,6 +232,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_create_duplicate_status()
     {
         $curation = $this->createDICER1();
@@ -248,6 +258,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function unpublished_gci_status_maps_to_published_gt_status()
     {
         $curation = $this->createDICER1();
@@ -270,6 +281,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_classification_if_updated()
     {
         $curation = $this->createDICER1();
@@ -290,6 +302,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function uses_status_name_and_date_if_oject()
     {
         $curation = $this->createDICER1();
@@ -312,6 +325,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function sets_new_owner_if_transfer_message()
     {
         Carbon::setTestNow('2021-05-04');
@@ -346,6 +360,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stores_notes_on_curation_if_sent_in_transfer_message()
     {
         Carbon::setTestNow('2021-05-04');
@@ -374,6 +389,7 @@ class UpdateFromStreamMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_mondo_id_if_disease_change_message()
     {
         $newDisease = factory(Disease::class)->create(['mondo_id' => 'MONDO:0012377']);

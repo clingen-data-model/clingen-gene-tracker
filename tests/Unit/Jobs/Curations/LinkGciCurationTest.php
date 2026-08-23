@@ -50,6 +50,7 @@ class LinkGciCurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function links_GciCuration_to_Curation_if_gene_condition_and_moi_match()
     {
         Bus::dispatch(new LinkGciCuration($this->curation));
@@ -63,6 +64,7 @@ class LinkGciCurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_curation_based_on_stream_messages()
     {
         $ism = factory(IncomingStreamMessage::class)->create([

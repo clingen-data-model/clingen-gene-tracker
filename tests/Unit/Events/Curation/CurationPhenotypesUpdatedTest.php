@@ -12,6 +12,7 @@ use Carbon\Carbon;
 /**
  * @group phenotypes
  */
+#[\PHPUnit\Framework\Attributes\Group('phenotypes')]
 class CurationPhenotypesUpdatedTest extends TestCase
 {
     private Curation $curation;
@@ -33,6 +34,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_is_a_recordable_event():void
     {
         $this->assertInstanceOf(RecordableEvent::class, $this->event);
@@ -42,6 +44,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_gets_the_correct_log():void
     {
         $this->assertEquals('curations', $this->event->getLog());
@@ -50,6 +53,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function has_subject_returns_true():void
     {
         $this->assertTrue($this->event->hasSubject());
@@ -58,6 +62,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function get_subject_returns_the_curation():void
     {
         $subject = $this->event->getSubject();
@@ -68,6 +73,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function get_properties_returns_the_old_and_new_phenotype_ids():void
     {
         $this->assertEquals([
@@ -79,6 +85,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function returns_the_correct_log_entry():void
     {
         $this->assertEquals('Phenotypes updated for curation '.$this->curation->id, $this->event->getLogEntry());
@@ -87,6 +94,7 @@ class CurationPhenotypesUpdatedTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function returns_now_as_the_log_date():void
     {
         Carbon::withTestNow('2024-01-01', function () {

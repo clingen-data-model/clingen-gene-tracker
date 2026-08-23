@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group classifications
  */
+#[\PHPUnit\Framework\Attributes\Group('classifications')]
 class CurationClassificationControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -28,6 +29,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_returns_422_when_classification_id_not_found()
     {
         $this->json(
@@ -41,6 +43,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_returns_422_when_classifcation_date_invalid()
     {
         $this->json(
@@ -57,6 +60,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function store_adds_new_classifcation_when_data_valid()
     {
         $this->json(
@@ -79,6 +83,7 @@ class CurationClassificationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function update_updates_existing_classification_curation_record()
     {
         $this->withoutExceptionHandling();

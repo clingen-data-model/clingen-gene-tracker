@@ -31,6 +31,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_not_curation_curator_cant_update_curation()
     {
         $user = factory(User::class)->create();
@@ -41,6 +42,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_curator_can_update_curation()
     {
         $curation = factory(Curation::class)->create(['curator_id'=>$this->curator->id]);
@@ -50,6 +52,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function coordinator_of_curation_expert_panel_can_update_curation()
     {
         $curation = factory(Curation::class)->create(['curator_id' => $this->curator->id, 'expert_panel_id'=>$this->panel->id]);
@@ -59,6 +62,7 @@ class CurationPolicyTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_with_manage_panel_curations_permission_can_update_curation()
     {
         $otherUser = factory(User::class)->create();

@@ -10,6 +10,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group api
  * @group working-groups
  */
+#[\PHPUnit\Framework\Attributes\Group('api')]
+#[\PHPUnit\Framework\Attributes\Group('working-groups')]
 class WorkingGroupControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -32,6 +34,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_returns_all_working_groups()
     {
         $this->withoutExceptionHandling();
@@ -43,6 +46,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_includes_expert_panels_if_requested()
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
@@ -57,6 +61,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_returns_ok_response()
     {
         $this->actingAs($this->user, 'api')
@@ -67,6 +72,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_returns_requested_group_info()
     {
         $this->actingAs($this->user, 'api')
@@ -77,6 +83,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_includes_expert_panels_by_default()
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);
@@ -89,6 +96,7 @@ class WorkingGroupControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function show_includes_curations_for_expert_panels_by_default()
     {
         $expertPanels = factory(\App\ExpertPanel::class, 3)->create(['working_group_id'=>$this->group->id]);

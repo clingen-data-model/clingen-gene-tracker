@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @group phenotypes
  * @group models
  */
+#[\PHPUnit\Framework\Attributes\Group('phenotypes')]
+#[\PHPUnit\Framework\Attributes\Group('models')]
 class PhenotypeTest extends TestCase
 {
     use DatabaseTransactions;
@@ -20,6 +22,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function phenotype_model_exists()
     {
         $phenotype = new Phenotype();
@@ -29,6 +32,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function phenotype_has_fillable_mim_number()
     {
         $phenotype = factory(Phenotype::class)->create();
@@ -40,6 +44,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function phenotype_has_name()
     {
         $phenotype = factory(Phenotype::class)->create();
@@ -51,6 +56,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_create_new_phenotype()
     {
         $phenotype = factory(Phenotype::class)->create([
@@ -64,6 +70,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function mim_number_and_name_must_be_unique()
     {
         $phenotype = factory(Phenotype::class)->create([
@@ -81,6 +88,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function phenotype_has_many_curations_relationship()
     {
         $phenotype = factory(Phenotype::class)->create();
@@ -94,6 +102,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function omim_entry_cast_to_array()
     {
         $entry = [
@@ -114,6 +123,7 @@ class PhenotypeTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_find_by_mim_number()
     {
         $phenotype = factory(Phenotype::class)->create([]);

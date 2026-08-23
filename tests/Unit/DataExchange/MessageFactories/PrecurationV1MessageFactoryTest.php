@@ -14,6 +14,8 @@ use App\DataExchange\MessageFactories\PrecurationV1MessageFactory;
  * @group data-exchange
  * @group outgoing-messages
  */
+#[\PHPUnit\Framework\Attributes\Group('data-exchange')]
+#[\PHPUnit\Framework\Attributes\Group('outgoing-messages')]
 class PrecurationV1MessageFactoryTest extends TestCase
 {
     public function setup():void
@@ -27,6 +29,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function makesCreatedMessage()
     {
         $message = $this->factory->make($this->curation->fresh(), 'created');
@@ -37,6 +40,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function makesUpdatedMessage()
     {
         $gene = factory(Gene::class)->create();
@@ -85,6 +89,7 @@ class PrecurationV1MessageFactoryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function makesDeletedMessage()
     {
         // $this->curation->delete();

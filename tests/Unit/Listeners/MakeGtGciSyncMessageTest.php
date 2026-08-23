@@ -33,6 +33,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function no_gt_gci_messages_created_if_status_not_precuration_complete()
     {
         $this->curation->update(['moi_id' => 1, 'mondo_id' => 'MONDO:0000336']);
@@ -44,6 +45,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function no_gt_gci_messages_created_if_mondo_id_not_set()
     {
         $this->curation->update(['moi_id' => 1]);
@@ -57,6 +59,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function no_gt_gci_messages_created_if_moi_id_not_set()
     {
         $this->curation->update(['mondo_id' => 'MONDO:0000336']);
@@ -70,6 +73,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function message_type_is_precuration_completed_if_mondo_was_null ()
     {
         $this->setPrecurationCompleteStatus();
@@ -93,6 +97,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function event_type_is_precuration_completed_if_moi_was_null ()
     {
         $this->setPrecurationCompleteStatus();
@@ -115,6 +120,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function event_type_is_precuration_completed_if_has_gdm_and_status_changed_to_precuration_complete()
     {
         $this->addMoi();
@@ -136,6 +142,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_mondo_changes()
     {
         $this->addMoiAndMondo();
@@ -153,6 +160,7 @@ class MakeGtGciSyncMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_gdm_updated_event_if_curation_has_gdm_and_is_complete_and_moi_changes()
     {
         $this->addMoiAndMondo();

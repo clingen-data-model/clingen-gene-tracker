@@ -10,6 +10,7 @@ class HgncRecordTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_numeric_hgnc_id()
     {
         $prevSymbolResponse = json_decode(file_get_contents(base_path('tests/files/hgnc_api/prev_symbol.json')));
@@ -22,6 +23,7 @@ class HgncRecordTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function knows_wether_there_was_a_previous_symbol()
     {
         $prevSymbolResponse = json_decode(file_get_contents(base_path('tests/files/hgnc_api/prev_symbol.json')));
