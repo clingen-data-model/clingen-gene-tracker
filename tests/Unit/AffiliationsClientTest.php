@@ -13,6 +13,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group affiliations
  * @group clients
  */
+#[\PHPUnit\Framework\Attributes\Group('affiliations-client')]
+#[\PHPUnit\Framework\Attributes\Group('affiliations')]
+#[\PHPUnit\Framework\Attributes\Group('clients')]
 class AffiliationsClientTest extends TestCase
 {
     use DatabaseTransactions;
@@ -27,33 +30,45 @@ class AffiliationsClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function allows_addition_of_affiliations_with_same_name_but_different_types()
     {
-        $affiliations = json_decode(file_get_contents(base_path('tests/files/affiliations-same-name-vcep-gcep.json')));
+        $affiliations = json_decode(
+            file_get_contents(base_path('tests/files/affiliations-same-name-vcep-gcep.json'))
+        );
         $this->updateAction->updateAffiliationData($affiliations);
-        $this->assertEquals(2, Affiliation::where('name', 'TEST1')->count());
+        $this->assertEquals(
+            2,
+            Affiliation::where('name', 'TEST1')->count()
+        );
     }
-
 
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function allows_addition_of_parent_affiliations_with_same_name()
     {
-        $affiliations = json_decode(file_get_contents(base_path('tests/files/affiliations-nonuniq-parent-name.json')));
+        $affiliations = json_decode(
+            file_get_contents(base_path('tests/files/affiliations-nonuniq-parent-name.json'))
+        );
         $this->updateAction->updateAffiliationData($affiliations);
-        $this->assertEquals(2, Affiliation::where('name', 'TEST2')->count());
+        $this->assertEquals(
+            2,
+            Affiliation::where('name', 'TEST2')->count()
+        );
     }
-
 
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_exception_on_name_conflict_within_gcep()
     {
         $this->expectException(UniqueConstraintViolationException::class);
-        $affiliations = json_decode(file_get_contents(base_path('tests/files/affiliations-nonuniq-gcep-name.json')));
+        $affiliations = json_decode(
+            file_get_contents(base_path('tests/files/affiliations-nonuniq-gcep-name.json'))
+        );
         $this->updateAction->updateAffiliationData($affiliations);
     }
-
 }

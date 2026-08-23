@@ -65,7 +65,7 @@ abstract class TestCase extends BaseTestCase
     protected function assumeGeneSymbolValid()
     {
         app()->bind(\App\Rules\ValidGeneSymbolRule::class, function ($app) {
-            $stub = $this->createMock(ValidGeneSymbolRule::class);
+            $stub = $this->createStub(ValidGeneSymbolRule::class);
             $stub->method('passes')
                 ->willReturn(true);
 
