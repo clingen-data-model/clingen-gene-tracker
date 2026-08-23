@@ -5,9 +5,11 @@ The following curations use gene symbols that do not appear to be in HGNC. Pleas
 <ul>
     @foreach ($notifications as $notification)
         <li>
-            <a href="{{url('/#/curations/'.$notification->data['curation']['id'])}}">
-                {{$notification->data['curation']['gene_symbol']}} 
-                for {{$notification->data['curation']['expert_panel']['name']}}
+            <a href="{{url('/#/curations/'.$notification->data['curation']['id'])}}">                
+                {{ $notification->data['curation']['gene_symbol'] }}
+                @if (!empty($notification->data['curation']['expert_panel']['name']))
+                    for {{ $notification->data['curation']['expert_panel']['name'] }}
+                @endif
             </a> 
         </li>
     @endforeach
