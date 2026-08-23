@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 /**
  * @group classifications
  */
+#[\PHPUnit\Framework\Attributes\Group('classifications')]
 class UpdateClassificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -20,6 +21,7 @@ class UpdateClassificationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_a_classification_associated_with_a_curation()
     {
         $classification = factory(Classification::class)->create();

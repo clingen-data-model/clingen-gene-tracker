@@ -18,6 +18,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group hgnc-custom-download
  * @group hgnc
  */
+#[\PHPUnit\Framework\Attributes\Group('hgnc-custom-download')]
+#[\PHPUnit\Framework\Attributes\Group('hgnc')]
 class CustomDownloadImporterTest extends TestCase
 {
     use MocksGuzzleRequests;
@@ -32,6 +34,7 @@ class CustomDownloadImporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_gene_record_if_hgnc_not_found()
     {
         $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
@@ -77,6 +80,7 @@ class CustomDownloadImporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updates_gene_if_hgnc_id_found()
     {
         Carbon::setTestNow('2020-01-01');

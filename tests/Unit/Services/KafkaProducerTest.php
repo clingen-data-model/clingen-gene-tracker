@@ -15,6 +15,8 @@ use Ramsey\Uuid\Uuid;
  * @group streaming-service
  * @group kafka
  */
+#[\PHPUnit\Framework\Attributes\Group('streaming-service')]
+#[\PHPUnit\Framework\Attributes\Group('kafka')]
 class KafkaProducerTest extends TestCase
 {
     public function setUp():void
@@ -28,6 +30,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_be_instantiated()
     {
         $producer = app()->make(KafkaProducer::class);
@@ -38,6 +41,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_pushes_messages_to_a_topic()
     {
         $message = 'test message';
@@ -54,6 +58,7 @@ class KafkaProducerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function produce_throws_exception_when_topic_not_set()
     {
         $producer = app()->make(KafkaProducer::class);

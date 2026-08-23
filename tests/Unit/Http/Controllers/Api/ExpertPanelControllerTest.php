@@ -13,6 +13,9 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group panels
  * @group api
  */
+#[\PHPUnit\Framework\Attributes\Group('expert-panels')]
+#[\PHPUnit\Framework\Attributes\Group('panels')]
+#[\PHPUnit\Framework\Attributes\Group('api')]
 class ExpertPanelControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -28,6 +31,7 @@ class ExpertPanelControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function lists_all_expert_panels()
     {
         $response = $this->actingAs($this->user, 'api')
@@ -40,6 +44,7 @@ class ExpertPanelControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_includes_users_when_requested()
     {
         \Artisan::call('db:seed', ['--class'=>'RolesAndPermissionsSeeder']);

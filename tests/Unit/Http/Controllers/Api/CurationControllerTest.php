@@ -20,6 +20,10 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
  * @group controllers
  * @group curations-controller
  */
+#[\PHPUnit\Framework\Attributes\Group('api')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('controllers')]
+#[\PHPUnit\Framework\Attributes\Group('curations-controller')]
 class CurationControllerTest extends TestCase
 {
     use DatabaseTransactions;
@@ -39,6 +43,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_lists_all_curations()
     {
         $curation = $this->curations->first();
@@ -73,6 +78,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stores_new_curation()
     {
         $data = [
@@ -90,6 +96,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function requires_gene_symbol()
     {
         $data = [
@@ -111,6 +118,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function checks_for_valid_gene_symbol()
     {
         $data = [
@@ -131,6 +139,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function requires_expert_panel_id()
     {
         $data = [
@@ -152,6 +161,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_does_not_include_phenotypes_when_not_requested()
     {
         $this->withoutExceptionHandling();
@@ -168,6 +178,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_includes_phenotypes_when_requested()
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
@@ -184,6 +195,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function index_includes_status_by_default()
     {
         $this->withoutExceptionHandling();
@@ -200,6 +212,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_show_includes_phenotypes_by_default()
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();
@@ -217,6 +230,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_show_includes_rationales_by_default()
     {
         $this->curations->first()->rationales()->attach($this->rationale->id);
@@ -228,6 +242,7 @@ class CurationControllerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_show_includes_curationType_by_default()
     {
         $this->curations->first()->curationType()->associate($this->curationType);
@@ -241,6 +256,8 @@ class CurationControllerTest extends TestCase
      * @test
      * @group phenotypes
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('phenotypes')]
     public function store_saves_phenotypes_for_new_curation()
     {
         $phenotypes = factory(\App\Phenotype::class, 3)->create();

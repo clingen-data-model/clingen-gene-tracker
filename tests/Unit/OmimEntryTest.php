@@ -13,11 +13,15 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * @group clients
  * @group omim-entry
  */
+#[\PHPUnit\Framework\Attributes\Group('omim')]
+#[\PHPUnit\Framework\Attributes\Group('clients')]
+#[\PHPUnit\Framework\Attributes\Group('omim-entry')]
 class OmimEntryTest extends TestCase
 {
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_phenotypeMapList_if_entry_has_geneMap()
     {
         $response = json_decode(file_get_contents(base_path('tests/files/omim_api/gene_phenotypes_search.json')));
@@ -30,6 +34,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_phenotypeMapList_if_entry_has_only_phenotypeMap()
     {
         $rawEntry = json_decode('{
@@ -72,6 +77,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_moi_if_set()
     {
         $rawEntry = json_decode('{
@@ -115,6 +121,7 @@ class OmimEntryTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function throws_OmimResponseException_if_phenotypeMapList_is_empty()
     {
         $rawEntry = json_decode('{

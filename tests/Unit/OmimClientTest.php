@@ -16,6 +16,9 @@ use GuzzleHttp\Handler\MockHandler;
  * @group omim
  * @group clients
  */
+#[\PHPUnit\Framework\Attributes\Group('omim-client')]
+#[\PHPUnit\Framework\Attributes\Group('omim')]
+#[\PHPUnit\Framework\Attributes\Group('clients')]
 class OmimClientTest extends TestCase
 {
     use GetsOmimClient;
@@ -28,6 +31,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function app_resolves_abstract_OmimClient_w_concrete_implementation()
     {
         $omimClient = app()->make(\App\Contracts\OmimClient::class);
@@ -38,6 +42,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_an_entry()
     {
         $entryJson = file_get_contents(base_path('tests/files/omim_api/entry_response.json'));
@@ -52,6 +57,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_search_omim_database()
     {
         $json = file_get_contents(base_path('tests/files/omim_api/search_response.json'));
@@ -68,6 +74,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_phenotypes_for_hgnc_gene_symbol()
     {
         $json = file_get_contents(base_path('tests/files/omim_api/gene_phenotypes_search.json'));
@@ -84,6 +91,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function determines_whether_omim_has_a_gene_symbol()
     {
         $notFoundJson = json_encode([
@@ -120,6 +128,7 @@ class OmimClientTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function caches_successful_responses_for_20_minutes()
     {
         $foundJson = (object)['test' => 'beans'];

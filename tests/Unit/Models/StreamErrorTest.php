@@ -65,6 +65,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stream_error_belongs_to_a_gene()
     {
         $this->assertEquals('Dobbs', $this->streamError->geneModel->gene_symbol);
@@ -73,6 +74,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stream_error_belongs_to_a_disease()
     {
         $this->assertEquals('Bob', $this->streamError->diseaseModel->name);
@@ -81,6 +83,7 @@ class StreamErrorTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stream_error_belongs_to_an_moi()
     {
         $this->assertEquals(ModeOfInheritance::findByHpId($this->streamError->moi)->name, $this->streamError->moiModel->name);

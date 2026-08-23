@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @group curations
  * @group models
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('models')]
 class CurationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -35,6 +37,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curations_is_softDeletable()
     {
         $this->curation->delete();
@@ -50,6 +53,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_gene_symbol()
     {
         $curation = new Curation();
@@ -61,6 +65,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_modo_id()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -72,6 +77,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_curation_type_id()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -83,6 +89,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_mondo_id()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -94,6 +101,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_disease_entity_notes()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -105,6 +113,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_pmids()
     {
         $this->curation->update(['pmids' => [12345, 123455, 1231523523]]);
@@ -115,6 +124,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_fillable_rationale_notes()
     {
         $content = 'some notes about rationale.';
@@ -125,6 +135,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_curator_relationship_to_users()
     {
         $user = factory(\App\User::class)->create();
@@ -138,6 +149,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_expertPanel_relationship_to_expert_panels()
     {
         $panel = factory(\App\ExpertPanel::class)->create();
@@ -151,6 +163,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongsToMany_phenotypes()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -163,6 +176,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongsToMany_curation_status()
     {
         $curationStatuses = CurationStatus::limit(2)->get();
@@ -180,6 +194,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_has_one_current_status()
     {
         $curationStatuses = CurationStatus::limit(2)->get();
@@ -195,6 +210,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_can_get_current_status_date_attribute()
     {
         $curationStatuses = CurationStatus::limit(2)->get();
@@ -213,6 +229,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongs_to_a_curation_type()
     {
         $curationType = factory(\App\CurationType::class)->create();
@@ -225,6 +242,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongs_to_many_rationales()
     {
         $rationale = factory(\App\Rationale::class)->create();
@@ -238,6 +256,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_given_uploaded_status_when_created()
     {
         $curation = factory(\App\Curation::class)->create();
@@ -247,6 +266,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_numeric_mondo_id_attribute()
     {
         $curation = factory(Curation::class)->make(['mondo_id' => 'MONDO:1234']);
@@ -259,6 +279,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_saved_dispatches_augment_hgnc_and_mondo()
     {
         \Event::fake();
@@ -270,6 +291,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongs_to_many_classifications()
     {
         $classifications = factory(Classification::class, 2)->create();
@@ -287,6 +309,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curation_belongs_to_affiliation()
     {
         $curation = factory(Curation::class)->create();
@@ -300,6 +323,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_scope_by_hgnc_and_mondo_ids()
     {
         $curation = factory(Curation::class)->create([
@@ -314,6 +338,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_scope_where_curation_does_not_have_gdm_uuid()
     {
         $curationWithUuid = factory(Curation::class)->create([
@@ -328,6 +353,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_scope_where_curation_does_have_uuid()
     {
         $curationWithUuid = factory(Curation::class)->create([
@@ -342,6 +368,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function mondo_id_formatting_forced_when_set()
     {
         $curation = new Curation();
@@ -354,6 +381,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function trims_gene_symbol_when_set()
     {
         $curation = new Curation();
@@ -365,6 +393,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_an_upload_for_itself()
     {
         $curation = factory(Curation::class)->create([]);
@@ -378,6 +407,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_remove_an_upload()
     {
         $curation = factory(Curation::class)->create();
@@ -396,6 +426,8 @@ class CurationTest extends TestCase
      * @test
      * @group uuid
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('uuid')]
     public function adds_uuid_when_creating_if_none_exists()
     {
         $curation = factory(Curation::class)->make(['uuid' => null]);
@@ -410,6 +442,8 @@ class CurationTest extends TestCase
      * @test
      * @group uuid
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('uuid')]
     public function can_find_a_curation_by_uuid()
     {
         $uuid = Uuid::uuid4()->toString();
@@ -423,6 +457,8 @@ class CurationTest extends TestCase
      * @test
      * @group uuid
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('uuid')]
     public function can_find_a_curation_by_gdm_uuid()
     {
         $uuid = Uuid::uuid4()->toString();
@@ -436,6 +472,8 @@ class CurationTest extends TestCase
      * @test
      * @group curation-ownership
      */
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\Group('curation-ownership')]
     public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed()
     {
         $ep1 = factory(ExpertPanel::class)->create();
@@ -450,6 +488,7 @@ class CurationTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function gets_phenotypes_not_included_in_curation()
     {
         $gene = factory(Gene::class)->create(['hgnc_id' => 6636, 'gene_symbol' => 'LMNA']);

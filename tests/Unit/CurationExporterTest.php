@@ -44,6 +44,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function exporter_returns_the_correct_columns()
     {
         $csvPath = $this->exporter->getCsv();
@@ -79,6 +80,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function returns_line_for_each_curation()
     {
         $csvPath = $this->exporter->getCsv();
@@ -89,6 +91,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function filters_by_expert_panel()
     {
         $csvPath = $this->exporter->getCsv(['expert_panel_id' => $this->panels->first()->id]);
@@ -99,6 +102,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function filters_export_by_date_range()
     {
         $c1 = $this->curations->first();
@@ -119,6 +123,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function filters_by_date_range_and_expert_panel_id()
     {
         $c1 = $this->curations->first();
@@ -132,6 +137,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function creates_a_csv_file_with_data()
     {
         $path = $this->exporter->getCsv();
@@ -148,6 +154,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function coordinators_see_all_curations()
     {
         $coordinator = factory(User::class)->create();
@@ -166,6 +173,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function admins_see_all_curations()
     {
         $admin = factory(User::class)->create();
@@ -180,6 +188,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function curators_only_see_their_curations()
     {
         $curator = factory(User::class)->create();
@@ -204,6 +213,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function selects_latest_date_for_any_status()
     {
         $curation = factory(Curation::class)->create();
@@ -242,6 +252,7 @@ class CurationExporterTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function selects_latest_classification_for_curation()
     {
         $curation = factory(Curation::class)->create();

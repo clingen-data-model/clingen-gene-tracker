@@ -13,6 +13,7 @@ class UpdateGciCurationFromGveMessageTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function UpdateGciCurationFromGveMessage_listener_dispatches_UpdateGciCuratonFromMessage_job()
     {
         Bus::fake();
