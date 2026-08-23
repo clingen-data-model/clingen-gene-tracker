@@ -45,7 +45,7 @@ class LinkGciCuration implements ShouldQueue
             'mondo_id' => $this->curation->mondo_id,
             'moi_id' => $this->curation->moi_id,
         ];
-        if ($this->curation->expertPanel->affilation) {
+        if ($this->curation->expertPanel->affiliation) {
             $searchData['affiliation_id'] = $this->curation->expertPanel->affiliation->parent_id;
         }
 

@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class CurationExporter
 {
@@ -153,17 +154,15 @@ class CurationExporter
     public function getCsv($params = [], $csvPath = null)
     {
         $query = $this->buildQuery($params);
-       
         $path = $csvPath ?? $this->buildFileName($params);
-
-        $header = array_keys((array)$query->first());
+        File::ensureDirectoryExists(dirname($path));
+        $header = array_keys((array) $query->first());
         $fh = fopen($path, 'w');
         fputcsv($fh, $header);
         $query->lazy()->each(function ($row) use ($fh) {
-            fputcsv($fh, (array)$row);
+            fputcsv($fh, (array) $row);
         });
         fclose($fh);
-
         return $path;
     }
 
@@ -175,15 +174,17 @@ class CurationExporter
             $panel = ExpertPanel::findOrFail($params['expert_panel_id']);
             $filename .= '_'.$panel->fileSafeName;
         }
+
         if (isset($params['start_date'])) {
-            $filename .= '_from_'.$params['start_date'];
+            $filename .= '_from_'.Carbon::parse($params['start_date'])->format('Y-m-d');
         }
+
         if (isset($params['end_date'])) {
-            $filename .= '_to_'.$params['end_date'];
+            $filename .= '_to_'.Carbon::parse($params['end_date'])->format('Y-m-d');
         }
 
-        $path = storage_path($filename.'_at_'.now()->format('Y-m-d_H:i:s').'.csv');
-
-        return $path;
+        return storage_path(
+            $filename.'_at_'.now()->format('Y-m-d_H-i-s').'.csv'
+        );
     }
 }

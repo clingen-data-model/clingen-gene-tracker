@@ -29,12 +29,11 @@ class UserVsSystemClientTest extends TestCase
         $response = $this->postJson('/oauth/token', [
             'grant_type' => 'client_credentials',
             'client_id' => $client->id,
-            'client_secret' => $client->secret,
+            'client_secret' => $client->plainSecret,
             'scope' => '',
         ]);
 
-        $this->assertEquals(200, $response->status(), 'Failed to get access token: ' . $response->getContent());
-
+        $response->assertOk();
         $this->accessToken = $response->json()['access_token'];
         $this->user = factory(\App\User::class)->create();
         $this->disease = factory(\App\Disease::class)->create();
@@ -55,7 +54,7 @@ class UserVsSystemClientTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function allows_system_client_to_access_system_apis(): void
     {
-        $response = $this->withSystemClient()->postJson('api/client/v1/diseases/mondo', ['mondo_id' => $this->disease->mondo_id]);
+        $response = $this->withSystemClient()->postJson('api/client/v1/diseases/mondos', ['mondo_ids' => [$this->disease->mondo_id]]);
 
         $response->assertOk();
         $response->assertJsonFragment(['mondo_id' => $this->disease->mondo_id]);
@@ -92,7 +91,7 @@ class UserVsSystemClientTest extends TestCase
     public function prevents_user_from_accessing_system_apis(): void
     {
         $response = $this->actingAs($this->user, 'api')
-            ->postJson('api/client/v1/diseases/mondo', ['mondo_id' => $this->disease->mondo_id]);
+            ->postJson('api/client/v1/diseases/mondos', ['mondo_ids' => [$this->disease->mondo_id]]);
 
         $response->assertUnauthorized();
     }

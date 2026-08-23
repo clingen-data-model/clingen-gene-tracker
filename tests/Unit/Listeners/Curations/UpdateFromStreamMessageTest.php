@@ -225,7 +225,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('curations.statuses.curation-provisional'),
-            'status_date' => Carbon::parse($payload->date)->startOfDay()->format('Y-m-d H:i:s'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -248,7 +248,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $expected = [
             'curation_id' => $curation->id,
             'curation_status_id' => config('curations.statuses.approved'),
-            'status_date' => '2019-01-08 00:00:00',
+            'status_date' => '2019-01-08 18:16:30',
         ];
         $this->assertDatabaseHas('curation_curation_status', $expected);
 
@@ -274,7 +274,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('curations.statuses.published'),
-            'status_date' => Carbon::parse($payload->date)->startOfDay()->format('Y-m-d H:i:s'),
+            'status_date' => Carbon::parse($payload->date)->format('Y-m-d H:i:s'),
         ]);
     }
 
@@ -318,7 +318,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $curation->id,
             'curation_status_id' => config('curations.statuses.curation-approved'),
-            'status_date' => Carbon::parse($payload->status->date)->startOfDay()->format('Y-m-d H:i:s'),
+            'status_date' => Carbon::parse($payload->status->date)->format('Y-m-d H:i:s'),
         ]);
     }
 

@@ -186,7 +186,7 @@ class CurationTest extends TestCase
 
         $curation->curationStatuses()->attach($curationStatuses->last()->id);
 
-        $this->assertEquals($curationStatuses->pluck('id'), $curation->curationStatuses()->get()->pluck('id'));
+        $this->assertEquals($curationStatuses->pluck('id')->reverse()->values(), $curation->curationStatuses()->get()->pluck('id'));
         $this->assertNotNull($curation->curationStatuses()->first()->pivot->created_at);
         $this->assertNotNull($curation->curationStatuses()->get()->last()->pivot->updated_at);
     }
