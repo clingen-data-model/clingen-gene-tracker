@@ -40,7 +40,7 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('curations.statuses.curation-provisional'),
-            'status_date' => Carbon::now()->startOfDay()
+            'status_date' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
     
@@ -62,7 +62,7 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional'),
-            'status_date' => '2019-02-01 00:00:00'
+            'status_date' => '2019-02-01 12:32:12'
         ]);
     }
 
@@ -70,7 +70,7 @@ class AddStatusTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
-    public function does_not_add_status_if_new_status_matches_current_status()
+    public function allows_current_status_to_be_added_again_on_a_different_day()
     {
         Carbon::setTestNow('2020-01-15');
         AddStatus::dispatchSync(
@@ -84,7 +84,7 @@ class AddStatusTest extends TestCase
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
         
-        $this->assertEquals(2, $this->curation->statuses()->count());
+        $this->assertEquals(3, $this->curation->statuses()->count());
     }
     
 

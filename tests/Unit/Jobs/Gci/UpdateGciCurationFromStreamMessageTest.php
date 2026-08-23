@@ -11,23 +11,34 @@ use App\IncomingStreamMessage;
 use Illuminate\Support\Facades\Bus;
 use App\Jobs\Gci\UpdateGciCurationFromStreamMessage;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Affiliation;
 
 class UpdateGciCurationFromStreamMessageTest extends TestCase
 {
     use DatabaseTransactions;
 
-
-    public function setup():void
+    public function setup(): void
     {
         parent::setup();
+
         $this->uuid = Uuid::uuid4();
+
+        $this->affiliation = Affiliation::firstOrCreate(
+            ['clingen_id' => '40007'],
+            [
+                'name' => 'Test GCI Affiliation 40007',
+                'short_name' => 'TEST-40007',
+                'affiliation_type_id' => config('affiliations.types.gcep'),
+            ]
+        );
+
         $this->gciCuration = factory(GciCuration::class)->create([
             'gdm_uuid' => $this->uuid->toString(),
             'mondo_id' => 'MONDO:109999',
             'moi_id' => 10,
             'status_id' => 9,
-            'affiliation_id' => 13,
-            'classification_id' => 1
+            'affiliation_id' => $this->affiliation->id,
+            'classification_id' => 1,
         ]);
     }
 

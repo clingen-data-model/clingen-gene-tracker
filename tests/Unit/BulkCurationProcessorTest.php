@@ -247,7 +247,7 @@ class BulkCurationProcessorTest extends TestCase
     {
         $this->assertTrue($this->svc->rowIsValid($this->data));
 
-        $omimClientMock = $this->createMock(OmimClient::class);
+        $omimClientMock = $this->createStub(OmimClient::class);
         $omimClientMock->method('geneSymbolIsValid')
             ->willReturn(false);
 

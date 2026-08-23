@@ -155,6 +155,7 @@ class CustomDownloadImporter
         
         Log::debug('lines in download: '.count($lines));
         foreach ($lines as $idx => $line) {
+            $line = rtrim($line, "\r\n");
             $cols = explode("\t", $line);
 
             // Get the column keys.
