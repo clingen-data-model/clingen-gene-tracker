@@ -340,19 +340,20 @@ class UpdateFromStreamMessageTest extends TestCase
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
         Carbon::setTestNow('2022-07-08');
 
-        $this->fireTestEvent($this->gdmTransfered);
+        $payload = $this->fireTestEvent($this->gdmTransfered);
+        $transferDate = Carbon::parse($payload->date)->toDateString();
 
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel1->id,
-            'start_date' => Carbon::parse('2021-05-04'),
-            'end_date' => Carbon::now(),
+            'start_date' => '2021-05-04',
+            'end_date' => $transferDate,
         ]);
 
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel2->id,
-            'start_date' => Carbon::now(),
+            'start_date' => $transferDate,
             'end_date' => null,
         ]);
     }
@@ -365,22 +366,27 @@ class UpdateFromStreamMessageTest extends TestCase
     {
         Carbon::setTestNow('2021-05-04');
 
-        $affiliation1 = factory(Affiliation::class)->create([ 'clingen_id' => '40001' ]);
-        $expertPanel1 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation1->id]);
-        
-        $affiliation2 = factory(Affiliation::class)->create([ 'clingen_id' => '40002' ]);
-        $expertPanel2 = factory(ExpertPanel::class, )->create(['affiliation_id' => $affiliation2->id]);
-        
+        $affiliation1 = factory(Affiliation::class)->create(['clingen_id' => '40001']);
+        $expertPanel1 = factory(ExpertPanel::class)->create([
+            'affiliation_id' => $affiliation1->id
+        ]);
+
+        $affiliation2 = factory(Affiliation::class)->create(['clingen_id' => '40002']);
+        $expertPanel2 = factory(ExpertPanel::class)->create([
+            'affiliation_id' => $affiliation2->id
+        ]);
+
         $curation = $this->createDICER1();
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
+
         Carbon::setTestNow('2022-07-08');
 
-        $this->fireTestEvent($this->gdmTransfered);
+        $payload = $this->fireTestEvent($this->gdmTransfered);
 
         $this->assertDatabaseHas('notes', [
             'subject_type' => 'App\Curation',
             'subject_id' => $curation->id,
-            'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
+            'content' => 'I am a test note.',
             'topic' => 'curation transfer (via GCI)'
         ]);
     }

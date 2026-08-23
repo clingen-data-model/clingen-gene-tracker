@@ -39,6 +39,16 @@ class SetOwner
      */
     public function handle()
     {
+        // Initial ownership: curation already has its owner,
+        // but no ownership history has been created yet.
+        if (
+            $this->curation->expert_panel_id == $this->expertPanelId
+            && ! $this->curation->expertPanels()->exists()
+        ) {
+            $this->addNewOwner();
+            return;
+        }
+        
         // I can imagine a GCI transfer message says the destination ExpertPanel is already the curation's current ExpertPanel.
         // Or in case there are 2 exactly the same messages from GCI then this $this->curation->expert_panel_id != $this->expertPanelId will return false.
         // We don't need to: close ownership, add ownership, send transfer email but we still want to process any other curation updates that may be present in the message.
