@@ -33,6 +33,11 @@ mix.webpackConfig({
 });
 
 mix.webpackConfig({
+    resolve: {
+        alias: {
+            'vue$': '@vue/compat'
+        }
+    },
     output: {
         chunkFilename: mix.inProduction() ? 'js/modules/[name].[contenthash].js' : 'js/modules/[name].bundle.js',
         publicPath: '/',
@@ -48,7 +53,16 @@ mix.webpackConfig({
     ]
 })
 
-mix.js('resources/assets/js/app.js', 'public/js').vue()
+mix.js('resources/assets/js/app.js', 'public/js').vue({
+    version: 3,
+    options: {
+        compilerOptions: {
+            compatConfig: {
+                MODE: 2
+            }
+        }
+    }
+})
    .sass('resources/assets/sass/app.scss', 'public/css')
    .sourceMaps();
 
