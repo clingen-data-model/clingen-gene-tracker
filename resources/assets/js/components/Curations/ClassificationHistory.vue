@@ -17,16 +17,19 @@
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{classification.name}}</td>
-                <td>{{classification.pivot.classification_date | formatDate('YYYY-MM-DD') }}</td>
+                <td>{{formatDate(classification.pivot.classification_date, 'YYYY-MM-DD')}}</td>
             </tr>
         </table>
     </div>
 </template>
 <script>
     import moment from 'moment'
-    import filters from '../../filters'
+    import { formatDate } from '../../filters'
     
     export default {
+        methods: {
+            formatDate
+        },
         props: {
             curation: {
                 type: Object,

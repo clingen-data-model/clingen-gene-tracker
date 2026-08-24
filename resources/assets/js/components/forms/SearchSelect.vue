@@ -95,8 +95,8 @@
         <div class="search-select-container border">
             <div class="selection" :class="{disabled: disabled}" v-if="hasSelection">
                 <label>
-                    <slot name="selection-label" :selection="value">
-                        {{value}}
+                    <slot name="selection-label" :selection="modelValue">
+                        {{modelValue}}
                     </slot>
                 </label>  
                 <button @click="removeSelection()" :disabled="disabled">x</button>
@@ -164,7 +164,7 @@ export default {
             type: Function,
             default: null
         },
-        value: {
+        modelValue: {
             required: true
         },
         options: {
@@ -226,7 +226,7 @@ export default {
             return this.filteredOptions[this.cursorPosition];
         },
         hasSelection() {
-            return Boolean(this.value)
+            return Boolean(this.modelValue)
         },
     },
     watch: {
@@ -248,12 +248,12 @@ export default {
             })
         },
         removeSelection(    ){
-            this.$emit('input', null);
+            this.$emit('update:modelValue', null);
             this.$refs.input.focus();
         },
         setSelection(selection) {
             console.info('setSelection', selection);
-            this.$emit('input', selection);
+            this.$emit('update:modelValue', selection);
             console.log('emitted')
             this.clearInput();
             console.log('clearedInput')

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import moment from 'moment';
 
 const baseUrl = '/api/curations'
@@ -42,7 +41,7 @@ const mutations = {
     removeItem: function(state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
 
-        Vue.delete(state.items, itemIdx);
+        state.items.splice(itemIdx, 1);
     },
     setCurrentItemIdx(state, curation) {
         const idx = state.items.findIndex(i => i.id == curation.id);

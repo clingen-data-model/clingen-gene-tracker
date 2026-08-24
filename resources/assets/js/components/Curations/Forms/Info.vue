@@ -187,9 +187,9 @@
         </div>
 
         <archived-curation-links
-            :value="updatedCuration"
+            :model-value="updatedCuration"
             :editable="!updatedCuration.is_archived && user.canEditCuration(updatedCuration)"
-            @input="updatedCuration = $event"
+            @update:model-value="updatedCuration = $event"
         />
 
         <br />

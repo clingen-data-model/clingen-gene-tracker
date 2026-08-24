@@ -2,7 +2,7 @@
 
 <template>
     <div class="component-container w-50">
-        <classification-history :curation="value"></classification-history>
+        <classification-history :curation="modelValue"></classification-history>
         <div class="alert alert-secondary">
             Classifications must be added to a curation via the GCI.
         </div>

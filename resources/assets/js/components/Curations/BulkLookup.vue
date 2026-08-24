@@ -53,9 +53,11 @@
                     class="text-small"
                     striped
                 >
-                    <div slot="table-busy" class="text-center">
-                        Looking for curations...
-                    </div>
+                    <template #table-busy>
+                        <div class="text-center">
+                            Looking for curations...
+                        </div>
+                    </template>
                     <template v-slot:head(available_phenotypes)="data">
                         {{data.label}}
                         <small class="font-weight-normal">(* phenotype is in curation)</small>                        
@@ -285,7 +287,7 @@ export default {
             const list = JSON.parse(JSON.stringify(this.filters[key]));
             list.splice(idx, 1);
             console.log(list);
-            this.$set(this.filters, key, list);
+            this.filters[key] = list;
         },
         toggleFilter(key, value) {
             if (this.filters[key].indexOf(value) < 0) {

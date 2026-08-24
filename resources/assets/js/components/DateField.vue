@@ -10,7 +10,7 @@
         class="form-control" 
         :placeholder="placeholder"
         v-bind:value="formatted" 
-        v-on:input="$event.target.value = value" 
+        v-on:input="$event.target.value = modelValue" 
         :readonly="readonly"/>
 </template>
 <script>
@@ -21,14 +21,15 @@
 
     module.exports = {
         name: 'date-field',
-        props: ['name', 'value', 'id', 'placeholder', 'readonly'],
+        props: ['name', 'modelValue', 'id', 'placeholder', 'readonly'],
+        emits: ['update:modelValue'],
         data: function(){
             return {
             }
         },
         computed: {
             formatted: function(){
-                return (this.value) ? moment(this.value).format('MM/DD/YYYY') : null;
+                return (this.modelValue) ? moment(this.modelValue).format('MM/DD/YYYY') : null;
             },
         },
         mounted: function(){
@@ -36,7 +37,7 @@
                 jQuery(this.$el).datepicker()
                     .on('changeDate', function(evt){
                         jQuery(this.$el).trigger('input');
-                        this.$emit('input', moment(evt.date, 'MM/DD/YYYY').toDate());
+                        this.$emit('update:modelValue', moment(evt.date, 'MM/DD/YYYY').toDate());
                     }.bind(this));
             }.bind(this));
         }
