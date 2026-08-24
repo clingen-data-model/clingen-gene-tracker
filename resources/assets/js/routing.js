@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import store from './store/index'
 
 const Curations = () =>
@@ -29,19 +28,17 @@ const BulkLookup = () =>
 const GeneBulkLookup = () =>
     import ( /* webpackChunkName: "GeneBulkLookup" */ './components/GeneBulkLookup.vue')
 
-Vue.use(VueRouter)
-
-const user = store.getters.getUser;
-
 const routes = [{
-        path: '',
+        path: '/',
         component: UserDashboard,
-        beforeEnter: (to, from, next) => {
+        beforeEnter: () => {
+            const user = store.getters.getUser
+
             if (!user.canAddCurations() && !user.isCurator()) {
-                next({ path: '/curations' })
-                return;
+                return { path: '/curations' }
             }
-            next()
+
+            return true
         }
     },
     {
@@ -77,13 +74,14 @@ const routes = [{
                 path: 'create',
                 component: CurationCreate,
                 name: 'curations-create',
-                beforeEnter: (to, from, next) => {
+                beforeEnter: () => {
+                    const user = store.getters.getUser
+
                     if (!user.canAddCurations()) {
-                        next({ path: '/curations' })
-                        return;
+                        return { path: '/curations' }
                     }
 
-                    next()
+                    return true
                 }
             },
             {
@@ -129,7 +127,8 @@ const routes = [{
     }
 ]
 
-const router = new VueRouter({
+const router = createRouter({
+    history: createWebHashHistory(),
     routes
 })
 
