@@ -5,8 +5,8 @@
             :class="{'error': errors.mondo_id}"
         >
             <search-select 
-                :value="updatedCuration.disease"
-                @input="updateCurationDisease"
+                :model-value="updatedCuration.disease"
+                @update:model-value="updateCurationDisease"
                 :search-function="searchMondo"
                 style="z-index: 2"
                 placeholder="MonDO ID or name"
@@ -94,8 +94,8 @@
             updatedCuration: function () {
                 this.emitUpdated()
             },
-            value: function (to, from) {
-                if (this.value != this.updatedCuration) {
+            modelValue: function (to, from) {
+                if (this.modelValue != this.updatedCuration) {
                     this.syncValue();
                 }
             }
@@ -108,7 +108,7 @@
                 this.emitUpdated()
             },
             emitUpdated () {
-                this.$emit('input', this.updatedCuration)
+                this.$emit('update:modelValue', this.updatedCuration)
             }
        }
     }

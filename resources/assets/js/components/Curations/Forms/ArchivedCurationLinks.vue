@@ -114,9 +114,10 @@ import _ from 'lodash'
 
 export default {
     name: 'ArchivedCurationLinks',
+    emits: ['update:modelValue'],
 
     props: {
-        value: {
+        modelValue: {
             type: Object,
             required: true,
         },
@@ -137,7 +138,7 @@ export default {
 
     computed: {
         currentValue() {
-            return this.value || {}
+            return this.modelValue || {}
         },
 
         isArchived() {
@@ -178,7 +179,7 @@ export default {
                 ...patch,
             }
 
-            this.$emit('input', next)
+            this.$emit('update:modelValue', next)
         },
 
         syncArchivedIds(linkedArchivedCurations) {

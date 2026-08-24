@@ -65,18 +65,18 @@
                             if (onePhenotype && singleFromList && noPhenotypes) {
                                 const p = this.phenotypes[0];
                                 if (!Array.isArray(this.updatedCuration.phenotypes)) {
-                                    Vue.set(this.updatedCuration, 'phenotypes', []);
+                                    this.updatedCuration.phenotypes = [];
                                 }
 
-                                Vue.set(this.updatedCuration.phenotypes, 0, {
+                                this.updatedCuration.phenotypes[0] = {
                                     id: p.id,
                                     mim_number: p.phenotypeMimNumber,
                                     name: p.phenotype,
                                     label_obsolete: Boolean(p.label_obsolete),
-                                });
+                                };
 
                                 if (!Array.isArray(this.updatedCuration.rationales)) {
-                                    Vue.set(this.updatedCuration, 'rationales', []);
+                                    this.updatedCuration.rationales = [];
                                 }
 
                                 if (this.updatedCuration.rationales.length === 0) {
@@ -87,7 +87,7 @@
                                 }
 
                                 this.message = 'We have preselected the phenotype because you indicated you are curating ' + this.updatedCuration.gene_symbol + ' with this single disease entity';
-                                this.$emit('input', this.updatedCuration);
+                                this.$emit('update:modelValue', this.updatedCuration);
                                 this.$nextTick(() => {
                                     this.$emit('auto-save');
                                 });

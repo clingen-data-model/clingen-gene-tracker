@@ -7,7 +7,7 @@
             </router-link>
         </p>
         <b-card id="edit-curation-modal">
-            <template slot="header">
+            <template #header>
                 <div class="d-flex justify-content-between">
                     <h3>{{ title }}</h3>
                     <div class="d-flex space-x-2">
@@ -46,9 +46,9 @@
                         <div class="col-md-10">
                             <component 
                                 :is="currentStep" 
-                                :value="updatedCuration"  
+                                :model-value="updatedCuration"  
                                 :errors="errors" 
-                                @input="updatedCuration = $event"
+                                @update:model-value="updatedCuration = $event"
                                 @auto-save="handleAutoSave"
                                 ref="editPage"
                             >

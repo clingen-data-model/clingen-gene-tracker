@@ -13,7 +13,7 @@
                 key="curation-details"
                 style="max-heigh: 1000px"
             >
-                <template slot="header">
+                <template #header>
                     <div class="d-float justify-content-between">
                         <h3> {{ title }}</h3>
 
@@ -209,13 +209,13 @@
                             <div class="col-md">{{ (curation.curation_notes) ? curation.curation_notes : '--' }}</div>
                         </div>
                     </div>
-                    <archived-curation-links :value="curation" :editable="false" />
+                    <archived-curation-links :model-value="curation" :editable="false" />
                     <hr>
                     <documents-card :curation="curation"></documents-card>
                     
                     <hr>
                     <notes-list :notes="curation.notes">
-                        <div slot="title">Administrative Notes</div>
+                        <template #title>Administrative Notes</template>
                     </notes-list>
                 </div>
             </b-card>
