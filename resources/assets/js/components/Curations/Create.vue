@@ -11,14 +11,14 @@
                 </router-link>
             </p>        
             <b-card>
-                <template slot="header">
+                <template #header>
                     <h3>Add a curation to curate</h3>
                 </template>
                 <b-form id="new-curation-form">
                     <info
-                        :value="updatedCuration" 
+                        :model-value="updatedCuration" 
                         :errors="errors"
-                        @input="updatedCuration = $event"
+                        @update:model-value="updatedCuration = $event"
                     ></info>         
                     <hr>
                     <div class="row">

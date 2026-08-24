@@ -10,14 +10,14 @@
                 <slot>
                     <date-input 
                         v-if="type == 'date'"
-                        :value="value" 
-                        @input="emitValue" 
+                        :model-value="modelValue" 
+                        @update:model-value="emitValue" 
                     ></date-input>
                     <input 
                         v-else
                         :type="type" 
-                        :value="value" 
-                        @input="$emit('input', $event.target.value)"
+                        :value="modelValue" 
+                        @input="$emit('update:modelValue', $event.target.value)"
                         :placeholder="placeholder"
                     >
                 </slot>
@@ -54,7 +54,7 @@ export default {
             required: false,
             default: 'text'
         },
-        value: {
+        modelValue: {
             required: false,
             default: null
         },
@@ -80,7 +80,7 @@ export default {
     methods: {
         emitValue(evt) {
             console.log(evt);
-            this.$emit('input', evt)
+            this.$emit('update:modelValue', evt)
         }
     }
 }

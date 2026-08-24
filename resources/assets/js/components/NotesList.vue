@@ -19,7 +19,7 @@
                 <tr v-for="note in notes" :key="note.id">
                     <td>{{note.topic ? note.topic.toUpperCase()+': ' : ''}} {{note.content}}</td>
                     <td>{{note.author.name}}</td>
-                    <td>{{note.created_at | formatDate}}</td>
+                    <td>{{formatDate(note.created_at)}}</td>
                 </tr>
             </tbody>
         </table>
@@ -30,10 +30,14 @@
 </template>
 <script>
 import InputRow from './forms/InputRow.vue'
+import { formatDate } from '../filters'
 export default {
     name: 'NotesList',
     components: {
         InputRow
+    },
+    methods: {
+        formatDate
     },
     props: {
         notes: {

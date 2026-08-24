@@ -9,16 +9,18 @@
             @click="modalVisible = true"
         >Add or update classification</b-button>
 
-        <classification-history :curation="value"></classification-history>
+        <classification-history :curation="modelValue"></classification-history>
 
         <b-modal 
             v-model="modalVisible"
             @hide="submitAll"
             size="lg"
         >
-            <div slot="modal-header">
-                <h3>Update Classification</h3>
-            </div>    
+            <template #modal-header>
+                <div>
+                    <h3>Update Classification</h3>
+                </div>
+            </template>
             <table class="table">
                 <thead>
                     <tr>
@@ -88,6 +90,7 @@
     import ClassificationHistory from '../ClassificationHistory.vue'
     import Datepicker from 'vuejs-datepicker'
     import moment from 'moment'
+    import { formatDate } from '../../../filters'
 
     export default {
         components: {
@@ -95,7 +98,7 @@
             Datepicker
         },
         props: {
-            value: {
+            modelValue: {
                 required: true,
                 type: Object
             }
@@ -115,7 +118,7 @@
             }
         },
         watch: {
-            value: {
+            modelValue: {
                 handler: 'syncCuration',
                 immediate: true,
                 deep: true
@@ -141,7 +144,7 @@
                         curation: this.curationCopy, 
                         data: {
                             classification_id: this.newClassificationId,
-                            classification_date: this.$options.filters.formatDate(this.newClassificationDate, 'YYYY-MM-DD')
+                            classification_date: formatDate(this.newClassificationDate, 'YYYY-MM-DD')
                         }
                     }
                 ).then(response => {
@@ -180,7 +183,7 @@
                 }
             },
             syncCuration() {
-                this.curationCopy = JSON.parse(JSON.stringify(this.value))
+                this.curationCopy = JSON.parse(JSON.stringify(this.modelValue))
             },
         },
 

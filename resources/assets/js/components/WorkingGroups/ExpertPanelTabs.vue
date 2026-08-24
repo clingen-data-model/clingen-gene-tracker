@@ -37,7 +37,7 @@
 <template>
     <b-tabs v-model="activeTabIndex">
         <b-tab title="People">
-            <template slot="title">
+            <template #title>
                 People &nbsp;<span class="badge badge-pill badge-primary">{{ activeMembers.length }}</span>
             </template>
             <table class="table table-striped">
@@ -58,7 +58,7 @@
             </table>
         </b-tab>
         <b-tab>
-            <template slot="title">
+            <template #title>
                 Curations <span class="badge badge-pill badge-primary">{{ curationCount }}</span>
             </template>
             <ul class="list-unstyled mt-2">
