@@ -5,6 +5,7 @@
  */
 
 require('./bootstrap');
+import { configureCompat, createApp } from 'vue'
 import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
 import store from './store/index'
 import router from './routing.js'
@@ -16,16 +17,14 @@ import './filters.js';
 
 // console.log(configs);
 
+configureCompat({ MODE: 2 })
+
 window.Vue = require('vue').default
-window.Vue.use(BootstrapVue)
 
 import ExternalLink from './components/ExternalLink.vue'
-window.Vue.component('external-link', ExternalLink)
 
 import GciLink from './components/Curations/GciLink.vue';
-window.Vue.component('gci-link', GciLink)
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
-window.Vue.component('gci-linked-message', GciLinkedMessage)
 
 if (user) {
     user = new User(user);
@@ -64,10 +63,7 @@ axios.interceptors.response.use(
 );
 
 if (document.getElementById('app')) {
-    const app = new Vue({
-        router,
-        el: '#app',
-        store: store,
+    const app = createApp({
         components: {
             'clingen-app': require('./components/ClingenApp.vue').default,
             'clingen-nav': require('./components/ClingenNav.vue').default,
@@ -80,13 +76,23 @@ if (document.getElementById('app')) {
             }
         }
     });
+
+    app.use(BootstrapVue)
+    app.use(store)
+    app.use(router)
+    app.component('external-link', ExternalLink)
+    app.component('gci-link', GciLink)
+    app.component('gci-linked-message', GciLinkedMessage)
+    app.mount('#app')
 }
 
 if (document.getElementById('expert-panel-field')) {
-    const app = new Vue({
-        el: '#expert-panel-field',
+    const app = createApp({
         components: {
             ExpertPanelField
         }
     });
+
+    app.use(BootstrapVue)
+    app.mount('#expert-panel-field')
 }
