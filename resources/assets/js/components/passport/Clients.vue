@@ -73,18 +73,7 @@
         </div>
 
         <!-- Create Client Modal -->
-        <div class="modal fade" id="modal-create-client" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Create Client
-                        </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
+        <b-modal v-model="showCreateModal" title="Create Client" @shown="focusCreateClientName">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="createForm.errors.length > 0">
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
@@ -103,7 +92,7 @@
                                 <label class="col-md-3 col-form-label">Name</label>
 
                                 <div class="col-md-9">
-                                    <input id="create-client-name" type="text" class="form-control"
+                                    <input ref="createClientName" id="create-client-name" type="text" class="form-control"
                                                                 @keyup.enter="store" v-model="createForm.name">
 
                                     <span class="form-text text-muted">
@@ -126,33 +115,17 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <template #modal-footer>
+                        <button type="button" class="btn btn-secondary" @click="showCreateModal = false">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </template>
+        </b-modal>
 
         <!-- Edit Client Modal -->
-        <div class="modal fade" id="modal-edit-client" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Edit Client
-                        </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
+        <b-modal v-model="showEditModal" title="Edit Client" @shown="focusEditClientName">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="editForm.errors.length > 0">
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
@@ -171,7 +144,7 @@
                                 <label class="col-md-3 col-form-label">Name</label>
 
                                 <div class="col-md-9">
-                                    <input id="edit-client-name" type="text" class="form-control"
+                                    <input ref="editClientName" id="edit-client-name" type="text" class="form-control"
                                                                 @keyup.enter="update" v-model="editForm.name">
 
                                     <span class="form-text text-muted">
@@ -194,19 +167,14 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <template #modal-footer>
+                        <button type="button" class="btn btn-secondary" @click="showEditModal = false">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="update">
                             Save Changes
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -218,6 +186,8 @@
         data() {
             return {
                 clients: [],
+                showCreateModal: false,
+                showEditModal: false,
 
                 createForm: {
                     errors: [],
@@ -253,14 +223,14 @@
              */
             prepareComponent() {
                 this.getClients();
+            },
 
-                $('#modal-create-client').on('shown.bs.modal', () => {
-                    $('#create-client-name').focus();
-                });
+            focusCreateClientName() {
+                this.$refs.createClientName.focus();
+            },
 
-                $('#modal-edit-client').on('shown.bs.modal', () => {
-                    $('#edit-client-name').focus();
-                });
+            focusEditClientName() {
+                this.$refs.editClientName.focus();
             },
 
             /**
@@ -277,7 +247,7 @@
              * Show the form for creating new clients.
              */
             showCreateClientForm() {
-                $('#modal-create-client').modal('show');
+                this.showCreateModal = true;
             },
 
             /**
@@ -286,7 +256,7 @@
             store() {
                 this.persistClient(
                     'post', '/oauth/clients',
-                    this.createForm, '#modal-create-client'
+                    this.createForm, 'showCreateModal'
                 );
             },
 
@@ -298,7 +268,7 @@
                 this.editForm.name = client.name;
                 this.editForm.redirect = client.redirect;
 
-                $('#modal-edit-client').modal('show');
+                this.showEditModal = true;
             },
 
             /**
@@ -307,14 +277,14 @@
             update() {
                 this.persistClient(
                     'put', '/oauth/clients/' + this.editForm.id,
-                    this.editForm, '#modal-edit-client'
+                    this.editForm, 'showEditModal'
                 );
             },
 
             /**
              * Persist the client to storage using the given form.
              */
-            persistClient(method, uri, form, modal) {
+            persistClient(method, uri, form, modalState) {
                 form.errors = [];
 
                 axios[method](uri, form)
@@ -325,7 +295,7 @@
                         form.redirect = '';
                         form.errors = [];
 
-                        $(modal).modal('hide');
+                        this[modalState] = false;
                     })
                     .catch(error => {
                         if (typeof error.response.data === 'object') {

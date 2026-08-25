@@ -56,18 +56,7 @@
         </div>
 
         <!-- Create Token Modal -->
-        <div class="modal fade" id="modal-create-token" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Create Token
-                        </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
+        <b-modal v-model="showCreateModal" title="Create Token" @shown="focusTokenName">
                         <!-- Form Errors -->
                         <div class="alert alert-danger" v-if="form.errors.length > 0">
                             <p class="mb-0"><strong>Whoops!</strong> Something went wrong!</p>
@@ -86,7 +75,7 @@
                                 <label class="col-md-4 col-form-label">Name</label>
 
                                 <div class="col-md-6">
-                                    <input id="create-token-name" type="text" class="form-control" name="name" v-model="form.name">
+                                    <input ref="tokenName" id="create-token-name" type="text" class="form-control" name="name" v-model="form.name">
                                 </div>
                             </div>
 
@@ -109,48 +98,27 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <template #modal-footer>
+                        <button type="button" class="btn btn-secondary" @click="showCreateModal = false">Close</button>
 
                         <button type="button" class="btn btn-primary" @click="store">
                             Create
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </template>
+        </b-modal>
 
         <!-- Access Token Modal -->
-        <div class="modal fade" id="modal-access-token" tabindex="-1" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            Personal Access Token
-                        </h4>
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
+        <b-modal v-model="showAccessModal" title="Personal Access Token">
                         <p>
                             Here is your new personal access token. This is the only time it will be shown so don't lose it!
                             You may now use this token to make API requests.
                         </p>
 
                         <textarea class="form-control" rows="10">{{ accessToken }}</textarea>
-                    </div>
-
-                    <!-- Modal Actions -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <template #modal-footer>
+                <button type="button" class="btn btn-secondary" @click="showAccessModal = false">Close</button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -162,6 +130,8 @@
         data() {
             return {
                 accessToken: null,
+                showCreateModal: false,
+                showAccessModal: false,
 
                 tokens: [],
                 scopes: [],
@@ -195,10 +165,10 @@
             prepareComponent() {
                 this.getTokens();
                 this.getScopes();
+            },
 
-                $('#modal-create-token').on('shown.bs.modal', () => {
-                    $('#create-token-name').focus();
-                });
+            focusTokenName() {
+                this.$refs.tokenName.focus();
             },
 
             /**
@@ -225,7 +195,7 @@
              * Show the form for creating new tokens.
              */
             showCreateTokenForm() {
-                $('#modal-create-token').modal('show');
+                this.showCreateModal = true;
             },
 
             /**
@@ -277,11 +247,11 @@
              * Show the given access token to the user.
              */
             showAccessToken(accessToken) {
-                $('#modal-create-token').modal('hide');
+                this.showCreateModal = false;
 
                 this.accessToken = accessToken;
 
-                $('#modal-access-token').modal('show');
+                this.showAccessModal = true;
             },
 
             /**
