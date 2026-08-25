@@ -45,14 +45,9 @@
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <datepicker 
+                                <date-input 
                                     v-model="newStatusDate"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
-                                    placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                ></datepicker>
+                                ></date-input>
                             </div>
                             <b-button 
                                 variant="primary"
@@ -68,16 +63,11 @@
                         </td>
                         <td class="d-flex align-items-center">
                             <div class="flex-grow-1 mr-2">
-                                <datepicker
+                                <date-input
                                     :id="'status-date-'+status.id"
-                                    v-model="status.pivot.status_date"
-                                    input-class="form-control"
-                                    format='yyyy-MM-dd'
-                                    calendar-class="small-calendar"
-                                    placeholder="Select a date"
-                                    :highlighted="highlighted"
-                                    @selected="updateStatusDate(status.pivot,$event)"
-                                ></datepicker>
+                                    :model-value="status.pivot.status_date"
+                                    @update:model-value="updateStatusDate(status.pivot,$event)"
+                                ></date-input>
                             </div>
                             <b-button @click="removeStatusEntry(status)"><strong>x</strong></b-button>
                         </td>
@@ -90,7 +80,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex'
-    import Datepicker from 'vuejs-datepicker'
+    import DateInput from '../../forms/DateInput.vue'
     import moment from 'moment'
     import { formatDate } from '../../../filters'
     import CurationStatusHistory from '../StatusHistory.vue'
@@ -98,7 +88,7 @@
     export default {
         components: {
             CurationStatusHistory,
-            Datepicker
+            DateInput
         },
         props: {
             modelValue: {
@@ -112,10 +102,6 @@
                 modalVisible: false,
                 newStatusDate: new Date(),
                 newStatusId: null,
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                },
                 statusDatesUpdated: false,
                 errors: []
             }

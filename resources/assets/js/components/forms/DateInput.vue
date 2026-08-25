@@ -3,6 +3,11 @@
         <input 
             type="date" 
             :value="formattedDate" 
+            :id="id"
+            :min="min"
+            :max="max"
+            :disabled="disabled"
+            :readonly="readonly"
             class="form-control"
             @input="setDate"
         >
@@ -14,6 +19,26 @@ export default {
         modelValue: {
             required: false,
             default: null
+        },
+        id: {
+            type: String,
+            required: false
+        },
+        min: {
+            type: String,
+            required: false
+        },
+        max: {
+            type: String,
+            required: false
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
+        readonly: {
+            type: Boolean,
+            default: false
         }
     },
     emits: [
