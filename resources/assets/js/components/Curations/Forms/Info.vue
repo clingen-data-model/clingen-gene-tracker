@@ -231,7 +231,6 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import CurationNotifications from './ExistingCurationNotification.vue'
-    import DateField from '../../DateField'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import ValidationError from '../../ValidationError.vue'
     import StatusForm from './StatusForm.vue'
@@ -245,7 +244,6 @@
         ],
         components: {
             CurationNotifications,
-            DateField,
             ValidationError,
             StatusForm,
             ArchivedCurationLinks,

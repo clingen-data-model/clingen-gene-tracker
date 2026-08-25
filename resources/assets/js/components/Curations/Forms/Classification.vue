@@ -14,14 +14,12 @@
     import { mapGetters, mapActions } from 'vuex'
     import curationFormMixin from '../../../mixins/curation_form_mixin'
     import CurationNotifications from './ExistingCurationNotification.vue'
-    import DateField from '../../DateField.vue'
     import ValidationError from '../../ValidationError.vue'
     import ClassificationHistory from '../ClassificationHistory.vue'
 
     export default {
         components: {
             CurationNotifications,
-            DateField,
             ValidationError,
             ClassificationHistory
         },
