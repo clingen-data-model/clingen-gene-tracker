@@ -45,14 +45,10 @@
                             </div>
                         </td>
                         <td class="form-inline">
-                            <datepicker 
+                            <date-input 
                                 v-model="newClassificationDate"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                            ></datepicker>
+                                class="mr-2"
+                            ></date-input>
                             <b-button 
                                 variant="primary"
                                 @click="addClassification"
@@ -66,16 +62,12 @@
                             <label :for="'classification-date-'+classification.id"><strong>{{classification.name}}</strong></label>
                         </td>
                         <td class="form-inline">
-                            <datepicker
+                            <date-input
                                 :id="'classification-date-'+classification.id"
-                                v-model="classification.pivot.classification_date"
-                                input-class="form-control mr-2"
-                                format='yyyy-MM-dd'
-                                calendar-class="small-calendar"
-                                placeholder="Select a date"
-                                :highlighted="highlighted"
-                                @selected="updateclassificationDate(classification.pivot,$event)"
-                            ></datepicker>
+                                :model-value="classification.pivot.classification_date"
+                                class="mr-2"
+                                @update:model-value="updateclassificationDate(classification.pivot,$event)"
+                            ></date-input>
                             <b-button @click="removeclassificationEntry(classification)"><strong>x</strong></b-button>
                         </td>
                     </tr>
@@ -88,14 +80,14 @@
 <script>
     import { mapGetters, mapActions } from 'vuex'
     import ClassificationHistory from '../ClassificationHistory.vue'
-    import Datepicker from 'vuejs-datepicker'
+    import DateInput from '../../forms/DateInput.vue'
     import moment from 'moment'
     import { formatDate } from '../../../filters'
 
     export default {
         components: {
             ClassificationHistory,
-            Datepicker
+            DateInput
         },
         props: {
             modelValue: {
@@ -109,10 +101,6 @@
                 modalVisible: false,
                 newClassificationDate: new Date(),
                 newClassificationId: null,
-                highlighted: {
-                    from: new moment().hour(0),
-                    to: new moment().hour(24)
-                },
                 classificationDatesUpdated: false,
                 errors: {}
             }
