@@ -35,7 +35,7 @@
     }
 </script>
 <template>
-    <b-tabs v-model="activeTabIndex">
+    <b-tabs v-model:index="activeTabIndex">
         <b-tab title="People">
             <template #title>
                 People &nbsp;<span class="badge badge-pill badge-primary">{{ activeMembers.length }}</span>

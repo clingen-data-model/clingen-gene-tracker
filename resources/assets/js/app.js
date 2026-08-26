@@ -6,7 +6,9 @@
 
 require('./bootstrap');
 import { configureCompat, createApp } from 'vue'
-import BootstrapVue, { componentsPlugin } from 'bootstrap-vue'
+import { createBootstrap } from 'bootstrap-vue-next'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+import registerBootstrapVueNext from './bootstrap-vue-next'
 import store from './store/index'
 import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
@@ -76,7 +78,8 @@ if (document.getElementById('app')) {
         }
     });
 
-    app.use(BootstrapVue)
+    app.use(createBootstrap())
+    registerBootstrapVueNext(app)
     app.use(store)
     app.use(router)
     app.component('external-link', ExternalLink)
@@ -92,6 +95,6 @@ if (document.getElementById('expert-panel-field')) {
         }
     });
 
-    app.use(BootstrapVue)
+    app.use(createBootstrap())
     app.mount('#expert-panel-field')
 }

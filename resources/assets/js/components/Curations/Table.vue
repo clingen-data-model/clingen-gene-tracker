@@ -52,7 +52,8 @@
                         hide-goto-end-buttons
                         :total-rows="totalRows"
                         :per-page="pageLength"
-                        v-model="currentPage"
+                        :model-value="currentPage"
+                        @update:model-value="currentPage = $event"
                         class="curations-table-pagination my-0"
                     />
                 </div>
@@ -98,14 +99,13 @@
         </div>
         <b-table striped hover 
             ref="table"
-            :items="curationProvider" 
+            :provider="curationProvider"
             :fields="fields" 
             :filter="filter"
             :per-page="pageLength"
             :current-page="currentPage"
             @sort-changed="handleSortChanged"
-            :sort-by.sync="sortKey"
-            :sort-desc.sync="sortDesc"
+            v-model:sort-by="sortByModel"
             :no-local-sorting="true"
             :show-empty="true"
         >     
@@ -169,7 +169,8 @@
                     hide-goto-end-buttons
                     :total-rows="totalRows"
                     :per-page="pageLength"
-                    v-model="currentPage"
+                    :model-value="currentPage"
+                    @update:model-value="currentPage = $event"
                     class="curations-table-pagination my-0 float-right" />
             </div>
         </div>
@@ -211,8 +212,12 @@ export default {
 
             filter: null,
             currentPage: 1,
-            sortDesc: (this.sortDir == 'desc'),
-            sortKey: JSON.parse(JSON.stringify(this.sortBy)),
+            sortByModel: [
+                {
+                    key: this.sortBy,
+                    order: this.sortDir == 'desc' ? 'desc' : 'asc'
+                }
+            ],
             totalRows: 0,
             searchFieldId: 'search-filter-' + uniqid(),
             showAdvancedFilters: false,
@@ -298,8 +303,7 @@ export default {
                     sortable: false,
                     thStyle: { width: '7rem' }
                 }
-            ],
-            ctx: null
+            ]
         }
     },
     computed: {
@@ -349,22 +353,23 @@ export default {
         }
     },
     methods: {
-        curationProvider(ctx, callback) {
-            if (ctx == this.ctx) {
-                return;
+        curationProvider(ctx) {
+            const [sort] = ctx.sortBy || []
+            const context = {
+                currentPage: ctx.currentPage,
+                perPage: ctx.perPage,
+                filter: ctx.filter,
+                sortBy: sort?.key || this.sortBy,
+                sortDesc: sort?.order === 'desc',
+                ...this.searchParams,
+                filters: JSON.stringify(this.advancedFilters),
+                exclude_archived: this.excludeArchived ? 1 : 0
             }
 
-            const context = {
-              ...ctx, 
-              ...this.searchParams, 
-              filters: JSON.stringify(this.advancedFilters),
-              exclude_archived: this.excludeArchived ? 1 : 0
-            }
-            getPageOfCurations(context)
-                .then(response => {
-                    this.totalRows = response.data.meta.total
-                    callback(response.data.data)
-                })
+            return getPageOfCurations(context).then(response => {
+                this.totalRows = response.data.meta.total
+                return response.data.data
+            })
         },
 
         clearFilters() {
