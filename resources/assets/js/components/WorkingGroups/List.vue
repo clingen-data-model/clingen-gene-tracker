@@ -23,11 +23,14 @@
                     :filter="filter"
                     :per-page="pageLength"
                     :current-page="currentPage"
-                    sort-by="name"
+                    v-model:sort-by="sortBy"
                     @filtered="onFiltered"
-                    @row-clicked="handleRowClick"
-                    tbody-tr-class="crsr-pointer"
-                >            
+                >         
+                    <template #cell(name)="{ item }">
+                        <router-link :to="`/working-groups/${item.id}`">
+                            {{ item.name }}
+                        </router-link>
+                    </template>   
                 </b-table>
                 <div class="float-right">Total Records: {{totalRows}}</div>
             </div>        
@@ -44,6 +47,12 @@
                 pageLength: 25,
                 currentPage: 1,
                 totalRows: 0,
+                sortBy: [
+                    {
+                        key: 'name',
+                        order: 'asc'
+                    }
+                ],
                 fields: [
                     {
                         key: 'id',
@@ -75,9 +84,6 @@
               this.currentPage = 1
               this.totalRows = filteredItems.length
             },
-            handleRowClick($event) {
-                this.$router.push({path: '/working-groups/'+$event.id})
-            }
         },
         mounted() {
             this.getWorkingGroups();
