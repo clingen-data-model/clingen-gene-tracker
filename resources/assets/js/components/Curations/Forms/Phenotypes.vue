@@ -41,7 +41,7 @@
                         tdClass: 'text-right w-10',
                         sortable: false,
                         label: ' ',
-                        formatter: (value, key, item) => {
+                        formatter: ({item}) => {
                             return {
                                 'id': item.id,
                                 'mim_number': item.phenotypeMimNumber,

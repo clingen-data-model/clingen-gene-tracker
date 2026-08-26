@@ -23,9 +23,6 @@
                 </tr>
             </tbody>
         </table>
-        <!-- <b-modal v-model="showAddForm" title="Add a note">
-            <textarea style="width: 100%; height: 10rem;" class="form-control" v-model="newNoteContent"></textarea>
-        </b-modal> -->
     </div>
 </template>
 <script>

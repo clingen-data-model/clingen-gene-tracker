@@ -101,7 +101,11 @@
         </b-form-group>
 
         <b-form-group horizontal label="Status" label-for="curation_status_id" v-if="updatedCuration && updatedCuration.curation_statuses">
-            <status-form v-model="updatedCuration" class="mt-1"></status-form>
+            <status-form
+                :model-value="updatedCuration"
+                @update:model-value="updatedCuration = $event"
+                class="mt-1"
+            ></status-form>
         </b-form-group>
 
         <div v-if="isArchived" class="alert alert-warning mt-3">
