@@ -5,7 +5,7 @@
  */
 
 require('./bootstrap');
-import { configureCompat, createApp } from 'vue'
+import { createApp } from 'vue'
 import { createBootstrap } from 'bootstrap-vue-next'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 import registerBootstrapVueNext from './bootstrap-vue-next'
@@ -17,8 +17,6 @@ import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 // import configs from './configs.json';
 
 // console.log(configs);
-
-configureCompat({ MODE: 2, COMPONENT_V_MODEL: false })
 
 import ExternalLink from './components/ExternalLink.vue'
 
