@@ -41,51 +41,53 @@
             </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
-                <b-table 
-                    :fields="fields" 
-                    :items="filteredResults"
-                    primary-key="id"
-                    bordered
-                    show-empty
-                    :empty-text="emptyText"
-                    :busy="loadingResults"
-                    :small="true"
-                    class="text-small"
-                    striped
-                >
-                    <template #table-busy>
-                        <div class="text-center">
-                            Looking for curations...
-                        </div>
-                    </template>
-                    <template v-slot:head(available_phenotypes)="data">
-                        {{data.label}}
-                        <small class="font-weight-normal">(* phenotype is in curation)</small>                        
-                    </template>  
-                    <template v-slot:cell(available_phenotypes)="{item, value}">
-                        <ul class="list-unstyled" style="overflow-x: scroll; word-">
-                            <li v-for="ph in (item && item.gene && item.gene.phenotypes ? item.gene.phenotypes : [])" 
-                                :key="ph.mim_number" 
-                                class="phenotype" 
-                                :class="{curated: phenotypeIsInCuration(ph, item)}"
-                            >
-                                <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
-                                <span v-if="ph.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span>
-                            </li>
-                        </ul>
-                    </template>
-                    <template v-slot:cell(current_status.name)="{ item, value }">
-                        <div>
-                            <span>{{ formatStatus(value, item) }}</span>
-                            <span
-                                v-if="item.is_archived"
-                                class="badge bg-warning text-dark ms-2"
-                            >
-                                Archived
-                            </span>
-                        </div>
-                    </template>
-                </b-table>
+                <div class="table-responsive">
+                    <b-table 
+                        :fields="fields" 
+                        :items="filteredResults"
+                        primary-key="id"
+                        bordered
+                        show-empty
+                        :empty-text="emptyText"
+                        :busy="loadingResults"
+                        :small="true"
+                        class="text-small"
+                        striped
+                    >
+                        <template #table-busy>
+                            <div class="text-center">
+                                Looking for curations...
+                            </div>
+                        </template>
+                        <template v-slot:head(available_phenotypes)="data">
+                            {{data.label}}
+                            <small class="font-weight-normal">(* phenotype is in curation)</small>                        
+                        </template>  
+                        <template v-slot:cell(available_phenotypes)="{item, value}">
+                            <ul class="list-unstyled" style="overflow-x: scroll; word-">
+                                <li v-for="ph in (item && item.gene && item.gene.phenotypes ? item.gene.phenotypes : [])" 
+                                    :key="ph.mim_number" 
+                                    class="phenotype" 
+                                    :class="{curated: phenotypeIsInCuration(ph, item)}"
+                                >
+                                    <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
+                                    <span v-if="ph.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-slot:cell(current_status.name)="{ item, value }">
+                            <div>
+                                <span>{{ formatStatus(value, item) }}</span>
+                                <span
+                                    v-if="item.is_archived"
+                                    class="badge bg-warning text-dark ms-2"
+                                >
+                                    Archived
+                                </span>
+                            </div>
+                        </template>
+                    </b-table>
+                </div>
             </div>
         </div>
     </div>
@@ -117,7 +119,10 @@ export default {
                 {
                     key: 'disease',
                     label: 'Disease Entity',
-                    formatter: (value, key, item) => value ? `${value.name} (${value.mondo_id})` : null,
+                    formatter: (value) => {
+                        if (!value || !value.name) { return ''; }
+                        return value.mondo_id ? `${value.name} (${value.mondo_id})` : value.name;
+                    },
                     sortable: true,
                     thStyle: {
                         width: '12rem'
@@ -129,15 +134,15 @@ export default {
                     sortable: true,
                 },
                 {
-                    key: 'current_classification.name',
+                    key: 'current_classification',
                     label: 'Classification',
                     sortable: true,
-                    formatter: function (value, key, item) {
-                        let disp = value 
-                        if (item.current_classification) {
-                            disp += ` - ${moment(item.current_classification.pivot.classification_date).format('MM/DD/YY')}`
-                        }
-                        return disp
+                    formatter: function (value) {
+                        if (!value) { return ''; }
+                        const classification = value.name || '';
+                        const classificationDate = value.pivot && value.pivot.classification_date ? moment(value.pivot.classification_date).format('MM/DD/YY') : null;
+                        if (classification && classificationDate) { return `${classification} - ${classificationDate}`; }
+                        return classification || classificationDate || '';
                     },
                     thStyle: {
                         width: "10rem"
@@ -154,8 +159,8 @@ export default {
                 {
                     key: 'rationales',
                     label: 'Rationales',
-                    formatter: function (value, key, item) {
-                        return item.rationales.map(r => r.name).join(', ')
+                    formatter: function (value) {
+                        return Array.isArray(value) ? value.map(r => r.name).filter(Boolean).join(', ') : '';
                     },
                     sortable: false
                 },
