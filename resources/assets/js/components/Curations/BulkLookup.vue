@@ -105,7 +105,7 @@ export default {
     },
     data() {
         return {
-            geneSymbols: [],
+            geneSymbols: '',
             results: [],
             notFoundGenes: [],
             fields: [
