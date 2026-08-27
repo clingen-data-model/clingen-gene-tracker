@@ -20,8 +20,6 @@ import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 
 configureCompat({ MODE: 2, COMPONENT_V_MODEL: false })
 
-window.Vue = require('vue').default
-
 import ExternalLink from './components/ExternalLink.vue'
 
 import GciLink from './components/Curations/GciLink.vue';

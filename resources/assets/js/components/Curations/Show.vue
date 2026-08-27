@@ -219,7 +219,7 @@
                     </notes-list>
                 </div>
             </b-card>
-            <div v-if="loading" class="alert alert-secondary lead text-center mt-4" key="loading">
+            <div v-else class="alert alert-secondary lead text-center mt-4" key="loading">
                 Loading...
             </div>
         </transition>
