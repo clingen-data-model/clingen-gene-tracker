@@ -59,7 +59,7 @@
                             </router-link>
                             <small v-if="result.hgnc_id">(hgnc:{{result.hgnc_id}})</small>  
                             <span v-if="result.expert_panel"> - {{ result.expert_panel.name }}</span>
-                            <span class="badge badge-warning ml-2">Archived</span>
+                            <span class="badge bg-warning text-dark ms-2">Archived</span>
                             <span v-if="result.gdm_uuid" class="text-muted small d-block">
                                 GCI Record: {{ result.gdm_uuid }}
                             </span>
@@ -85,7 +85,7 @@
                     <div>
                         <strong>{{ curation.gene_symbol || 'Untitled curation' }}</strong>
                         <span v-if="curation.expert_panel"> - {{ curation.expert_panel.name }}</span>
-                        <span class="badge badge-warning ml-2">Archived</span>
+                        <span class="badge bg-warning text-dark ms-2">Archived</span>
                         <span v-if="curation.uuid" class="text-muted small d-block">
                             UUID: {{ curation.uuid }}
                         </span>

@@ -30,7 +30,7 @@
             <div v-if="curations && user.canEditCuration(this.curation)">
                 <b-form id="new-curation-form">
                     <div class="row">
-                        <div class="col-md-2 border-right">
+                        <div class="col-md-2 border-end">
                             <nav class="nav flex-column">
                                 <router-link 
                                      v-for="(step, idx) in steps"
@@ -61,7 +61,7 @@
                             <!-- <delete-button :curation="curation"></delete-button> -->
                             <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
                         </div>
-                        <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-right">
+                        <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-end">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
                             <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
                             <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>

@@ -7,12 +7,12 @@
         <div class="card-body">
             <div class="curations-table-container">
                 <div class="row">
-                    <div class="col-md-6 form-inline">
+                    <div class="col-md-6 d-flex align-items-center">
                         <label for="#curations-filter-input">Search:</label>&nbsp;
                         <input v-model="filter" placeholder="search working groups" class="form-control" id="curations-filter-input" />
                     </div>
                     <div class="col-md-6">
-                        <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-right" />    
+                        <b-pagination size="sm" hide-goto-end-buttons :total-rows="totalRows" :per-page="pageLength " v-model="currentPage" class="my-0 float-end" />
                     </div>
                 </div>
                 <br>
@@ -32,7 +32,7 @@
                         </router-link>
                     </template>   
                 </b-table>
-                <div class="float-right">Total Records: {{totalRows}}</div>
+                <div class="float-end">Total Records: {{totalRows}}</div>
             </div>        
         </div>
     </div>

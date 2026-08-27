@@ -11,22 +11,21 @@
 </style>
 <template>
     <div id="curation-info-fields" style="position: relative">
-        <div v-if="loading" style="position:absolute; top:0; left: 0; bottom: 0; right: 0; background-color: rgba(256, 256, 256, .4); z-index: 10">
-            <div class="alert alert-light border text-center" style="margin: auto; width: 10rem; margin-top: 25%">Loading...</div>
-        </div>
+        
         <b-form-group horizontal id="new-gene-symbol-group"
             label="HGNC Gene Symbol"
             label-for="gene-symbol-input"
             :class="{'error': fieldError('gene_symbol')}"
         >
-            <b-form-input id="gene-symbol-input"
+            <b-form-input
+                id="gene-symbol-input"
                 type="text"
-                v-model="updatedCuration.gene_symbol"
+                :model-value="updatedCuration.gene_symbol"
+                @update:model-value="handleGeneInput"
                 required
                 placeholder="ATK-1"
                 :disabled="hasGdmUuid() || isArchivedReadOnly"
-            >
-            </b-form-input>
+            />
             <gci-linked-message :curation="updatedCuration" attribute-label="the gene"></gci-linked-message>
 
             <validation-error :messages="errors.gene_symbol"></validation-error>
@@ -37,7 +36,11 @@
         <b-form-group horizontal label="Mode of Inheritance" label-for="moi_input"
             :class="{'error': fieldError('moi_id')}"
         >
-            <b-form-select v-model="updatedCuration.moi_id"
+            <b-form-select :model-value="updatedCuration.moi_id"
+                @update:model-value="value => {
+                    console.log('selected MOI:', value)
+                    updatedCuration.moi_id = value
+                }"
                 id="moi_input"
                 :disabled="hasGdmUuid() || isArchivedReadOnly"
             >
@@ -58,7 +61,8 @@
         >
             <b-form-select 
                 id="expert-panel-select" 
-                v-model="updatedCuration.expert_panel_id" 
+                :model-value="updatedCuration.expert_panel_id"
+                @update:model-value="updatedCuration.expert_panel_id = $event"
                 :disabled="!canUpdateExpertPanel || isArchivedReadOnly"
             >
                 <option :value="null">Select...</option>
@@ -172,7 +176,7 @@
                 <div class="mt-3">
                      <button
                         type="button"
-                        class="btn btn-outline-secondary ml-2"
+                        class="btn btn-outline-secondary ms-2"
                         :disabled="archiveSaving"
                         @click="toggleArchiveFields"
                     >
@@ -200,7 +204,7 @@
         <div class="alert alert-info mt-3" v-if="canEditGdmUuid">
             <h5>
                 Advanced Info
-                <small class="text-muted float-right"><small>
+                <small class="text-muted float-end"><small>
                     You are seeing this b/c you are a trusted user.
                     <br>
                     Only use these fields if you know what you're doing.
@@ -288,9 +292,6 @@
             }),
             ...mapGetters('curationStatuses', {
                 curationStatuses: 'Items',
-            }),
-            ...mapGetters({
-                loading: 'loading',
             }),
             panelOptions: function () {
                 return this.panels.filter(panel => this.user.canSelectExpertPanel(panel)).sort((a, b) => a.name.localeCompare(b.name))
@@ -401,6 +402,9 @@
                 } finally {
                     this.archiveSaving = false
                 }
+            },
+            handleGeneInput(value) {
+                this.updatedCuration.gene_symbol = value
             },
         },
         mounted: function () {

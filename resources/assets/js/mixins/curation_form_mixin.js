@@ -14,12 +14,16 @@ export default {
         }
     },
     watch: {
-        updatedCuration: function(to, from) {
-            this.$emit('update:modelValue', this.updatedCuration);
+        updatedCuration: {
+            deep: true,
+            handler() {
+                this.$emit('update:modelValue', this.updatedCuration)
+            }
         },
+
         modelValue: function() {
-            if (this.modelValue != this.updatedCuration) {
-                this.syncValue();
+            if (this.modelValue !== this.updatedCuration) {
+                this.syncValue()
             }
         }
     },

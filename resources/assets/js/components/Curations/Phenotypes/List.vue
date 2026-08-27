@@ -20,7 +20,7 @@
                 <tbody>
                     <tr v-for="phenotype in phenotypes" :key="phenotype.id">
                         <td>{{ phenotype.mim_number }}</td>
-                        <td>{{ phenotype.name }} <span v-if="phenotype.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span></td>
+                        <td>{{ phenotype.name }} <span v-if="phenotype.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span></td>
                     </tr>
                 </tbody>
             </table>

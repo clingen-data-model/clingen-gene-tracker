@@ -1,6 +1,6 @@
 @role('programmer|admin')
     @if (!\Auth::user()->isImpersonated())
-    <div class="container form-inline">
+    <div class="container d-flex align-items-center">
         Impersonate a user:
         &nbsp;
         <select name="impersonate_id" class="form-control" onchange="location.href = '/impersonate/take/'+this.value">
@@ -33,7 +33,7 @@
                     @endforeach
                 </ul>
             </div>
-            <div class="ml-4 text-center" style="align-self: center; justify-self: center; flex-grow: 2;">
+            <div class="ms-4 text-center" style="align-self: center; justify-self: center; flex-grow: 2;">
                 <a href="/impersonate/leave" class="btn btn-secondary btn">Stop impersonating</a>
             </div>
         </div>
