@@ -100,7 +100,7 @@ export default {
     },
     data() {
         return {
-            geneSymbols: [],
+            geneSymbols: '',
             results: [],
             fields: [
                 {
