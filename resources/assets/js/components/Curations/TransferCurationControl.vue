@@ -46,7 +46,7 @@
                     </label>
                 </input-row>
                 <input-row v-model="endDate" :errors="errors.end_date" label="End date" type="date" v-show="isHistorical"></input-row> -->
-                <div class="mt-1 border-top pt-3 text-right">
+                <div class="mt-1 border-top pt-3 text-end">
                     <button class="btn btn-secondary" @click="cancel">Cancel</button>
                     <button class="btn btn-primary" @click="confirmTransfer()">Transfer Curation</button>
                 </div>
@@ -64,7 +64,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="mt-1 border-top pt-3 text-right">
+            <div class="mt-1 border-top pt-3 text-end">
                 <button class="btn btn-secondary" @click="cancel">Cancel</button>
                 <button class="btn btn-primary" @click="transferCuration">Transfer Curation</button>
             </div>

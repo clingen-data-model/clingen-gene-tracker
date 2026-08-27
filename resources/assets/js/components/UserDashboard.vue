@@ -5,7 +5,7 @@
         <div class="card-header">
             <router-link
                 id="new-curation-btn" 
-                class="btn btn-secondary float-right btn-sm" 
+                class="btn btn-secondary float-end btn-sm"
                 to="/curations/create"
                 v-if="user.canAddCurations()"
             >

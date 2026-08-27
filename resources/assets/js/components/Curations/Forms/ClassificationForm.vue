@@ -44,10 +44,10 @@
                                 <div v-for="message in errors.classification_id" :key="message"><small>{{message}}</small></div>
                             </div>
                         </td>
-                        <td class="form-inline">
+                        <td class="d-flex align-items-center">
                             <date-input 
                                 v-model="newClassificationDate"
-                                class="mr-2"
+                                class="me-2"
                             ></date-input>
                             <b-button 
                                 variant="primary"
@@ -61,11 +61,11 @@
                         <td>
                             <label :for="'classification-date-'+classification.id"><strong>{{classification.name}}</strong></label>
                         </td>
-                        <td class="form-inline">
+                        <td class="d-flex align-items-center">
                             <date-input
                                 :id="'classification-date-'+classification.id"
                                 :model-value="classification.pivot.classification_date"
-                                class="mr-2"
+                                class="me-2"
                                 @update:model-value="updateclassificationDate(classification.pivot,$event)"
                             ></date-input>
                             <b-button @click="removeclassificationEntry(classification)"><strong>x</strong></b-button>

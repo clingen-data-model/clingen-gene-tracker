@@ -44,7 +44,7 @@
                             </div>
                         </td>
                         <td class="d-flex align-items-center">
-                            <div class="flex-grow-1 mr-2">
+                            <div class="flex-grow-1 me-2">
                                 <date-input 
                                     v-model="newStatusDate"
                                 ></date-input>
@@ -62,7 +62,7 @@
                             <label :for="'status-date-'+status.id"><strong>{{status.name}}</strong></label>
                         </td>
                         <td class="d-flex align-items-center">
-                            <div class="flex-grow-1 mr-2">
+                            <div class="flex-grow-1 me-2">
                                 <date-input
                                     :id="'status-date-'+status.id"
                                     :model-value="status.pivot.status_date"

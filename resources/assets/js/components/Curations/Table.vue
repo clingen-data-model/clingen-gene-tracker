@@ -2,7 +2,7 @@
     <div class="curations-table">
         <div class="curations-toolbar mb-3" v-show="!loading">
             <div class="d-flex flex-wrap align-items-center justify-content-between toolbar-row">
-                <div class="toolbar-search flex-grow-1 mr-3">
+                <div class="toolbar-search flex-grow-1 me-3">
                     <div class="input-group input-group-sm">
                         <input
                             v-model="filter"
@@ -10,8 +10,7 @@
                             class="form-control"
                             placeholder="Search curations by gene, disease, curator, status, or ID"
                         />
-                        <div class="input-group-append">
-                            <button
+                        <button
                                 type="button"
                                 class="btn btn-outline-primary"
                                 @click="showAdvancedFilters = !showAdvancedFilters"
@@ -19,7 +18,7 @@
                                 {{ showAdvancedFilters ? 'Hide filters' : 'More filters' }}
                                 <span
                                     v-if="activeFilterCount"
-                                    class="badge badge-light ml-1 toolbar-badge"
+                                    class="badge bg-light text-dark ms-1 toolbar-badge"
                                 >
                                     {{ activeFilterCount }}
                                 </span>
@@ -33,7 +32,7 @@
                             >
                                 Clear
                             </button>
-                            <div class="form-check form-check-inline ml-2">
+                            <div class="form-check form-check-inline ms-2">
                               <input
                                 id="exclude-archived"
                                 v-model="excludeArchived"
@@ -42,7 +41,6 @@
                               />
                               <label for="exclude-archived" class="form-check-label">Exclude archived</label>
                             </div>
-                        </div>
                     </div>
                 </div>
 
@@ -137,7 +135,7 @@
             <template v-slot:cell(current_status)="{item}">
                 <div>
                     {{(item.current_status) ? item.current_status.name : null}}
-                    <b-badge v-if="item.is_archived" variant="warning" class="ml-2">
+                    <b-badge v-if="item.is_archived" variant="warning" class="ms-2">
                         Archived
                     </b-badge>
                 </div>
@@ -145,7 +143,7 @@
             <template v-slot:cell(mondo_id)="{item}">
                 <div>{{ getDiseaseEntityColumn(item) }}</div>
             </template>
-            <template v-slot:cell(actions)="{item}" class="text-right">
+            <template v-slot:cell(actions)="{item}" class="text-end">
                 <div>
                     <router-link 
                         v-if="user.canEditCuration(item)"
@@ -171,7 +169,7 @@
                     :per-page="pageLength"
                     :model-value="currentPage"
                     @update:model-value="currentPage = $event"
-                    class="curations-table-pagination my-0 float-right" />
+                    class="curations-table-pagination my-0 float-end" />
             </div>
         </div>
     </div>

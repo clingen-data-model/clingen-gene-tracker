@@ -11,7 +11,7 @@
                         <b-nav-item href="#">GCEPS</b-nav-item>
                     </b-navbar-nav>
 
-                    <b-navbar-nav class="ml-auto">
+                    <b-navbar-nav class="ms-auto">
                         <b-nav-item-dropdown text="User" right>
                             <b-dropdown-item href="/admin">Admin</b-dropdown-item>
                             <b-dropdown-item href="/admin/logs" v-show="true">Logs</b-dropdown-item>

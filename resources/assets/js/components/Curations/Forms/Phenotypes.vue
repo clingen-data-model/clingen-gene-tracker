@@ -38,7 +38,7 @@
                     },
                     {
                         key: 'checkbox',
-                        tdClass: 'text-right w-10',
+                        tdClass: 'text-end w-10',
                         sortable: false,
                         label: ' ',
                         formatter: ({item}) => {
@@ -141,7 +141,7 @@
                     </template>
                     <template v-slot:cell(phenotype)="data">
                         <span>{{ data.item.phenotype }}</span>
-                        <span v-if="data.item.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                        <span v-if="data.item.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span>
                     </template>
                     <template v-slot:cell(checkbox)="data">
                         <input 

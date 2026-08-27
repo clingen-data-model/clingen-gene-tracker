@@ -1,7 +1,7 @@
 <style></style>
 
 <template>
-    <div  class="form-group form-inline">
+    <div class="form-group d-flex align-items-center">
         <!-- <pre>{{updatedPanel}}</pre> -->
         <select v-model="updatedPanel.expert_panel_id" class="form-control">
             <option>Select...</option>

@@ -5,7 +5,7 @@
         <h4>
             <document-uploader 
                 :curation="curation" 
-                class="float-right"
+                class="float-end"
                 v-on:uploaded="$refs.docList.getDocuments()"
                 v-if="user.canEditCuration(curation) && !curation.is_archived"
             ></document-uploader>

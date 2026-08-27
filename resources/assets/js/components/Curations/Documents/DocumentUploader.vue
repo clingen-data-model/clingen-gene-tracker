@@ -18,7 +18,7 @@
             :cancel-disabled="uploading"
             :ok-title="uploading ? 'Uploading...' : 'Upload'"
         >
-            <div class="form-row">
+            <div class="row">
                 <label class="col-sm-2" for="file-field">
                     File:
                 </label>
@@ -36,14 +36,14 @@
                     <validation-error :messages="errors.file"></validation-error>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label class="col-sm-2" for="name">Name:</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control form-control-sm" id="name" v-model="newUpload.name" maxlength="255" :disabled="uploading">
                     <validation-error :messages="errors.name"></validation-error>
                 </div>
             </div>
-            <div class="form-row" v-if="categories.length > 0">
+            <div class="row" v-if="categories.length > 0">
                 <label for="category_id" class="col-sm-2">Category:</label>
                 <div class="col-sm-10">
                     <select name="category_id" id="category_id" class="form-control form-control-sm" v-model="newUpload.upload_category_id" :disabled="uploading">
@@ -59,7 +59,7 @@
                     <validation-error :messages="errors.upload_category_id"></validation-error>
                 </div>
             </div>
-            <div class="form-row">
+            <div class="row">
                 <label for="notes" class="col-sm-2">
                     Notes:
                 </label>
