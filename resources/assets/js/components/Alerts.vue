@@ -8,23 +8,23 @@
 </style>
 <template>
     <div class="alerts-container">
-        <transition name="fade">
+        <transition-group name="fade">
             <notice v-for="(msg, idx) in info"
-                v-bind:key="idx"
+                :key="'info-' + msg"
                 class="alert-info"
                 v-on:cleared="removeInfo(idx)"
             >
                 {{msg}}
             </notice>
             <notice v-for="(msg, idx) in errors"
-                v-bind:key="idx"
+                :key="'error-' + msg + '-' + idx"
                 class="alert-danger"
                 :auto-close="false"
                 v-on:cleared="removeError(idx)"
             >
                 {{msg}}
             </notice>
-        </transition>
+        </transition-group>
     </div>
 </template>
 <script>

@@ -458,7 +458,7 @@ export default {
     transition: all 0.18s ease;
 }
 
-.toolbar-slide-enter,
+.toolbar-slide-enter-from,
 .toolbar-slide-leave-to {
     opacity: 0;
     transform: translateY(-4px);
