@@ -36,7 +36,7 @@
                     No curations found for {{ notFoundGenes.length }} {{ notFoundGenes.length === 1 ? 'gene' : 'genes' }}:
                 </strong>
                 <div class="mt-2">
-                    <span v-for="gene in notFoundGenes" :key="gene" class="badge badge-light border mr-1 mb-1">{{ gene }}</span>
+                    <span v-for="gene in notFoundGenes" :key="gene" class="badge bg-light text-dark border me-1 mb-1">{{ gene }}</span>
                 </div>
             </div>
             <div v-if="results.length > 0">
@@ -70,7 +70,7 @@
                                 :class="{curated: phenotypeIsInCuration(ph, item)}"
                             >
                                 <span v-if="phenotypeIsInCuration(ph, item)">*</span>{{ph.name}} ({{ph.mim_number}})
-                                <span v-if="ph.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                <span v-if="ph.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span>
                             </li>
                         </ul>
                     </template>
@@ -79,7 +79,7 @@
                             <span>{{ formatStatus(value, item) }}</span>
                             <span
                                 v-if="item.is_archived"
-                                class="badge badge-warning ml-2"
+                                class="badge bg-warning text-dark ms-2"
                             >
                                 Archived
                             </span>

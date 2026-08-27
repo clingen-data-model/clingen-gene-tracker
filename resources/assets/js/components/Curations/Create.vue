@@ -25,7 +25,7 @@
                         <div class="col-md-1">
                             <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
                         </div>
-                        <div class="col-md-11 text-right">
+                        <div class="col-md-11 text-end">
                             <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
                         </div>
                     </div>

@@ -10,7 +10,7 @@
                 <div class="mt-1">
                     <button @click="$emit('update:modelValue', '')" class="btn btn-sm btn-light border">Clear</button>
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
-                    <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-right">Get CSV</button>
+                    <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-end">Get CSV</button>
                 </div>
             </b-tab>
             <b-tab title="CSV Upload">
@@ -34,7 +34,7 @@
                 </div>
                 <div class="mt-2">
                     <button @click="$emit('lookup')" class="btn btn-primary btn-sm">Search</button>
-                    <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-right">Get CSV</button>
+                    <button @click="$emit('getCsv')" class="btn btn-primary btn-sm float-end">Get CSV</button>
                 </div>
             </b-tab>
         </b-tabs>

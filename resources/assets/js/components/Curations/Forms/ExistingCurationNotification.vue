@@ -1,6 +1,7 @@
 <script>
     import queryStringFromParams from '../../../http/query_string_from_params';
     import WarningAlert from '../../WarningAlert.vue'
+    import { debounce } from 'lodash'
 
     export default {
         components: {
@@ -29,25 +30,28 @@
             },
         },
         watch: {
-            'curation.gene_symbol': function() {
-                if (this.curation.gene_symbol) {
-                    this.checkForCurations();
-                }
-            }
-            ,
-            'curation.phenotypes': function() {
-                if (this.curation && this.curation.phenotypes && this.curation.phenotypes.length > 0) {
-                    this.checkForCurations();
+            'curation.gene_symbol'(geneSymbol) {
+                if (geneSymbol && geneSymbol.trim()) {
+                    this.checkForCurations()
+                } else {
+                    this.matchedGenes = []
                 }
             },
-            'curation.disease': function() {
-                if (this.curation && this.curation.disease) {
-                    this.checkForCurations();
+
+            'curation.phenotypes'() {
+                if (this.curation?.phenotypes?.length > 0) {
+                    this.checkForCurations()
+                }
+            },
+
+            'curation.disease'() {
+                if (this.curation?.disease) {
+                    this.checkForCurations()
                 }
             }
         },
         methods: {
-            checkForCurations: _.debounce(function() {
+            checkForCurations: debounce(function() {
                 const queryObject = {
                     gene_symbol: this.curation.gene_symbol,
                 };
@@ -132,7 +136,7 @@
                                     <li v-for="(phenotype, idx) in match.phenotypes" :key="phenotype.mim_number">
                                         <strong v-if="hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</strong>
                                         <span v-if="!hasMatchingPhenotypes(phenotype)">{{phenotype.name}}</span>
-                                        <span v-if="phenotype.label_obsolete" class="badge badge-warning ml-1">Not in latest OMIM</span>
+                                        <span v-if="phenotype.label_obsolete" class="badge bg-warning text-dark ms-1">Not in latest OMIM</span>
                                     </li>
                                 </ul>
                             </td>

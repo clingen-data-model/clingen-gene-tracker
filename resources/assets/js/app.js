@@ -18,7 +18,7 @@ import ExpertPanelField from './components/admin/ExpertPanelField.vue'
 
 // console.log(configs);
 
-configureCompat({ MODE: 2 })
+configureCompat({ MODE: 2, COMPONENT_V_MODEL: false })
 
 window.Vue = require('vue').default
 

@@ -7,7 +7,7 @@
             No documents found
         </div>
         <div v-if="documents.length > 0">
-            <div class="form-inline mb-1">
+            <div class="d-flex align-items-center mb-1">
                 <label for="list-filter-input">Filter:</label>&nbsp;
                 <input type="text" class="form-control form-control-sm" v-model="filter">
             </div>
