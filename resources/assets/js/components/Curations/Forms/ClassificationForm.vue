@@ -77,103 +77,76 @@
     </div>
 </template>
 
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import ClassificationHistory from '../ClassificationHistory.vue'
-    import DateInput from '../../forms/DateInput.vue'
-    import moment from 'moment'
-    import { formatDate } from '../../../filters'
+<script setup>
+import { computed, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import ClassificationHistory from '../ClassificationHistory.vue'
+import DateInput from '../../forms/DateInput.vue'
+import moment from 'moment'
+import { formatDate } from '../../../filters'
 
-    export default {
-        components: {
-            ClassificationHistory,
-            DateInput
-        },
-        props: {
-            modelValue: {
-                required: true,
-                type: Object
-            }
-        },
-        data() {
-            return {
-                curationCopy: {},
-                modalVisible: false,
-                newClassificationDate: new Date(),
-                newClassificationId: null,
-                classificationDatesUpdated: false,
-                errors: {}
-            }
-        },
-        watch: {
-            modelValue: {
-                handler: 'syncCuration',
-                immediate: true,
-                deep: true
-            }
-        },
-        computed: {
-            ...mapGetters('classifications', {
-                classifications: 'Items',
-            }),
-            classificationOptions() {
-                return this.classifications
-            },
-        },
-        methods: {
-            ...mapActions('curations', {
-                linkNewClassification: 'linkNewClassification',
-                updateClassification: 'updateClassification',
-                unlinkClassification: 'unlinkClassification'
-            }),
-            addClassification() {
-                this.linkNewClassification(
-                    {
-                        curation: this.curationCopy, 
-                        data: {
-                            classification_id: this.newClassificationId,
-                            classification_date: formatDate(this.newClassificationDate, 'YYYY-MM-DD')
-                        }
-                    }
-                ).then(response => {
-                    this.newClassificationId = null,
-                    this.newClassificationDate = new Date()
-                })
-                .catch(error => {
-                    this.errors = error.response.data.errors;
-                })
-            },
-            updateclassificationDate(pivot, newDate) {
-                if (!pivot || moment(pivot.classification_date).diff(newDate) == 0) {
-                    return;
-                }
-                this.updateClassification({
-                    curation: this.curationCopy,
-                    pivotId: pivot.id,
-                    data: {
-                        classification_id: pivot.classification_id,
-                        classification_date: moment(newDate).format('YYYY-MM-DD')}
-                })
-                .then(response => {
-                    console.log('classification date updated')
-                })
-                .catch(response => {
-                    this.errors = response.data.errors;
-                })
-            },
-            removeclassificationEntry(classification)
-            {
-                this.unlinkClassification({curation: this.curationCopy, pivotId: classification.pivot.id})
-            },
-            submitAll() {
-                if (this.newClassificationId != null) {
-                    this.addClassification();
-                }
-            },
-            syncCuration() {
-                this.curationCopy = JSON.parse(JSON.stringify(this.modelValue))
-            },
-        },
-
+const props = defineProps({
+    modelValue: {
+        required: true,
+        type: Object
     }
+})
+
+const store = useStore()
+const curationCopy = ref({})
+const modalVisible = ref(false)
+const newClassificationDate = ref(new Date())
+const newClassificationId = ref(null)
+const errors = ref({})
+
+const classifications = computed(() => store.getters['classifications/Items'])
+const classificationOptions = computed(() => classifications.value)
+
+watch(() => props.modelValue, value => {
+    curationCopy.value = JSON.parse(JSON.stringify(value))
+}, { immediate: true, deep: true })
+
+function addClassification() {
+    store.dispatch('curations/linkNewClassification', {
+        curation: curationCopy.value,
+        data: {
+            classification_id: newClassificationId.value,
+            classification_date: formatDate(newClassificationDate.value, 'YYYY-MM-DD')
+        }
+    }).then(() => {
+        newClassificationId.value = null
+        newClassificationDate.value = new Date()
+    }).catch(error => {
+        errors.value = error.response.data.errors
+    })
+}
+
+function updateclassificationDate(pivot, newDate) {
+    if (!pivot || moment(pivot.classification_date).diff(newDate) == 0) {
+        return
+    }
+    store.dispatch('curations/updateClassification', {
+        curation: curationCopy.value,
+        pivotId: pivot.id,
+        data: {
+            classification_id: pivot.classification_id,
+            classification_date: moment(newDate).format('YYYY-MM-DD')
+        }
+    }).catch(response => {
+        errors.value = response.data.errors
+    })
+}
+
+function removeclassificationEntry(classification) {
+    store.dispatch('curations/unlinkClassification', {
+        curation: curationCopy.value,
+        pivotId: classification.pivot.id
+    })
+}
+
+function submitAll() {
+    if (newClassificationId.value != null) {
+        addClassification()
+    }
+}
 </script>
