@@ -24,18 +24,14 @@
         </b-navbar>
     </div>
 </template>
-<script>
-    export default {
-        methods: {
-            logout: function () {
-                window.axios.post('/logout')
-                    .then(function (response) {
-                        window.location.reload();
-                    })
-                    .catch(function (error) {
-                        console.error('error');
-                    });
-            }
-        }
-    }
+<script setup>
+function logout() {
+    window.axios.post('/logout')
+        .then(function () {
+            window.location.reload()
+        })
+        .catch(function () {
+            console.error('error')
+        })
+}
 </script>

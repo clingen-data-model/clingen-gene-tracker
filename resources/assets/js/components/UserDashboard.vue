@@ -20,16 +20,11 @@
     </div>
 </template>
 
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import CurationsTable from './Curations/Table'
-    
-    export default {
-        components: {
-            CurationsTable
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'})
-        }
-    }
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import CurationsTable from './Curations/Table'
+
+const store = useStore()
+const user = computed(() => store.getters.getUser)
 </script>

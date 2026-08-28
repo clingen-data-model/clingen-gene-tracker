@@ -13,13 +13,6 @@
         </div>
     </div>
 </template>
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import CurationsTable from './Table.vue'
-
-    export default {
-        components: {
-            CurationsTable
-        }
-    }
+<script setup>
+import CurationsTable from './Table.vue'
 </script>

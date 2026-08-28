@@ -37,8 +37,3 @@
         </a>
     </div>
 </template>
-<script>
-    export default {
-        //component definition
-    }
-</script>
