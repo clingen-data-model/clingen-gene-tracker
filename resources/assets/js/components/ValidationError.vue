@@ -8,16 +8,16 @@
         </div>
     </transition>
 </template>
-<script>
-    export default {
-        props: ['messages'],
-        computed: {
-            hasErrors: function () {
-                if (typeof this.messages == 'undefined') {
-                    return false
-                }
-                return true
-            }
-        }
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps(['messages'])
+
+const hasErrors = computed(() => {
+    if (typeof props.messages == 'undefined') {
+        return false
     }
+
+    return true
+})
 </script>
