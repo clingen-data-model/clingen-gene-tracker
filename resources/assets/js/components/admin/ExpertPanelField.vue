@@ -58,56 +58,44 @@
     </div>
 </template>
 
-<script>
-    import UserPanelFieldset from './UserPanelFieldset.vue'
+<script setup>
+import { computed, onMounted, ref } from 'vue'
 
-    export default {
-        components: {
-            UserPanelFieldset
-        },
-        props: {
-            connectedPanels: {
-                required: true,
-                default: []
-            },
-            panelOptions: {
-                required: true
-            }
-        },
-        data() {
-            return {
-                selectedPanels: [],
-                newPanel: {
-                    pivot: {}
-                }
-            }
-        },
-        computed: {
-            serializedSelections: function () {
-                return JSON.stringify(this.selectedPanels);
-            }
-        },
-        methods: {
-            syncSelectedPanels() {
-                this.selectedPanels = JSON.parse(JSON.stringify(this.connectedPanels))
-                this.selectedPanels.map((panel) => {
-                    panel.pivot.is_curator = (panel.pivot.is_curator == 1)
-                    panel.pivot.is_coordinator = (panel.pivot.is_coordinator == 1)
-                    panel.pivot.can_edit_curations = (panel.pivot.can_edit_curations == 1)
-                    return panel;
-                });
-            },
-            addNewPanel() {
-                this.selectedPanels.push({
-                    pivot: {}
-                });
-            },
-            removePanel(idx) {
-                this.selectedPanels.splice(idx, 1)
-            }
-        },
-        mounted() {
-            this.syncSelectedPanels()
-        }
+const props = defineProps({
+    connectedPanels: {
+        required: true,
+        default: []
+    },
+    panelOptions: {
+        required: true
     }
+})
+
+const selectedPanels = ref([])
+
+const serializedSelections = computed(() => JSON.stringify(selectedPanels.value))
+
+function syncSelectedPanels() {
+    selectedPanels.value = JSON.parse(JSON.stringify(props.connectedPanels))
+    selectedPanels.value.map((panel) => {
+        panel.pivot.is_curator = (panel.pivot.is_curator == 1)
+        panel.pivot.is_coordinator = (panel.pivot.is_coordinator == 1)
+        panel.pivot.can_edit_curations = (panel.pivot.can_edit_curations == 1)
+        return panel
+    })
+}
+
+function addNewPanel() {
+    selectedPanels.value.push({
+        pivot: {}
+    })
+}
+
+function removePanel(idx) {
+    selectedPanels.value.splice(idx, 1)
+}
+
+onMounted(() => {
+    syncSelectedPanels()
+})
 </script>

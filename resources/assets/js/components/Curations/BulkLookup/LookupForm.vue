@@ -108,72 +108,60 @@
     </div>
   </div>
 </template>
-<script>
-import ValidationError from '../../ValidationError.vue'
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue'
 
-export default {
-  props: [
-    'modelValue',
-    'errors'
-  ],
-  emits: ['update:modelValue', 'lookup', 'getCsv'],
-  components: {
-    ValidationError
+defineProps(['modelValue', 'errors'])
+
+const emit = defineEmits(['update:modelValue', 'lookup', 'getCsv'])
+const currentTab = ref('manual')
+const hasHeader = ref(false)
+const fileInput = ref(null)
+
+const numericCurrentTab = computed({
+  get() {
+    return parseInt(currentTab.value)
   },
-  data() {
-    return {
-      currentTab: 'manual',
-      hasHeader: false,
-    }
-  },
-  computed: {
-    numericCurrentTab: {
-      get: function() {
-        return parseInt(this.currentTab);
-      },
-      set: function (value) {
-        this.currentTab = value;
+  set(value) {
+    currentTab.value = value
+  }
+})
+
+watch(currentTab, (to) => {
+  localStorage.setItem('bulk-upload-form-tab', to)
+})
+
+function processFile(files) {
+  console.log(files)
+  if (files[0].type !== 'text/csv') {
+    alert('The file must be a csv.')
+    fileInput.value.value = null
+    return
+  }
+  if (files.length > 0 && files[0].type == 'text/csv') {
+    const reader = new FileReader()
+    reader.addEventListener('load', (event) => {
+        let text = event.target.result
+        if (hasHeader.value) {
+          let genes = text.split("\n")
+          const header = genes.splice(0, 1)
+          emit('update:modelValue', genes.join(','))
+          return
+        }
+        emit('update:modelValue', text)
+    })
+    reader.addEventListener('progress', (event) => {
+      if (event.loaded && event.total) {
+        const percent = (event.loaded / event.total) * 100
+        console.log(`progress: ${Math.round(percent)}`)
       }
-    }
-  },
-  watch: {
-    currentTab: function (to) {
-      localStorage.setItem('bulk-upload-form-tab', to);
-    }
-  },
-  methods: {
-    processFile(files) {
-      console.log(files)
-      if (files[0].type !== 'text/csv') {
-        alert('The file must be a csv.')
-        this.$refs.fileInput.value = null;
-        return;
-      }
-      if (files.length > 0 && files[0].type == 'text/csv') {
-        const reader = new FileReader();
-        reader.addEventListener('load', (event) => {
-            let text = event.target.result;
-            if (this.hasHeader) {
-              let genes = text.split("\n");
-              const header = genes.splice(0, 1);    
-              this.$emit('update:modelValue', genes.join(','));
-              return;
-            }
-            this.$emit('update:modelValue', text);
-        });
-        reader.addEventListener('progress', (event) => {
-          if (event.loaded && event.total) {
-            const percent = (event.loaded / event.total) * 100;
-            console.log(`progress: ${Math.round(percent)}`);
-          }
-          });
-          reader.readAsText(files[0]);
-      }
-    },
-  },
-  mounted() {
-    const storedTab = localStorage.getItem('bulk-upload-form-tab');
-    this.currentTab = ['manual', 'csv'].includes(storedTab) ? storedTab : 'manual';
+    })
+    reader.readAsText(files[0])
   }
 }
+
+onMounted(() => {
+  const storedTab = localStorage.getItem('bulk-upload-form-tab')
+  currentTab.value = ['manual', 'csv'].includes(storedTab) ? storedTab : 'manual'
+})
 </script>

@@ -25,28 +25,17 @@
         </table>
     </div>
 </template>
-<script>
-import InputRow from './forms/InputRow.vue'
+<script setup>
 import { formatDate } from '../filters'
-export default {
+
+defineOptions({
     name: 'NotesList',
-    components: {
-        InputRow
-    },
-    methods: {
-        formatDate
-    },
-    props: {
-        notes: {
-            type: Array,
-            required: true
-        }
-    },
-    data() {
-        return {
-            showAddForm: false,
-            newNoteContent: null
-        }
+})
+
+defineProps({
+    notes: {
+        type: Array,
+        required: true
     }
-}
+})
 </script>

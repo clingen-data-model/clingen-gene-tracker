@@ -16,30 +16,19 @@
     </div>
 </template>
 
-<script>
-    import DocumentUploader from './DocumentUploader.vue';
-    import DocumentsList from './DocumentsList.vue';
-    import { mapGetters } from 'vuex';
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import DocumentUploader from './DocumentUploader.vue'
+import DocumentsList from './DocumentsList.vue'
 
-    export default {
-        components: {
-            DocumentUploader,
-            DocumentsList
-        },
-        props: {
-            curation: {
-                reqired: true,
-                type: Object
-            }
-        },
-        data() {
-            return {
-            }
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'})
-        },
-        methods: {
-        }
+defineProps({
+    curation: {
+        reqired: true,
+        type: Object
     }
+})
+
+const store = useStore()
+const user = computed(() => store.getters.getUser)
 </script>

@@ -26,62 +26,53 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import { computed } from 'vue'
 import InputErrors from './InputErrors.vue'
 import DateInput from './DateInput.vue'
 
-export default {
-    components: {
-        InputErrors,
-        DateInput
+const props = defineProps({
+    vertical: {
+        type: Boolean,
+        default: false
     },
-    props: {
-        vertical: {
-            type: Boolean,
-            default: false
-        },
-        errors: {
-            type: Array,
-            required: false,
-            default: () => []
-        },
-        label: {
-            type: String,
-            required: false
-        },
-        type: {
-            type: String,
-            required: false,
-            default: 'text'
-        },
-        modelValue: {
-            required: false,
-            default: null
-        },
-        placeholder: {
-            required: false,
-            value: null
-        }
+    errors: {
+        type: Array,
+        required: false,
+        default: () => []
     },
-    emits: [
-        'update:modelValue'
-    ],
-    computed: {
-        colon () {
-            if (this.label && [':',';','.','?', '!'].includes(this.label.substr(-1))) {
-                return '';
-            }
-            return ':';    
-        },
-        hasErrors () {
-            return this.errors.length > 0;
-        },
+    label: {
+        type: String,
+        required: false
     },
-    methods: {
-        emitValue(evt) {
-            console.log(evt);
-            this.$emit('update:modelValue', evt)
-        }
+    type: {
+        type: String,
+        required: false,
+        default: 'text'
+    },
+    modelValue: {
+        required: false,
+        default: null
+    },
+    placeholder: {
+        required: false,
+        value: null
     }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const colon = computed(() => {
+    if (props.label && [':',';','.','?', '!'].includes(props.label.substr(-1))) {
+        return ''
+    }
+    return ':'
+})
+
+const hasErrors = computed(() => props.errors.length > 0)
+
+function emitValue(evt) {
+    console.log(evt)
+    emit('update:modelValue', evt)
 }
 </script>
