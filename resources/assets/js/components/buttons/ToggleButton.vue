@@ -7,37 +7,31 @@
         </small>
     </button>
 </template>
-<script>
-export default {
-    props: {
-        modelValue: {
-            required: true,
-            type: Boolean
-        },
-        showLabel: {
-            required: false,
-            default: 'Show'
-        },
-        hideLabel: {
-            required: false,
-            default: 'Hide'
-        }
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+    modelValue: {
+        required: true,
+        type: Boolean
     },
-    emits: ['update:modelValue'],
-    data() {
-        return {
-            
-        }
+    showLabel: {
+        required: false,
+        default: 'Show'
     },
-    computed: {
-        otherStateLabel () {
-            return this.modelValue ? this.hideLabel : this.showLabel;
-        }
-    },
-    methods: {
-        toggle () {
-            this.$emit('update:modelValue', !this.modelValue);
-        }
+    hideLabel: {
+        required: false,
+        default: 'Hide'
     }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const otherStateLabel = computed(() => {
+    return props.modelValue ? props.hideLabel : props.showLabel
+})
+
+function toggle() {
+    emit('update:modelValue', !props.modelValue)
 }
 </script>
