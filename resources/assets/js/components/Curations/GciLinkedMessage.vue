@@ -13,30 +13,20 @@
         </span>
     </div>
 </template>
-<script>
-export default {
+<script setup>
+defineOptions({
     name: 'GciLinkedMessage',
-    props: {
-        curation: {
-            required: true,
-            type: Object
-        },
-        attributeLabel: {
-            type: String,
-            required: false,
-            default: 'this attribute'
-        }
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
+})
 
+defineProps({
+    curation: {
+        required: true,
+        type: Object
     },
-    methods: {
-
+    attributeLabel: {
+        type: String,
+        required: false,
+        default: 'this attribute'
     }
-}
+})
 </script>

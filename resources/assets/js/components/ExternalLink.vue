@@ -9,7 +9,3 @@
         <span class="material-icons">open_in_new</span>
     </a>
 </template>
-<script>
-export default {
-}
-</script>
