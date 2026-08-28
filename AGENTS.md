@@ -38,3 +38,30 @@ Explicit bindings are preferred when clarity helps:
 ```vue
 :model-value="value"
 @update:model-value="value = $event"
+```
+
+Normal Vue 3 `v-model` is also valid.
+
+## Curation composables
+
+Shared curation behavior uses Vue 3 composables:
+
+- `useCurationForm()`
+- `usePhenotypeList()`
+
+Use these existing composables rather than recreating shared synchronization or phenotype-loading logic.
+
+Keep component-specific watchers and business behavior local to the component.
+
+Do not add component-specific behavior to shared composables unless it is genuinely reusable.
+
+## Next modernization steps
+
+Do not combine major migrations.
+
+Potential future phases should be handled separately:
+
+1. Laravel Mix → Vite
+2. Vuex → Pinia, if desired later
+
+Do not migrate build tooling and state management in the same phase.
