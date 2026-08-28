@@ -178,143 +178,78 @@
     </div>
 </template>
 
-<script>
-    export default {
-        /*
-         * The component's data.
-         */
-        data() {
-            return {
-                clients: [],
-                showCreateModal: false,
-                showEditModal: false,
+<script setup>
+import { onMounted, reactive, ref } from 'vue'
 
-                createForm: {
-                    errors: [],
-                    name: '',
-                    redirect: ''
-                },
+const clients = ref([])
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const createClientName = ref(null)
+const editClientName = ref(null)
+const createForm = reactive({ errors: [], name: '', redirect: '' })
+const editForm = reactive({ errors: [], name: '', redirect: '' })
 
-                editForm: {
-                    errors: [],
-                    name: '',
-                    redirect: ''
-                }
-            };
-        },
+function focusCreateClientName() {
+    createClientName.value.focus()
+}
 
-        /**
-         * Prepare the component (Vue 1.x).
-         */
-        ready() {
-            this.prepareComponent();
-        },
+function focusEditClientName() {
+    editClientName.value.focus()
+}
 
-        /**
-         * Prepare the component (Vue 2.x).
-         */
-        mounted() {
-            this.prepareComponent();
-        },
+function getClients() {
+    axios.get('/oauth/clients')
+        .then(response => {
+            clients.value = response.data
+        })
+}
 
-        methods: {
-            /**
-             * Prepare the component.
-             */
-            prepareComponent() {
-                this.getClients();
-            },
+function showCreateClientForm() {
+    showCreateModal.value = true
+}
 
-            focusCreateClientName() {
-                this.$refs.createClientName.focus();
-            },
-
-            focusEditClientName() {
-                this.$refs.editClientName.focus();
-            },
-
-            /**
-             * Get all of the OAuth clients for the user.
-             */
-            getClients() {
-                axios.get('/oauth/clients')
-                        .then(response => {
-                            this.clients = response.data;
-                        });
-            },
-
-            /**
-             * Show the form for creating new clients.
-             */
-            showCreateClientForm() {
-                this.showCreateModal = true;
-            },
-
-            /**
-             * Create a new OAuth client for the user.
-             */
-            store() {
-                this.persistClient(
-                    'post', '/oauth/clients',
-                    this.createForm, 'showCreateModal'
-                );
-            },
-
-            /**
-             * Edit the given client.
-             */
-            edit(client) {
-                this.editForm.id = client.id;
-                this.editForm.name = client.name;
-                this.editForm.redirect = client.redirect;
-
-                this.showEditModal = true;
-            },
-
-            /**
-             * Update the client being edited.
-             */
-            update() {
-                this.persistClient(
-                    'put', '/oauth/clients/' + this.editForm.id,
-                    this.editForm, 'showEditModal'
-                );
-            },
-
-            /**
-             * Persist the client to storage using the given form.
-             */
-            persistClient(method, uri, form, modalState) {
-                form.errors = [];
-
-                axios[method](uri, form)
-                    .then(response => {
-                        this.getClients();
-
-                        form.name = '';
-                        form.redirect = '';
-                        form.errors = [];
-
-                        this[modalState] = false;
-                    })
-                    .catch(error => {
-                        if (typeof error.response.data === 'object') {
-                            form.errors = _.flatten(_.toArray(error.response.data.errors));
-                        } else {
-                            form.errors = ['Something went wrong. Please try again.'];
-                        }
-                    });
-            },
-
-            /**
-             * Destroy the given client.
-             */
-            destroy(client) {
-                axios.delete('/oauth/clients/' + client.id)
-                        .then(response => {
-                            this.getClients();
-                        });
+function persistClient(method, uri, form, modalState) {
+    form.errors = []
+    axios[method](uri, form)
+        .then(() => {
+            getClients()
+            form.name = ''
+            form.redirect = ''
+            form.errors = []
+            modalState.value = false
+        })
+        .catch(error => {
+            if (typeof error.response.data === 'object') {
+                form.errors = _.flatten(_.toArray(error.response.data.errors))
+            } else {
+                form.errors = ['Something went wrong. Please try again.']
             }
-        }
-    }
+        })
+}
+
+function store() {
+    persistClient('post', '/oauth/clients', createForm, showCreateModal)
+}
+
+function edit(client) {
+    editForm.id = client.id
+    editForm.name = client.name
+    editForm.redirect = client.redirect
+    showEditModal.value = true
+}
+
+function update() {
+    persistClient('put', '/oauth/clients/' + editForm.id, editForm, showEditModal)
+}
+
+function destroy(client) {
+    axios.delete('/oauth/clients/' + client.id)
+        .then(() => {
+            getClients()
+        })
+}
+
+onMounted(() => {
+    getClients()
+})
 </script>
