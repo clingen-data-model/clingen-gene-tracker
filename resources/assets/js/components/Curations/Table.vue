@@ -174,62 +174,59 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
+import { computed, nextTick, ref, watch } from 'vue'
+import { useStore } from 'vuex'
 import getPageOfCurations from '../../resources/curations/get_page_of_curations'
 import uniqid from '../../helpers/uniqid'
-import { mapGetters } from 'vuex'
 import DeleteButton from './DeleteButton.vue'
 
-
-export default {
-    components: {
-        DeleteButton
+const props = defineProps({
+    sortBy: {
+        type: String,
+        default: 'gene_symbol'
     },
-    props: {
-        sortBy: {
-            type: String,
-            default: 'gene_symbol'
-        },
-        sortDir: {
-            type: Boolean,
-            default: false
-        },
-        searchParams: {
-            type: Object,
-            default: function () {
-                return {}
-            }
-        },
-        pageLength: {
-            type: Number,
-            default: 10
+    sortDir: {
+        type: Boolean,
+        default: false
+    },
+    searchParams: {
+        type: Object,
+        default() {
+            return {}
         }
     },
-    data() {
-        return {
+    pageLength: {
+        type: Number,
+        default: 10
+    }
+})
 
-            filter: null,
-            currentPage: 1,
-            sortByModel: [
-                {
-                    key: this.sortBy,
-                    order: this.sortDir == 'desc' ? 'desc' : 'asc'
-                }
-            ],
-            totalRows: 0,
-            searchFieldId: 'search-filter-' + uniqid(),
-            showAdvancedFilters: false,
-            advancedFilters: {
-                gene_symbol: '',
-                mode_of_inheritance: '',
-                mondo_id: '',
-                expert_panel: '',
-                curator: '',
-                current_status: '',
-                id: ''
-            },
-            excludeArchived: false,
-            fields: [
+const store = useStore()
+const table = ref(null)
+const filter = ref(null)
+const currentPage = ref(1)
+const sortByModel = ref([
+    {
+        key: props.sortBy,
+        order: props.sortDir == 'desc' ? 'desc' : 'asc'
+    }
+])
+const totalRows = ref(0)
+const searchFieldId = 'search-filter-' + uniqid()
+const showAdvancedFilters = ref(false)
+const advancedFilters = ref({
+    gene_symbol: '',
+    mode_of_inheritance: '',
+    mondo_id: '',
+    expert_panel: '',
+    curator: '',
+    current_status: '',
+    id: ''
+})
+const excludeArchived = ref(false)
+let refreshPending = false
+const fields = [
                 {
                     key: 'gene_symbol',
                     label: 'Gene Symbol',
@@ -301,95 +298,76 @@ export default {
                     sortable: false,
                     thStyle: { width: '7rem' }
                 }
-            ]
-        }
-    },
-    computed: {
-        ...mapGetters({ user: 'getUser' }),
+]
 
-        loading: function () {
-            return false
-        },
+const user = computed(() => store.getters.getUser)
+const loading = computed(() => false)
+const filterableFields = computed(() => fields.filter(field => field.filterable))
+const hasActiveFilters = computed(() => {
+    if (filter.value && filter.value.trim() !== '') {
+        return true
+    }
 
-        filterableFields() {
-            return this.fields.filter(f => f.filterable)
-        },
+    return Object.values(advancedFilters.value).some(value => (
+        value !== null && value !== undefined && String(value).trim() !== ''
+    ))
+})
+const activeFilterCount = computed(() => Object.values(advancedFilters.value).filter(value => (
+    value !== null && value !== undefined && String(value).trim() !== ''
+)).length)
 
-        hasActiveFilters() {
-            if (this.filter && this.filter.trim() !== '') {
-                return true
-            }
+function curationProvider(ctx) {
+    const [sort] = ctx.sortBy || []
+    const context = {
+        currentPage: ctx.currentPage,
+        perPage: ctx.perPage,
+        filter: ctx.filter,
+        sortBy: sort?.key || props.sortBy,
+        sortDesc: sort?.order === 'desc',
+        ...props.searchParams,
+        filters: JSON.stringify(advancedFilters.value),
+        exclude_archived: excludeArchived.value ? 1 : 0
+    }
 
-            return Object.values(this.advancedFilters).some(value => {
-                return value !== null && value !== undefined && String(value).trim() !== ''
-            })
-        },
+    return getPageOfCurations(context).then(response => {
+        totalRows.value = response.data.meta.total
+        return response.data.data
+    })
+}
 
-        activeFilterCount() {
-            return Object.values(this.advancedFilters).filter(value => {
-                return value !== null && value !== undefined && String(value).trim() !== ''
-            }).length
-        }
-    },
-    watch: {
-        filter: function (to, from) {
-          if (to !== from) {
-            this.resetCurrentPage()
-            this.$refs.table.refresh()
-          }
-        },
-        excludeArchived: function () {
-          this.resetCurrentPage()
-          this.$refs.table.refresh()
-        },
-        advancedFilters: {
-          deep: true,
-          handler() {
-            this.resetCurrentPage()
-            this.$refs.table.refresh()
-          }
-        }
-    },
-    methods: {
-        curationProvider(ctx) {
-            const [sort] = ctx.sortBy || []
-            const context = {
-                currentPage: ctx.currentPage,
-                perPage: ctx.perPage,
-                filter: ctx.filter,
-                sortBy: sort?.key || this.sortBy,
-                sortDesc: sort?.order === 'desc',
-                ...this.searchParams,
-                filters: JSON.stringify(this.advancedFilters),
-                exclude_archived: this.excludeArchived ? 1 : 0
-            }
+function clearFilters() {
+    filter.value = null
+    excludeArchived.value = false
+    advancedFilters.value = {
+        gene_symbol: '',
+        mode_of_inheritance: '',
+        mondo_id: '',
+        expert_panel: '',
+        curator: '',
+        current_status: '',
+        id: ''
+    }
+    resetCurrentPage()
+    refreshTable()
+}
 
-            return getPageOfCurations(context).then(response => {
-                this.totalRows = response.data.meta.total
-                return response.data.data
-            })
-        },
+function resetCurrentPage() {
+    currentPage.value = 1
+}
 
-        clearFilters() {
-            this.filter = null
-            this.excludeArchived = false
-            this.advancedFilters = {
-                gene_symbol: '',
-                mode_of_inheritance: '',
-                mondo_id: '',
-                expert_panel: '',
-                curator: '',
-                current_status: '',
-                id: ''
-            }
-            this.resetCurrentPage()
-            this.$refs.table.refresh()
-        },
+function refreshTable() {
+    if (refreshPending) {
+        return
+    }
 
-        resetCurrentPage() {
-            this.currentPage = 1
-        },
-        getDiseaseEntityColumn(item) {
+    refreshPending = true
+    nextTick(() => {
+        refreshPending = false
+        table.value?.refresh()
+    })
+}
+
+function getDiseaseEntityColumn(item) {
             if (item.mondo_id && item.disease) {
                 return item.mondo_id + ' (' + item.disease.name + ')'
             }
@@ -403,15 +381,34 @@ export default {
             }
 
             return null
-        },
-        handleFiltered() {
-            this.resetCurrentPage()
-        },
-        handleSortChanged() {
-            this.resetCurrentPage()
-        }
-    }
 }
+
+function handleSortChanged() {
+    resetCurrentPage()
+}
+
+watch(filter, (to, from) => {
+    if (to !== from) {
+        resetCurrentPage()
+        refreshTable()
+    }
+})
+watch(excludeArchived, () => {
+    resetCurrentPage()
+    refreshTable()
+})
+watch(advancedFilters, () => {
+    resetCurrentPage()
+    refreshTable()
+}, { deep: true })
+
+defineExpose({
+    clearFilters,
+    curationProvider,
+    getDiseaseEntityColumn,
+    handleSortChanged,
+    resetCurrentPage
+})
 </script>
 <style scoped>
 .curations-toolbar {

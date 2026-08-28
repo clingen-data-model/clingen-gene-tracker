@@ -71,114 +71,90 @@
         </b-modal>
     </div>
 </template>
-<script>
-import {mapGetters, mapActions} from 'vuex';
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
 import is_validation_error from '../../http/is_validation_error'
-import ValidationError from '../ValidationError.vue'
 import InputRow from '../forms/InputRow.vue'
 import GciLink from '../Curations/GciLink.vue'
 
-export default {
-    components: {
-        ValidationError,
-        InputRow,
-        GciLink
-    },
-    props: {
-        curation: {
-            type: Object,
-            required: true
-        }
-    },
-    emits: [
-        'submited',
-        'canceled'
-    ],
-    data() {
-        return {
-            showTransferForm: false,
-            newExpertPanel: {
-                coordinators: []
-            },
-            startDate: null,
-            notes: null,
-            isHistorical: null,
-            endDate: null,
-            errors: {},
-            generalError: null,
-            showConfirmation: false
-        }
-    },
-    computed: {
-        ...mapGetters({user: 'getUser'}),
-        ...mapGetters('panels', {
-            panels: 'Items',
-        }),
-        filteredPanels() {
-            return this.panels.filter(panel => panel.id != this.curation.expert_panel_id);
-        },
-        inGci() {
-            return Boolean(this.curation.gdm_uuid)
-        }
-    },
-    methods: {
-        ...mapActions('panels', {
-            getAllPanels: 'getAllItems',
-            getPanel: 'getItem'
-        }),
-        ...mapActions('curations', {
-            updateOwner: 'updateOwner',
-        }),
-        confirmTransfer() {
-            if (this.inGci) {
-                this.errors = {
-                    curation: ['This pre-curation is linked to a GCI record and cannot be transferred in GT.']
-                };
-                return;
-            }
-            this.showConfirmation = true;
-        },
-        async transferCuration() {
-            try {
-                await this.updateOwner({
-                    curation: this.curation,
-                    expertPanelId: this.newExpertPanel.id,
-                    startDate: this.startDate,
-                    notes: this.notes
-                });
-                this.showTransferForm = false;
-                this.showConfirmation = false;
-                this.initFormData()
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    this.errors = error.response.data.errors;
-                } else {
-                    this.generalError = error.response?.data?.error || error.response?.data?.message || 'Unable to transfer this curation.';
-                }
-                this.showConfirmation = false;
-            }
+const props = defineProps({
+    curation: {
+        type: Object,
+        required: true
+    }
+})
+defineEmits(['submited', 'canceled'])
 
-        },
-        cancel() {
-            this.showTransferForm = false;
-            this.initFormData();
-        },
-        initFormData() {
-            this.newExpertPanel = {coordinators: []};
-            this.startDate = null;
-            this.isHistorical = null;
-            this.endDate = null;
-            this.errors = {};
-            this.generalError = null;
-            this.showConfirmation = false;
-            this.notes = null;
-        },
-        fieldError (field) {
-            return (this.errors && this.errors[field] && this.errors[field].length > 0);
-        },
-    },
-    mounted() {
-        this.getAllPanels({with:['coordinators'], sort: {field: 'name', dir: 'asc'}});
+const store = useStore()
+const showTransferForm = ref(false)
+const newExpertPanel = ref({ coordinators: [] })
+const startDate = ref(null)
+const notes = ref(null)
+const isHistorical = ref(null)
+const endDate = ref(null)
+const errors = ref({})
+const generalError = ref(null)
+const showConfirmation = ref(false)
+
+const user = computed(() => store.getters.getUser)
+const panels = computed(() => store.getters['panels/Items'])
+const filteredPanels = computed(() => {
+    return panels.value.filter(panel => panel.id != props.curation.expert_panel_id)
+})
+const inGci = computed(() => Boolean(props.curation.gdm_uuid))
+
+function confirmTransfer() {
+    if (inGci.value) {
+        errors.value = {
+            curation: ['This pre-curation is linked to a GCI record and cannot be transferred in GT.']
+        }
+        return
+    }
+    showConfirmation.value = true
+}
+
+async function transferCuration() {
+    try {
+        await store.dispatch('curations/updateOwner', {
+            curation: props.curation,
+            expertPanelId: newExpertPanel.value.id,
+            startDate: startDate.value,
+            notes: notes.value
+        })
+        showTransferForm.value = false
+        showConfirmation.value = false
+        initFormData()
+    } catch (error) {
+        if (is_validation_error(error)) {
+            errors.value = error.response.data.errors
+        } else {
+            generalError.value = error.response?.data?.error || error.response?.data?.message || 'Unable to transfer this curation.'
+        }
+        showConfirmation.value = false
     }
 }
+
+function cancel() {
+    showTransferForm.value = false
+    initFormData()
+}
+
+function initFormData() {
+    newExpertPanel.value = { coordinators: [] }
+    startDate.value = null
+    isHistorical.value = null
+    endDate.value = null
+    errors.value = {}
+    generalError.value = null
+    showConfirmation.value = false
+    notes.value = null
+}
+
+onMounted(() => {
+    store.dispatch('panels/getAllItems', {
+        with: ['coordinators'],
+        sort: { field: 'name', dir: 'asc' }
+    })
+})
 </script>

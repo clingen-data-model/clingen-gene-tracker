@@ -81,109 +81,107 @@
     </div>
 </template>
 
-<script>
-    import ValidationError from '../../ValidationError.vue'
-    import {mapGetters} from 'vuex'
+<script setup>
+import { computed, nextTick, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import ValidationError from '../../ValidationError.vue'
 
-    export default {
-        components: {
-            ValidationError
-        },
-        props: {
-            curation: {
-                required: true,
-                type: Object
-            }
-        },  
-        data() {
-            return {
-                showModal: false,
-                categories: [],
-                newUpload: {},
-                errors: {},
-                uploading: false
-            }
-        },
-        computed: {
-            ...mapGetters({
-                maxUploadSize: 'getMaxUploadSize',
-                supportedMimes: 'getSupportedMimes'
-            })
-        },
-        methods: {
-            getUploadCategories() {
-                window.axios.get('/api/upload-categories')
-                    .then(response => this.categories = response.data.data)
-            },
-            initNewUpload() {
-                this.newUpload = {
-                    name: '',
-                    upload_category_id: '',
-                    notes: ''
-                }
-            },
-            initErrors() {
-                this.errors = {}
-            },
-            clearForm() {
-                this.initNewUpload();
-                this.initErrors();
-            },
-            prepopulateName() {
-                if (this.newUpload.name == '') {
-                    this.newUpload.name = this.$refs.uploadField.files[0].name;
-                }
-            },
-            uploadFile(evt) {
-                this.initErrors();
-                evt.preventDefault();
+const props = defineProps({
+    curation: {
+        required: true,
+        type: Object
+    }
+})
+const emit = defineEmits(['uploaded'])
 
-                let formData = new FormData();
-                formData.append('curation_id', this.curation.id);
-                formData.append('name', this.newUpload.name);
-                formData.append('file', this.$refs.uploadField.files[0]);
-                formData.append('upload_category_id', this.newUpload.upload_category_id);
-                formData.append('notes', this.newUpload.notes);
+const store = useStore()
+const showModal = ref(false)
+const categories = ref([])
+const newUpload = ref({})
+const errors = ref({})
+const uploading = ref(false)
+const uploadField = ref(null)
+const uploadModal = ref(null)
 
-                this.uploading = true;
+const maxUploadSize = computed(() => store.getters.getMaxUploadSize)
+const supportedMimes = computed(() => store.getters.getSupportedMimes)
 
-                return window.axios.post(
-                    `/api/curations/${this.curation.id}/uploads`, 
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                )
-                .then(response => {
-                    this.$emit('uploaded');
-                    this.clearForm();
-                    this.$nextTick(() => this.$refs.uploadModal.hide());
-                })
-                .catch(error => {
-                    if (error.response.status == 422) {
-                        this.errors = error.response.data.errors
-                        return
-                    }
-                    if (error.response.status == 413) {
-                        this.errors = {file: ['The file was too large']}
-                        return;
-                    }
-                    alert('There was an unkown problem with your file upload.');
-                })
-                .then(() => {this.uploading = false})
-        
-            },
-            launchFileSelector() {
-                this.$refs.uploadField.click();
-            }
-        },
-        mounted() {
-            this.getUploadCategories();
-            this.initNewUpload();
-            this.initErrors();
-        }
-    
+function getUploadCategories() {
+    window.axios.get('/api/upload-categories')
+        .then(response => {
+            categories.value = response.data.data
+        })
 }
+
+function initNewUpload() {
+    newUpload.value = {
+        name: '',
+        upload_category_id: '',
+        notes: ''
+    }
+}
+
+function initErrors() {
+    errors.value = {}
+}
+
+function clearForm() {
+    initNewUpload()
+    initErrors()
+}
+
+function prepopulateName() {
+    if (newUpload.value.name == '') {
+        newUpload.value.name = uploadField.value.files[0].name
+    }
+}
+
+function uploadFile(evt) {
+    initErrors()
+    evt.preventDefault()
+
+    const formData = new FormData()
+    formData.append('curation_id', props.curation.id)
+    formData.append('name', newUpload.value.name)
+    formData.append('file', uploadField.value.files[0])
+    formData.append('upload_category_id', newUpload.value.upload_category_id)
+    formData.append('notes', newUpload.value.notes)
+
+    uploading.value = true
+
+    return window.axios.post(
+        `/api/curations/${props.curation.id}/uploads`,
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
+    )
+        .then(() => {
+            emit('uploaded')
+            clearForm()
+            nextTick(() => uploadModal.value.hide())
+        })
+        .catch(error => {
+            if (error.response.status == 422) {
+                errors.value = error.response.data.errors
+                return
+            }
+            if (error.response.status == 413) {
+                errors.value = {file: ['The file was too large']}
+                return
+            }
+            alert('There was an unkown problem with your file upload.')
+        })
+        .then(() => {
+            uploading.value = false
+        })
+}
+
+onMounted(() => {
+    getUploadCategories()
+    initNewUpload()
+    initErrors()
+})
 </script>

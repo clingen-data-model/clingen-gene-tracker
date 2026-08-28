@@ -29,7 +29,7 @@
                             <delete-button v-if="user.canDeleteCuration(curation)" class="btn btn-sm" :curation="curation"></delete-button>
                             <transfer-curation-control 
                                 :curation="curation" 
-                                v-if="$store.state.features.transferEnabled && user.canEditCuration(curation)"
+                                v-if="transferEnabled && user.canEditCuration(curation)"
                             ></transfer-curation-control>
                         </div>
                         <div v-if="curation.is_archived" class="alert alert-warning mt-2 mb-0">
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                 </template>
-                <div v-if="this.curations">
+                <div v-if="curations">
                     <div id="info">
                         <div class="row mt-2">
                             <strong class="col-md-3">Precuration ID:</strong>
@@ -91,8 +91,7 @@
                             <strong class="col-md-3">Expert Panel:</strong> 
                             <div class="col-md">
                                 {{ (curation.expert_panel) ? curation.expert_panel.name : '--'}}
-                                <div v-if="$store.state.features.transferEnabled">
-                                        <!-- <pre>{{curation.expert_panels}}</pre> -->
+                                <div v-if="transferEnabled">
                                     <toggle-button 
                                         v-model="showOwnerHistory" 
                                         show-label="Show history" 
@@ -225,12 +224,13 @@
         </transition>
     </div>
 </template>
-<script>
-    import { mapGetters, mapActions } from 'vuex'
+<script setup>
+    import { computed, onMounted, ref, watch } from 'vue'
+    import { useRoute } from 'vue-router'
+    import { useStore } from 'vuex'
     import PhenotypeList from './Phenotypes/List.vue'
     import NotesList from '../NotesList.vue'
     import HistoryTable from './HistoryTable.vue'
-    import CurationStatusHistory from './StatusHistory.vue'
     import ClassificationHistory from './ClassificationHistory.vue'
     import DeleteButton from './DeleteButton.vue'
     import ArchivedCurationLinks from './Forms/ArchivedCurationLinks.vue'
@@ -239,92 +239,65 @@
     import GciLink from '../Curations/GciLink.vue'
     import ToggleButton from '../buttons/ToggleButton.vue'
 
-    export default {
-        props: ['id'],
-        components: {
-            PhenotypeList,
-            CurationStatusHistory,
-            DeleteButton,
-            ArchivedCurationLinks,
-            ClassificationHistory,
-            DocumentsCard,
-            TransferCurationControl,
-            GciLink,
-            HistoryTable,
-            ToggleButton,
-            NotesList
-        },
-        data() {
-            return {
-                showOwnerHistory: false,
-                showStatusHistory: false,
-                showClassificationHistory: false,
-                loading: true
-            }
-        },
-        watch: {
-            '$route' (to, from) {
-                // console.log(to);
-                this.loadCuration()
-            }
-        },
-        computed: {
-            ...mapGetters({ user: 'getUser'}),
-            ...mapGetters('curations', {
-                curations: 'Items',
-                getCuration: 'getItemById',
-                curation: 'currentItem'
-            }),            
-            statusHistoryButtonText: function() {
-                return (this.showStatusHistory) ? 'Hide history' : 'Show history';
-            },
-            classificationButtonText: function() {
-                return (this.showClassificationHistory) ? 'Hide history' : 'Show history';
-            },
-            title: function () {
-                let title = 'Curation: ';
-                if (this.curation && this.curation.gene_symbol) {
-                    title += this.curation.gene_symbol
-                    if (this.curation.mondo_id) {
-                        title += ' / ' + this.curation.mondo_id
-                    }
-                    if (this.curation.expert_panel) {
-                        title += ' for '+this.curation.expert_panel.name
-                    }
-                }
-                return title;
-            },
-            // curation: function(){
-            //     if (this.curations.length == 0) {
-            //         return {
-            //         }
-            //     }
-            //     return this.getCuration(this.id)
-            // },
-            mondoUrl: function () {
-                if (this.curation.mondo_id) {
-                    return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${this.curation.mondo_id.substring(6)}`
-                }
-            }
+    const props = defineProps(['id'])
 
-        },
-        methods: {
-            ...mapActions('curations', {
-                fetchCuration: 'fetchItem',
-            }),
-            loadCuration() {
-                this.loading = true;
-                this.fetchCuration(this.id)
-                    .then(respones => {
-                        this.loading = false;
-                    })
-                    .catch(error => {
-                        this.loading = false;
-                    });
+    const route = useRoute()
+    const store = useStore()
+
+    const showOwnerHistory = ref(false)
+    const showStatusHistory = ref(false)
+    const showClassificationHistory = ref(false)
+    const loading = ref(true)
+    let loadSequence = 0
+
+    const user = computed(() => store.getters.getUser)
+    const curations = computed(() => store.getters['curations/Items'])
+    const curation = computed(() => store.getters['curations/currentItem'] || {})
+    const transferEnabled = computed(() => store.state.features.transferEnabled)
+
+    const statusHistoryButtonText = computed(() => (
+        showStatusHistory.value ? 'Hide history' : 'Show history'
+    ))
+    const classificationButtonText = computed(() => (
+        showClassificationHistory.value ? 'Hide history' : 'Show history'
+    ))
+    const title = computed(() => {
+        let value = 'Curation: '
+        if (curation.value.gene_symbol) {
+            value += curation.value.gene_symbol
+            if (curation.value.mondo_id) {
+                value += ' / ' + curation.value.mondo_id
             }
-        },
-        mounted: function () {
-            this.loadCuration();
+            if (curation.value.expert_panel) {
+                value += ' for ' + curation.value.expert_panel.name
+            }
         }
+        return value
+    })
+    const mondoUrl = computed(() => {
+        if (curation.value.mondo_id) {
+            return `https://www.ebi.ac.uk/ols/ontologies/mondo/terms?iri=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_${curation.value.mondo_id.substring(6)}`
+        }
+        return undefined
+    })
+
+    const loadCuration = id => {
+        const sequence = ++loadSequence
+        loading.value = true
+
+        return store.dispatch('curations/fetchItem', id)
+            .catch(() => {})
+            .finally(() => {
+                if (sequence === loadSequence) {
+                    loading.value = false
+                }
+            })
     }
+
+    watch(
+        () => route.fullPath,
+        () => loadCuration(route.params.id)
+    )
+
+    onMounted(() => loadCuration(props.id))
 </script>
