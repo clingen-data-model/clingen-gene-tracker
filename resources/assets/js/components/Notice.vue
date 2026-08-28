@@ -7,34 +7,38 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        autoClose: {
-            type: Boolean,
-            default: true
-        },
-        duration: {
-            type: Number,
-            default: 3000
-        }
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue'
+
+const props = defineProps({
+    autoClose: {
+        type: Boolean,
+        default: true
     },
-    data() {
-        return {
-            timer: null,
-        }
-    },
-    methods: {
-        setTimer() {
-            this.timer = setTimeout(() => {
-                this.$emit('cleared')
-            }, this.duration)
-        }  
-    },
-    mounted() {
-        if (this.autoClose) {
-            this.setTimer();
-        }
+    duration: {
+        type: Number,
+        default: 3000
     }
+})
+
+const emit = defineEmits(['cleared'])
+const timer = ref(null)
+
+function setTimer() {
+    timer.value = setTimeout(() => {
+        emit('cleared')
+    }, props.duration)
 }
+
+onMounted(() => {
+    if (props.autoClose) {
+        setTimer()
+    }
+})
+
+onUnmounted(() => {
+    if (timer.value !== null) {
+        clearTimeout(timer.value)
+    }
+})
 </script>

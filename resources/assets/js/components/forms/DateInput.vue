@@ -13,73 +13,66 @@
         >
     </div>
 </template>
-<script>
-export default {
-    props: {
-        modelValue: {
-            required: false,
-            default: null
-        },
-        id: {
-            type: String,
-            required: false
-        },
-        min: {
-            type: String,
-            required: false
-        },
-        max: {
-            type: String,
-            required: false
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        },
-        readonly: {
-            type: Boolean,
-            default: false
-        }
+<script setup>
+import { computed } from 'vue'
+
+const props = defineProps({
+    modelValue: {
+        required: false,
+        default: null
     },
-    emits: [
-        'update:modelValue'
-    ],
-    data() {
-        return {
-            
-        }
+    id: {
+        type: String,
+        required: false
     },
-    computed: {
-        formattedDate () {
-            if (!this.modelValue) {
-                return null;
-            }
-            const fmtdt = this.formatDate(this.modelValue)
-            console.log(fmtdt);
-            return fmtdt
-        }
+    min: {
+        type: String,
+        required: false
     },
-    methods: {
-        setDate(event) {
-            const date = new Date(Date.parse(event.target.value));
-            const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000);
-
-            this.$emit('update:modelValue', adjustedDate)
-        },
-        formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) 
-                month = '0' + month;
-            if (day.length < 2) 
-                day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
-
+    max: {
+        type: String,
+        required: false
+    },
+    disabled: {
+        type: Boolean,
+        default: false
+    },
+    readonly: {
+        type: Boolean,
+        default: false
     }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const formattedDate = computed(() => {
+    if (!props.modelValue) {
+        return null
+    }
+
+    const fmtdt = formatDate(props.modelValue)
+    console.log(fmtdt)
+    return fmtdt
+})
+
+function setDate(event) {
+    const date = new Date(Date.parse(event.target.value))
+    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000)
+
+    emit('update:modelValue', adjustedDate)
+}
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear()
+
+    if (month.length < 2)
+        month = '0' + month
+    if (day.length < 2)
+        day = '0' + day
+
+    return [year, month, day].join('-')
 }
 </script>
