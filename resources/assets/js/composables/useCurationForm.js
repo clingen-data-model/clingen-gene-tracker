@@ -1,10 +1,10 @@
 import { onMounted, ref, toRaw, unref, watch } from 'vue'
 
-export default function useCurationForm(props, emit, page) {
-    const updatedCuration = ref({
-        gene_symbol: null,
-        ratonionales: []
-    })
+export default function useCurationForm(props, emit, page, initialValue = {
+    gene_symbol: null,
+    ratonionales: []
+}) {
+    const updatedCuration = ref(initialValue)
 
     let lastEmittedValue = null
 
