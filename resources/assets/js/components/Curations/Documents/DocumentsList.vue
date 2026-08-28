@@ -70,135 +70,120 @@
     </div>
 </template>
 
-<script>
-    import DocumentUploader from './DocumentUploader.vue'
-    import getAllUploads from '../../../resources/uploads/get_all_uploads'
-    import { formatDate } from '../../../filters'
-    import { mapGetters } from 'vuex';
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import getAllUploads from '../../../resources/uploads/get_all_uploads'
+import { formatDate } from '../../../filters'
 
-    export default {
-        components: {
-            DocumentUploader
-        },
-        props: {
-            curation: {
-                reqired: true,
-                type: Object
-            }
-        },
-        data() {
-            return {
-                showDetailedInfo: false,
-                loadingDocuments: false,
-                documents: [],
-                currentDocument: null,
-                filter: '',
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    },
-                    {
-                        key: 'category.name',
-                        sortable: true,
-                        label: 'Category'
-                    },
-                    {
-                        key: 'created_at',
-                        label: 'Created',
-                        sortable: true,
-                        formatter: (value, key, item) => {
-                            return formatDate(value, 'YYYY-MM-DD')
-                        }
-                    },
-                    {
-                        key: 'uploader.name',
-                        label: 'Uploaded by',
-                        sortable: true
-                    },
-                    'action'
-                ],
-                filteredFields: ['name', 'id', 'category', 'uploader', 'uploader'],
-            }
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'})
-        },
-        watch: {
-            curation() {
+const props = defineProps({
+    curation: {
+        reqired: true,
+        type: Object
+    }
+})
 
-                this.getDocuments()
-            }
-        },
-        methods: {
-            formatDate,
-            async getDocuments() {
-                if (!this.curation.id) {
-                    return;
-                }
-
-                this.loadingDocuments = true;
-                this.documents = await getAllUploads(
-                    {
-                        with: ['category', 'uploader'],
-                        where: {
-                            curation_id: this.curation.id
-                        }
-                    }
-                )
-                this.loadingDocuments = false;
-            },
-            showDetails(document) {
-                this.currentDocument = document
-                this.showDetailedInfo = true;
-            },
-            downloadFile(document) {
-                axios.get('/api/curations/'+this.curation.id+'/uploads/'+document.id+'/file',
-                    {
-                        responseType: 'blob'
-                    })
-                    .then(response => {
-                        console.log(response.data);
-                        const data  = response.data;
-                        let a = window.document.createElement('a');
-                        let url = window.URL.createObjectURL(data);
-                        a.href = url;
-                        a.download = document.name;
-                        window.document.body.append(a);
-                        a.click();
-                        a.remove();
-                        window.URL.revokeObjectURL(url);
-
-                    })
-                    .catch(error => {
-                        if (error.response && error.response.status == 404) {
-                            alert('We couldn\'t seem to find the file you requested.');
-                            return;
-                        }
-
-                        throw error;
-                    })
-            },
-            deleteDocument(document) {
-                if (confirm('Are you sure you want to delete the document '+document.name+'?')) {
-                    this.documents.splice(this.documents.findIndex(doc => doc.id = document.id), 1);
-                    axios.delete('/api/curations/'+this.curation.id+'/uploads/'+document.id)
-                        .then(response => {
-                        })
-                        .catch(error => {
-                            this.getDocuments();
-                            alert('There was a problem deleting the document.  Contact the administrator if the problem persists.');
-                        })
-                }
-            }
-        },
-        mounted() {
-            this.getDocuments();
+const store = useStore()
+const user = computed(() => store.getters.getUser)
+const showDetailedInfo = ref(false)
+const loadingDocuments = ref(false)
+const documents = ref([])
+const currentDocument = ref(null)
+const filter = ref('')
+const fields = [
+    {
+        key: 'id',
+        sortable: true
+    },
+    {
+        key: 'name',
+        sortable: true
+    },
+    {
+        key: 'category.name',
+        sortable: true,
+        label: 'Category'
+    },
+    {
+        key: 'created_at',
+        label: 'Created',
+        sortable: true,
+        formatter: (value, key, item) => {
+            return formatDate(value, 'YYYY-MM-DD')
         }
-    
+    },
+    {
+        key: 'uploader.name',
+        label: 'Uploaded by',
+        sortable: true
+    },
+    'action'
+]
+const filteredFields = ['name', 'id', 'category', 'uploader', 'uploader']
+
+async function getDocuments() {
+    if (!props.curation.id) {
+        return
+    }
+
+    loadingDocuments.value = true
+    documents.value = await getAllUploads({
+        with: ['category', 'uploader'],
+        where: {
+            curation_id: props.curation.id
+        }
+    })
+    loadingDocuments.value = false
 }
+
+function showDetails(document) {
+    currentDocument.value = document
+    showDetailedInfo.value = true
+}
+
+function downloadFile(document) {
+    axios.get('/api/curations/' + props.curation.id + '/uploads/' + document.id + '/file', {
+        responseType: 'blob'
+    })
+        .then(response => {
+            const data = response.data
+            const a = window.document.createElement('a')
+            const url = window.URL.createObjectURL(data)
+            a.href = url
+            a.download = document.name
+            window.document.body.append(a)
+            a.click()
+            a.remove()
+            window.URL.revokeObjectURL(url)
+        })
+        .catch(error => {
+            if (error.response && error.response.status == 404) {
+                alert('We couldn\'t seem to find the file you requested.')
+                return
+            }
+
+            throw error
+        })
+}
+
+function deleteDocument(document) {
+    if (confirm('Are you sure you want to delete the document ' + document.name + '?')) {
+        documents.value.splice(documents.value.findIndex(doc => doc.id === document.id), 1)
+        axios.delete('/api/curations/' + props.curation.id + '/uploads/' + document.id)
+            .catch(() => {
+                getDocuments()
+                alert('There was a problem deleting the document.  Contact the administrator if the problem persists.')
+            })
+    }
+}
+
+watch(() => props.curation, () => {
+    getDocuments()
+})
+
+onMounted(() => {
+    getDocuments()
+})
+
+defineExpose({ getDocuments })
 </script>

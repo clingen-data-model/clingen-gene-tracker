@@ -13,7 +13,7 @@
                     <div class="d-flex space-x-2">
                         <transfer-curation-control 
                             :curation="curation"
-                             v-if="$store.state.features.transferEnabled"
+                             v-if="transferEnabled"
                         ></transfer-curation-control>
                         <router-link :to="'/curations/'+curation.id">
                             view
@@ -21,13 +21,13 @@
                     </div>
                 </div>
             </template>
-            <div v-if="!this.curation.id" class="alert alert-info">
+            <div v-if="!curation.id" class="alert alert-info">
                 Loading...
             </div>
-            <div v-else-if="!user.canEditCuration(this.curation)" class="alert alert-danger">
+            <div v-else-if="!user.canEditCuration(curation)" class="alert alert-danger">
                 Sorry.  You don't have permission to edit this curation.
             </div>
-            <div v-if="curations && user.canEditCuration(this.curation)">
+            <div v-if="curations && user.canEditCuration(curation)">
                 <b-form id="new-curation-form">
                     <div class="row">
                         <div class="col-md-2 border-end">
@@ -35,7 +35,7 @@
                                 <router-link 
                                      v-for="(step, idx) in steps"
                                      :key="idx"
-                                    :to="$route.path+'#'+idx" 
+                                    :to="route.path+'#'+idx"
                                     class="nav-link" 
                                     :class="{active: (currentStep == idx)}"
                                 >
@@ -45,7 +45,7 @@
                         </div>
                         <div class="col-md-10">
                             <component 
-                                :is="currentStep" 
+                                :is="currentStepComponent"
                                 :model-value="updatedCuration"  
                                 :errors="errors" 
                                 @update:model-value="updatedCuration = $event"
@@ -58,8 +58,7 @@
                         <hr>
                     <div class="row">
                         <div class="col-md-4">
-                            <!-- <delete-button :curation="curation"></delete-button> -->
-                            <button type="button" class="btn btn-secondary" @click="$router.push('/curations')">Cancel</button>
+                            <button type="button" class="btn btn-secondary" @click="router.push('/curations')">Cancel</button>
                         </div>
                         <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-end">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
@@ -75,240 +74,216 @@
         </b-card>
     </div>
 </template>
-<script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
+<script setup>
+    import { computed, onMounted, ref, watch } from 'vue'
+    import { useRoute, useRouter } from 'vue-router'
+    import { useStore } from 'vuex'
     import CurationType from './Forms/CurationType.vue'
     import Phenotypes from './Forms/Phenotypes.vue'
-    import DeleteButton from './DeleteButton.vue'
     import Info from './Forms/Info.vue'
     import Mondo from './Forms/Mondo.vue'
     import Classification from './Forms/Classification.vue'
     import Documents from './Forms/Documents.vue'
     import TransferCurationControl from './TransferCurationControl.vue'
 
-    export default {
-        props: ['id'],
-        components: {
-            Phenotypes,
-            Info,
-            Mondo,
-            CurationType,
-            DeleteButton,
-            Classification,
-            Documents,
-            TransferCurationControl
-        },
-        data () {
-            return {
-                currentStep: 'info',
-                steps: {
-                   info: {
-                        title: 'Info',
-                        next: 'curation-type'
-                    },
-                    'curation-type': {
-                        title: 'Curation Type',
-                        next: 'phenotypes'
-                    },
-                    phenotypes: {
-                        title: 'Phenotypes',
-                        next: 'mondo'
-                    },
-                    mondo: {
-                        title: 'MonDO',
-                        next: 'classification',
-                        back: 'phenotypes' 
-                    },
-                    // classification: {
-                    //     title: 'Classification',
-                    //     next: 'documents',
-                    //     back: 'mondo' 
-                    // },
-                    documents: {
-                        title: 'Documents',
-                        next: null,
-                        back: 'classification'
-                    }
+    const props = defineProps(['id'])
+    const emit = defineEmits(['saved', 'canceled'])
+    const route = useRoute()
+    const router = useRouter()
+    const store = useStore()
 
-                },
-                updatedCuration: {
-                    rationals: []
-                },
-                standInCuration: {
-                    id: 0,
-                    expert_panel: {},
-                    rationales: []
-                },
-                errors: {},
-            }
+    const currentStep = ref('info')
+    const steps = {
+        info: {
+            title: 'Info',
+            next: 'curation-type'
         },
-        watch: {
-            $route(to, from) {
-                this.setCurrentStep();
-            },
-            curation: function (to, from) {
-                if (typeof to != 'undefined') {
-                    this.setUpdatedCuration(to, from);
-                }
-            }
+        'curation-type': {
+            title: 'Curation Type',
+            next: 'phenotypes'
         },
-        computed: {
-            ...mapGetters({user: 'getUser'}),
-            ...mapGetters('curations', {
-                curations: 'Items',
-                getCuration: 'getItemById',
-            }),
-            title: function () {
-                let title = 'Edit Curation: ';
-                if (this.curation.gene_symbol) {
-                    title += this.curation.gene_symbol
-                    if (this.curation.expert_panel) {
-                        title += ' for '+this.curation.expert_panel.name
-                    }
-                }
-                return title;
-            },
-            curation: function(){
-                if (this.curations.length == 0) {
-                    return this.standInCuration
-                }
-
-                let curation = this.getCuration(this.id);
-                if (!curation) {
-                    return this.standInCuration
-                    
-                }
-                return curation;
-            },
-            curator: () =>  (this.curation.curator) ? this.curation.curator.name : '--',
-            expertPanel: () => { return (this.expert_panel) ? this.curation.expert_panel.name : '--'; },
-            selectedPanel: () => {
-                return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
-                    })
-            },
-            geneSymbolError: function () {
-                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
-            },
-            currentStepIdx: function () {
-                const stepKeys = Object.keys(this.steps);
-                return stepKeys.indexOf(this.currentStep);
-            },
-            nextStep: function () {
-                if (typeof this.steps[this.currentStep].next == 'function') {
-                    return this.steps[this.currentStep].next()
-                }
-                return this.steps[this.currentStep].next
-            },
-            previousStep: function () {
-                if (this.steps[this.currentStep].back) {
-                    if (typeof this.steps[this.currentStep].back == 'function') {
-                        return this.steps[this.currentStep].back()
-                    }
-                    return this.steps[this.currentStep].back
-                }
-                const stepKeys = Object.keys(this.steps);
-                if (this.currentStepIdx > 0) {
-                    return stepKeys[this.currentStepIdx-1];
-                }
-                return null
-            }
+        phenotypes: {
+            title: 'Phenotypes',
+            next: 'mondo'
         },
-        methods: {
-            ...mapMutations('messages', [
-                'addInfo',
-                'addAlert'
-            ]),
-            ...mapActions('curations', {
-                fetchCuration: 'fetchItem',
-                storeNewItem: 'storeNewItem',
-                storeItemUpdates: 'storeItemUpdates'
-            }),
-            handleAutoSave () {
-                if (this.updatedCuration.is_archived && !this.user.canManageArchive()) {
-                    return;
-                }
-                this.updateCuration();
-            },
-            updateCuration (callback, nav) {
-                if (this.updatedCuration.is_archived && !this.user.canManageArchive()) {
-                    this.addAlert('This curation is archived and cannot be edited.')
-                    return;
-                }
-                this.updatedCuration.nav = nav;
-                return this.storeItemUpdates(this.updatedCuration)
-                    .then( (response) => {
-                        this.addInfo('Updates saved for '+this.updatedCuration.gene_symbol+'.')
-                        this.$emit('saved');
-                        if (callback) {
-                            callback(response);
-                        }
-                        this.errors = {};
-                        return response;
-                    })
-                    .catch( (error) => {
-                        this.errors = error.response.data.errors;
-                        return error;
-                    });
-            },
-            navNext (response) {
-                if (this.nextStep) {
-                    this.$router.push(this.$route.path+'#'+this.nextStep)
-                    return;
-                }
-                this.$router.push('/');
-            },
-            navBack (response) {
-                if (this.previousStep) {
-                    this.$router.push(this.$route.path+'#'+this.previousStep)
-                }
-            },
-            exit (response) {
-                this.$router.push('/')
-            },
-            setUpdatedCuration: function (to, from) {
-                if (typeof to == 'undefined' ) {
-                    return;
-                }
-                if (typeof from == 'undefined' ) {
-                    this.fetchCuration(this.curation.id);
-                    this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
-                    return;
-                }
-                if (to.id != from.id && to.id && to.id != 0) {
-                    this.fetchCuration(this.curation.id);
-                    this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
-                    return;
-                }
-                this.updatedCuration = JSON.parse(JSON.stringify(this.curation));
-                return;
-            },
-            cancel: function ()
-            {
-                this.$emit('canceled');
-                this.clearForm();
-            },
-            clearForm: function () {
-                this.updatedCuration = {};
-                this.errors = {}
-            },
-            proceed: function () {
-                this.currentStep = 'disease-entity-fields';
-            },
-            setCurrentStep() {
-                if (this.$route.hash.substr(1)) {
-                    this.currentStep = this.$route.hash.substr(1);
-                }
-            }
+        mondo: {
+            title: 'MonDO',
+            next: 'classification',
+            back: 'phenotypes'
         },
-        mounted: function () {
-            this.fetchCuration(this.id);
-            this.updatedCuration = {};
-            if (this.curation) {
-                this.setUpdatedCuration(this.curation, {})
-            }
-            this.setCurrentStep();
+        documents: {
+            title: 'Documents',
+            next: null,
+            back: 'classification'
         }
     }
+    const updatedCuration = ref({
+        rationals: []
+    })
+    const standInCuration = {
+        id: 0,
+        expert_panel: {},
+        rationales: []
+    }
+    const errors = ref({})
+    const editPage = ref(null)
+
+    const user = computed(() => store.getters.getUser)
+    const curations = computed(() => store.getters['curations/Items'])
+    const transferEnabled = computed(() => store.state.features.transferEnabled)
+    const curation = computed(() => {
+        if (curations.value.length === 0) {
+            return standInCuration
+        }
+
+        return store.getters['curations/getItemById'](props.id) || standInCuration
+    })
+    const title = computed(() => {
+        let value = 'Edit Curation: '
+        if (curation.value.gene_symbol) {
+            value += curation.value.gene_symbol
+            if (curation.value.expert_panel) {
+                value += ' for ' + curation.value.expert_panel.name
+            }
+        }
+        return value
+    })
+    const currentStepIdx = computed(() => Object.keys(steps).indexOf(currentStep.value))
+    const stepComponents = {
+        info: Info,
+        'curation-type': CurationType,
+        phenotypes: Phenotypes,
+        mondo: Mondo,
+        classification: Classification,
+        documents: Documents
+    }
+    const currentStepComponent = computed(() => stepComponents[currentStep.value])
+    const nextStep = computed(() => {
+        const next = steps[currentStep.value].next
+        return typeof next === 'function' ? next() : next
+    })
+    const previousStep = computed(() => {
+        const back = steps[currentStep.value].back
+        if (back) {
+            return typeof back === 'function' ? back() : back
+        }
+        const stepKeys = Object.keys(steps)
+        return currentStepIdx.value > 0 ? stepKeys[currentStepIdx.value - 1] : null
+    })
+
+    const fetchCuration = id => store.dispatch('curations/fetchItem', id)
+    const storeItemUpdates = payload => store.dispatch('curations/storeItemUpdates', payload)
+
+    function handleAutoSave() {
+        if (updatedCuration.value.is_archived && !user.value.canManageArchive()) {
+            return
+        }
+        updateCuration()
+    }
+
+    function updateCuration(callback, nav) {
+        if (updatedCuration.value.is_archived && !user.value.canManageArchive()) {
+            store.commit('messages/addAlert', 'This curation is archived and cannot be edited.')
+            return
+        }
+        updatedCuration.value.nav = nav
+        return storeItemUpdates(updatedCuration.value)
+            .then(response => {
+                store.commit('messages/addInfo', 'Updates saved for ' + updatedCuration.value.gene_symbol + '.')
+                emit('saved')
+                if (callback) {
+                    callback(response)
+                }
+                errors.value = {}
+                return response
+            })
+            .catch(error => {
+                errors.value = error.response.data.errors
+                return error
+            })
+    }
+
+    function navNext() {
+        if (nextStep.value) {
+            router.push(route.path + '#' + nextStep.value)
+            return
+        }
+        router.push('/')
+    }
+
+    function navBack() {
+        if (previousStep.value) {
+            router.push(route.path + '#' + previousStep.value)
+        }
+    }
+
+    function exit() {
+        router.push('/')
+    }
+
+    function setUpdatedCuration(to, from) {
+        if (typeof to === 'undefined') {
+            return
+        }
+        if (typeof from === 'undefined') {
+            fetchCuration(curation.value.id)
+            updatedCuration.value = JSON.parse(JSON.stringify(curation.value))
+            return
+        }
+        if (to.id != from.id && to.id && to.id != 0) {
+            fetchCuration(curation.value.id)
+            updatedCuration.value = JSON.parse(JSON.stringify(curation.value))
+            return
+        }
+        updatedCuration.value = JSON.parse(JSON.stringify(curation.value))
+    }
+
+    function clearForm() {
+        updatedCuration.value = {}
+        errors.value = {}
+    }
+
+    function cancel() {
+        emit('canceled')
+        clearForm()
+    }
+
+    function proceed() {
+        currentStep.value = 'disease-entity-fields'
+    }
+
+    function setCurrentStep() {
+        if (route.hash.substring(1)) {
+            currentStep.value = route.hash.substring(1)
+        }
+    }
+
+    watch(() => route.fullPath, setCurrentStep)
+    watch(curation, (to, from) => {
+        if (typeof to !== 'undefined') {
+            setUpdatedCuration(to, from)
+        }
+    })
+
+    onMounted(() => {
+        fetchCuration(props.id)
+        updatedCuration.value = {}
+        if (curation.value) {
+            setUpdatedCuration(curation.value, {})
+        }
+        setCurrentStep()
+    })
+
+    defineExpose({
+        cancel,
+        clearForm,
+        exit,
+        handleAutoSave,
+        navBack,
+        navNext,
+        proceed,
+        setCurrentStep,
+        setUpdatedCuration,
+        updateCuration
+    })
 </script>
