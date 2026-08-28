@@ -1,87 +1,77 @@
-<script>
-    import queryStringFromParams from '../../../http/query_string_from_params';
-    import WarningAlert from '../../WarningAlert.vue'
-    import { debounce } from 'lodash'
+<script setup>
+import { computed, onUnmounted, ref, watch } from 'vue'
+import queryStringFromParams from '../../../http/query_string_from_params'
+import WarningAlert from '../../WarningAlert.vue'
+import { debounce } from 'lodash'
 
-    export default {
-        components: {
-            WarningAlert
-        },
-        props: {
-            curation: {
-                type: Object,
-                required: true,
-            },
-            searchByMondo: {
-                type: Boolean,
-                default: false
-            }
-        },
-        data() {
-            return {
-                matchedGenes: [],
-                matchedPhenotypes: []
-            }
-        },
-        computed: {
-            matchedCount: function () {
-                const keys = Object.keys(this.matchedGenes)
-                return keys.length
-            },
-        },
-        watch: {
-            'curation.gene_symbol'(geneSymbol) {
-                if (geneSymbol && geneSymbol.trim()) {
-                    this.checkForCurations()
-                } else {
-                    this.matchedGenes = []
-                }
-            },
-
-            'curation.phenotypes'() {
-                if (this.curation?.phenotypes?.length > 0) {
-                    this.checkForCurations()
-                }
-            },
-
-            'curation.disease'() {
-                if (this.curation?.disease) {
-                    this.checkForCurations()
-                }
-            }
-        },
-        methods: {
-            checkForCurations: debounce(function() {
-                const queryObject = {
-                    gene_symbol: this.curation.gene_symbol,
-                };
-
-                if (this.searchByMondo) {
-                    queryObject.mondo_id = this.curation.disease ? this.curation.disease.mondo_id : null;
-                }
-
-
-                const queryParams = {
-                    with: [
-                        'disease',
-                        'moi',
-                        'phenotypes',
-                        'expertPanel',
-                        'expertPanel.coordinators'
-                    ],
-                    ...queryObject
-                };
-                window.axios.get('/api/curations'+queryStringFromParams(queryParams))
-                    .then((response) => {
-                        this.matchedGenes = Object.values(response.data.data).filter((t) => (t.id != this.curation.id));
-                    })
-            }),
-            hasMatchingPhenotypes: function (phenotype) {
-                return this.curation && this.curation.phenotypes && this.curation.phenotypes.map((ph) => ph.mim_number).indexOf(phenotype.mim_number) > -1
-            },
-        }
-        //component definition
+const props = defineProps({
+    curation: {
+        type: Object,
+        required: true,
+    },
+    searchByMondo: {
+        type: Boolean,
+        default: false
     }
+})
+
+const matchedGenes = ref([])
+const matchedCount = computed(() => Object.keys(matchedGenes.value).length)
+
+const checkForCurations = debounce(function () {
+    const queryObject = {
+        gene_symbol: props.curation.gene_symbol,
+    }
+
+    if (props.searchByMondo) {
+        queryObject.mondo_id = props.curation.disease ? props.curation.disease.mondo_id : null
+    }
+
+    const queryParams = {
+        with: [
+            'disease',
+            'moi',
+            'phenotypes',
+            'expertPanel',
+            'expertPanel.coordinators'
+        ],
+        ...queryObject
+    }
+    window.axios.get('/api/curations' + queryStringFromParams(queryParams))
+        .then((response) => {
+            matchedGenes.value = Object.values(response.data.data).filter(result => result.id != props.curation.id)
+        })
+})
+
+watch(() => props.curation.gene_symbol, geneSymbol => {
+    if (geneSymbol && geneSymbol.trim()) {
+        checkForCurations()
+    } else {
+        matchedGenes.value = []
+    }
+})
+
+watch(() => props.curation.phenotypes, () => {
+    if (props.curation?.phenotypes?.length > 0) {
+        checkForCurations()
+    }
+})
+
+watch(() => props.curation.disease, () => {
+    if (props.curation?.disease) {
+        checkForCurations()
+    }
+})
+
+function hasMatchingPhenotypes(phenotype) {
+    return props.curation
+        && props.curation.phenotypes
+        && props.curation.phenotypes.map(item => item.mim_number).indexOf(phenotype.mim_number) > -1
+}
+
+onUnmounted(() => {
+    checkForCurations.cancel()
+})
 </script>
 
 <template>
