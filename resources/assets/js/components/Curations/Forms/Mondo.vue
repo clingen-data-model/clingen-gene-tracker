@@ -60,56 +60,32 @@
 
     </div>
 </template>
-<script>
-    import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import CurationNotification from './ExistingCurationNotification.vue'
-    import ValidationError from '../../ValidationError.vue'
-    import SearchSelect from '../../forms/SearchSelect.vue'
-    import SendToGciButton from '../SendToGciButton.vue'
+<script setup>
+import useCurationForm from '../../../composables/useCurationForm'
+import CurationNotification from './ExistingCurationNotification.vue'
+import ValidationError from '../../ValidationError.vue'
+import SearchSelect from '../../forms/SearchSelect.vue'
+import SendToGciButton from '../SendToGciButton.vue'
 
-    export default {
-        mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
-        ],
-        components: {
-            ValidationError,
-            CurationNotification,
-            SearchSelect,
-            SendToGciButton,
-        },
-        data: function () {
-            return {
-                page: 'mondo',
-                updatedCuration: {},
-                selection: 'eat',
-                searchMondo: async (searchText) => {
-                    return await window.axios.get('/api/diseases/search?query_string='+searchText)
-                        .then(response => {
-                            return response.data;
-                        });
-                }
-            }
-        },
-        watch: {
-            updatedCuration: function () {
-                this.emitUpdated()
-            },
-            modelValue: function (to, from) {
-                if (this.modelValue != this.updatedCuration) {
-                    this.syncValue();
-                }
-            }
-        },
-        methods: {
-            updateCurationDisease: function (value) {
-                console.log(value);
-                this.updatedCuration.disease = value;
-                this.updatedCuration.mondo_id = value ? value.mondo_id : null;
-                this.emitUpdated()
-            },
-            emitUpdated () {
-                this.$emit('update:modelValue', this.updatedCuration)
-            }
-       }
-    }
+const props = defineProps(['modelValue', 'errors'])
+const emit = defineEmits(['update:modelValue'])
+const page = 'mondo'
+const { updatedCuration } = useCurationForm(props, emit, page, {})
+
+async function searchMondo(searchText) {
+    return await window.axios.get('/api/diseases/search?query_string='+searchText)
+        .then(response => {
+            return response.data
+        })
+}
+
+function updateCurationDisease(value) {
+    console.log(value)
+    updatedCuration.value.disease = value
+    updatedCuration.value.mondo_id = value ? value.mondo_id : null
+}
+
+function emitUpdated() {
+    emit('update:modelValue', updatedCuration.value)
+}
 </script>
