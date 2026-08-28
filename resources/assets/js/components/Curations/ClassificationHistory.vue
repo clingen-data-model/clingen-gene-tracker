@@ -22,41 +22,37 @@
         </table>
     </div>
 </template>
-<script>
-    import moment from 'moment'
-    import { formatDate } from '../../filters'
-    
-    export default {
-        methods: {
-            formatDate
-        },
-        props: {
-            curation: {
-                type: Object,
-                required: true
-            },
-        },
-        computed: {
-            orderedClassifications: function () {
-                if (this.curation.classifications) {
-                    return this.curation.classifications.concat().sort((a, b) => {
-                        if (moment(a.pivot.classification_date).isSame(b.pivot.classification_date)) {
-                            if(a.id == b.id) {
-                                return 0
-                            }
-                            if (a.id < b.id) {
-                                return -1
-                            }
-                            return 1;
-                        }
-                        if (moment(a.pivot.classification_date).isBefore(b.pivot.classification_date)) {
-                            return 1;
-                        }
-                        return -1;
-                    })
-                }
-                return [];
-            }
-        }
+<script setup>
+import { computed } from 'vue'
+import moment from 'moment'
+import { formatDate } from '../../filters'
+
+const props = defineProps({
+    curation: {
+        type: Object,
+        required: true
     }
+})
+
+const orderedClassifications = computed(() => {
+    if (props.curation.classifications) {
+        return props.curation.classifications.concat().sort((a, b) => {
+            if (moment(a.pivot.classification_date).isSame(b.pivot.classification_date)) {
+                if(a.id == b.id) {
+                    return 0
+                }
+                if (a.id < b.id) {
+                    return -1
+                }
+                return 1
+            }
+            if (moment(a.pivot.classification_date).isBefore(b.pivot.classification_date)) {
+                return 1
+            }
+            return -1
+        })
+    }
+
+    return []
+})
 </script>
