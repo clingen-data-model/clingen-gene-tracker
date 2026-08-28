@@ -4,7 +4,7 @@
 @import "variables";
 @import "transitions";
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/bootstrap';
 .text-small {
     font-size: .8rem;
 }
@@ -93,7 +93,7 @@ input[type=file].form-control {
 }
 
 .space-x-0>*+* {
-    margin-right: calc(0px * var(0));
+    margin-right: 0;
     margin-left: calc(0px);
 }
 
