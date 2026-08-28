@@ -10,41 +10,24 @@
     </div>
 </template>
 
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import CurationNotifications from './ExistingCurationNotification.vue'
-    import ValidationError from '../../ValidationError.vue'
-    import ClassificationHistory from '../ClassificationHistory.vue'
+<script setup>
+import { computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import useCurationForm from '../../../composables/useCurationForm'
+import CurationNotifications from './ExistingCurationNotification.vue'
+import ValidationError from '../../ValidationError.vue'
+import ClassificationHistory from '../ClassificationHistory.vue'
 
-    export default {
-        components: {
-            CurationNotifications,
-            ValidationError,
-            ClassificationHistory
-        },
-        mixins: [
-            curationFormMixin,
-        ],
-        data() {
-            return {
-                page: 'mondo',
-                updatedCuration: {}
-            }
-        },
-        computed: {
-            ...mapGetters('classifications', {
-               classifications: 'Items',
-            }),
-        },
-        methods: {
-            ...mapActions('classifications', {
-                getAllClassifications: 'getAllItems'
-            }),            
-        },
-        mounted: function () {
-            this.getAllClassifications()
-        }
-    
-    }
+const props = defineProps(['modelValue', 'errors'])
+const emit = defineEmits(['update:modelValue'])
+const store = useStore()
+const page = 'mondo'
+
+useCurationForm(props, emit, page)
+
+const classifications = computed(() => store.getters['classifications/Items'])
+
+onMounted(() => {
+    store.dispatch('classifications/getAllItems')
+})
 </script>
