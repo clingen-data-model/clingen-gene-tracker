@@ -30,45 +30,27 @@
         </div>
     </div>
 </template>
-<script>
-    import OmimRepo from './../../../repositories/OmimRepository';
+<script setup>
+import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
-    export default {
-        props: {
-            geneSymbol: {
-                required: true,
-            }, 
-            curation: {
-                required: true,
-                type: Object
-            },
-        },
-        data: function () {
-            return {
-                phenotypes: []
-            }
-        },
-        watch: {
-            '$route': function (to, from) {
-                this.phenotypes = this.curation.phenotypes || [];
-            },
-        },
-        computed: {
-            usedPhenotypes: function () {
-                if (this.phenotypes.length > 0 && this.curation.phenotypes) {
-                    return this.phenotypes.filter(pheno => this.curation.phenotypes.indexOf(pheno.phenotypeMimNumber) > -1)
-                }
-                return this.phenotypes;
-            },
-            unusedPhenotypes: function () {
-                if (this.phenotypes.length > 0 && this.curation.phenotypes) {
-                    return this.phenotypes.filter(pheno => this.curation.phenotypes.indexOf(pheno.phenotypeMimNumber) < 0)
-                }
-                return this.phenotypes;
-            },
-        },
-        mounted: function () {
-            this.phenotypes = this.curation.phenotypes || [];
-        }
+const props = defineProps({
+    geneSymbol: {
+        required: true,
+    },
+    curation: {
+        required: true,
+        type: Object
     }
+})
+
+const route = useRoute()
+const phenotypes = ref([])
+
+function syncPhenotypes() {
+    phenotypes.value = props.curation.phenotypes || []
+}
+
+watch(route, syncPhenotypes)
+onMounted(syncPhenotypes)
 </script>

@@ -27,28 +27,20 @@
         </transition-group>
     </div>
 </template>
-<script>
-    import {mapState, mapMutations} from 'vuex';
-    import notice from './Notice.vue'
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import notice from './Notice.vue'
 
-    export default {
-        components: {
-            notice
-        },
-        computed: {
-            ...mapState('messages', {
-                info: state => state.info,
-                errors: state => state.errors
-            }),
-        },
-        methods: {
-            ...mapMutations('messages', [
-                'addInfo',
-                'addError',
-                'removeInfo',
-                'removeError'
-            ])
-        },
+const store = useStore()
+const info = computed(() => store.state.messages.info)
+const errors = computed(() => store.state.messages.errors)
 
-    }
+function removeInfo(idx) {
+    store.commit('messages/removeInfo', idx)
+}
+
+function removeError(idx) {
+    store.commit('messages/removeError', idx)
+}
 </script>

@@ -37,56 +37,46 @@
         </div>
     </div>
 </template>
-<script>
-    import {mapGetters, mapActions} from 'vuex'
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
 
-    export default {
-        data() {
-            return {
-                filter: null,
-                pageLength: 25,
-                currentPage: 1,
-                totalRows: 0,
-                sortBy: [
-                    {
-                        key: 'name',
-                        order: 'asc'
-                    }
-                ],
-                fields: [
-                    {
-                        key: 'id',
-                        sortable: true
-                    },
-                    {
-                        key: 'name',
-                        sortable: true
-                    }
-                ],
-            }
-        },
-        computed: {
-            ...mapGetters('workingGroups', {
-                groups: 'Items'
-            }),
-            tableItems: function () {
-                let items = Object.values(this.groups)
-                this.totalRows = items.length;
-                return items;
-            },
-        },
-        methods: {
-            ...mapActions('workingGroups', {
-                getWorkingGroups: 'getAllItems'
-            }),
-            onFiltered (filteredItems) {
-              // Trigger pagination to update the number of buttons/pages due to filtering
-              this.currentPage = 1
-              this.totalRows = filteredItems.length
-            },
-        },
-        mounted() {
-            this.getWorkingGroups();
-        }
+const store = useStore()
+const filter = ref(null)
+const pageLength = ref(25)
+const currentPage = ref(1)
+const totalRows = ref(0)
+const sortBy = ref([
+    {
+        key: 'name',
+        order: 'asc'
     }
+])
+const fields = [
+    {
+        key: 'id',
+        sortable: true
+    },
+    {
+        key: 'name',
+        sortable: true
+    }
+]
+
+const groups = computed(() => store.getters['workingGroups/Items'])
+const tableItems = computed(() => {
+    let items = Object.values(groups.value)
+    totalRows.value = items.length
+    return items
+})
+
+function onFiltered(filteredItems) {
+    // Trigger pagination to update the number of buttons/pages due to filtering
+    currentPage.value = 1
+    totalRows.value = filteredItems.length
+}
+
+onMounted(() => {
+    store.dispatch('workingGroups/getAllItems')
+})
 </script>

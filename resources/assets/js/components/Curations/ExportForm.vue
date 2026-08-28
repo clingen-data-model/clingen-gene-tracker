@@ -34,27 +34,14 @@
     </div>
 </template>
 
-<script>
-    import { mapGetters, mapActions } from 'vuex'
+<script setup>
+import { computed, onMounted } from 'vue'
+import { useStore } from 'vuex'
 
-    export default {
-        components: {},
-        data() {
-            return {}
-        },
-        computed: {
-            ...mapGetters('panels', {
-                panels: 'Items',
-            }),
-        },
-        methods: {
-            ...mapActions('panels', {
-                getAllPanels: 'getAllItems'                
-            })
-        },
-        mounted() {
-            this.getAllPanels();
-        }
-    
-}
+const store = useStore()
+const panels = computed(() => store.getters['panels/Items'])
+
+onMounted(() => {
+    store.dispatch('panels/getAllItems')
+})
 </script>
