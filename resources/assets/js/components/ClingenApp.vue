@@ -4,32 +4,22 @@
         <router-view></router-view>
     </div>
 </template>
-<script>
-    import { mapActions } from 'vuex'
+<script setup>
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
 
-    export default {
-        methods: {
-            ...mapActions('curationStatuses', {
-                getAllCurationStatuses: 'getAllItems'
-            }),
-            ...mapActions('rationales', {
-                getAllRationales: 'getAllItems'
-            }),
-            ...mapActions({
-                getFeatures: 'getFeatures'
-            })
-        },
-        mounted: function () {
-            if (this.$store.state.curations.items.length == 0) {
-                this.getAllCurationStatuses();
-                this.getAllRationales();
-            }
-            if (
-                !this.$store.state.features.transferEnabled
-                || !this.$store.state.features.sendToGciEnabled
-            ) {
-                this.getFeatures();
-            }
-        }
+const store = useStore()
+
+onMounted(() => {
+    if (store.state.curations.items.length == 0) {
+        store.dispatch('curationStatuses/getAllItems')
+        store.dispatch('rationales/getAllItems')
     }
+    if (
+        !store.state.features.transferEnabled
+        || !store.state.features.sendToGciEnabled
+    ) {
+        store.dispatch('getFeatures')
+    }
+})
 </script>
