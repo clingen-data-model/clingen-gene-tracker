@@ -1,120 +1,97 @@
-<script>
-    import { mapGetters } from 'vuex'
-    import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
-    import CriteriaTable from './../CriteriaTable.vue';
-    import CurationNotifications from './ExistingCurationNotification.vue'
-    import ValidationError from '../../ValidationError.vue'
+<script setup>
+import { computed, nextTick, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import CriteriaTable from './../CriteriaTable.vue'
+import CurationNotifications from './ExistingCurationNotification.vue'
+import ValidationError from '../../ValidationError.vue'
+import useCurationForm from '../../../composables/useCurationForm'
+import usePhenotypeList from '../../../composables/usePhenotypeList'
 
-    export default {
-        components: {
-             CriteriaTable,
-             CurationNotifications,
-             ValidationError
-        },
-        props: ['disabled'],
-        mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
-            phenotypeListMixin
-        ],
-        data: function () {
+const props = defineProps(['modelValue', 'errors', 'disabled'])
+const emit = defineEmits(['update:modelValue', 'auto-save'])
+
+const store = useStore()
+const page = 'phenotypes'
+const { updatedCuration } = useCurationForm(props, emit, page, {})
+const { phenotypes, loading, fetchPhenotypes } = usePhenotypeList()
+
+const fields = [
+    {
+        key: 'phenotype',
+        sortable: true
+    },
+    {
+        key: 'phenotypeMimNumber',
+        sortable: true
+    },
+    {
+        key: 'phenotypeInheritance',
+        sortable: true,
+        label: 'Inheritance'
+    },
+    {
+        key: 'checkbox',
+        tdClass: 'text-end w-10',
+        sortable: false,
+        label: ' ',
+        formatter: ({item}) => {
             return {
-                page: 'phenotypes',
-                phenotypes: [],
-                updatedCuration: {},
-                fields: [
-                    {
-                        key: 'phenotype',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeMimNumber',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeInheritance',
-                        sortable: true,
-                        label: 'Inheritance'
-                    },
-                    {
-                        key: 'checkbox',
-                        tdClass: 'text-end w-10',
-                        sortable: false,
-                        label: ' ',
-                        formatter: ({item}) => {
-                            return {
-                                'id': item.id,
-                                'mim_number': item.phenotypeMimNumber,
-                                'name': item.phenotype,
-                                'label_obsolete': Boolean(item.label_obsolete),
-                            }
-                        }
-                    }
-                ],
-                message: null,
+                'id': item.id,
+                'mim_number': item.phenotypeMimNumber,
+                'name': item.phenotype,
+                'label_obsolete': Boolean(item.label_obsolete),
             }
-        },
-        watch: {
-            updatedCuration: function (to, from) {
-                if (to.gene_symbol != from.gene_symbol) {
-                    this.fetchPhenotypes(this.updatedCuration.id)
-                        .then(() => {
-                            const onePhenotype = Array.isArray(this.phenotypes) && this.phenotypes.length === 1;
-                            const singleFromList = this.updatedCuration?.curation_type_id === 1;
-                            const noPhenotypes = !Array.isArray(this.updatedCuration.phenotypes) || this.updatedCuration.phenotypes.length === 0;
-                            if (onePhenotype && singleFromList && noPhenotypes) {
-                                const p = this.phenotypes[0];
-                                if (!Array.isArray(this.updatedCuration.phenotypes)) {
-                                    this.updatedCuration.phenotypes = [];
-                                }
-
-                                this.updatedCuration.phenotypes[0] = {
-                                    id: p.id,
-                                    mim_number: p.phenotypeMimNumber,
-                                    name: p.phenotype,
-                                    label_obsolete: Boolean(p.label_obsolete),
-                                };
-
-                                if (!Array.isArray(this.updatedCuration.rationales)) {
-                                    this.updatedCuration.rationales = [];
-                                }
-
-                                if (this.updatedCuration.rationales.length === 0) {
-                                    const defaultRationale = this.rationales.find(r => r.id === 6);
-                                    if (defaultRationale) {
-                                        this.updatedCuration.rationales.push(defaultRationale);
-                                    }
-                                }
-
-                                this.message = 'We have preselected the phenotype because you indicated you are curating ' + this.updatedCuration.gene_symbol + ' with this single disease entity';
-                                this.$emit('update:modelValue', this.updatedCuration);
-                                this.$nextTick(() => {
-                                    this.$emit('auto-save');
-                                });
-                            }
-                        });
-                }
-            }
-        },
-        computed: {
-            ...mapGetters('rationales', {
-                rationales: 'Items',
-            }),
-            showPmids: function () {
-                return 
-            },
-            loading: function () {
-                return this.$store.getters.loading;
-            },
-            showTable: function () {
-                // Show table when curation type is single NOT on list.
-                return (this.updatedCuration.curation_type_id != 2 && this.updatedCuration.curation_type_id != 3 && this.phenotypes.length > 0)
-            },
-            showRationale: function () {
-                return true;
-            },
         }
     }
+]
+const message = ref(null)
+const rationales = computed(() => store.getters['rationales/Items'])
+
+watch(updatedCuration, (to, from) => {
+    if (to.gene_symbol != from.gene_symbol) {
+        fetchPhenotypes(updatedCuration.value.id)
+            .then(() => {
+                const onePhenotype = Array.isArray(phenotypes.value) && phenotypes.value.length === 1
+                const singleFromList = updatedCuration.value?.curation_type_id === 1
+                const noPhenotypes = !Array.isArray(updatedCuration.value.phenotypes) || updatedCuration.value.phenotypes.length === 0
+                if (onePhenotype && singleFromList && noPhenotypes) {
+                    const p = phenotypes.value[0]
+                    if (!Array.isArray(updatedCuration.value.phenotypes)) {
+                        updatedCuration.value.phenotypes = []
+                    }
+
+                    updatedCuration.value.phenotypes[0] = {
+                        id: p.id,
+                        mim_number: p.phenotypeMimNumber,
+                        name: p.phenotype,
+                        label_obsolete: Boolean(p.label_obsolete),
+                    }
+
+                    if (!Array.isArray(updatedCuration.value.rationales)) {
+                        updatedCuration.value.rationales = []
+                    }
+
+                    if (updatedCuration.value.rationales.length === 0) {
+                        const defaultRationale = rationales.value.find(r => r.id === 6)
+                        if (defaultRationale) {
+                            updatedCuration.value.rationales.push(defaultRationale)
+                        }
+                    }
+
+                    message.value = 'We have preselected the phenotype because you indicated you are curating ' + updatedCuration.value.gene_symbol + ' with this single disease entity'
+                    nextTick(() => {
+                        emit('auto-save')
+                    })
+                }
+            })
+    }
+})
+
+const showTable = computed(() => {
+    return updatedCuration.value.curation_type_id != 2 && updatedCuration.value.curation_type_id != 3 && phenotypes.value.length > 0
+})
+
+const showRationale = true
 </script>
 <template>
     <div class="component-container">
