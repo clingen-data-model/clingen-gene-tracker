@@ -78,102 +78,76 @@
     </div>
 </template>
 
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import DateInput from '../../forms/DateInput.vue'
-    import moment from 'moment'
-    import { formatDate } from '../../../filters'
-    import CurationStatusHistory from '../StatusHistory.vue'
+<script setup>
+import { computed, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import DateInput from '../../forms/DateInput.vue'
+import moment from 'moment'
+import { formatDate } from '../../../filters'
+import CurationStatusHistory from '../StatusHistory.vue'
 
-    export default {
-        components: {
-            CurationStatusHistory,
-            DateInput
-        },
-        props: {
-            modelValue: {
-                required: true,
-                type: Object
-            }
-        },
-        data() {
-            return {
-                curationCopy: {},
-                modalVisible: false,
-                newStatusDate: new Date(),
-                newStatusId: null,
-                statusDatesUpdated: false,
-                errors: []
-            }
-        },
-        watch: {
-            modelValue: {
-                handler: 'syncCuration',
-                immediate: true,
-                deep: true
-            }
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'}),
-            ...mapGetters('curationStatuses', {
-                curationStatuses: 'Items',
-            }),
-            statusOptions() {
-                return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.curationCopy))
-            },
-        },
-        methods: {
-            ...mapActions('curations', {
-                linkNewStatus: 'linkNewStatus',
-                storeStatusDate: 'updateStatusDate',
-                unlinkStatus: 'unlinkStatus'
-            }),
-            addStatus() {
-                this.linkNewStatus(
-                    {
-                        curation: this.curationCopy, 
-                        data: {
-                            curation_status_id: this.newStatusId,
-                            status_date: formatDate(this.newStatusDate, 'YYYY-MM-DD')
-                        }
-                    }
-                ).then(response => {
-                    this.newStatusId = null,
-                    this.newStatusDate = new Date()
-                })
-                .catch(response => {
-                    this.errors = response.data.errors;
-                })
-            },
-            updateStatusDate(pivot, newDate) {
-                if (!pivot || moment(pivot.status_date).diff(newDate) == 0) {
-                    return;
-                }
-                this.storeStatusDate({
-                    curation: this.curationCopy,
-                    pivotId: pivot.id,
-                    statusDate: moment(newDate).format('YYYY-MM-DD')
-                })
-                .then(response => {
-                    console.log('status date updated')
-                })
-                .catch(response => {
-                    this.errors = response.data.errors;
-                })
-            },
-            removeStatusEntry(status)
-            {
-                this.unlinkStatus({curation: this.curationCopy, pivotId: status.pivot.id})
-            },
-            submitAll() {
-                if (this.newStatusId != null) {
-                    this.addStatus();
-                }
-            },
-            syncCuration() {
-                this.curationCopy = JSON.parse(JSON.stringify(this.modelValue))
-            },
-        },
-
+const props = defineProps({
+    modelValue: {
+        required: true,
+        type: Object
     }
+})
+
+const store = useStore()
+const curationCopy = ref({})
+const modalVisible = ref(false)
+const newStatusDate = ref(new Date())
+const newStatusId = ref(null)
+const errors = ref([])
+
+const user = computed(() => store.getters.getUser)
+const curationStatuses = computed(() => store.getters['curationStatuses/Items'])
+const statusOptions = computed(() => {
+    return curationStatuses.value.filter(status => user.value.canSelectCurationStatus(status, curationCopy.value))
+})
+
+watch(() => props.modelValue, value => {
+    curationCopy.value = JSON.parse(JSON.stringify(value))
+}, { immediate: true, deep: true })
+
+function addStatus() {
+    store.dispatch('curations/linkNewStatus', {
+        curation: curationCopy.value,
+        data: {
+            curation_status_id: newStatusId.value,
+            status_date: formatDate(newStatusDate.value, 'YYYY-MM-DD')
+        }
+    }).then(() => {
+        newStatusId.value = null
+        newStatusDate.value = new Date()
+    }).catch(response => {
+        errors.value = response.data.errors
+    })
+}
+
+function updateStatusDate(pivot, newDate) {
+    if (!pivot || moment(pivot.status_date).diff(newDate) == 0) {
+        return
+    }
+    store.dispatch('curations/updateStatusDate', {
+        curation: curationCopy.value,
+        pivotId: pivot.id,
+        statusDate: moment(newDate).format('YYYY-MM-DD')
+    }).catch(response => {
+        errors.value = response.data.errors
+    })
+}
+
+function removeStatusEntry(status) {
+    store.dispatch('curations/unlinkStatus', {
+        curation: curationCopy.value,
+        pivotId: status.pivot.id
+    })
+}
+
+function submitAll() {
+    if (newStatusId.value != null) {
+        addStatus()
+    }
+}
 </script>

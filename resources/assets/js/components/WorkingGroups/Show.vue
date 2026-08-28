@@ -1,53 +1,38 @@
-<script>
-    import {mapGetters, mapActions} from 'vuex'
-    import ExpertPanelTabs from './ExpertPanelTabs.vue'
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { onBeforeRouteUpdate } from 'vue-router'
+import { useStore } from 'vuex'
+import ExpertPanelTabs from './ExpertPanelTabs.vue'
 
-    export default {
-        props: ['id'],
-        components: {
-            ExpertPanelTabs
-        },
-        beforeRouteUpdate (to, from, next) {
-            this.fetchGroup(this.id);
-            next()
-        },
-        data() {
-            return {
-                hasPanels: false,
-                loading: false
-            };
-        },
-        computed: {
-            ...mapGetters('workingGroups', {
-                groups: 'Items',
-                getGroup: 'getItemById'
-            }),
-            group: function () {
-                if (this.groups.length == 0) {
-                    return {};
-                }
-                const group = this.getGroup(this.id)
-                
-                this.hasPanels = group && group.expert_panels && group.expert_panels.length > 0
-                return group
-            },
-        },
-        methods: {
-            ...mapActions('workingGroups', {
-                fetchGroup: 'fetchItem'
-            }),
-        },
-        mounted() {
-            this.loading = true;
-            this.fetchGroup(this.id)
-                .then(response => {
-                    this.loading = false;
-                })
-                .catch(error => {
-                    this.loading = false;
-                });
-        }
+const props = defineProps(['id'])
+const store = useStore()
+const loading = ref(false)
+
+const groups = computed(() => store.getters['workingGroups/Items'])
+const group = computed(() => {
+    if (groups.value.length == 0) {
+        return {}
     }
+    return store.getters['workingGroups/getItemById'](props.id)
+})
+const hasPanels = computed(() => {
+    return Boolean(group.value && group.value.expert_panels && group.value.expert_panels.length > 0)
+})
+
+onBeforeRouteUpdate(to => {
+    store.dispatch('workingGroups/fetchItem', to.params.id)
+})
+
+onMounted(() => {
+    loading.value = true
+    store.dispatch('workingGroups/fetchItem', props.id)
+        .then(() => {
+            loading.value = false
+        })
+        .catch(() => {
+            loading.value = false
+        })
+})
 </script>
 
 <template>

@@ -109,129 +109,108 @@
     </div>
 </template>
 
-<script>
-import _ from 'lodash'
+<script setup>
+import { computed, onUnmounted, ref, watch } from 'vue'
+import { debounce } from 'lodash'
 
-export default {
-    name: 'ArchivedCurationLinks',
-    emits: ['update:modelValue'],
-
-    props: {
-        modelValue: {
-            type: Object,
-            required: true,
-        },
-        editable: {
-            type: Boolean,
-            default: false,
-        },
+const props = defineProps({
+    modelValue: {
+        type: Object,
+        required: true,
     },
-
-    data() {
-        return {
-            search: '',
-            searchLoading: false,
-            searchError: null,
-            searchResults: [],
-        }
+    editable: {
+        type: Boolean,
+        default: false,
     },
+})
+const emit = defineEmits(['update:modelValue'])
 
-    computed: {
-        currentValue() {
-            return this.modelValue || {}
-        },
+const search = ref('')
+const searchLoading = ref(false)
+const searchError = ref(null)
+const searchResults = ref([])
 
-        isArchived() {
-            return Boolean(this.currentValue.is_archived)
-        },
+const currentValue = computed(() => props.modelValue || {})
+const isArchived = computed(() => Boolean(currentValue.value.is_archived))
+const linkedArchivedCurations = computed(() => {
+    return currentValue.value.linkedArchivedCurations
+        || currentValue.value.linked_archived_curations
+        || []
+})
+const linkedCurrentCurations = computed(() => {
+    return currentValue.value.linkedCurrentCurations
+        || currentValue.value.linked_current_curations
+        || []
+})
+const selectedArchivedIds = computed(() => linkedArchivedCurations.value.map(item => item.id))
+const filteredSearchResults = computed(() => {
+    return searchResults.value.filter(result => !selectedArchivedIds.value.includes(result.id))
+})
 
-        linkedArchivedCurations() {
-            return this.currentValue.linkedArchivedCurations
-                || this.currentValue.linked_archived_curations
-                || []
-        },
+function emitUpdatedValue(patch = {}) {
+    const next = {
+        ...currentValue.value,
+        ...patch,
+    }
 
-        linkedCurrentCurations() {
-            return this.currentValue.linkedCurrentCurations
-                || this.currentValue.linked_current_curations
-                || []
-        },
-
-        selectedArchivedIds() {
-            return this.linkedArchivedCurations.map(item => item.id)
-        },
-
-        filteredSearchResults() {
-            return this.searchResults.filter(result => !this.selectedArchivedIds.includes(result.id))
-        },
-    },
-
-    watch: {
-        search: _.debounce(function () {
-            this.fetchArchivedCurations()
-        }, 300),
-    },
-
-    methods: {
-        emitUpdatedValue(patch = {}) {
-            const next = {
-                ...this.currentValue,
-                ...patch,
-            }
-
-            this.$emit('update:modelValue', next)
-        },
-
-        syncArchivedIds(linkedArchivedCurations) {
-            this.emitUpdatedValue({
-                linkedArchivedCurations,
-                archived_curation_ids: linkedArchivedCurations.map(item => item.id),
-            })
-        },
-
-        async fetchArchivedCurations() {
-            if (!this.editable) {
-                this.searchResults = []
-                return
-            }
-
-            if (!this.search || this.search.trim().length < 2) {
-                this.searchResults = []
-                return
-            }
-
-            this.searchLoading = true
-            this.searchError = null
-
-            try {
-                const response = await axios.get('/api/curations/archived-curation-options', {
-                    params: { q: this.search.trim() }
-                })
-                const payload = response.data
-                this.searchResults = Array.isArray(payload) ? payload : (payload.data || [])
-            } catch (error) {
-                this.searchError = 'Unable to search archived curations.'
-                this.searchResults = []
-            } finally {
-                this.searchLoading = false
-            }
-        },
-
-        addArchivedCuration(curation) {
-            if (this.selectedArchivedIds.includes(curation.id)) {
-                return
-            }
-
-            const next = [...this.linkedArchivedCurations, curation]
-            this.syncArchivedIds(next)
-            this.search = ''
-            this.searchResults = []
-        },
-
-        removeArchivedCuration(curationId) {
-            const next = this.linkedArchivedCurations.filter(item => item.id !== curationId)
-            this.syncArchivedIds(next)
-        },
-    },
+    emit('update:modelValue', next)
 }
+
+function syncArchivedIds(nextLinkedArchivedCurations) {
+    emitUpdatedValue({
+        linkedArchivedCurations: nextLinkedArchivedCurations,
+        archived_curation_ids: nextLinkedArchivedCurations.map(item => item.id),
+    })
+}
+
+async function fetchArchivedCurations() {
+    if (!props.editable) {
+        searchResults.value = []
+        return
+    }
+
+    if (!search.value || search.value.trim().length < 2) {
+        searchResults.value = []
+        return
+    }
+
+    searchLoading.value = true
+    searchError.value = null
+
+    try {
+        const response = await axios.get('/api/curations/archived-curation-options', {
+            params: { q: search.value.trim() }
+        })
+        const payload = response.data
+        searchResults.value = Array.isArray(payload) ? payload : (payload.data || [])
+    } catch (error) {
+        searchError.value = 'Unable to search archived curations.'
+        searchResults.value = []
+    } finally {
+        searchLoading.value = false
+    }
+}
+
+const debouncedFetchArchivedCurations = debounce(fetchArchivedCurations, 300)
+watch(search, debouncedFetchArchivedCurations)
+
+function addArchivedCuration(curation) {
+    if (selectedArchivedIds.value.includes(curation.id)) {
+        return
+    }
+
+    const next = [...linkedArchivedCurations.value, curation]
+    syncArchivedIds(next)
+    search.value = ''
+    searchResults.value = []
+}
+
+function removeArchivedCuration(curationId) {
+    const next = linkedArchivedCurations.value.filter(item => item.id !== curationId)
+    syncArchivedIds(next)
+}
+
+onUnmounted(() => {
+    debouncedFetchArchivedCurations.cancel()
+})
 </script>
