@@ -26,24 +26,15 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: [
-        'panel',
-        'panelOptions'
-    ],
-    data() {
-        return {
-            updatedPanel: {}
-        }
-    },
-    watch: {
-        updatedPanel: function() {
-            this.$emit('updated', this.updatedPanel)
-        }
-    },
-    mount() {
-        this.updatedPanel = this.panel
-    }
-}
+<script setup>
+import { ref, watch } from 'vue'
+
+defineProps(['panel', 'panelOptions'])
+const emit = defineEmits(['updated'])
+
+const updatedPanel = ref({})
+
+watch(updatedPanel, value => {
+    emit('updated', value)
+})
 </script>

@@ -50,58 +50,26 @@
     </div>
 </template>
 
-<script>
-    export default {
-        /*
-         * The component's data.
-         */
-        data() {
-            return {
-                tokens: []
-            };
-        },
+<script setup>
+import { onMounted, ref } from 'vue'
 
-        /**
-         * Prepare the component (Vue 1.x).
-         */
-        ready() {
-            this.prepareComponent();
-        },
+const tokens = ref([])
 
-        /**
-         * Prepare the component (Vue 2.x).
-         */
-        mounted() {
-            this.prepareComponent();
-        },
+function getTokens() {
+    axios.get('/oauth/tokens')
+        .then(response => {
+            tokens.value = response.data
+        })
+}
 
-        methods: {
-            /**
-             * Prepare the component (Vue 2.x).
-             */
-            prepareComponent() {
-                this.getTokens();
-            },
+function revoke(token) {
+    axios.delete('/oauth/tokens/' + token.id)
+        .then(() => {
+            getTokens()
+        })
+}
 
-            /**
-             * Get all of the authorized tokens for the user.
-             */
-            getTokens() {
-                axios.get('/oauth/tokens')
-                        .then(response => {
-                            this.tokens = response.data;
-                        });
-            },
-
-            /**
-             * Revoke the given token.
-             */
-            revoke(token) {
-                axios.delete('/oauth/tokens/' + token.id)
-                        .then(response => {
-                            this.getTokens();
-                        });
-            }
-        }
-    }
+onMounted(() => {
+    getTokens()
+})
 </script>
