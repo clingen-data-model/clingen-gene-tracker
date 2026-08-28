@@ -23,7 +23,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-md-1">
-                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="$router.go(-1)">Cancel</button>
+                            <button type="button" class="btn btn-secondary pull-left" id="curation-proceed" @click="router.go(-1)">Cancel</button>
                         </div>
                         <div class="col-md-11 text-end">
                             <b-button variant="primary" id="create-and-continue-btn" @click="createCuration()">Create curation</b-button>
@@ -34,65 +34,35 @@
         </div>
     </div>
 </template>
-<script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
-    import Info from './Forms/Info.vue'
-    export default {
-        components: {
-            Info
-        },
-        data: function () {
-            return {
-                updatedCuration: {
-                    gene_symbol: null,
-                    gdm_uuid: null
-                },
-                errors: {},
-            }
-        },
-        computed: {
-            ...mapGetters({user: 'getUser'}),
-            selectedPanel: function () {
-                return this.panels.find(
-                    obj => { 
-                        return obj.id == this.newPanelId 
-                    })
-            },
-            geneSymbolError: function () {
-                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
-            },
-        },
-        methods: {
-            ...mapMutations('messages', [
-                'addInfo',
-                'addAlert'
-            ]),
-            ...mapActions('curations', {
-                fetchCuration: 'fetchItem',
-                storeNewItem: 'storeNewItem',
-                storeItemUpdates: 'storeItemUpdates'
-            }),
-            createCuration () {
-                return this.storeNewItem(this.updatedCuration)
-                    .then( (response) => {
-                        this.$emit('saved');
-                        this.$emit('created');
-                        this.addInfo('Curation with '+this.updatedCuration.gene_symbol+' created.')
-                        this.$router.push('/curations/'+response.data.data.id+'/edit/#curation-type');
-                        return response;
-                    })
-                    .catch( (error) => {
-                        this.errors = error.response.data.errors;
-                        return error;
-                    })
-            },
-            clearForm: function () {
-                this.updatedCuration = {};
-                this.errors = {}
-            }
-        },
-        mounted: function() {
-        }
-        //component definition
-    }
+<script setup>
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import Info from './Forms/Info.vue'
+
+const emit = defineEmits(['saved', 'created'])
+const router = useRouter()
+const store = useStore()
+
+const updatedCuration = ref({
+    gene_symbol: null,
+    gdm_uuid: null
+})
+const errors = ref({})
+const user = computed(() => store.getters.getUser)
+
+function createCuration() {
+    return store.dispatch('curations/storeNewItem', updatedCuration.value)
+        .then(response => {
+            emit('saved')
+            emit('created')
+            store.commit('messages/addInfo', 'Curation with ' + updatedCuration.value.gene_symbol + ' created.')
+            router.push('/curations/' + response.data.data.id + '/edit/#curation-type')
+            return response
+        })
+        .catch(error => {
+            errors.value = error.response.data.errors
+            return error
+        })
+}
 </script>

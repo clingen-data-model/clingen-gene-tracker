@@ -128,9 +128,9 @@
         </div>
     </div>
 </template>
-<script>
-import {ref, reactive, computed} from 'vue'
-import {debounce} from 'lodash'
+<script setup>
+import { computed, onUnmounted, ref, watch } from 'vue'
+import { debounce } from 'lodash'
 
 function inView(elem)
 {
@@ -151,220 +151,181 @@ function inView(elem)
 
 }
 
-export default {
-    name: 'SearchSelect',
-    props: {
-        throttle: {
-            required: false,
-            type: Number,
-            default: 250,
-        },
-        searchFunction: {
-            required: false,
-            type: Function,
-            default: null
-        },
-        modelValue: {
-            required: true
-        },
-        options: {
-            required: false,
-            default: () => []
-        },
-        optionsHeight: {
-            required: false,
-            type: Number,
-            default: 200
-        },
-        placeholder: {
-            required: false,
-            type: String,
-            default: ''
-        },
-        disabled: {
-            required: false,
-            type: Boolean,
-            default: false
-        }
+const props = defineProps({
+    throttle: {
+        required: false,
+        type: Number,
+        default: 250,
     },
-    emits: [
-        'update:modelValue',
-    ],
-    setup(props) {
+    searchFunction: {
+        required: false,
+        type: Function,
+        default: null
+    },
+    modelValue: {
+        required: true
+    },
+    options: {
+        required: false,
+        default: () => []
+    },
+    optionsHeight: {
+        required: false,
+        type: Number,
+        default: 200
+    },
+    placeholder: {
+        required: false,
+        type: String,
+        default: ''
+    },
+    disabled: {
+        required: false,
+        type: Boolean,
+        default: false
+    }
+})
+const emit = defineEmits(['update:modelValue'])
 
-    },
-    data() {
-        return {
-            searchText: '',
-            cursorPosition:null,
-            filteredOptions: [],
-            clearInputTimeout: null,
-            keydownTimer: null,
-            currentKey: null,
-        }
-    },
-    computed: {
-        hasOptions () {
-            return this.filteredOptions.length > 0;
-        },
-        optionsListHeight () {
-            return this.showingOptions ? this.optionsHeight : 0;
-        },
-        selection() {
-            return this.modelValue;
-        },
-        showInput() {
-            return !this.hasSelection;
-        },
-        showingOptions() {
-            return this.filteredOptions.length > 0;
-        },
-        highlightedOption() {
-            if (this.showingOptions) {
-                return null;
-            }
-            return this.filteredOptions[this.cursorPosition];
-        },
-        hasSelection() {
-            return Boolean(this.modelValue)
-        },
-    },
-    watch: {
-        searchText: function (to) {
-            this.search(this.searchText, this.options);
-        },
-        filteredOptions: function (to) {
-            this.cursorPosition = 0;
-        }
-    },
-    methods: {
-        defaultSearchFunction (searchText, options) {
-            if (searchText === '') {
-                return [];
-            }
-            return options.filter(o => {
-                const match = o.name.match(new RegExp(searchText, 'gi'));
-                return match !== null
-            })
-        },
-        removeSelection(    ){
-            this.$emit('update:modelValue', null);
-            this.$refs.input.focus();
-        },
-        setSelection(selection) {
-            console.info('setSelection', selection);
-            this.$emit('update:modelValue', selection);
-            console.log('emitted')
-            this.clearInput();
-            console.log('clearedInput')
-            this.resetCursor();
-            console.log('resetCursor')
-        },
-        clearInput() {
-            console.debug('clearInput');
-            this.clearSearchText();
-            this.clearOptions();
-        },
-        clearOptions() {
-            console.debug('clearOptions');
-            this.filteredOptions = [];
-        },
-        clearSearchText() {
-            console.debug('clearSearchText')
-            this.searchText = '';
-        },
-        resetCursor() {
-            this.cursorPosition = 0;
-        },
-        startKeydownTimer(evt) {
-            if (evt.key == this.currentKey) {
-                return;
-            }
-            this.cancelKeydownTimer(evt);
-            if (evt.key == 'ArrowUp') {
-            console.info('start key down timer', evt.key)
-                this.keydownTimer = setInterval(() => {this.moveUp()}, 100);
-                this.currentKey = 'ArrowUp';
-            }
-            if (evt.key == 'ArrowDown') {
-            console.info('start key down timer', evt.key)
-                this.keydownTimer = setInterval(() => {this.moveDown()}, 100);
-                this.currentKey = 'ArrowDown';
-            }
-        },
-        cancelKeydownTimer(evt) {
-            if (this.keydownTimer) {
-                clearInterval(this.keydownTimer);
-                this.currentKey = null;
-            }
-        },
-        moveUp() {
-            if (!this.cursorPosition) {
-                this.cursorPosition = 0;
-                return;
-            }
-            if (this.cursorPosition-1 < 0) {
-                return;
-            }
-            this.cursorPosition--;
-            this.scrollToHighlightedOption();
-            return;
-        },
-        moveDown() {
-            if (this.cursorPosition === null) {
-                this.cursorPosition = 0;
-                return;
-            }
-            if (this.cursorPosition+1 >= this.filteredOptions.length) {
-                return;
-            }
-            this.cursorPosition++;
-            this.scrollToHighlightedOption();
-            return;
-        },
-        handleKeyEvent(evt) {
-            this.cancelKeydownTimer(evt);
-            if (this.showingOptions) {
-                if (evt.key == 'ArrowDown') {
-                    this.moveDown();
-                }
-                if (evt.key == 'ArrowUp') {
-                    this.moveUp();
-                }
+const input = ref(null)
+const searchText = ref('')
+const cursorPosition = ref(null)
+const filteredOptions = ref([])
+const keydownTimer = ref(null)
+const currentKey = ref(null)
 
-                if (['Enter'].indexOf(evt.key) > -1) {
-                    evt.preventDefault();
-                    this.setSelection(this.filteredOptions[this.cursorPosition])
-                }
-                if (evt.key == 'Escape') {
-                    console.log('escape');
-                    this.clearOptions();
-                }
-            }
-        },
-        scrollToHighlightedOption () {
-            if (!inView(document.getElementById('option-'+this.cursorPosition))) {
-                document.getElementById('option-'+this.cursorPosition).scrollIntoView();
-            }
+const hasOptions = computed(() => filteredOptions.value.length > 0)
+const showingOptions = computed(() => filteredOptions.value.length > 0)
+const optionsListHeight = computed(() => showingOptions.value ? props.optionsHeight : 0)
+const hasSelection = computed(() => Boolean(props.modelValue))
+const showInput = computed(() => !hasSelection.value)
 
+const search = debounce(async (value, options) => {
+    if (!props.searchFunction) {
+        if (value === '') {
+            return []
         }
-    },
-    created() {
-        this.search = debounce( async (searchText, options) => {
-            if (!this.searchFunction)  {
-                if (searchText === '') {
-                    return [];
-                }
-                
-                this.filteredOptions = options.filter(o => {
-                    const match = o.match(new RegExp(searchText, 'gi'));
-                    return match !== null
-                })
-                return;
-            }
 
-            this.filteredOptions = await this.searchFunction(searchText, options);
-        }, this.throttle);
+        filteredOptions.value = options.filter(option => {
+            const match = option.match(new RegExp(value, 'gi'))
+            return match !== null
+        })
+        return
+    }
+
+    filteredOptions.value = await props.searchFunction(value, options)
+}, props.throttle)
+
+watch(searchText, () => {
+    search(searchText.value, props.options)
+})
+
+watch(filteredOptions, () => {
+    cursorPosition.value = 0
+})
+
+function removeSelection() {
+    emit('update:modelValue', null)
+    input.value.focus()
+}
+
+function setSelection(selection) {
+    emit('update:modelValue', selection)
+    clearInput()
+    resetCursor()
+}
+
+function clearInput() {
+    clearSearchText()
+    clearOptions()
+}
+
+function clearOptions() {
+    filteredOptions.value = []
+}
+
+function clearSearchText() {
+    searchText.value = ''
+}
+
+function resetCursor() {
+    cursorPosition.value = 0
+}
+
+function startKeydownTimer(evt) {
+    if (evt.key == currentKey.value) {
+        return
+    }
+    cancelKeydownTimer()
+    if (evt.key == 'ArrowUp') {
+        keydownTimer.value = setInterval(() => { moveUp() }, 100)
+        currentKey.value = 'ArrowUp'
+    }
+    if (evt.key == 'ArrowDown') {
+        keydownTimer.value = setInterval(() => { moveDown() }, 100)
+        currentKey.value = 'ArrowDown'
     }
 }
+
+function cancelKeydownTimer() {
+    if (keydownTimer.value) {
+        clearInterval(keydownTimer.value)
+        currentKey.value = null
+    }
+}
+
+function moveUp() {
+    if (!cursorPosition.value) {
+        cursorPosition.value = 0
+        return
+    }
+    if (cursorPosition.value - 1 < 0) {
+        return
+    }
+    cursorPosition.value--
+    scrollToHighlightedOption()
+}
+
+function moveDown() {
+    if (cursorPosition.value === null) {
+        cursorPosition.value = 0
+        return
+    }
+    if (cursorPosition.value + 1 >= filteredOptions.value.length) {
+        return
+    }
+    cursorPosition.value++
+    scrollToHighlightedOption()
+}
+
+function handleKeyEvent(evt) {
+    cancelKeydownTimer()
+    if (showingOptions.value) {
+        if (evt.key == 'ArrowDown') {
+            moveDown()
+        }
+        if (evt.key == 'ArrowUp') {
+            moveUp()
+        }
+        if (['Enter'].indexOf(evt.key) > -1) {
+            evt.preventDefault()
+            setSelection(filteredOptions.value[cursorPosition.value])
+        }
+        if (evt.key == 'Escape') {
+            clearOptions()
+        }
+    }
+}
+
+function scrollToHighlightedOption() {
+    const option = document.getElementById('option-' + cursorPosition.value)
+    if (!inView(option)) {
+        option.scrollIntoView()
+    }
+}
+
+onUnmounted(() => {
+    cancelKeydownTimer()
+    search.cancel()
+})
 </script>
