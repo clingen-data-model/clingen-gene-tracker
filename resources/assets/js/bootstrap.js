@@ -1,14 +1,14 @@
 
-window._ = require('lodash');
+import lodash from 'lodash'
+import 'bootstrap'
+import axios from 'axios'
+
+window._ = lodash
 
 /**
  * Load Bootstrap's JavaScript for non-Vue markup that uses Bootstrap's
  * data attributes. Bootstrap 5 no longer requires jQuery.
  */
-
-try {
-    require('bootstrap');
-} catch (e) {}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -16,7 +16,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+window.axios = axios
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

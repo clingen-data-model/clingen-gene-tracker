@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap'
 import { createApp } from 'vue'
 import { createBootstrap } from 'bootstrap-vue-next'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
@@ -14,20 +14,19 @@ import router from './routing.js'
 import CriteriaTable from './components/Curations/CriteriaTable.vue'
 import User from './User'
 import ExpertPanelField from './components/admin/ExpertPanelField.vue'
-// import configs from './configs.json';
-
-// console.log(configs);
-
+import ClingenApp from './components/ClingenApp.vue'
+import ClingenNav from './components/ClingenNav.vue'
+import Alerts from './components/Alerts.vue'
 import ExternalLink from './components/ExternalLink.vue'
 
 import GciLink from './components/Curations/GciLink.vue';
 import GciLinkedMessage from './components/Curations/GciLinkedMessage.vue';
 
-if (user) {
-    user = new User(user);
+if (window.user) {
+    window.user = new User(window.user);
 }
 
-axios.interceptors.request.use(function(config) {
+window.axios.interceptors.request.use(function(config) {
     store.commit('addRequest');
     const apiParts = config.url.split(/[\/?&]/)
     try {
@@ -36,7 +35,7 @@ axios.interceptors.request.use(function(config) {
     return config;
 })
 
-axios.interceptors.response.use(
+window.axios.interceptors.response.use(
     function(response) {
         store.commit('removeRequest');
         const url = new URL(response.request.responseURL);
@@ -62,9 +61,9 @@ axios.interceptors.response.use(
 if (document.getElementById('app')) {
     const app = createApp({
         components: {
-            'clingen-app': require('./components/ClingenApp.vue').default,
-            'clingen-nav': require('./components/ClingenNav.vue').default,
-            'alerts': require('./components/Alerts.vue').default,
+            'clingen-app': ClingenApp,
+            'clingen-nav': ClingenNav,
+            'alerts': Alerts,
             CriteriaTable
         },
         computed: {
