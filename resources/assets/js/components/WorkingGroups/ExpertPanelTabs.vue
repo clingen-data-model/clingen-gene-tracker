@@ -1,38 +1,26 @@
-<script>
-    import CurationsTable from '../Curations/Table.vue'
-    import { startCase } from 'lodash'
+<script setup>
+import { computed, ref } from 'vue'
+import CurationsTable from '../Curations/Table.vue'
+import { startCase } from 'lodash'
 
-    export default {
-        props: ['expertPanel'],
-        components: {
-            CurationsTable
-        },
-        data() {
-            return {
-                activeTabIndex: 0
-            }
-        },
-        computed: {
-            activeMembers() {
-                return this.expertPanel?.users?.filter(u => u.deactivated_at === null) || []
-            },
-            curationCount() {
-                return this.expertPanel?.curations_count || 0
-            }
-        },
-        methods: {
-            getUserRoles(user) {
-                let roles = user.roles.map(role => startCase(role.name))
-                if (user.pivot.is_coordinator) {
-                    roles.push('Coordinator');
-                }
-                if (user.pivot.is_curator) {
-                    roles.push('Curator');
-                }
-                return roles
-            }
-        }
+const props = defineProps(['expertPanel'])
+
+const activeTabIndex = ref(0)
+const activeMembers = computed(() => {
+    return props.expertPanel?.users?.filter(user => user.deactivated_at === null) || []
+})
+const curationCount = computed(() => props.expertPanel?.curations_count || 0)
+
+function getUserRoles(user) {
+    const roles = user.roles.map(role => startCase(role.name))
+    if (user.pivot.is_coordinator) {
+        roles.push('Coordinator')
     }
+    if (user.pivot.is_curator) {
+        roles.push('Curator')
+    }
+    return roles
+}
 </script>
 <template>
     <b-tabs v-model:index="activeTabIndex">
