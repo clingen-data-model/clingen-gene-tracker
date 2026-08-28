@@ -2,19 +2,16 @@
 
 <template>
     <transition name="fade">
-        <div class="alert alert-info" v-show="$store.getters.omimLoading">
+        <div class="alert alert-info" v-show="omimLoading">
             Loading data from OMIM...
         </div>
     </transition>
 </template>
 
-<script>
-    export default {
-        components: {},
-        data() {
-            return {}
-        },
-        methods: {}
-    
-}
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+const omimLoading = computed(() => store.getters.omimLoading)
 </script>
