@@ -36,86 +36,79 @@
             </div>
     </div>
 </template>
-<script>
-    import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import phenotypeListMixin from '../../../mixins/phenotype_list_mixin'
-    import CriteriaTable from './../CriteriaTable.vue';
-    import ValidationError from '../../ValidationError.vue';
-    import OmimLoading from '../../OmimLoading.vue'
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue'
+import CriteriaTable from './../CriteriaTable.vue'
+import ValidationError from '../../ValidationError.vue'
+import OmimLoading from '../../OmimLoading.vue'
+import useCurationForm from '../../../composables/useCurationForm'
+import usePhenotypeList from '../../../composables/usePhenotypeList'
 
-    export default {
-        mixins: [
-            curationFormMixin,
-            phenotypeListMixin
-        ],
-        components: {
-            CriteriaTable,
-            ValidationError,
-            OmimLoading,
-        },
-        data() {
-            return {
-                page: 'curation-types',
-                curationTypes: [],
-                fields: [
-                    {
-                        key: 'phenotype',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeMimNumber',
-                        sortable: true
-                    },
-                    {
-                        key: 'phenotypeInheritance',
-                        sortable: true,
-                        label: 'Inheritance'
-                    },
-                ]
-            }
-        },
-        watch: {
-            updatedCuration: function (to, from) {
-                if (to != from) {
-                    if (to.gene_symbol != from.gene_symbol || to.curation_type_id != from.curation_type_id) {
-                        this.fetchPhenotypes(this.updatedCuration.id);
-                    }
-                    this.updatedCuration.addingCurationType = 1;
-                }
-            }
-        },
-        computed: {
-            nonObsoletePhenotypes () {
-                return (this.phenotypes || []).filter(p => !p.label_obsolete)
-            },
-            options: function () {
-                const activePhenotypes = this.nonObsoletePhenotypes
-                if (this.phenotypesLoaded && activePhenotypes.length == 0 && this.updatedCuration.curation_type_id === null) {
-                    this.updatedCuration.curation_type_id = 2;
-                    return [];
-                }
-                if (activePhenotypes.length == 1) {
-                    return this.curationTypes
-                            .filter(item => item.name != 'lumped')
-                            .map(item => ({text: item.description, value: item.id}))
-                }
-                return this.curationTypes
-                        .map(item => ({text: item.description, value: item.id}))
-            }
-        },
-        methods: {
-            fetchCurationTypes() {
-                window.axios.get('/api/curation-types')
-                    .then((response) => {
-                        this.curationTypes = response.data
-                    })
-            }
-        },
-        mounted() {
-            // if (this.updatedCuration.gene_symbol) {
-            //     this.fetchPhenotypes(this.updatedCuration.gene_symbol)
-            // }
-            this.fetchCurationTypes();
+const props = defineProps(['modelValue', 'errors'])
+const emit = defineEmits(['update:modelValue'])
+
+const page = 'curation-types'
+const { updatedCuration } = useCurationForm(props, emit, page)
+const {
+    phenotypes,
+    phenotypesLoaded,
+    loading,
+    fetchPhenotypes
+} = usePhenotypeList()
+
+const curationTypes = ref([])
+const fields = [
+    {
+        key: 'phenotype',
+        sortable: true
+    },
+    {
+        key: 'phenotypeMimNumber',
+        sortable: true
+    },
+    {
+        key: 'phenotypeInheritance',
+        sortable: true,
+        label: 'Inheritance'
+    },
+]
+
+watch(updatedCuration, (to, from) => {
+    if (to != from) {
+        if (to.gene_symbol != from.gene_symbol || to.curation_type_id != from.curation_type_id) {
+            fetchPhenotypes(updatedCuration.value.id)
         }
+        updatedCuration.value.addingCurationType = 1
     }
+})
+
+const nonObsoletePhenotypes = computed(() => {
+    return (phenotypes.value || []).filter(p => !p.label_obsolete)
+})
+
+const options = computed(() => {
+    const activePhenotypes = nonObsoletePhenotypes.value
+    if (phenotypesLoaded.value && activePhenotypes.length == 0 && updatedCuration.value.curation_type_id === null) {
+        updatedCuration.value.curation_type_id = 2
+        return []
+    }
+    if (activePhenotypes.length == 1) {
+        return curationTypes.value
+            .filter(item => item.name != 'lumped')
+            .map(item => ({text: item.description, value: item.id}))
+    }
+    return curationTypes.value
+        .map(item => ({text: item.description, value: item.id}))
+})
+
+function fetchCurationTypes() {
+    window.axios.get('/api/curation-types')
+        .then((response) => {
+            curationTypes.value = response.data
+        })
+}
+
+onMounted(() => {
+    fetchCurationTypes()
+})
 </script>
