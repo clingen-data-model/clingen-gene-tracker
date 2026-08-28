@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 var handleError = function(message){
     console.error(message);
     alert('There was a problem: '+message+'. Please notify the development team.');
@@ -11,7 +13,7 @@ var objectToQueryString = function(obj){
     return '?'+params.join('&');
 }
 
-module.exports = {
+const Repository = {
     baseUrl: null,
     name: 'BaseRepository',
     dates: [],
@@ -110,3 +112,5 @@ module.exports = {
     }
 
 };
+
+export default Repository

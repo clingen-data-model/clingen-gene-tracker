@@ -28,9 +28,15 @@
         onload="this.rel = 'stylesheet'"
     >
 
-    <link href="{{ mix('css/app.css') }}" rel="preload stylesheet" as="style">
-
-
+    <script>
+        window.user = {!! json_encode($user) !!}.user
+        window.maxUploadSize = '{{getMaxUploadSizeForHumans()}}'
+        window.supportedMimes = {!! json_encode(config('project.supported-mimes')) !!}
+    </script>
+    @vite([
+        'resources/assets/sass/app.scss',
+        'resources/assets/js/app.js',
+    ])
 
     {{-- @include('google_analytics') --}}
 
@@ -131,14 +137,6 @@
 
         @include('partials.impersonate');
         {{-- @include('partials.version_info'); --}}
-    <!-- Scripts -->
-    <script>
-        window.user = {!! json_encode($user) !!}.user
-        window.maxUploadSize = '{{getMaxUploadSizeForHumans()}}'
-        window.supportedMimes = {!! json_encode(config('project.supported-mimes')) !!}
-    </script>
-    <script src="{{ mix('js/app.js') }}"></script>
-
     @stack('scripts')
 </body>
 </html>

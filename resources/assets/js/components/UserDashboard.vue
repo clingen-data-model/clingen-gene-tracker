@@ -23,7 +23,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
-import CurationsTable from './Curations/Table'
+import CurationsTable from './Curations/Table.vue'
 
 const store = useStore()
 const user = computed(() => store.getters.getUser)

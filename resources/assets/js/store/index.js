@@ -11,7 +11,7 @@ import mois from './modules/mois'
 import User from '../User'
 import getCurrentUser from '../resources/users/get_current_user';
 
-const debug = process.env.NODE_ENV !== 'production'
+const debug = import.meta.env.DEV
 
 const state = {
     requestCount: 0,
