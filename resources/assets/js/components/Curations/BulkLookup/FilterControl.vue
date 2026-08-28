@@ -18,23 +18,23 @@
     </div>
     
 </template>
-<script>
-    export default {
-        props: {
-            items: {
-                type: Array,
-                required: true
-            },
-            title: {
-                type: String,
-                default: 'Filter'
-            },
-            selectedFilters: {
-                type: Array,
-                required: true
-            }
-        },
+<script setup>
+defineProps({
+    items: {
+        type: Array,
+        required: true
+    },
+    title: {
+        type: String,
+        default: 'Filter'
+    },
+    selectedFilters: {
+        type: Array,
+        required: true
     }
+})
+
+defineEmits(['toggle'])
 </script>
 <style>
     li.selected {

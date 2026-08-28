@@ -23,12 +23,8 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            detailsVisible: false
-        }
-    }
-}
+<script setup>
+import { ref } from 'vue'
+
+const detailsVisible = ref(false)
 </script>
