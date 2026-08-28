@@ -21,54 +21,50 @@
         </table>
     </div>
 </template>
-<script>
-    import moment from 'moment'
-    import { formatDate } from '../../filters'
-    
-    export default {
-        methods: {
-            formatDate
-        },
-        props: {
-            items: {
-                type: Array,
-                required: true
-            },
-            itemLabel: {
-                type: String,
-                required: true
-            },
-            dateField: {
-                type: String,
-                required: true,
-            },
-            indexAttribute: {
-                type: String,
-                required: false,
-                default: null
-            }
-        },
-        computed: {
-            orderedItems: function () {
-                if (this.items) {
-                    return this.items.concat().sort((a, b) => {
-                        if (moment(a.pivot[this.dateField]).isSame(b.pivot[this.dateField])) {
-                            if(a.id == b.id) {
-                                return 0
-                            }
-                            if (a.id < b.id) {
-                                return 1
-                            }
-                            return -1;
-                        }
-                        if (moment(a.pivot[this.dateField]).isBefore(b.pivot[this.dateField])) {
-                            return 1;
-                        }
-                        return -1;
-                    })
-                }
-                return [];
-            }
-        }
+<script setup>
+import { computed } from 'vue'
+import moment from 'moment'
+import { formatDate } from '../../filters'
+
+const props = defineProps({
+    items: {
+        type: Array,
+        required: true
+    },
+    itemLabel: {
+        type: String,
+        required: true
+    },
+    dateField: {
+        type: String,
+        required: true,
+    },
+    indexAttribute: {
+        type: String,
+        required: false,
+        default: null
     }
+})
+
+const orderedItems = computed(() => {
+    if (props.items) {
+        return props.items.concat().sort((a, b) => {
+            if (moment(a.pivot[props.dateField]).isSame(b.pivot[props.dateField])) {
+                if(a.id == b.id) {
+                    return 0
+                }
+                if (a.id < b.id) {
+                    return 1
+                }
+                return -1
+            }
+            if (moment(a.pivot[props.dateField]).isBefore(b.pivot[props.dateField])) {
+                return 1
+            }
+            return -1
+        })
+    }
+
+    return []
+})
 </script>
