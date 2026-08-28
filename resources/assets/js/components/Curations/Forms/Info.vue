@@ -37,10 +37,7 @@
             :class="{'error': fieldError('moi_id')}"
         >
             <b-form-select :model-value="updatedCuration.moi_id"
-                @update:model-value="value => {
-                    console.log('selected MOI:', value)
-                    updatedCuration.moi_id = value
-                }"
+                @update:model-value="updatedCuration.moi_id = $event"
                 id="moi_input"
                 :disabled="hasGdmUuid() || isArchivedReadOnly"
             >
@@ -236,181 +233,143 @@
         </div>
     </div>
 </template>
-<script>
-    import { mapGetters, mapActions } from 'vuex'
-    import CurationNotifications from './ExistingCurationNotification.vue'
-    import curationFormMixin from '../../../mixins/curation_form_mixin'
-    import ValidationError from '../../ValidationError.vue'
-    import StatusForm from './StatusForm.vue'
-    import moment from 'moment'
-    import ArchivedCurationLinks from './ArchivedCurationLinks.vue'
+<script setup>
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
+import CurationNotifications from './ExistingCurationNotification.vue'
+import ValidationError from '../../ValidationError.vue'
+import StatusForm from './StatusForm.vue'
+import ArchivedCurationLinks from './ArchivedCurationLinks.vue'
+import useCurationForm from '../../../composables/useCurationForm'
 
-    export default {
-        name: 'test',
-        mixins: [
-            curationFormMixin, // handles syncing of prop value to updatedCuration
-        ],
-        components: {
-            CurationNotifications,
-            ValidationError,
-            StatusForm,
-            ArchivedCurationLinks,
-        },
-        data() {
-            return {
-                page: 'info',
-                newStatusDate: null,
-                newStatusId: null,
-                showArchiveFields: false,
-                archiveForm: {
-                    archive_reason: '',
-                    gcex_url: '',
-                },
-                archiveSaving: false,
-            }
-        },
-        watch: {
-            updatedCuration: function (to, from) {
-                console.log('Info.vue: updatedCuration')
-                console.log(from)
-                console.log(to)
-            },
-        },
-        computed: {
-            today: function () {
-                return moment();
-            },
-            ...mapGetters({ user: 'getUser' }),
-            ...mapGetters('mois', {
-                mois: 'Items',
-            }),
-            ...mapGetters('panels', {
-                panels: 'Items',
-            }),
-            ...mapGetters('users', {
-                curators: 'getCurators'
-            }),
-            ...mapGetters('curationStatuses', {
-                curationStatuses: 'Items',
-            }),
-            panelOptions: function () {
-                return this.panels.filter(panel => this.user.canSelectExpertPanel(panel)).sort((a, b) => a.name.localeCompare(b.name))
-            },
-            statusOptions: function () {
-                return this.curationStatuses.filter(status => this.user.canSelectCurationStatus(status, this.updatedCuration))
-            },
-            panelCurators: function () {
-                const curators = this.curators.filter(user => {
-                    return (
-                        user.expert_panels
-                        && user.expert_panels.find(panel => panel.id == this.updatedCuration.expert_panel_id)
-                    )
-                });
+const props = defineProps(['modelValue', 'errors'])
+const emit = defineEmits(['update:modelValue'])
 
-                if (curators && curators.length == 1) {
-                    this.updatedCuration.curator_id = curators[0].id
-                } else if (curators && curators.length > 0) {
-                    this.updatedCuration.curator_id = (this.updatedCuration.curator_id) ? this.updatedCuration.curator_id : null
-                } else {
-                    this.updatedCuration.curator_id = null;
-                }
+const store = useStore()
+const { updatedCuration } = useCurationForm(props, emit, 'info')
 
-                return curators;
+const showArchiveFields = ref(false)
+const archiveForm = reactive({
+    archive_reason: '',
+    gcex_url: '',
+})
+const archiveSaving = ref(false)
 
-            },
-            geneSymbolError: function () {
-                return (this.errors && this.errors.gene_symbol && this.errors.gene_symbol.length > 0) ? false : null;
-            },
-            expertPanelIdError: function () {
-                return (this.errors && this.errors.expert_panel_id && this.errors.expert_panel_id.length > 0) ? false : null;
-            },
-            canUpdateExpertPanel() {
-                if (this.isArchivedReadOnly) { return false }
-                return !Boolean(this.updatedCuration && this.updatedCuration.expert_panel_id && this.updatedCuration.id);
-            },
-            canEditGdmUuid () {
-                if (this.isArchivedReadOnly || !this.updatedCuration.expert_panel) {
-                    return false;
-                }
-                return this.user.hasPermission('update curation gdm_uuid')
-                    || this.user.isPanelCoordinator(this.updatedCuration.expert_panel)
-                    || this.user.canEditPanelCurations(this.updatedCuration.expert_panel)
-            },
-            canManageArchive() {
-                return this.user && this.user.canManageArchive()
-            },
-            isArchived() {
-                return Boolean(this.updatedCuration && this.updatedCuration.is_archived)
-            },
-            isArchivedReadOnly() {
-                return this.isArchived && !this.canManageArchive
-            },
-            hasGciIdentification() {
-                return Boolean(
-                    this.updatedCuration?.gdm_uuid || ( this.updatedCuration?.hgnc_id && this.updatedCuration?.mondo_id && this.updatedCuration?.moi_id)
-                )
-            },
+const user = computed(() => store.getters.getUser)
+const mois = computed(() => store.getters['mois/Items'])
+const panels = computed(() => store.getters['panels/Items'])
+const curators = computed(() => store.getters['users/getCurators'])
 
-            showArchiveGciWarning() {
-                return this.showArchiveFields && !this.hasGciIdentification
-            },
-        },
-        methods: {
-            handleDateSelected(evt) {
-            },
-            ...mapActions('panels', {
-                getAllPanels: 'getAllItems'
-            }),
-            ...mapActions('mois', {
-                getAllMois: 'getAllItems'
-            }),
-            ...mapActions('users', {
-                getAllUsers: 'getAllItems'
-            }),
-            fieldError (field) {
-                return (this.errors && this.errors[field] && this.errors[field].length > 0);
-            },
-            hasGdmUuid() {
-                return this.updatedCuration.gdm_uuid !== null && typeof this.updatedCuration.gdm_uuid !== 'undefined';
-            },
-            toggleArchiveFields() {
-                this.showArchiveFields = !this.showArchiveFields
-                if (this.showArchiveFields) {
-                    this.archiveForm.archive_reason = this.updatedCuration.archive_reason || ''
-                    this.archiveForm.gcex_url = this.updatedCuration.gcex_url || ''
-                }  else {
-                    this.archiveForm.archive_reason = ''
-                    this.archiveForm.gcex_url = ''
-                }
-            },
-            async archiveCuration() {
-                this.archiveSaving = true
-                try {
-                    const response = await axios.patch(`/api/curations/${this.updatedCuration.id}/archive`, this.archiveForm)
-                    this.updatedCuration = response.data
-                    this.showArchiveFields = false
-                } finally {
-                    this.archiveSaving = false
-                }
-            },
-            async unarchiveCuration() {
-                this.archiveSaving = true
-                try {
-                    const response = await axios.patch(`/api/curations/${this.updatedCuration.id}/unarchive`)
-                    this.updatedCuration = response.data
-                    this.showArchiveFields = false
-                } finally {
-                    this.archiveSaving = false
-                }
-            },
-            handleGeneInput(value) {
-                this.updatedCuration.gene_symbol = value
-            },
-        },
-        mounted: function () {
-            this.getAllPanels();
-            this.getAllUsers();
-            this.getAllMois();
-        }
+const panelOptions = computed(() => {
+    return panels.value
+        .filter(panel => user.value.canSelectExpertPanel(panel))
+        .sort((a, b) => a.name.localeCompare(b.name))
+})
+
+const panelCurators = computed(() => {
+    const availableCurators = curators.value.filter(curator => {
+        return (
+            curator.expert_panels
+            && curator.expert_panels.find(panel => panel.id == updatedCuration.value.expert_panel_id)
+        )
+    })
+
+    if (availableCurators && availableCurators.length == 1) {
+        updatedCuration.value.curator_id = availableCurators[0].id
+    } else if (availableCurators && availableCurators.length > 0) {
+        updatedCuration.value.curator_id = updatedCuration.value.curator_id ? updatedCuration.value.curator_id : null
+    } else {
+        updatedCuration.value.curator_id = null
     }
+
+    return availableCurators
+})
+
+const canManageArchive = computed(() => {
+    return user.value && user.value.canManageArchive()
+})
+
+const isArchived = computed(() => {
+    return Boolean(updatedCuration.value && updatedCuration.value.is_archived)
+})
+
+const isArchivedReadOnly = computed(() => {
+    return isArchived.value && !canManageArchive.value
+})
+
+const canUpdateExpertPanel = computed(() => {
+    if (isArchivedReadOnly.value) { return false }
+    return !Boolean(updatedCuration.value && updatedCuration.value.expert_panel_id && updatedCuration.value.id)
+})
+
+const canEditGdmUuid = computed(() => {
+    if (isArchivedReadOnly.value || !updatedCuration.value.expert_panel) {
+        return false
+    }
+    return user.value.hasPermission('update curation gdm_uuid')
+        || user.value.isPanelCoordinator(updatedCuration.value.expert_panel)
+        || user.value.canEditPanelCurations(updatedCuration.value.expert_panel)
+})
+
+const hasGciIdentification = computed(() => {
+    return Boolean(
+        updatedCuration.value?.gdm_uuid
+        || (updatedCuration.value?.hgnc_id && updatedCuration.value?.mondo_id && updatedCuration.value?.moi_id)
+    )
+})
+
+const showArchiveGciWarning = computed(() => {
+    return showArchiveFields.value && !hasGciIdentification.value
+})
+
+function fieldError(field) {
+    return props.errors && props.errors[field] && props.errors[field].length > 0
+}
+
+function hasGdmUuid() {
+    return updatedCuration.value.gdm_uuid !== null && typeof updatedCuration.value.gdm_uuid !== 'undefined'
+}
+
+function toggleArchiveFields() {
+    showArchiveFields.value = !showArchiveFields.value
+    if (showArchiveFields.value) {
+        archiveForm.archive_reason = updatedCuration.value.archive_reason || ''
+        archiveForm.gcex_url = updatedCuration.value.gcex_url || ''
+    } else {
+        archiveForm.archive_reason = ''
+        archiveForm.gcex_url = ''
+    }
+}
+
+async function archiveCuration() {
+    archiveSaving.value = true
+    try {
+        const response = await axios.patch(`/api/curations/${updatedCuration.value.id}/archive`, archiveForm)
+        updatedCuration.value = response.data
+        showArchiveFields.value = false
+    } finally {
+        archiveSaving.value = false
+    }
+}
+
+async function unarchiveCuration() {
+    archiveSaving.value = true
+    try {
+        const response = await axios.patch(`/api/curations/${updatedCuration.value.id}/unarchive`)
+        updatedCuration.value = response.data
+        showArchiveFields.value = false
+    } finally {
+        archiveSaving.value = false
+    }
+}
+
+function handleGeneInput(value) {
+    updatedCuration.value.gene_symbol = value
+}
+
+onMounted(() => {
+    store.dispatch('panels/getAllItems')
+    store.dispatch('users/getAllItems')
+    store.dispatch('mois/getAllItems')
+})
 </script>
