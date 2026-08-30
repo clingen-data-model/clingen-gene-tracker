@@ -10,7 +10,7 @@ Current state:
 - Vue Router 4 is in use.
 - Vuex 4 is in use.
 - BootstrapVueNext + Bootstrap 5 are in use.
-- Laravel Mix remains the build system.
+- Vite is the frontend build system.
 
 ## Vue development conventions
 
@@ -61,7 +61,26 @@ Do not combine major migrations.
 
 Potential future phases should be handled separately:
 
-1. Laravel Mix → Vite
-2. Vuex → Pinia, if desired later
+## Next modernization steps
+
+Do not combine major migrations.
+
+Potential future modernization:
+
+1. Vuex → Pinia, if desired later
+
+Do not combine state-management migration with unrelated frontend redesign.
 
 Do not migrate build tooling and state management in the same phase.
+
+## Frontend build
+
+- Vite is the frontend build system.
+- Laravel integration uses `laravel-vite-plugin`.
+- Vue SFC compilation uses `@vitejs/plugin-vue`.
+- Main entries:
+  - `resources/assets/js/app.js`
+  - `resources/assets/sass/app.scss`
+- Blade should load frontend assets with `@vite(...)`.
+- Do not reintroduce Laravel Mix, Webpack-specific configuration, or `mix()`.
+- Use `import.meta.env` for browser-side environment values.
