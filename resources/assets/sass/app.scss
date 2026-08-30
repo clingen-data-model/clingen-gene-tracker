@@ -1,10 +1,15 @@
+@use 'variables' as app;
+@use 'transitions';
+@use 'bootstrap/scss/bootstrap' as * with (
+    $body-bg: app.$body-bg,
+    $font-family-sans-serif: app.$font-family-sans-serif,
+    $font-size-base: app.$font-size-base,
+    $line-height-base: app.$line-height-base
+);
+@use 'env';
+
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-// Variables
-@import "variables";
-@import "transitions";
-// Bootstrap
-@import 'bootstrap/scss/bootstrap';
 .text-small {
     font-size: .8rem;
 }
@@ -113,7 +118,7 @@ input[type=file].form-control {
 }
 
 // ENV color coding
-@import './env.scss';
+@include env.environment-colors($cyan, $green, $blue);
 
 .sr-only {
     position: absolute !important;
