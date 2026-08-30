@@ -113,24 +113,38 @@ on each others' toes by trying to open the same port. Your options for getting t
   and forward from this container to the one you're trying to access. This temporary port forwarding
   is left as an exercise to the reader.
 
-## Frontend (this section needs to be re-worked since the frontend is run by default in the container)
+## Frontend
 
-To work on the front end client you will need:
-* node
+The frontend uses Vue 3 and Vite.
+
+To work on the frontend client you will need:
+* Node.js
 * npm
 
-To build and watch client-side assets for development:
-```
+Install frontend dependencies:
+```bash
 npm install
-npm run serve
+```
 
+Run the Vite development server:
+```bash
+npm run dev
 ```
-Not that this does not enable hot module replacement. You must shift+reload to see updates in the browser.
 
-Client builds should be committed to the repository.  To build client-side assets for deployment:
+Build client-side assets for production:
+```bash
+npm run production
 ```
-npm run build
-```
+
+`npm run build` is also available and runs the same Vite production build.
+
+Frontend source files are located primarily under:
+* `resources/assets/js`
+* `resources/assets/sass`
+
+Laravel loads frontend assets using `laravel-vite-plugin` and the `@vite` Blade directive.
+
+Generated frontend assets under `public/build` are build output and should not be treated as source files.
 
 ## Terms
 
@@ -148,7 +162,7 @@ The backend of this application is mostly idiomatic Laravel.  Requests are route
 Revision of models is tracked using the [venturecraft/revisionable](https://github.com/VentureCraft/revisionable) package.  This package stores a record in the revisions table for every create, update, and delete operation on a model.  records in the `revisions` table can be used to try to figure what happened when and who did it.
 
 ### Admin dashboard
-The admin dashboard is built using the [Laravel Backpack](https://backpackforlaravel.com/) library.  Users with admin or programmer roles have access to the admin dashboard and can perform various tasks.
+Laravel Backpack has been removed from GeneTracker. Administrative functionality that remains in the application is implemented directly in GeneTracker rather than through Backpack.
 
 ### Roles & Permissions
 System roles and permissions in the GT are handled by [Spatie's laravel-permissions](https://github.com/spatie/laravel-permission/) package.
@@ -248,11 +262,29 @@ A copy of all MonDO terms is updated daily at 2am by a scheduld task that runs `
 Updates to disease nomenclature are stored to the database to be sent with the weekly digest.  Notifications about term obsoletion are sent to coordinators immediately.
 
 ## Frontend Architecture
-The frontend client is built using [Vue 2](https://v2.vuejs.org/) with [vue-router v3](https://v3.router.vuejs.org/) for client side routing, vuex v3](https://v3.vuex.vuejs.org/) as a global store, and the [bootstrap-vue](https://bootstrap-vue.org/) component library.
+The frontend client is built with Vue 3 using the Composition API and `<script setup>`.
 
-Bundling is done with webpack & LaravelMix.
+The frontend stack includes:
+* Vue 3.5
+* Vue Router 4 for client-side routing
+* Vuex 4 for global state management
+* Bootstrap 5
+* BootstrapVueNext for Vue Bootstrap components
+* Vite for frontend development and production bundling
 
-Find js and css in `resources/assets/js` and `resources/assets/css` respectively.
+All scripted Vue single-file components use `<script setup>`. No Options API SFCs, Vue 2 compatibility APIs, `@vue/compat`, or Vue mixins remain.
+
+Vue components are located under `resources/assets/js/components`.
+
+Shared Vue composables are located under `resources/assets/js/composables`. Current shared curation composables include:
+* `useCurationForm()`
+* `usePhenotypeList()`
+
+The main Vite entry points are:
+* `resources/assets/js/app.js`
+* `resources/assets/sass/app.scss`
+
+Laravel integrates with Vite using `laravel-vite-plugin`.
 
 ## DevOps
 The demo and production instances of the GPM are hosted on UNC's [Cloudapps OpenShift cluster](https://console.cloudapps.unc.edu) in the `dept-genetracker` project.  OpenShift is RedHat's value-add to the Kubernetes open source project.  You're better off referencing Kubernetes documentation for anything that is not a proprietary OpenShift thing (i.e. Builds, BuildConfigs, etc.).
