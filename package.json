@@ -4,19 +4,23 @@
         "dev": "vite",
         "prod": "npm run production",
         "build": "vite build",
-        "production": "vite build"
+        "production": "vite build",
+        "test:unit": "vitest"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6.0.8",
         "@vue/compiler-sfc": "3.5.41",
+        "@vue/test-utils": "^2.4.6",
         "axios": "^0.21.1",
         "bootstrap": "5.3.8",
         "bootstrap-vue-next": "1.0.1",
+        "jsdom": "^28.1.0",
         "laravel-vite-plugin": "^3.2.0",
         "lodash": "^4.17.21",
         "moment": "^2.29.1",
         "sass": "^1.103.1",
         "vite": "^8.2.2",
+        "vitest": "^4.1.11",
         "vue": "3.5.41",
         "vue-router": "^4.6.4",
         "vuex": "^4.1.0"
