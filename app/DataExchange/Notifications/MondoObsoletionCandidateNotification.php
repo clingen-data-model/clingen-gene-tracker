@@ -37,7 +37,8 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
     public function toArray($notifiable)
     {
         return [
-            'curation' => $this->curation,
+            // See HgncIdNotFoundNotification: the template renders the owning panel.
+            'curation' => $this->curation->load('expertPanel'),
             'message_data' => $this->messageData,
             'template' => 'email.digest.mondo_obsoletion_candidate',
         ];
