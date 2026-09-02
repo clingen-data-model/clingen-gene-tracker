@@ -15,6 +15,7 @@ use App\Affiliation;
  * @property-read stdClass $affiliation
  * @property-read string $classification
  * @property-read string $messageDate
+ * @property-read string $sourceKey
  */
 class GciMessage
 {
@@ -92,6 +93,19 @@ class GciMessage
     public function getMessageDate():Carbon
     {
         return Carbon::parse($this->payload->date);
+    }
+
+    /**
+     * Stable identity for this message, byte-identical to the key
+     * StoreMessageHandler puts on incoming_stream_messages.
+     *
+     * It is what lets a replayed message be recognised as already applied, and it
+     * is derived from the payload alone so gci:replay does not have to carry the
+     * stored IncomingStreamMessage through to the jobs.
+     */
+    public function getSourceKey(): string
+    {
+        return $this->payload->report_id.'-'.$this->payload->date;
     }
 
     public function getStatusDate(): ?Carbon
