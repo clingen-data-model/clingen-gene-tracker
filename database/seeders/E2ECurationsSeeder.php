@@ -64,6 +64,7 @@ class E2ECurationsSeeder extends Seeder
             $curations[] = [
                 'id' => $id,
                 'uuid' => sprintf('00000000-0000-4000-8000-%012d', $id),
+                'gdm_uuid' => $index === 2 ? '10000000-0000-4000-8000-000000009103' : null,
                 'gene_symbol' => $symbol,
                 'hgnc_name' => 'Deterministic E2E gene '.$symbol,
                 'hgnc_id' => $index === 1 ? 9202 : null,
