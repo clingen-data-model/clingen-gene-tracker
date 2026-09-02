@@ -7,6 +7,7 @@ export default function useCurationForm(props, emit, page, initialValue = {
     const updatedCuration = ref(initialValue)
 
     let lastEmittedValue = null
+    let hydrated = false
 
     function syncValue() {
         if (props.modelValue) {
@@ -17,9 +18,12 @@ export default function useCurationForm(props, emit, page, initialValue = {
     }
 
     watch(updatedCuration, (value) => {
+        if (!hydrated) {
+            return
+        }
         lastEmittedValue = toRaw(value)
         emit('update:modelValue', value)
-    }, { deep: true })
+    }, { deep: true, flush: 'post' })
 
     watch(() => props.modelValue, (value) => {
         if (
@@ -30,7 +34,10 @@ export default function useCurationForm(props, emit, page, initialValue = {
         }
     })
 
-    onMounted(syncValue)
+    onMounted(() => {
+        syncValue()
+        hydrated = true
+    })
 
     return {
         updatedCuration,
