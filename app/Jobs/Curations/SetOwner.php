@@ -2,98 +2,66 @@
 
 namespace App\Jobs\Curations;
 
+use App\Actions\Curations\RecordCurationFieldEvent;
 use App\Curation;
+use App\Curations\CurationField;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Mail\Curations\TransferNotification;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
 
+/**
+ * Records a change of ownership.
+ *
+ * Ownership is stored as the point in time it began; the closing end_date of the
+ * previous owner is derived by the projector from the next row. That is what makes
+ * an out-of-order transfer, or a correction to a past one, safe -- and what allows
+ * a curation to return to a panel it was owned by before.
+ *
+ * The transfer notification is no longer sent from here. It is a side effect of
+ * ownership actually changing, so it hangs off CurrentOwnerChanged, which the
+ * projector only fires when the current owner really moves.
+ */
 class SetOwner
 {
     use Dispatchable;
 
+    public $curation;
+    public $expertPanelId;
+    public $startDate;
+    public $source;
+    public $sourceEventKey;
+
     /**
-     * Create a new job instance.
-     *
-     * @return void
+     * @param mixed $endDate Deprecated and ignored; end dates are derived.
      */
-    public function __construct(Curation $curation, int $expertPanelId, $startDate, $endDate = null)
-    {
+    public function __construct(
+        Curation $curation,
+        int $expertPanelId,
+        $startDate,
+        $endDate = null,
+        string $source = 'ui',
+        ?string $sourceEventKey = null
+    ) {
         $this->curation = $curation;
         $this->expertPanelId = $expertPanelId;
         $this->startDate = Carbon::parse($startDate);
-        $this->endDate = Carbon::parse($endDate);
+        $this->source = $source;
+        $this->sourceEventKey = $sourceEventKey ?? $this->defaultSourceEventKey();
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        if (
-            ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)
-            || $this->curation->isDirty('expert_panel_id')
-        ) {
-            \DB::transaction(function () {
-                $originalOwner = $this->curation->expertPanel;
-                
-                $this->setEndOfOwnership();
-                $this->addNewOwner();
-
-                $this->curation->refresh();
-                if ($this->curation->expertPanel->hasCoordinators()) {
-                    Mail::to($this->curation->expertPanel->coordinators)
-                            ->cc($originalOwner->coordinators)
-                            ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
-                }
-
-            });
-
-        }
+        RecordCurationFieldEvent::run(
+            $this->curation,
+            CurationField::ExpertPanel,
+            $this->expertPanelId,
+            $this->startDate,
+            $this->source,
+            $this->sourceEventKey
+        );
     }
 
-    private function setEndOfOwnership()
+    private function defaultSourceEventKey(): string
     {
-        $currentOwnerId = $this->curation->expert_panel_id;
-
-        $existing = $this->curation->expertPanels()
-            ->where('expert_panel_id', $currentOwnerId)
-            ->first();
-
-        if ($existing) {
-            $this->curation->expertPanels()->updateExistingPivot(
-                $currentOwnerId,
-                ['end_date' => $this->endDate]
-            );
-            return;
-        }
-
-        // Repair missing history row for legacy/bad data
-        $this->curation->expertPanels()->attach([
-            $currentOwnerId => [
-                'start_date' => optional($this->curation->created_at)->toDateString(),
-                'end_date' => optional($this->endDate)->toDateString(),
-            ]
-        ]);
+        return 'ui:expert_panel:'.$this->startDate->toDateString().':'.$this->expertPanelId;
     }
-    
-    private function addNewOwner()
-    {
-        $this->curation->expertPanels()
-        ->attach([
-            $this->expertPanelId => [
-                'start_date'=> $this->startDate,
-                'end_date' => null
-            ]
-        ]);
-    
-        if ($this->curation->expert_panel_id != $this->expertPanelId) {
-            $this->curation->update(['expert_panel_id' => $this->expertPanelId]);
-        }
-    }
-    
 }

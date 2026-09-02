@@ -44,23 +44,27 @@ class CurationCurationStatusController extends Controller
 
         $curation = Curation::findOrFail($curationId);
         $status = CurationStatus::find($request->curation_status_id);
-        AddStatus::dispatchSync($curation, $status, $request->status_date);
 
-        $status_date = Carbon::parse($request->status_date)->startOfDay();
+        // Ask whether the write happened rather than looking for a row at a date we
+        // reconstruct here. A request that omits status_date is recorded at the
+        // current time, which no reconstruction of ours would match.
+        // Called directly rather than dispatched: dispatchSync does not return the
+        // handler's value for a ShouldQueue job, it returns 0.
+        $recorded = (new AddStatus($curation, $status, $request->status_date))->handle();
 
-        $curation = Curation::findOrFail($curationId);
-        $curationStatus = $curation->curationStatuses()
-                ->where('curation_status_id', $request->curation_status_id)
-                ->where('status_date', $status_date)
-                ->first();
-        if($curationStatus) {
-            return $curationStatus;
-        } else {
+        if (!$recorded) {
             return response()->json([
                 'message' => 'Data not found',
                 "errors" => [ "curation_status_id" => ["Please choose different status different from the latest status."]],
             ], 422);
         }
+
+        return $curation->fresh()
+                ->curationStatuses()
+                ->where('curation_status_id', $request->curation_status_id)
+                ->reorder()
+                ->orderByDesc('curation_curation_status.id')
+                ->first();
     }
 
     /**
