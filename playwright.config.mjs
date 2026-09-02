@@ -12,6 +12,7 @@ const e2eEnvironment = {
     CACHE_DRIVER: 'array',
     QUEUE_CONNECTION: 'sync',
     DX_ENABLE_PUSH: 'false',
+    TRANSFERS_ENABLED: 'true',
 }
 
 export default defineConfig({
