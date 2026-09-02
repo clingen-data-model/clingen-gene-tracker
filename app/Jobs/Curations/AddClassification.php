@@ -2,74 +2,55 @@
 
 namespace App\Jobs\Curations;
 
-use App\Curation;
-use Carbon\Carbon;
+use App\Actions\Curations\RecordCurationFieldEvent;
 use App\Classification;
+use App\Curation;
+use App\Curations\CurationField;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 
+/**
+ * Records a classification observation. See AddStatus.
+ */
 class AddClassification
 {
     use Dispatchable, Queueable;
 
     public $curation;
-
     public $classification;
-
     public $date;
+    public $source;
+    public $sourceEventKey;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(Curation $curation, Classification $classification, string $date = null)
-    {
+    public function __construct(
+        Curation $curation,
+        Classification $classification,
+        ?string $date = null,
+        string $source = 'ui',
+        ?string $sourceEventKey = null
+    ) {
         $this->curation = $curation;
         $this->classification = $classification;
         $this->date = $date ? Carbon::parse($date) : now();
+        $this->source = $source;
+        $this->sourceEventKey = $sourceEventKey ?? $this->defaultSourceEventKey();
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        if ($this->isExistingDatedClassification()) {
-            return;
-        }
-
-        if ($this->isCurrentClassification() && $this->isExistingSameDayClassification()) {
-            return;
-        }
-
-        $this->curation->classifications()->attach([
-            $this->classification->id => [
-                'classification_date' => $this->date
-            ],
-        ]);
+        RecordCurationFieldEvent::run(
+            $this->curation,
+            CurationField::Classification,
+            $this->classification->id,
+            $this->date,
+            $this->source,
+            $this->sourceEventKey
+        );
     }
 
-    private function isCurrentClassification()
+    private function defaultSourceEventKey(): string
     {
-        return $this->curation->classificationBefore($this->date)->id == $this->classification->id;
-    }
-
-    private function isExistingDatedClassification()
-    {
-        return $this->curation->classifications()
-            ->where('classifications.id', $this->classification->id)
-            ->wherePivot('classification_date', $this->date->format('Y-m-d H:i:s'))
-            ->exists();
-    }
-
-    private function isExistingSameDayClassification()
-    {
-        return $this->curation->classifications()
-            ->where('classifications.id', $this->classification->id)
-            ->whereDate('classification_curation.classification_date', $this->date->toDateString())
-            ->exists();
+        return 'ui:classification:'.$this->date->toDateString().':'.$this->classification->id;
     }
 }

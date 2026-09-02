@@ -28,7 +28,7 @@ class AddStatusTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
-    public function adds_status_with_status_date_today_if_status_date_not_specified()
+    public function adds_status_with_the_current_time_if_status_date_not_specified()
     {
         $job = new AddStatus(
             $this->curation,
@@ -40,7 +40,7 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('curations.statuses.curation-provisional'),
-            'status_date' => Carbon::now()->format('Y-m-d H:i:s')
+            'status_date' => Carbon::now()
         ]);
     }
     
@@ -49,7 +49,7 @@ class AddStatusTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
-    public function adds_status_to_status_history_with_date_if_specified()
+    public function keeps_the_time_of_a_status_date_it_is_given()
     {
         $job = new AddStatus(
             $this->curation,
@@ -62,6 +62,9 @@ class AddStatusTest extends TestCase
         $this->assertDatabaseHas('curation_curation_status', [
             'curation_id' => $this->curation->id,
             'curation_status_id' => config('project.curation-statuses.curation-provisional'),
+            // Kept to the second: a status date that carries a time is a fact about
+            // when the status changed, and truncating it loses the ordering of two
+            // changes made on the same day.
             'status_date' => '2019-02-01 12:32:12'
         ]);
     }

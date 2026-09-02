@@ -201,7 +201,10 @@ class CurationControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $status = factory(\App\CurationStatus::class)->create();
         $this->curations->each(function ($t) use ($status) {
-            $t->curationStatuses()->attach($status->id);
+            $t->curationStatuses()->attach($status->id, [
+                'source' => 'test',
+                'source_event_key' => 'test:status:'.$status->id,
+            ]);
         });
 
         $response = $this->actingAs($this->user, 'api')
