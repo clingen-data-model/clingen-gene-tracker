@@ -39,10 +39,8 @@ All component model contracts use Vue 3 semantics:
 
 Explicit bindings are preferred when clarity helps:
 
-```vue
-:model-value="value"
-@update:model-value="value = $event"
-```
+    :model-value="value"
+    @update:model-value="value = $event"
 
 Normal Vue 3 `v-model` is also valid.
 
@@ -101,7 +99,6 @@ Current dependency groups include:
 Do not remove or substantially redesign chunking without a concrete reason.
 
 Do not replace existing route lazy loading with eager imports unless required by application behavior.
-
 
 ## Frontend testing
 
@@ -164,6 +161,7 @@ Current Playwright conventions:
 - Use the real Laravel login flow.
 - Do not add authentication bypasses, forged cookies, or test-only login endpoints.
 - Reuse authenticated Playwright storage state from `playwright/.auth/`.
+- When permission coverage requires more than one user, authenticate each deterministic seeded user through the real login form and keep each storage-state file under the ignored `playwright/.auth/` directory.
 - Authentication state, reports, and test results must remain ignored by Git.
 - Prefer role, accessible-name, label, and visible-text selectors.
 - Add `data-testid` only when no stable semantic selector exists.
@@ -177,6 +175,7 @@ Current E2E coverage includes:
 - unauthenticated redirect to login
 - real Laravel login
 - authenticated storage-state reuse
+- privileged and restricted authenticated user states
 - Vue application startup
 - authenticated navigation visibility
 - curation-list rendering
@@ -186,6 +185,16 @@ Current E2E coverage includes:
 - archived filtering
 - pagination
 - curation detail navigation
+- deterministic curation creation
+- creation validation behavior
+- edit-step/hash navigation
+- phenotype-driven autosave
+- backend persistence after autosave
+- duplicate-save prevention
+- curation Show-page content
+- permission-sensitive Edit/Delete/Transfer visibility
+- archived-curation presentation and restrictions
+- deterministic GCI-link visibility without external navigation
 
 ### E2E database
 
@@ -215,10 +224,13 @@ Do not run Playwright against a normal development database.
 
 Do not combine major migrations.
 
+The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is complete.
+
 Potential future modernization:
 
-1. Vuex → Pinia, if desired later.
+1. Assess whether Vuex → Pinia provides enough benefit to justify a separate migration.
+2. If approved, treat Vuex → Pinia as its own project with the existing Vitest and Playwright suites as regression protection.
 
-Treat any state-management migration as a separate project.
+Do not begin a state-management migration automatically just because Vuex remains in use.
 
 Do not combine a Vuex → Pinia migration with unrelated frontend redesign, routing changes, build-tool changes, or business-logic refactors.
