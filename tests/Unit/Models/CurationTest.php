@@ -170,9 +170,15 @@ class CurationTest extends TestCase
 
         $this->assertInstanceOf(BelongsToMany::class, $curation->curationStatuses());
 
-        $curation->curationStatuses()->attach($curationStatuses->last()->id);
+        $curation->curationStatuses()->attach($curationStatuses->last()->id, [
+            'source' => 'test',
+            'source_event_key' => 'test:status:2',
+        ]);
 
-        $this->assertEquals($curationStatuses->pluck('id'), $curation->curationStatuses()->get()->pluck('id'));
+        $this->assertEquals(
+            $curationStatuses->pluck('id')->sort()->values(),
+            $curation->curationStatuses()->get()->pluck('id')->sort()->values()
+        );
         $this->assertNotNull($curation->curationStatuses()->first()->pivot->created_at);
         $this->assertNotNull($curation->curationStatuses()->get()->last()->pivot->updated_at);
     }
@@ -276,7 +282,12 @@ class CurationTest extends TestCase
 
         $curation = factory(Curation::class)->create([]);
 
-        $curation->classifications()->attach($classifications->pluck('id'));
+        $curation->classifications()->attach(
+            $classifications->mapWithKeys(fn ($c) => [$c->id => [
+                'source' => 'test',
+                'source_event_key' => 'test:classification:'.$c->id,
+            ]])->all()
+        );
 
         $this->assertEquals(2, $curation->classifications()->count());
         $this->assertNotNull($curation->classifications()->first()->pivot->classification_date);

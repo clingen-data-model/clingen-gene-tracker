@@ -1,6 +1,13 @@
 <?php
 
 return [
+    /*
+     * Set while gci:replay or curations:rebuild-projections is running. Replay is
+     * already side-effect free because the projector compares before writing; this
+     * is a belt-and-braces guard for listeners that reach outside the app.
+     */
+    'replaying' => env('CURATIONS_REPLAYING', false),
+
     'types' => [
         'single-omim' => 'Curate a single gene-disease entity from this list',
         'single-new' => 'Curate a single gene-disease entity not on this list',

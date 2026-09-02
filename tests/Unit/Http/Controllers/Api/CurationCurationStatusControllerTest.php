@@ -50,7 +50,36 @@ class CurationCurationStatusControllerTest extends TestCase
             ->assertStatus(200);
 
         $this->assertEquals(4, $this->curation->fresh()->curationStatuses->count());
-        $this->assertEquals('1977-09-16', $this->curation->fresh()->statuses->last()->pivot->status_date->format('Y-m-d'));
+        $this->assertEquals('1977-09-16', $this->curation->fresh()->latestStatusRow()->pivot->status_date->format('Y-m-d'));
+    }
+
+    /**
+     * status_date is nullable, and a request that omits it is recorded at the
+     * current time -- which the controller used to fail to find, returning 422 for
+     * a status it had just added.
+     */
+    public function test_relates_new_status_when_no_status_date_is_given()
+    {
+        $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
+                'curation_status_id' => 4,
+            ])
+            ->assertStatus(200)
+            ->assertJsonFragment(['curation_status_id' => 4]);
+
+        $this->assertEquals(4, $this->curation->fresh()->latestStatusRow()->id);
+    }
+
+    public function test_rejects_a_status_the_curation_already_holds()
+    {
+        $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
+                'curation_status_id' => 4,
+                'status_date' => '1977-09-16',
+            ])->assertStatus(200);
+
+        $this->json('POST', '/api/curations/'.$this->curation->id.'/statuses/', [
+                'curation_status_id' => 4,
+                'status_date' => '1977-09-16',
+            ])->assertStatus(422);
     }
 
     public function test_validates_create_data()

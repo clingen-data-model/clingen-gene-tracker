@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use App\Curations\CurationField;
 use App\Traits\HasUuid;
 use App\Traits\HasNotes;
 use App\Contracts\Notable;
@@ -37,6 +38,13 @@ class Curation extends Model implements Notable
     use SoftDeletes;
     use HasNotes;
 
+    /**
+     * Revisionable is a passive attribute-level audit trail here, nothing more.
+     * It cannot back the field history in curation_curation_status /
+     * classification_curation / curation_expert_panel: it stamps its own
+     * created_at rather than an event date, never sees pivot writes, has no
+     * idempotency key, and records a null user on every queue and console path.
+     */
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
@@ -92,8 +100,23 @@ class Curation extends Model implements Notable
 
         static::created(function ($curation) {
             if (CurationStatus::count() > 0 && !config('app.bulk_uploading')) {
-                AddStatus::dispatch($curation, CurationStatus::find(1), $curation->created_at->format("Y-m-d H:i:s"));
-                SetOwner::dispatch($curation, $curation->expert_panel_id, $curation->created_at);
+                // Keying both on the curation itself means this hook can fire more
+                // than once without producing a second row for either field.
+                AddStatus::dispatchSync(
+                    $curation,
+                    CurationStatus::find(1),
+                    $curation->created_at->format("Y-m-d H:i:s"),
+                    'created',
+                    'created:'.$curation->id
+                );
+                SetOwner::dispatchSync(
+                    $curation,
+                    $curation->expert_panel_id,
+                    $curation->created_at,
+                    null,
+                    'created',
+                    'created:'.$curation->id
+                );
             }
         });
     }
@@ -133,7 +156,7 @@ class Curation extends Model implements Notable
                 ->withPivot('id', 'status_date', 'created_at', 'updated_at')
                 ->orderBy('curation_curation_status.status_date', 'DESC')
                 ->orderBy('curation_curation_status.updated_at', 'DESC')
-                ->orderBy('curation_curation_status.curation_status_id', 'DESC')
+                ->orderBy('curation_curation_status.id', 'DESC')
                 ->withTimestamps();
     }
 
@@ -220,26 +243,6 @@ class Curation extends Model implements Notable
             ?? new Classification();
     }
 
-    public function setExpertPanelIdAttribute($value)
-    {
-        if (isset($this->attributes['expert_panel_id']) && $value == $this->attributes['expert_panel_id']) {
-            $this->attributes['expert_panel_id'] = $value;
-            return;
-        }
-
-        if (!is_null($this->id)) {
-            $backtrace = collect(debug_backtrace());
-            if (!$backtrace->pluck('class')->contains(SetOwner::class)) {
-                $backtrace = $backtrace->map(function ($step) {
-                    return $step['file'].":".$step['line'];
-                })->toArray();
-    
-                \Log::warning('You shouldn\'t update the curation\s expert_panel_id attribute directly.  Use the App\Jobs\Curations\SetOwner job to add a new owner.', $backtrace);
-            }
-            
-        }
-        $this->attributes['expert_panel_id'] = $value;
-    }
 
     public function getCurrentStatusDateAttribute()
     {
@@ -461,6 +464,37 @@ class Curation extends Model implements Notable
             'archived_curation_id',
             'curation_id'
         )->withTimestamps();
+    }
+
+    /**
+     * The value a tracked field held as of $date, according to its history.
+     *
+     * This is the query the "is this already the current value?" checks in
+     * AddStatus, AddClassification and SetOwner each used to answer their own way.
+     */
+    public function valueAt(CurationField $field, $date): ?int
+    {
+        $value = \DB::table($field->historyTable())
+            ->where('curation_id', $this->getKey())
+            ->where($field->dateColumn(), '<=', Carbon::parse($date)->format('Y-m-d H:i:s'))
+            ->orderByDesc($field->dateColumn())
+            ->orderByDesc('id')
+            ->value($field->valueColumn());
+
+        return $value === null ? null : (int) $value;
+    }
+
+    /**
+     * The newest status history row. Prefer this over positional access on the
+     * curationStatuses() relation, whose ordering is for display.
+     */
+    public function latestStatusRow()
+    {
+        return $this->curationStatuses()
+            ->reorder()
+            ->orderByDesc('curation_curation_status.status_date')
+            ->orderByDesc('curation_curation_status.id')
+            ->first();
     }
 
     public function classificationBefore($date): Classification

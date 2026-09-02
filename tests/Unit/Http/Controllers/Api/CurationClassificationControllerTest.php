@@ -82,7 +82,10 @@ class CurationClassificationControllerTest extends TestCase
     public function update_updates_existing_classification_curation_record()
     {
         $this->withoutExceptionHandling();
-        $this->curation->classifications()->attach($this->classifications->first()->id);
+        $this->curation->classifications()->attach($this->classifications->first()->id, [
+            'source' => 'test',
+            'source_event_key' => 'test:classification:first',
+        ]);
         $this->json(
             'PUT',
             '/api/curations/'.$this->curation->id.'/classifications/'.$this->curation->classifications->first()->pivot->id,
