@@ -26,7 +26,11 @@ class UpdateClassificationTest extends TestCase
     {
         $classification = factory(Classification::class)->create();
         $curation = factory(Curation::class)->create();
-        $curation->classifications()->attach([$classification->id => ['classification_date' => '2019-12-25']]);
+        $curation->classifications()->attach([$classification->id => [
+            'classification_date' => '2019-12-25',
+            'source' => 'test',
+            'source_event_key' => 'test:classification:'.$classification->id,
+        ]]);
 
         $job = new UpdateClassification($curation, $curation->classifications()->first()->pivot->id, [
             'classification_id' => $classification->id,
