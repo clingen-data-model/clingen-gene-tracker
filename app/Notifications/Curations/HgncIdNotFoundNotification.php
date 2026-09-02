@@ -63,7 +63,9 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
     public function toArray($notifiable)
     {
         return [
-            'curation' => $this->curation,
+            // The digest template renders the owning panel, so load it rather than
+            // relying on whatever happened to be loaded when the notification was made.
+            'curation' => $this->curation->load('expertPanel'),
             'template' => 'email.digest.hgnc_id_not_found'
         ];
     }
