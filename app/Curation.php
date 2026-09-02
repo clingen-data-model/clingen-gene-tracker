@@ -50,6 +50,7 @@ class Curation extends Model implements Notable
     protected $fillable = [
         // 'uuid',
         'gdm_uuid',
+        'gci_event_watermark',
         'gene_symbol',
         'hgnc_name',
         'hgnc_id',
@@ -74,7 +75,8 @@ class Curation extends Model implements Notable
     protected $casts = [
         'pmids' => 'array',
         'curation_date' => 'datetime',
-        'archived_at' => 'datetime'
+        'archived_at' => 'datetime',
+        'gci_event_watermark' => 'datetime',
     ];
 
     protected $with = [
