@@ -65,6 +65,26 @@ enum CurationField: string
     }
 
     /**
+     * How to break a tie between rows sharing an effective date.
+     *
+     * History now stores full timestamps, so ties are only expected where the time
+     * genuinely is not known -- a manually entered date, or a legacy row whose time
+     * could not be recovered. For status the value id doubles as a workflow rank and
+     * the furthest-along status is the one that stands, which is the rule the data
+     * has been maintained under. Nothing similar is true of classification or expert
+     * panel ids, so those fall back to insertion order.
+     */
+    public function ranksByValue(): bool
+    {
+        return $this === self::Status;
+    }
+
+    public function tiebreakColumn(): string
+    {
+        return $this->ranksByValue() ? $this->valueColumn() : 'id';
+    }
+
+    /**
      * When true, an event asserting the value the timeline already holds at that
      * point is not recorded. History reads as a list of transitions.
      */
