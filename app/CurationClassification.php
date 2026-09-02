@@ -9,7 +9,9 @@ class CurationClassification extends Pivot
     protected $fillable = [
         'curation_id',
         'classification_id',
-        'classification_date'
+        'classification_date',
+        'source',
+        'source_event_key',
     ];
 
     protected $casts = [

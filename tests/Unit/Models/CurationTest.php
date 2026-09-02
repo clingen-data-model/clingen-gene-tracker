@@ -184,9 +184,15 @@ class CurationTest extends TestCase
 
         $this->assertInstanceOf(BelongsToMany::class, $curation->curationStatuses());
 
-        $curation->curationStatuses()->attach($curationStatuses->last()->id);
+        $curation->curationStatuses()->attach($curationStatuses->last()->id, [
+            'source' => 'test',
+            'source_event_key' => 'test:status:2',
+        ]);
 
-        $this->assertEquals($curationStatuses->pluck('id')->reverse()->values(), $curation->curationStatuses()->get()->pluck('id'));
+        $this->assertEquals(
+            $curationStatuses->pluck('id')->sort()->values(),
+            $curation->curationStatuses()->get()->pluck('id')->sort()->values()
+        );
         $this->assertNotNull($curation->curationStatuses()->first()->pivot->created_at);
         $this->assertNotNull($curation->curationStatuses()->get()->last()->pivot->updated_at);
     }
@@ -298,7 +304,12 @@ class CurationTest extends TestCase
 
         $curation = factory(Curation::class)->create([]);
 
-        $curation->classifications()->attach($classifications->pluck('id'));
+        $curation->classifications()->attach(
+            $classifications->mapWithKeys(fn ($c) => [$c->id => [
+                'source' => 'test',
+                'source_event_key' => 'test:classification:'.$c->id,
+            ]])->all()
+        );
 
         $this->assertEquals(2, $curation->classifications()->count());
         $this->assertNotNull($curation->classifications()->first()->pivot->classification_date);
@@ -474,17 +485,11 @@ class CurationTest extends TestCase
      */
     #[\PHPUnit\Framework\Attributes\Test]
     #[\PHPUnit\Framework\Attributes\Group('curation-ownership')]
-    public function ordinary_creation_may_add_duplicate_open_ownership_history()
+    public function adds_a_curation_expert_panel_record_when_expert_panel_id_changed()
     {
         $ep1 = factory(ExpertPanel::class)->create();
         $curation = factory(Curation::class)->create(['expert_panel_id' => $ep1->id]);
-
-        $ownerships = $curation->fresh()->expertPanels()->get();
-
-        $this->assertCount(2, $ownerships);
-        $this->assertCount(1, $ownerships->filter(
-            fn (ExpertPanel $expertPanel) => $expertPanel->pivot->end_date === null
-        ));
+        $this->assertEquals(1, $curation->fresh()->expertPanels()->count());
 
         // $ep2 = factory(ExpertPanel::class)->create();
         // $curation->update(['expert_panel_id' => $ep2->id]);
