@@ -29,6 +29,29 @@ class E2ECurationsSeeder extends Seeder
             'E2E-LIMA',
         ];
 
+        DB::table('genes')->insert([
+            'hgnc_id' => 9202,
+            'gene_symbol' => 'E2E-BRAVO',
+            'hgnc_name' => 'Deterministic E2E autosave gene',
+            'hgnc_status' => 'Approved',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        DB::table('phenotypes')->insert([
+            'id' => 9201,
+            'mim_number' => 990001,
+            'name' => 'Deterministic E2E autosave phenotype',
+            'moi' => 'Autosomal dominant',
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        DB::table('gene_phenotype')->insert([
+            'hgnc_id' => 9202,
+            'phenotype_id' => 9201,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+
         $curations = [];
         $statuses = [];
         $ownerships = [];
@@ -43,10 +66,12 @@ class E2ECurationsSeeder extends Seeder
                 'uuid' => sprintf('00000000-0000-4000-8000-%012d', $id),
                 'gene_symbol' => $symbol,
                 'hgnc_name' => 'Deterministic E2E gene '.$symbol,
+                'hgnc_id' => $index === 1 ? 9202 : null,
                 'expert_panel_id' => $expertPanelId,
                 'curator_id' => $curatorId,
                 'curation_status_id' => $statusId,
                 'moi_id' => $moiId,
+                'curation_type_id' => $index === 1 ? 1 : null,
                 'curation_notes' => 'Deterministic Playwright fixture',
                 'archived_at' => $index === 0 ? '2026-01-10 12:00:00' : null,
                 'archive_reason' => $index === 0 ? 'Deterministic archived E2E fixture' : null,
@@ -73,5 +98,11 @@ class E2ECurationsSeeder extends Seeder
         DB::table('curations')->insert($curations);
         DB::table('curation_curation_status')->insert($statuses);
         DB::table('curation_expert_panel')->insert($ownerships);
+        DB::table('curation_rationale')->insert([
+            'curation_id' => 9102,
+            'rationale_id' => 6,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
     }
 }
