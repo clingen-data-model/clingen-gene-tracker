@@ -155,7 +155,7 @@ class Curation extends Model implements Notable
                 ->using(CurationCurationStatus::class)
                 ->withPivot('id', 'status_date', 'created_at', 'updated_at')
                 ->orderBy('curation_curation_status.status_date', 'DESC')
-                ->orderBy('curation_curation_status.updated_at', 'DESC')
+                ->orderBy('curation_curation_status.curation_status_id', 'DESC')
                 ->orderBy('curation_curation_status.id', 'DESC')
                 ->withTimestamps();
     }
@@ -478,6 +478,7 @@ class Curation extends Model implements Notable
             ->where('curation_id', $this->getKey())
             ->where($field->dateColumn(), '<=', Carbon::parse($date)->format('Y-m-d H:i:s'))
             ->orderByDesc($field->dateColumn())
+            ->orderByDesc($field->tiebreakColumn())
             ->orderByDesc('id')
             ->value($field->valueColumn());
 
@@ -493,6 +494,7 @@ class Curation extends Model implements Notable
         return $this->curationStatuses()
             ->reorder()
             ->orderByDesc('curation_curation_status.status_date')
+            ->orderByDesc('curation_curation_status.curation_status_id')
             ->orderByDesc('curation_curation_status.id')
             ->first();
     }

@@ -49,7 +49,7 @@ class LinkGci extends Command
             Bus::dispatch(new LinkGciCuration($curation));
         });
 
-        $this->call('curations:order-statuses');
+        $this->call('curations:rebuild-projections');
     }
 
     private function getLinkableCurations()
