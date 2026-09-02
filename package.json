@@ -5,9 +5,12 @@
         "prod": "npm run production",
         "build": "vite build",
         "production": "vite build",
-        "test:unit": "vitest"
+        "test:unit": "vitest",
+        "test:e2e:prepare": "php scripts/prepare-e2e.php",
+        "test:e2e": "npm run build && npm run test:e2e:prepare && node scripts/run-e2e.mjs"
     },
     "devDependencies": {
+        "@playwright/test": "^1.62.1",
         "@vitejs/plugin-vue": "^6.0.8",
         "@vue/compiler-sfc": "3.5.41",
         "@vue/test-utils": "^2.4.6",
