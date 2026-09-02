@@ -56,6 +56,17 @@ $exitCode = Artisan::call('migrate:fresh', [
     '--force' => true,
     '--no-interaction' => true,
 ]);
+$output = Artisan::output();
 
-fwrite(STDOUT, Artisan::output());
+if ($exitCode === 0) {
+    $exitCode = Artisan::call('db:seed', [
+        '--database' => 'testing',
+        '--class' => Database\Seeders\E2ECurationsSeeder::class,
+        '--force' => true,
+        '--no-interaction' => true,
+    ]);
+    $output .= Artisan::output();
+}
+
+fwrite(STDOUT, $output);
 exit($exitCode);
