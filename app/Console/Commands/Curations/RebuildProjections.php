@@ -6,7 +6,6 @@ use App\Actions\Curations\ProjectCurationField;
 use App\Curation;
 use App\Curations\CurationField;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Recomputes everything derived from curation field history.
@@ -126,14 +125,9 @@ class RebuildProjections extends Command
             return null;
         }
 
-        $winner = DB::table($field->historyTable())
-            ->where('curation_id', $curation->getKey())
-            ->orderByDesc($field->dateColumn())
-            ->orderByDesc($field->tiebreakColumn())
-            ->orderByDesc('id')
-            ->value($field->valueColumn());
+        $winner = ProjectCurationField::derivedValue($curation, $field);
 
-        if ($winner === null || (int) $winner === (int) $curation->{$column}) {
+        if ($winner === null || $winner === (int) $curation->{$column}) {
             return null;
         }
 
