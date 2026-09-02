@@ -21,6 +21,7 @@ services:
             - MYSQL_PASSWORD=${DB_PASSWORD}
             - MYSQL_SORT_BUFFER_SIZE=256000000
             - DB_DATABASE_TEST=testing
+            - DB_DATABASE_E2E=genetracker_e2e
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     app:
