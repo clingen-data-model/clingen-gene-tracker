@@ -43,14 +43,15 @@ class ProjectCurationField
     }
 
     /**
-     * Every history row for the field, oldest first. Ties break on `id`, i.e. the
-     * order the rows were written, which is the only tiebreak that carries meaning.
+     * Every history row for the field, oldest first, with same-date rows ordered so
+     * that the last one is the one that stands. See CurationField::tiebreakColumn().
      */
     private function timeline(Curation $curation, CurationField $field)
     {
         return DB::table($field->historyTable())
             ->where('curation_id', $curation->getKey())
             ->orderBy($field->dateColumn())
+            ->orderBy($field->tiebreakColumn())
             ->orderBy('id')
             ->get();
     }
