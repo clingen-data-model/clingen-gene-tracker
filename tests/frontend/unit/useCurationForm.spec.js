@@ -1,4 +1,4 @@
-import { defineComponent, nextTick, ref } from 'vue'
+import { defineComponent, h, nextTick, onBeforeMount, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import useCurationForm from '../../../resources/assets/js/composables/useCurationForm'
@@ -16,6 +16,29 @@ const Harness = defineComponent({
         const { updatedCuration } = useCurationForm(props, emit, page)
 
         expose({ updatedCuration, page })
+
+        return () => null
+    },
+})
+
+const StepNavigationHarness = defineComponent({
+    props: {
+        modelValue: {
+            type: Object,
+            required: true,
+        },
+    },
+    emits: ['update:modelValue'],
+    setup(props, { emit, expose }) {
+        const { updatedCuration } = useCurationForm(props, emit, 'phenotypes', {
+            details: { note: 'default' },
+        })
+
+        onBeforeMount(() => {
+            updatedCuration.value.details.note = 'default changed during mount'
+        })
+
+        expose({ updatedCuration })
 
         return () => null
     },
@@ -98,6 +121,57 @@ describe('useCurationForm', () => {
 
         expect(wrapper.emitted('update:modelValue')).toHaveLength(emitCount)
         expect(wrapper.vm.updatedCuration).toBe(emittedValue)
+
+        wrapper.unmount()
+    })
+
+    it('does not let queued default-state changes overwrite the populated parent during mounted synchronization', async () => {
+        const populatedCuration = {
+            id: 42,
+            gene_symbol: 'E2E-BRAVO',
+            details: { note: 'populated parent' },
+        }
+        const receivedValues = []
+
+        const ParentHarness = defineComponent({
+            setup(_, { expose }) {
+                const parentCuration = ref(populatedCuration)
+                const step = ref(null)
+
+                function echoChildValue(value) {
+                    receivedValues.push(JSON.parse(JSON.stringify(value)))
+                    parentCuration.value = value
+                }
+
+                expose({ parentCuration, step })
+
+                return () => h(StepNavigationHarness, {
+                    ref: step,
+                    modelValue: parentCuration.value,
+                    'onUpdate:modelValue': echoChildValue,
+                })
+            },
+        })
+
+        const wrapper = mount(ParentHarness)
+        await nextTick()
+
+        expect(wrapper.vm.parentCuration).toMatchObject(populatedCuration)
+        expect(wrapper.vm.step.updatedCuration).toEqual({
+            ...populatedCuration,
+            page: 'phenotypes',
+        })
+        expect(receivedValues.length).toBeGreaterThan(0)
+        expect(receivedValues).not.toContainEqual({
+            details: { note: 'default changed during mount' },
+        })
+        expect(receivedValues.every(value => value.id === populatedCuration.id)).toBe(true)
+
+        wrapper.vm.step.updatedCuration.details.note = 'genuine local edit'
+        await nextTick()
+
+        expect(receivedValues.at(-1).details.note).toBe('genuine local edit')
+        expect(wrapper.vm.parentCuration.details.note).toBe('genuine local edit')
 
         wrapper.unmount()
     })
