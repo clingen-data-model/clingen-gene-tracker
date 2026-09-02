@@ -43,20 +43,32 @@ class ReplayGciEventsForCuration implements ShouldQueue
             return 1;
         }
 
-        $isms = IncomingStreamMessage::where('gdm_uuid', $this->curation->gdm_uuid)->orderBy('created_at')->orderBy('id')->get();
-        $isms->map(function ($msg) {
-            return new GciMessage($msg->payload);
-        })
-            ->each(function ($gciMsg) {
-                $job = app()->makeWith(
-                    GeneValidityCurationUpdateJob::class,
-                    [
-                        'curation' => $this->curation,
-                        'gciMessage' => $gciMsg
-                    ]
-                );
-                Bus::dispatch($job);
-            });
+        // Stored order is arrival order; replay has to follow event order, or the
+        // watermark and the history timeline disagree about which message is newest.
+        $isms = IncomingStreamMessage::where('gdm_uuid', $this->curation->gdm_uuid)
+            ->orderByRaw('payload->>"$.date"')
+            ->orderBy('id')
+            ->get();
+
+        config(['curations.replaying' => true]);
+
+        try {
+            $isms->map(function ($msg) {
+                return new GciMessage($msg->payload);
+            })
+                ->each(function ($gciMsg) {
+                    $job = app()->makeWith(
+                        GeneValidityCurationUpdateJob::class,
+                        [
+                            'curation' => $this->curation,
+                            'gciMessage' => $gciMsg
+                        ]
+                    );
+                    Bus::dispatch($job);
+                });
+        } finally {
+            config(['curations.replaying' => false]);
+        }
 
         \Log::info('Replayed '.$isms->count().' gene_validity_events_messages for curation '.$this->curation->id);
     }

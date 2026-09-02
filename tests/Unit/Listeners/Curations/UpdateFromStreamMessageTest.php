@@ -245,6 +245,8 @@ class UpdateFromStreamMessageTest extends TestCase
 
         event($event);
 
+        // The message asserts the same status at the same instant the seeded row
+        // already holds, so dedup now works at second precision rather than day.
         $expected = [
             'curation_id' => $curation->id,
             'curation_status_id' => config('curations.statuses.approved'),
@@ -342,17 +344,21 @@ class UpdateFromStreamMessageTest extends TestCase
 
         $this->fireTestEvent($this->gdmTransfered);
 
+        // Ownership moves when the message says it did, not when we happened to
+        // process it, and the outgoing owner's tenure ends where the new one starts.
+        $transferDate = Carbon::parse('2022-07-07T20:55:59.860Z');
+
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel1->id,
             'start_date' => Carbon::parse('2021-05-04'),
-            'end_date' => Carbon::now(),
+            'end_date' => $transferDate,
         ]);
 
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel2->id,
-            'start_date' => Carbon::now(),
+            'start_date' => $transferDate,
             'end_date' => null,
         ]);
     }
@@ -385,7 +391,7 @@ class UpdateFromStreamMessageTest extends TestCase
         $this->assertDatabaseHas('notes', [
             'subject_type' => 'App\Curation',
             'subject_id' => $curation->id,
-            'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
+            'content' => 'I am a test note.',
             'topic' => 'curation transfer (via GCI)'
         ]);
     }

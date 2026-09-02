@@ -48,9 +48,12 @@ class SetOwner
         $this->sourceEventKey = $sourceEventKey ?? $this->defaultSourceEventKey();
     }
 
-    public function handle()
+    /**
+     * @return bool Whether a new ownership event was recorded.
+     */
+    public function handle(): bool
     {
-        RecordCurationFieldEvent::run(
+        return RecordCurationFieldEvent::run(
             $this->curation,
             CurationField::ExpertPanel,
             $this->expertPanelId,
