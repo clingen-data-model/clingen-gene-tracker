@@ -43,6 +43,21 @@ class ProjectCurationField
     }
 
     /**
+     * What the history says the current value is, without writing anything.
+     */
+    public static function derivedValue(Curation $curation, CurationField $field): ?int
+    {
+        $value = DB::table($field->historyTable())
+            ->where('curation_id', $curation->getKey())
+            ->orderByDesc($field->dateColumn())
+            ->orderByDesc($field->tiebreakColumn())
+            ->orderByDesc('id')
+            ->value($field->valueColumn());
+
+        return $value === null ? null : (int) $value;
+    }
+
+    /**
      * Every history row for the field, oldest first, with same-date rows ordered so
      * that the last one is the one that stands. See CurationField::tiebreakColumn().
      */
