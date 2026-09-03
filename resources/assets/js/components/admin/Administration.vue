@@ -42,6 +42,13 @@
                 >
                     Working Groups
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list expert-panels')"
+                    class="nav-link"
+                    :to="{ name: 'admin-expert-panels' }"
+                >
+                    Expert Panels
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

@@ -43,6 +43,8 @@ const AdminMois = () =>
     import('./components/admin/Mois.vue')
 const AdminWorkingGroups = () =>
     import('./components/admin/WorkingGroups.vue')
+const AdminExpertPanels = () =>
+    import('./components/admin/ExpertPanels.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -197,6 +199,12 @@ const routes = [{
                 component: AdminWorkingGroups,
                 name: 'admin-working-groups',
                 beforeEnter: requirePermission('list working-groups'),
+            },
+            {
+                path: 'expert-panels',
+                component: AdminExpertPanels,
+                name: 'admin-expert-panels',
+                beforeEnter: requirePermission('list expert-panels'),
             },
         ],
     }
