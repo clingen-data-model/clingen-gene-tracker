@@ -117,7 +117,7 @@
                 >
                     {{item.gene_symbol}}
                 </router-link>
-                <small v-if="item.hgnc_id">(hgnc:{{ item.hgnc_id }})</small>
+                &nbsp;<small v-if="item.hgnc_id">(hgnc:{{ item.hgnc_id }})</small>
             </template>
             <template v-slot:cell(mode_of_inheritance)="{item}">
                 <div v-if="item.mode_of_inheritance !== null">
