@@ -28,6 +28,13 @@
                 <router-link class="nav-link" :to="{ name: 'admin-upload-categories' }">
                     Upload Categories
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list mois')"
+                    class="nav-link"
+                    :to="{ name: 'admin-mois' }"
+                >
+                    Modes of Inheritance
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">
