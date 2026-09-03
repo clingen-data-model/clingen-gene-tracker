@@ -1,0 +1,28 @@
+<template>
+    <div class="row">
+        <aside class="col-md-3 col-lg-2 mb-4">
+            <h1 class="h4">Administration</h1>
+            <nav class="nav flex-column" aria-label="Administration">
+                <router-link class="nav-link" :to="{ name: 'admin-index' }">Overview</router-link>
+                <router-link
+                    v-if="user.hasPermission('list curation-types')"
+                    class="nav-link"
+                    :to="{ name: 'admin-curation-types' }"
+                >
+                    Curation Types
+                </router-link>
+            </nav>
+        </aside>
+        <section class="col-md-9 col-lg-10">
+            <router-view />
+        </section>
+    </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+const user = computed(() => store.getters.getUser)
+</script>
