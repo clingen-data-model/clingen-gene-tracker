@@ -36,7 +36,9 @@ const mutations = {
     removeItem: function(state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
 
-        state.items.splice(itemIdx, 1);
+        if (itemIdx > -1) {
+            state.items.splice(itemIdx, 1);
+        }
     },
     setCurrentItemIdx(state, curation) {
         const idx = state.items.findIndex(i => i.id == curation.id);
@@ -108,7 +110,9 @@ const actions = {
             .then((response) => {
                 const updatedStatusEntry = response.data;
                 const curationStatusEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == updatedStatusEntry.pivot.id);
-                curation.curation_statuses[curationStatusEntryIdx] = updatedStatusEntry;
+                if (curationStatusEntryIdx > -1) {
+                    curation.curation_statuses[curationStatusEntryIdx] = updatedStatusEntry;
+                }
                 commit('addItem', curation);
                 return response
             })
@@ -120,7 +124,9 @@ const actions = {
         return window.axios.delete(baseUrl + '/' + curation.id + '/statuses/' + pivotId)
             .then(response => {
                 const deletedEntryIdx = curation.curation_statuses.findIndex(cs => cs.pivot.id == pivotId);
-                curation.curation_statuses.splice(deletedEntryIdx, 1);
+                if (deletedEntryIdx > -1) {
+                    curation.curation_statuses.splice(deletedEntryIdx, 1);
+                }
                 commit('addItem', curation);
             })
             .catch(errors => {
@@ -142,7 +148,9 @@ const actions = {
             .then((response) => {
                 const updatedClassificationEntry = response.data;
                 const curationClassificationEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == updatedClassificationEntry.pivot.id);
-                curation.classifications[curationClassificationEntryIdx] = updatedClassificationEntry;
+                if (curationClassificationEntryIdx > -1) {
+                    curation.classifications[curationClassificationEntryIdx] = updatedClassificationEntry;
+                }
                 commit('addItem', curation);
                 return response
             })
@@ -154,7 +162,9 @@ const actions = {
         return window.axios.delete(baseUrl + '/' + curation.id + '/classifications/' + pivotId)
             .then(response => {
                 const deletedEntryIdx = curation.classifications.findIndex(cs => cs.pivot.id == pivotId);
-                curation.classifications.splice(deletedEntryIdx, 1);
+                if (deletedEntryIdx > -1) {
+                    curation.classifications.splice(deletedEntryIdx, 1);
+                }
                 commit('addItem', curation);
             })
             .catch(errors => {

@@ -26,7 +26,9 @@ const mutations = {
     },
     updateItem: function (state, item) {
         let itemIdx = state.items.findIndex(i => i.id == item.id);
-        state.items[itemIdx] = item
+        if (itemIdx > -1) {
+            state.items[itemIdx] = item
+        }
     },
 }
 
