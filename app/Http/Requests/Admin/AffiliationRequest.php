@@ -15,7 +15,7 @@ class AffiliationRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user() && $this->user()->hasAnyRole(['admin', 'programmer']);
     }
 
     /**
@@ -25,16 +25,17 @@ class AffiliationRequest extends FormRequest
      */
     public function rules()
     {
-        $affiliation = new Affiliation();
-        if ($this->id) {
-            $affiliation = Affiliation::findOrFail($this->id);
-        }
+        $affiliation = $this->route('affiliation');
+
         return [
-            'name' => ['required', Rule::unique('affiliations', 'name')->ignore($affiliation)],
-            'short_name' => ['required','max:15', Rule::unique('affiliations', 'short_name')->ignore($affiliation)],
-            'type_id' => 'required|exists:affiliation_types,id',
-            'parent_id' => 'nullable|exists:affiliations,id',
-            'clingen_id' => ['required','size:5', Rule::unique('affiliations', 'clingen_id')->ignore($affiliation)]
+            'short_name' => [
+                'nullable',
+                'string',
+                'max:15',
+                Rule::unique('affiliations', 'short_name')
+                    ->where(fn ($query) => $query->where('affiliation_type_id', $affiliation->affiliation_type_id))
+                    ->ignore($affiliation->id),
+            ],
         ];
     }
 }
