@@ -49,6 +49,9 @@
                 >
                     Expert Panels
                 </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-affiliations' }">
+                    Affiliations
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

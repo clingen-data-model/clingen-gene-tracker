@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
 use App\Http\Controllers\Api\UploadCategoryController;
+use App\Http\Controllers\Api\AffiliationController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -100,6 +101,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/expert-panels', [ExpertPanelController::class, 'adminIndex']);
         Route::post('/expert-panels', [ExpertPanelController::class, 'adminStore']);
         Route::put('/expert-panels/{expert_panel}', [ExpertPanelController::class, 'adminUpdate']);
+        Route::get('/affiliations', [AffiliationController::class, 'adminIndex']);
+        Route::put('/affiliations/{affiliation}', [AffiliationController::class, 'adminUpdate']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);

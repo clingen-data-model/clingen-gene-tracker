@@ -38,6 +38,7 @@ test.describe('Curation Type administration', () => {
             { name: 'Modes of Inheritance', path: 'mois' },
             { name: 'Working Groups', path: 'working-groups', heading: 'Working Group Administration' },
             { name: 'Expert Panels', path: 'expert-panels', heading: 'Expert Panel Administration' },
+            { name: 'Affiliations', path: 'affiliations', heading: 'Affiliation Administration' },
         ]) {
             await page.getByRole('navigation', { name: 'Administration' })
                 .getByRole('link', { name: section.name, exact: true }).click()
@@ -138,6 +139,40 @@ test.describe('Curation Type administration', () => {
         }
     })
 
+    test('privileged user can update and restore a local affiliation short name', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        let affiliationId
+        let originalShortName
+
+        try {
+            await page.goto('/home#/admin/affiliations')
+            await expect(page.getByRole('heading', { name: 'Affiliation Administration' })).toBeVisible()
+            const row = page.getByRole('row').filter({ hasText: '10001' })
+            await expect(row).toContainText('KCNQ1')
+            await row.getByRole('button', { name: 'Edit Short Name' }).click()
+            const input = page.getByLabel('Short Name')
+            originalShortName = await input.inputValue()
+            await input.fill('E2E KCNQ1')
+
+            const responsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname.startsWith('/api/admin/affiliations/')
+                && response.request().method() === 'PUT'
+            ))
+            await page.getByRole('button', { name: 'Save Short Name' }).click()
+            const response = await responsePromise
+            expect(response.status()).toBe(200)
+            affiliationId = (await response.json()).id
+            await expect(row).toContainText('E2E KCNQ1')
+            assertNoApplicationErrors()
+        } finally {
+            if (affiliationId) {
+                await page.evaluate(async ({ id, shortName }) => {
+                    await window.axios.put(`/api/admin/affiliations/${id}`, { short_name: shortName || null })
+                }, { id: affiliationId, shortName: originalShortName })
+            }
+        }
+    })
+
     test('privileged user can navigate to Curation Types and complete a CRUD workflow', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         const originalName = 'E2E Admin Curation Type'
@@ -212,7 +247,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels']) {
+        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }
