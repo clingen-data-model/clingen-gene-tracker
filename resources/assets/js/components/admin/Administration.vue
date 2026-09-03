@@ -11,6 +11,23 @@
                 >
                     Curation Types
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list rationales')"
+                    class="nav-link"
+                    :to="{ name: 'admin-rationales' }"
+                >
+                    Rationales
+                </router-link>
+                <router-link
+                    v-if="user.hasPermission('list curation-statuses')"
+                    class="nav-link"
+                    :to="{ name: 'admin-curation-statuses' }"
+                >
+                    Curation Statuses
+                </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-upload-categories' }">
+                    Upload Categories
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">
