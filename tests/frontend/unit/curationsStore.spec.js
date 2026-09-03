@@ -30,6 +30,18 @@ describe('curations Vuex store', () => {
         }
     })
 
+    it('removes an existing item and leaves the array unchanged when an item is missing', () => {
+        const first = { id: 1 }
+        const second = { id: 2 }
+        store.state.curations.items.push(first, second)
+
+        store.commit('curations/removeItem', 1)
+        expect(store.state.curations.items).toEqual([second])
+
+        store.commit('curations/removeItem', 999)
+        expect(store.state.curations.items).toEqual([second])
+    })
+
     it('stores a new curation and returns the Axios response', async () => {
         const payload = { gene_symbol: 'BRCA1' }
         const result = response({ data: { id: 11, ...payload } }, { status: 201 })
@@ -149,6 +161,25 @@ describe('curations Vuex store', () => {
         expect(store.state.curations.items).toEqual([])
     })
 
+    it('does not corrupt status entries when successful responses reference missing pivots', async () => {
+        const existing = { id: 3, pivot: { id: 171 } }
+        const curation = { id: 17, curation_statuses: [existing] }
+        const updated = { id: 4, pivot: { id: 999 } }
+        window.axios.put.mockResolvedValue(response(updated))
+        window.axios.delete.mockResolvedValue(response({}, { status: 204 }))
+
+        await store.dispatch('curations/updateStatusDate', {
+            curation,
+            pivotId: 999,
+            statusDate: '2025-01-01',
+        })
+        expect(curation.curation_statuses).toEqual([existing])
+        expect(Object.hasOwn(curation.curation_statuses, '-1')).toBe(false)
+
+        await store.dispatch('curations/unlinkStatus', { curation, pivotId: 999 })
+        expect(curation.curation_statuses).toEqual([existing])
+    })
+
     it('links, updates, and unlinks classifications while mutating the supplied curation', async () => {
         const curation = { id: 18, classifications: [] }
         const payload = { classification_id: 4 }
@@ -204,6 +235,25 @@ describe('curations Vuex store', () => {
             pivotId: 1,
         })).rejects.toBe(wrappedError.response)
         expect(curation.classifications).toEqual([])
+    })
+
+    it('does not corrupt classification entries when successful responses reference missing pivots', async () => {
+        const existing = { id: 5, pivot: { id: 191 } }
+        const curation = { id: 19, classifications: [existing] }
+        const updated = { id: 6, pivot: { id: 999 } }
+        window.axios.put.mockResolvedValue(response(updated))
+        window.axios.delete.mockResolvedValue(response({}, { status: 204 }))
+
+        await store.dispatch('curations/updateClassification', {
+            curation,
+            pivotId: 999,
+            data: {},
+        })
+        expect(curation.classifications).toEqual([existing])
+        expect(Object.hasOwn(curation.classifications, '-1')).toBe(false)
+
+        await store.dispatch('curations/unlinkClassification', { curation, pivotId: 999 })
+        expect(curation.classifications).toEqual([existing])
     })
 
     it('updates ownership, dispatches a refresh, and returns without awaiting that refresh', async () => {

@@ -30,7 +30,9 @@ const mutations = {
     removeItem: function (state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
 
-        state.items.splice(itemIdx, 1);
+        if (itemIdx > -1) {
+            state.items.splice(itemIdx, 1);
+        }
     }
 }
 
