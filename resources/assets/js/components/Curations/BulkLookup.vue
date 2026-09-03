@@ -75,16 +75,13 @@
                                 </li>
                             </ul>
                         </template>
-                        <template v-slot:cell(current_status.name)="{ item, value }">
-                            <div>
-                                <span>{{ formatStatus(value, item) }}</span>
-                                <span
-                                    v-if="item.is_archived"
-                                    class="badge bg-warning text-dark ms-2"
-                                >
-                                    Archived
-                                </span>
-                            </div>
+                        <template #cell(current_status)="{ item, value }">
+                          <div>
+                            <span>{{ formatStatus(value, item) }}</span>
+                            <span v-if="item.is_archived" class="badge bg-warning text-dark ms-2">
+                                Archived
+                            </span>
+                          </div>
                         </template>
                     </b-table>
                 </div>
@@ -101,79 +98,94 @@ const geneSymbols = ref('')
 const results = ref([])
 const notFoundGenes = ref([])
 const fields = [
-                {
-                    key: 'gene_symbol',
-                    label: 'Gene',
-                    sortable: true
-                },
-                {
-                    key: 'disease',
-                    label: 'Disease Entity',
-                    formatter: (value) => {
-                        if (!value || !value.name) { return ''; }
-                        return value.mondo_id ? `${value.name} (${value.mondo_id})` : value.name;
-                    },
-                    sortable: true,
-                    thStyle: {
-                        width: '12rem'
-                    }
-                },
-                {
-                    key: 'expert_panel.name',
-                    label: 'Expert Panel',
-                    sortable: true,
-                },
-                {
-                    key: 'current_classification',
-                    label: 'Classification',
-                    sortable: true,
-                    formatter: function (value) {
-                        if (!value) { return ''; }
-                        const classification = value.name || '';
-                        const classificationDate = value.pivot && value.pivot.classification_date ? moment(value.pivot.classification_date).format('MM/DD/YY') : null;
-                        if (classification && classificationDate) { return `${classification} - ${classificationDate}`; }
-                        return classification || classificationDate || '';
-                    },
-                    thStyle: {
-                        width: "10rem"
-                    }
-                },
-                {
-                    key: 'curation_type.description',
-                    label: 'Curation Type',
-                    sortable: true,
-                    thStyle: {
-                        width: "12rem"
-                    },
-                },
-                {
-                    key: 'rationales',
-                    label: 'Rationales',
-                    formatter: function (value) {
-                        return Array.isArray(value) ? value.map(r => r.name).filter(Boolean).join(', ') : '';
-                    },
-                    sortable: false
-                },
-                {
-                    key: 'current_status.name',
-                    label: 'Status',
-                    sortable: true,
-                    thStyle: {
-                        width: "10rem"
-                    }
-                },
-                {
-                    key: 'updated_at',
-                    label: 'Updated',
-                    sortable: true,
-                    formatter: value => value ? moment(value).format('MM/DD/YY') : null,
-                },
-                {
-                    key: 'available_phenotypes',
-                    label: 'Phenotypes',
-                    sortable: false
-                }
-                
+    {
+        key: 'gene_symbol',
+        label: 'Gene',
+        sortable: true
+    },
+    {
+        key: 'disease',
+        label: 'Disease Entity',
+        formatter: ({ value }) => {
+            if (!value?.name) return ''
+
+            return value.mondo_id
+                ? `${value.name} (${value.mondo_id})`
+                : value.name
+        },
+        sortable: true,
+        thStyle: {
+            width: '12rem'
+        }
+    },
+    {
+        key: 'expert_panel',
+        label: 'Expert Panel',
+        accessor: item => item.expert_panel?.name ?? '',
+        sortable: true
+    },
+    {
+        key: 'current_classification',
+        label: 'Classification',
+        formatter: ({ value }) => {
+            if (!value) return ''
+
+            const classification = value.name || ''
+            const classificationDate = value.pivot?.classification_date
+                ? moment(value.pivot.classification_date).format('MM/DD/YY')
+                : null
+
+            if (classification && classificationDate) {
+                return `${classification} - ${classificationDate}`
+            }
+
+            return classification || classificationDate || ''
+        },
+        sortable: true,
+        thStyle: {
+            width: '10rem'
+        }
+    },
+    {
+        key: 'curation_type',
+        label: 'Curation Type',
+        accessor: item => item.curation_type?.description ?? '',
+        sortable: true,
+        thStyle: {
+            width: '12rem'
+        }
+    },
+    {
+        key: 'rationales',
+        label: 'Rationales',
+        formatter: ({ value }) => {
+            return Array.isArray(value)
+                ? value.map(r => r.name).filter(Boolean).join(', ')
+                : ''
+        },
+        sortable: false
+    },
+    {
+        key: 'current_status',
+        label: 'Status',
+        accessor: item => item.current_status?.name ?? '',
+        sortable: true,
+        thStyle: {
+            width: '10rem'
+        }
+    },
+    {
+        key: 'updated_at',
+        label: 'Updated',
+        sortable: true,
+        formatter: ({ value }) =>
+            value ? moment(value).format('MM/DD/YY') : ''
+    },
+    {
+        key: 'available_phenotypes',
+        label: 'Phenotypes',
+        sortable: false
+    }
 ]
 const loadingResults = ref(false)
 const filters = reactive({

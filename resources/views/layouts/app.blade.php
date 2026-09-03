@@ -69,10 +69,6 @@
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
                         <li>
-                        </li>
-                        <li>
-                        </li>
-                        <li>
                             <a class="nav-link" href="/#/curations/export">Curation Export</a>
                         </li>
                         <li class="nav-item dropdown">
