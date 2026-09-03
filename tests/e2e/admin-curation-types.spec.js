@@ -37,6 +37,7 @@ test.describe('Curation Type administration', () => {
             { name: 'Upload Categories', path: 'upload-categories' },
             { name: 'Modes of Inheritance', path: 'mois' },
             { name: 'Working Groups', path: 'working-groups', heading: 'Working Group Administration' },
+            { name: 'Expert Panels', path: 'expert-panels', heading: 'Expert Panel Administration' },
         ]) {
             await page.getByRole('navigation', { name: 'Administration' })
                 .getByRole('link', { name: section.name, exact: true }).click()
@@ -211,7 +212,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups']) {
+        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }

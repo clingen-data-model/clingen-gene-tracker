@@ -97,6 +97,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/working-groups', [WorkingGroupController::class, 'store']);
         Route::put('/working-groups/{working_group}', [WorkingGroupController::class, 'update']);
         Route::delete('/working-groups/{working_group}', [WorkingGroupController::class, 'destroy']);
+        Route::get('/expert-panels', [ExpertPanelController::class, 'adminIndex']);
+        Route::post('/expert-panels', [ExpertPanelController::class, 'adminStore']);
+        Route::put('/expert-panels/{expert_panel}', [ExpertPanelController::class, 'adminUpdate']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);
