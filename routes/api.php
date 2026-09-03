@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\OmimController;
 use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
+use App\Http\Controllers\Api\UploadCategoryController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -78,6 +79,18 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/curation-types', [CurationTypeController::class, 'store']);
         Route::put('/curation-types/{curation_type}', [CurationTypeController::class, 'update']);
         Route::delete('/curation-types/{curation_type}', [CurationTypeController::class, 'destroy']);
+        Route::get('/rationales', [RationaleController::class, 'adminIndex']);
+        Route::post('/rationales', [RationaleController::class, 'store']);
+        Route::put('/rationales/{rationale}', [RationaleController::class, 'update']);
+        Route::delete('/rationales/{rationale}', [RationaleController::class, 'destroy']);
+        Route::get('/curation-statuses', [CurationStatusController::class, 'adminIndex']);
+        Route::post('/curation-statuses', [CurationStatusController::class, 'store']);
+        Route::put('/curation-statuses/{curation_status}', [CurationStatusController::class, 'update']);
+        Route::delete('/curation-statuses/{curation_status}', [CurationStatusController::class, 'destroy']);
+        Route::get('/upload-categories', [UploadCategoryController::class, 'adminIndex']);
+        Route::post('/upload-categories', [UploadCategoryController::class, 'store']);
+        Route::put('/upload-categories/{upload_category}', [UploadCategoryController::class, 'update']);
+        Route::delete('/upload-categories/{upload_category}', [UploadCategoryController::class, 'destroy']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);

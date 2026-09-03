@@ -33,11 +33,23 @@ const AdministrationHome = () =>
     import('./components/admin/Home.vue')
 const AdminCurationTypes = () =>
     import('./components/admin/CurationTypes.vue')
+const AdminRationales = () =>
+    import('./components/admin/Rationales.vue')
+const AdminCurationStatuses = () =>
+    import('./components/admin/CurationStatuses.vue')
+const AdminUploadCategories = () =>
+    import('./components/admin/UploadCategories.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
 
     return user.canAccessAdministration() ? true : { path: '/curations' }
+}
+
+const requirePermission = permission => () => {
+    const user = store.getters.getUser
+
+    return user.hasPermission(permission) ? true : { name: 'admin-index' }
 }
 
 const routes = [{
@@ -151,13 +163,24 @@ const routes = [{
                 path: 'curation-types',
                 component: AdminCurationTypes,
                 name: 'admin-curation-types',
-                beforeEnter: () => {
-                    const user = store.getters.getUser
-
-                    return user.hasPermission('list curation-types')
-                        ? true
-                        : { name: 'admin-index' }
-                },
+                beforeEnter: requirePermission('list curation-types'),
+            },
+            {
+                path: 'rationales',
+                component: AdminRationales,
+                name: 'admin-rationales',
+                beforeEnter: requirePermission('list rationales'),
+            },
+            {
+                path: 'curation-statuses',
+                component: AdminCurationStatuses,
+                name: 'admin-curation-statuses',
+                beforeEnter: requirePermission('list curation-statuses'),
+            },
+            {
+                path: 'upload-categories',
+                component: AdminUploadCategories,
+                name: 'admin-upload-categories',
             },
         ],
     }

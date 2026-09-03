@@ -12,7 +12,8 @@ class CurationStatus extends Model
     protected $revisionCreationsEnabled = true;
 
     protected $fillable = [
-        'name'
+        'name',
+        'description',
     ];
 
     protected $touches = ['curations'];
