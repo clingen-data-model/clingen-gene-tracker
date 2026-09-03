@@ -33,10 +33,10 @@ describe('root Vuex store', () => {
         expect(store.getters.loading).toBe(false)
     })
 
-    it('currently permits requestCount to become negative without reporting loading', () => {
+    it('keeps requestCount at zero when an unmatched decrement occurs', () => {
         store.commit('removeRequest')
 
-        expect(store.state.requestCount).toBe(-1)
+        expect(store.state.requestCount).toBe(0)
         expect(store.getters.loading).toBe(false)
     })
 
@@ -53,10 +53,10 @@ describe('root Vuex store', () => {
         expect(store.getters.omimLoading).toBe(false)
     })
 
-    it('currently permits API request counters to become negative', () => {
+    it('keeps API request counters at zero when an unmatched decrement occurs', () => {
         store.commit('removeApiRequest', 'pubmed')
 
-        expect(store.state.apiRequestCounts.pubmed).toBe(-1)
+        expect(store.state.apiRequestCounts.pubmed).toBe(0)
     })
 
     it('rejects unknown API counter keys and ignores object payloads', () => {
@@ -71,7 +71,6 @@ describe('root Vuex store', () => {
     it('loads and commits feature flags from the existing endpoint', async () => {
         const features = { transferEnabled: true, sendToGciEnabled: true }
         window.axios.get.mockResolvedValue({ data: features })
-        vi.spyOn(console, 'info').mockImplementation(() => {})
 
         await store.dispatch('getFeatures')
 
@@ -79,15 +78,24 @@ describe('root Vuex store', () => {
         expect(store.state.features).toEqual(features)
     })
 
-    it('currently logs a feature-load failure and commits undefined', async () => {
+    it.each([
+        {
+            name: 'default feature state',
+            features: { transferEnabled: false, sendToGciEnabled: false },
+        },
+        {
+            name: 'previously loaded feature state',
+            features: { transferEnabled: true, sendToGciEnabled: false },
+        },
+    ])('logs a feature-load failure and preserves $name', async ({ features }) => {
         const error = { response: { status: 503 } }
+        store.commit('setFeatures', features)
         window.axios.get.mockRejectedValue(error)
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
-        vi.spyOn(console, 'info').mockImplementation(() => {})
 
         await store.dispatch('getFeatures')
 
         expect(consoleError).toHaveBeenCalledWith(error.response)
-        expect(store.state.features).toBeUndefined()
+        expect(store.state.features).toEqual(features)
     })
 })

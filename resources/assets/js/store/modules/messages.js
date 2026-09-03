@@ -1,4 +1,3 @@
-let timeouts = {};
 const state = {
     info: [],
     errors: []
@@ -30,12 +29,6 @@ const mutations = {
     },
     removeError: function (state, idx) {
         state.errors.splice(idx,1);
-    }
-}
-
-const actions = {
-    addInfo: function ({commit}, message) {
-        commit('addInfo', message);
     }
 }
 

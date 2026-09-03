@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 const baseUrl = '/api/curations'
 const state = {
     items: [],
@@ -34,9 +32,6 @@ const mutations = {
         }
 
         state.items.push(item)
-    },
-    updateItem: function(state, item) {
-        console.log('updateitem')
     },
     removeItem: function(state, id) {
         const itemIdx = state.items.findIndex(i => i.id == id);
@@ -96,16 +91,12 @@ const actions = {
     linkNewStatus({ commit }, { curation, data }) {
         return window.axios.post(baseUrl + '/' + curation.id + '/statuses', data)
             .then((response) => {
-                console.log({response})
                 const status = response.data;
-                console.log({status})
                 if (curation.curation_statuses.find(st => st.pivot.id == status.pivot.id)) {
-                    console.log('weird pivot condition: ',curation.curation_statuses.find(st => st.pivot.id == status.pivot.id))
                     return response;
                 }
                 curation.curation_statuses.push(status);
                 commit('addItem', curation);
-                console.log('added item', curation)
                 return response
             })
             .catch(function(error) {

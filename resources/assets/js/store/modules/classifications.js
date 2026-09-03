@@ -25,10 +25,9 @@ const actions = {
             commit('setItems', data)
             return;
         }
-        console.log('getAllClassifications');
         window.axios.get(baseUrl)
             .then(function (response) {
-                localStorage.setItem('clasifications', JSON.stringify(response.data));
+                localStorage.setItem('classifications', JSON.stringify(response.data));
                 commit('setItems', response.data)
             })
             .catch(function (error) {

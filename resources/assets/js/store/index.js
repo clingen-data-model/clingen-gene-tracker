@@ -33,15 +33,6 @@ const getters = {
     loading(state) {
         return state.requestCount > 0
     },
-    apiLoading(state, apiKey) {
-        if (typeof apiKey == 'object') {
-            return false;
-        }
-        if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
-            throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
-        }
-        return state.apiRequestCounts[apiKey] > 0
-    },
     omimLoading(state) {
         return state.apiRequestCounts['omim'] > 0
     },
@@ -58,7 +49,9 @@ const mutations = {
         state.requestCount++;
     },
     removeRequest(state) {
-        state.requestCount--;
+        if (state.requestCount > 0) {
+            state.requestCount--;
+        }
     },
     addApiRequest(state, apiKey) {
         if (typeof apiKey == 'object') {
@@ -76,7 +69,9 @@ const mutations = {
         if (Object.keys(state.apiRequestCounts).indexOf(apiKey) < 0) {
             throw new Error(apiKey + ' is not a valid key for apiRequestCounts.')
         }
-        state.apiRequestCounts[apiKey]--
+        if (state.apiRequestCounts[apiKey] > 0) {
+            state.apiRequestCounts[apiKey]--
+        }
     },
     setFeatures(state, features) {
         state.features = features;
@@ -91,13 +86,12 @@ const actions = {
         }
     },
     async getFeatures({ commit }) {
-        const features = await window.axios.get('api/features')
-                            .then(response => response.data)
-                            .catch(error => {
-                                console.error(error.response);
-                            });
-        console.info('features', features);
-        commit('setFeatures', features);
+        try {
+            const response = await window.axios.get('api/features');
+            commit('setFeatures', response.data);
+        } catch (error) {
+            console.error(error.response);
+        }
     }
 }
 

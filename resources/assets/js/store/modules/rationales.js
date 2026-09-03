@@ -20,7 +20,6 @@ const mutations = {
 
 const actions = {
     getAllItems: function ( {commit} ) {
-        localStorage.removeItem('rationales');
         const data = JSON.parse(localStorage.getItem('rationales'));
         if (data) {
             commit('setItems', data)
