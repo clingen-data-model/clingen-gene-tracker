@@ -22,6 +22,10 @@ python/token.pickle
 tests/files/omim_api/full_genemap2.txt
 yarn-error.log
 
+/playwright/.auth/
+/playwright-report/
+/test-results/
+
 /.docker/mysql/db-init/*.sql.gz
 .docker/mysql/db-init/testing-init.sql
 
