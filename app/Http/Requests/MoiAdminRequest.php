@@ -13,7 +13,9 @@ class MoiAdminRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo('update mois');
     }
 
     /**
@@ -24,7 +26,7 @@ class MoiAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            
+            'curatable' => ['required', 'boolean'],
         ];
     }
 }

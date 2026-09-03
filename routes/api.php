@@ -91,6 +91,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/upload-categories', [UploadCategoryController::class, 'store']);
         Route::put('/upload-categories/{upload_category}', [UploadCategoryController::class, 'update']);
         Route::delete('/upload-categories/{upload_category}', [UploadCategoryController::class, 'destroy']);
+        Route::get('/mois', [MoiController::class, 'adminIndex']);
+        Route::put('/mois/{moi}', [MoiController::class, 'adminUpdate']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);

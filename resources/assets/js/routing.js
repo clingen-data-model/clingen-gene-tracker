@@ -39,6 +39,8 @@ const AdminCurationStatuses = () =>
     import('./components/admin/CurationStatuses.vue')
 const AdminUploadCategories = () =>
     import('./components/admin/UploadCategories.vue')
+const AdminMois = () =>
+    import('./components/admin/Mois.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -181,6 +183,12 @@ const routes = [{
                 path: 'upload-categories',
                 component: AdminUploadCategories,
                 name: 'admin-upload-categories',
+            },
+            {
+                path: 'mois',
+                component: AdminMois,
+                name: 'admin-mois',
+                beforeEnter: requirePermission('list mois'),
             },
         ],
     }

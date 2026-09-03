@@ -35,6 +35,7 @@ test.describe('Curation Type administration', () => {
             { name: 'Rationales', path: 'rationales' },
             { name: 'Curation Statuses', path: 'curation-statuses' },
             { name: 'Upload Categories', path: 'upload-categories' },
+            { name: 'Modes of Inheritance', path: 'mois' },
         ]) {
             await page.getByRole('link', { name: section.name, exact: true }).click()
             await expect(page).toHaveURL(new RegExp(`#\/admin\/${section.path}$`))
@@ -42,6 +43,42 @@ test.describe('Curation Type administration', () => {
         }
 
         assertNoApplicationErrors()
+    })
+
+    test('privileged user can update and restore a deterministic curatable setting', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        let moiId
+        let originalCuratable
+
+        try {
+            await page.goto('/home#/admin/mois')
+            await expect(page.getByRole('heading', { name: 'Modes of Inheritance' })).toBeVisible()
+
+            const row = page.getByRole('row').filter({ hasText: 'HP:0000006' })
+            await expect(row).toContainText('Autosomal dominant inheritance')
+            originalCuratable = (await row.getByRole('cell').nth(4).textContent()).trim() === 'Yes'
+            await row.getByRole('button', { name: 'Edit Curatable' }).click()
+            await page.getByLabel('Curatable').selectOption(originalCuratable ? 'false' : 'true')
+
+            const updateResponsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname.startsWith('/api/admin/mois/')
+                && response.request().method() === 'PUT'
+            ))
+            await page.getByRole('button', { name: 'Save Curatable Setting' }).click()
+            const updateResponse = await updateResponsePromise
+            expect(updateResponse.status()).toBe(200)
+            const updatedMoi = await updateResponse.json()
+            moiId = updatedMoi.id
+            await expect(page.getByText('Mode of inheritance updated successfully.')).toBeVisible()
+            await expect(row.getByRole('cell').nth(4)).toHaveText(originalCuratable ? 'No' : 'Yes')
+            assertNoApplicationErrors()
+        } finally {
+            if (moiId && originalCuratable !== undefined) {
+                await page.evaluate(async ({ id, curatable }) => {
+                    await window.axios.put(`/api/admin/mois/${id}`, { curatable })
+                }, { id: moiId, curatable: originalCuratable })
+            }
+        }
     })
 
     test('privileged user can navigate to Curation Types and complete a CRUD workflow', async ({ page, baseURL }) => {
@@ -118,7 +155,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['rationales', 'curation-statuses', 'upload-categories']) {
+        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }
