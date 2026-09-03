@@ -41,6 +41,8 @@ const AdminUploadCategories = () =>
     import('./components/admin/UploadCategories.vue')
 const AdminMois = () =>
     import('./components/admin/Mois.vue')
+const AdminWorkingGroups = () =>
+    import('./components/admin/WorkingGroups.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -189,6 +191,12 @@ const routes = [{
                 component: AdminMois,
                 name: 'admin-mois',
                 beforeEnter: requirePermission('list mois'),
+            },
+            {
+                path: 'working-groups',
+                component: AdminWorkingGroups,
+                name: 'admin-working-groups',
+                beforeEnter: requirePermission('list working-groups'),
             },
         ],
     }

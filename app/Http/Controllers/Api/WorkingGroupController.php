@@ -4,13 +4,52 @@ namespace App\Http\Controllers\Api;
 
 use App\WorkingGroup;
 use App\Curation;
+use App\Http\Requests\WorkingGroupRequest;
 use App\Http\Resources\WorkingGroupResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use ZipArchive;
 
 class WorkingGroupController extends ApiController
 {
     protected $modelClass = WorkingGroup::class;
+
+    public function adminIndex(Request $request)
+    {
+        abort_unless($request->user()->hasPermissionTo('list working-groups'), 403);
+
+        return WorkingGroup::query()
+            ->withCount('expertPanels')
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function store(WorkingGroupRequest $request)
+    {
+        return response()->json(WorkingGroup::create($request->validated()), 201);
+    }
+
+    public function update(WorkingGroupRequest $request, WorkingGroup $workingGroup)
+    {
+        $workingGroup->update($request->validated());
+
+        return $workingGroup->fresh()->loadCount('expertPanels');
+    }
+
+    public function destroy(Request $request, WorkingGroup $workingGroup)
+    {
+        abort_unless($request->user()->hasPermissionTo('delete working-groups'), 403);
+
+        if ($workingGroup->expertPanels()->exists()) {
+            return response()->json([
+                'message' => 'This working group has expert panels and cannot be deleted.',
+            ], 409);
+        }
+
+        $workingGroup->delete();
+
+        return response()->noContent();
+    }
 
     public function show($id)
     {

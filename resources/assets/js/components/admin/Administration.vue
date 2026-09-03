@@ -35,6 +35,13 @@
                 >
                     Modes of Inheritance
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list working-groups')"
+                    class="nav-link"
+                    :to="{ name: 'admin-working-groups' }"
+                >
+                    Working Groups
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

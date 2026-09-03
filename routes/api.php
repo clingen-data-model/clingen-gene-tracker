@@ -93,6 +93,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/upload-categories/{upload_category}', [UploadCategoryController::class, 'destroy']);
         Route::get('/mois', [MoiController::class, 'adminIndex']);
         Route::put('/mois/{moi}', [MoiController::class, 'adminUpdate']);
+        Route::get('/working-groups', [WorkingGroupController::class, 'adminIndex']);
+        Route::post('/working-groups', [WorkingGroupController::class, 'store']);
+        Route::put('/working-groups/{working_group}', [WorkingGroupController::class, 'update']);
+        Route::delete('/working-groups/{working_group}', [WorkingGroupController::class, 'destroy']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);
