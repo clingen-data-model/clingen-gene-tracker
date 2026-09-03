@@ -225,12 +225,3 @@ Do not run Playwright against a normal development database.
 Do not combine major migrations.
 
 The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is complete.
-
-Potential future modernization:
-
-1. Assess whether Vuex → Pinia provides enough benefit to justify a separate migration.
-2. If approved, treat Vuex → Pinia as its own project with the existing Vitest and Playwright suites as regression protection.
-
-Do not begin a state-management migration automatically just because Vuex remains in use.
-
-Do not combine a Vuex → Pinia migration with unrelated frontend redesign, routing changes, build-tool changes, or business-logic refactors.
