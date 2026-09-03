@@ -15,6 +15,10 @@ class User {
         return this.user.permissions.filter(permission => permission.name == permName).length > 0
     }
 
+    canAccessAdministration() {
+        return this.hasRole('programmer') || this.hasRole('admin')
+    }
+
     inExpertPanel(expertPanel) {
         if (!expertPanel) {
             return false;

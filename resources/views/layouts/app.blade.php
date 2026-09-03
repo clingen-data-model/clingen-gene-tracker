@@ -68,6 +68,11 @@
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
+                        @if (Auth::user()->hasAnyRole(['admin', 'programmer']))
+                            <li>
+                                <a class="nav-link" href="/#/admin">Administration</a>
+                            </li>
+                        @endif
                         <li>
                             <a class="nav-link" href="/#/curations/export">Curation Export</a>
                         </li>

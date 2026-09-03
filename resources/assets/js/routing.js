@@ -27,6 +27,18 @@ const BulkLookup = () =>
     import('./components/Curations/BulkLookup.vue')
 const GeneBulkLookup = () =>
     import('./components/GeneBulkLookup.vue')
+const Administration = () =>
+    import('./components/admin/Administration.vue')
+const AdministrationHome = () =>
+    import('./components/admin/Home.vue')
+const AdminCurationTypes = () =>
+    import('./components/admin/CurationTypes.vue')
+
+const requireAdministrator = () => {
+    const user = store.getters.getUser
+
+    return user.canAccessAdministration() ? true : { path: '/curations' }
+}
 
 const routes = [{
         path: '/',
@@ -124,6 +136,30 @@ const routes = [{
         name: 'BulkLookup',
         path: '/bulk-lookup',
         redirect: {name: 'BulkCurationLookup'},
+    },
+    {
+        path: '/admin',
+        component: Administration,
+        beforeEnter: requireAdministrator,
+        children: [
+            {
+                path: '',
+                component: AdministrationHome,
+                name: 'admin-index',
+            },
+            {
+                path: 'curation-types',
+                component: AdminCurationTypes,
+                name: 'admin-curation-types',
+                beforeEnter: () => {
+                    const user = store.getters.getUser
+
+                    return user.hasPermission('list curation-types')
+                        ? true
+                        : { name: 'admin-index' }
+                },
+            },
+        ],
     }
 ]
 
