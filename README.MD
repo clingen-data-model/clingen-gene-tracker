@@ -146,6 +146,22 @@ Laravel loads frontend assets using `laravel-vite-plugin` and the `@vite` Blade 
 
 Generated frontend assets under `public/build` are build output and should not be treated as source files.
 
+### Frontend testing
+
+Unit and component tests use Vitest and Vue Test Utils:
+
+```bash
+npm run test:unit -- --run
+```
+
+Browser tests use Playwright with real Laravel authentication:
+
+```bash
+npm run test:e2e
+```
+
+Playwright uses the dedicated disposable `genetracker_e2e` database. Provision that database and grant the configured Laravel database user access before running the suite. E2E preparation does not create databases; it verifies the configured database is exactly `genetracker_e2e` before resetting and seeding it.
+
 ## Terms
 
 * **Gene** - A gene. Usually represented by a [HGNC](https://www.genenames.org/) gene symbol.
