@@ -183,7 +183,7 @@
 
     function updateCuration(callback, nav) {
         if (updatedCuration.value.is_archived && !user.value.canManageArchive()) {
-            store.commit('messages/addAlert', 'This curation is archived and cannot be edited.')
+            store.commit('messages/addError', 'This curation is archived and cannot be edited.')
             return
         }
         updatedCuration.value.nav = nav
