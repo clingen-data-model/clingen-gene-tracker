@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
+use App\Rationale;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RationaleRequest extends FormRequest
 {
@@ -14,8 +15,13 @@ class RationaleRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return \Auth::check();
+        $permission = $this->isMethod('post')
+            ? 'create rationales'
+            : 'update rationales';
+
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo($permission);
     }
 
     /**
@@ -25,8 +31,16 @@ class RationaleRequest extends FormRequest
      */
     public function rules()
     {
+        $rationale = $this->route('rationale');
+        $rationaleId = $rationale instanceof Rationale ? $rationale->getKey() : $rationale;
+
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('rationales', 'name')->ignore($rationaleId),
+            ],
         ];
     }
 

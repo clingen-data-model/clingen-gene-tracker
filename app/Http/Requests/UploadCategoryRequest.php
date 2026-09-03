@@ -13,9 +13,7 @@ class UploadCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        // Backpack's admin guard defaulted to the standard web guard, so this matches the
-        // previous authenticated-user semantics without adding a role restriction.
-        return auth()->guard('web')->check();
+        return $this->user() && $this->user()->hasAnyRole(['admin', 'programmer']);
     }
 
     /**
@@ -26,7 +24,7 @@ class UploadCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 

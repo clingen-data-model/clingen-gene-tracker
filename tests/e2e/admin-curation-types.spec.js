@@ -27,6 +27,23 @@ function monitorApplicationErrors(page, baseURL) {
 }
 
 test.describe('Curation Type administration', () => {
+    test('privileged user can navigate to each Phase 1B administration section', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home#/admin')
+
+        for (const section of [
+            { name: 'Rationales', path: 'rationales' },
+            { name: 'Curation Statuses', path: 'curation-statuses' },
+            { name: 'Upload Categories', path: 'upload-categories' },
+        ]) {
+            await page.getByRole('link', { name: section.name, exact: true }).click()
+            await expect(page).toHaveURL(new RegExp(`#\/admin\/${section.path}$`))
+            await expect(page.getByRole('heading', { name: section.name, exact: true })).toBeVisible()
+        }
+
+        assertNoApplicationErrors()
+    })
+
     test('privileged user can navigate to Curation Types and complete a CRUD workflow', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         const originalName = 'E2E Admin Curation Type'
@@ -100,6 +117,11 @@ test.describe('Curation Type administration as a restricted user', () => {
         await page.goto('/home#/admin/curation-types')
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
+
+        for (const path of ['rationales', 'curation-statuses', 'upload-categories']) {
+            await page.goto(`/home#/admin/${path}`)
+            await expect(page).toHaveURL(/#\/curations$/)
+        }
         assertNoApplicationErrors()
     })
 })
