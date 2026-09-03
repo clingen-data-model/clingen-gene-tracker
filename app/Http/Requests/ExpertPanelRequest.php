@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\ExpertPanel;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ExpertPanelRequest extends FormRequest
 {
@@ -13,8 +15,13 @@ class ExpertPanelRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return \Auth::check();
+        $permission = $this->isMethod('post')
+            ? 'create expert-panels'
+            : 'update expert-panels';
+
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo($permission);
     }
 
     /**
@@ -24,10 +31,23 @@ class ExpertPanelRequest extends FormRequest
      */
     public function rules()
     {
+        $expertPanel = $this->route('expert_panel');
+        $expertPanelId = $expertPanel instanceof ExpertPanel
+            ? $expertPanel->getKey()
+            : $expertPanel;
+
         return [
-            'name' => 'required|min:5|max:255',
-            'affiliation_id' => 'nullable|exists:affiliations,id',
-            'working_group_id' => 'nullable|exists:working_groups,id',
+            'name' => [
+                'required',
+                'string',
+                'min:5',
+                'max:255',
+                Rule::unique('expert_panels', 'name')->ignore($expertPanelId),
+            ],
+            'working_group_id' => [
+                'nullable',
+                Rule::exists('working_groups', 'id')->whereNull('deleted_at'),
+            ],
         ];
     }
 
