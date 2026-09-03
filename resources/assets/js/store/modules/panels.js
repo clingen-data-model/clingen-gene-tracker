@@ -40,7 +40,6 @@ const actions = {
             })
     },
     getItem ({commit}, {id, params}) {
-        console.log(id);
         const url = `${baseUrl}/${id}/${queryStringFromParams(params)}`;
         window.axios.get(url)
             .then(function (response) {
