@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\CurationType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CurationTypeRequest extends FormRequest
 {
@@ -13,8 +15,13 @@ class CurationTypeRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return \Auth::check();
+        $permission = $this->isMethod('post')
+            ? 'create curation-types'
+            : 'update curation-types';
+
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo($permission);
     }
 
     /**
@@ -24,8 +31,19 @@ class CurationTypeRequest extends FormRequest
      */
     public function rules()
     {
+        $curationType = $this->route('curation_type');
+        $curationTypeId = $curationType instanceof CurationType
+            ? $curationType->getKey()
+            : $curationType;
+
         return [
-            'name' => 'required|min:5|max:255|unique:curation_types,name'
+            'name' => [
+                'required',
+                'min:5',
+                'max:255',
+                Rule::unique('curation_types', 'name')->ignore($curationTypeId),
+            ],
+            'description' => ['nullable', 'string'],
         ];
     }
 

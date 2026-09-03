@@ -72,6 +72,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/curation-statuses', CurationStatusController::class)->only(['index']);
     Route::resource('/working-groups', WorkingGroupController::class)->only(['index', 'show']);
     Route::resource('/curation-types', CurationTypeController::class)->only(['index']);
+
+    Route::prefix('admin')->middleware('role:admin|programmer')->group(function () {
+        Route::get('/curation-types', [CurationTypeController::class, 'adminIndex']);
+        Route::post('/curation-types', [CurationTypeController::class, 'store']);
+        Route::put('/curation-types/{curation_type}', [CurationTypeController::class, 'update']);
+        Route::delete('/curation-types/{curation_type}', [CurationTypeController::class, 'destroy']);
+    });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);
     Route::resource('/mois', MoiController::class)->only(['index']);
