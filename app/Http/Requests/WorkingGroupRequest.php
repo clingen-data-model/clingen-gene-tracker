@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
+use App\WorkingGroup;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WorkingGroupRequest extends FormRequest
 {
@@ -14,8 +15,13 @@ class WorkingGroupRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return \Auth::check();
+        $permission = $this->isMethod('post')
+            ? 'create working-groups'
+            : 'update working-groups';
+
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo($permission);
     }
 
     /**
@@ -25,8 +31,18 @@ class WorkingGroupRequest extends FormRequest
      */
     public function rules()
     {
+        $workingGroup = $this->route('working_group');
+        $workingGroupId = $workingGroup instanceof WorkingGroup
+            ? $workingGroup->getKey()
+            : $workingGroup;
+
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('working_groups', 'name')->ignore($workingGroupId),
+            ],
         ];
     }
 
