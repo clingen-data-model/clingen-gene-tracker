@@ -27,22 +27,32 @@ function buttonByText(wrapper, text) {
 
 beforeEach(() => {
     window.axios = {
-        get: vi.fn(url => Promise.resolve({ data: url === '/api/working-groups' ? [] : [] })),
+        get: vi.fn(url => Promise.resolve({ data: url === '/api/working-groups' ? [] : { data: [], total: 30 } })),
         post: vi.fn(),
         put: vi.fn(),
     }
 })
 
 describe('Expert Panel administration', () => {
+    it('requests server pages when pagination changes', async () => {
+        const wrapper = mountPage(userWith('list expert-panels'))
+        await flushPromises()
+
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/expert-panels', { params: { page: 1, per_page: 25 } })
+        wrapper.findComponent({ name: 'BPagination' }).vm.$emit('update:modelValue', 2)
+        await flushPromises()
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/expert-panels', { params: { page: 2, per_page: 25 } })
+    })
+
     it('renders relationships and counts with only permitted controls', async () => {
-        window.axios.get.mockImplementation(url => Promise.resolve({ data: url === '/api/working-groups' ? [] : [{
+        window.axios.get.mockImplementation(url => Promise.resolve({ data: url === '/api/working-groups' ? [] : { data: [{
             id: 2,
             name: 'Known Expert Panel',
             working_group: { id: 3, name: 'Known Working Group' },
             affiliation: { name: 'Known Affiliation', clingen_id: '40001' },
             curations_count: 4,
             users_count: 5,
-        }] }))
+        }], total: 1 } }))
         const wrapper = mountPage(userWith('list expert-panels', 'update expert-panels'))
         await flushPromises()
 
@@ -59,7 +69,7 @@ describe('Expert Panel administration', () => {
     it('creates and updates name and Working Group without sending affiliation', async () => {
         window.axios.get.mockImplementation(url => Promise.resolve({ data: url === '/api/working-groups'
             ? [{ id: 7, name: 'Selectable Working Group' }]
-            : [] }))
+            : { data: [], total: 0 } }))
         window.axios.post.mockResolvedValue({ data: {
             id: 8, name: 'Created Expert Panel', working_group_id: 7,
             working_group: { id: 7, name: 'Selectable Working Group' }, affiliation: null,

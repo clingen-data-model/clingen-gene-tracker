@@ -72,6 +72,28 @@ test.describe('Curation Type administration', () => {
         assertNoApplicationErrors()
     })
 
+    test('privileged user sees the Admin and Logs menu links and can use both', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home')
+        await page.getByRole('button', { name: /Super User/ }).click()
+        const adminLink = page.getByRole('link', { name: 'Admin', exact: true })
+        const logsLink = page.getByRole('link', { name: 'Logs', exact: true })
+        await expect(adminLink).toHaveAttribute('href', '/admin/dashboard')
+        await expect(logsLink).toHaveAttribute('href', '/admin/logs')
+
+        await adminLink.click()
+        await expect(page).toHaveURL(/\/admin\/dashboard#\/admin$/)
+        await expect(page.getByRole('heading', { name: 'Administration Dashboard' })).toBeVisible()
+
+        await page.getByRole('button', { name: /Super User/ }).click()
+        await page.getByRole('link', { name: 'Logs', exact: true }).click()
+        await expect(page).toHaveURL(/\/admin\/logs$/)
+        await expect(page.getByRole('heading', { name: 'Laravel Log Viewer' })).toBeVisible()
+        await page.getByRole('link', { name: 'e2e-admin-viewer.log' }).click()
+        await expect(page.getByText('Deterministic E2E log viewer entry')).toBeVisible()
+        assertNoApplicationErrors()
+    })
+
     test('privileged user can inspect deterministic email and notification records', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         await page.goto('/home#/admin/emails')
@@ -242,6 +264,15 @@ test.describe('Curation Type administration', () => {
         try {
             await page.goto('/home#/admin/affiliations')
             await expect(page.getByRole('heading', { name: 'Affiliation Administration' })).toBeVisible()
+            const pagination = page.getByRole('menubar', { name: 'Pagination' })
+            await expect(pagination).toBeVisible()
+            const pageResponsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname === '/api/admin/affiliations'
+                && new URL(response.url()).searchParams.get('page') === '4'
+            ))
+            await pagination.getByRole('menuitem', { name: 'Go to page 4' }).click()
+            expect((await pageResponsePromise).status()).toBe(200)
+
             const row = page.getByRole('row').filter({ hasText: '10001' })
             await expect(row).toContainText('KCNQ1')
             await row.getByRole('button', { name: 'Edit Short Name' }).click()
@@ -318,7 +349,7 @@ test.describe('Curation Type administration', () => {
             if (userId && needsRestoration) {
                 await page.evaluate(async ({ id, name }) => {
                     const users = await window.axios.get('/api/admin/users')
-                    const user = users.data.find(item => item.id === id)
+                    const user = users.data.data.find(item => item.id === id)
                     await window.axios.patch(`/api/admin/users/${id}/reactivate`)
                     await window.axios.put(`/api/admin/users/${id}`, {
                         name,
@@ -339,8 +370,9 @@ test.describe('Curation Type administration', () => {
 
         try {
             await page.goto('/home')
-            await page.getByRole('link', { name: 'Administration', exact: true }).click()
-            await expect(page).toHaveURL(/#\/admin$/)
+            await page.getByRole('button', { name: /Super User/ }).click()
+            await page.getByRole('link', { name: 'Admin', exact: true }).click()
+            await expect(page).toHaveURL(/\/admin\/dashboard#\/admin$/)
             await page.getByRole('link', { name: 'Curation Types', exact: true }).click()
             await expect(page).toHaveURL(/#\/admin\/curation-types$/)
             await expect(page.getByRole('heading', { name: 'Curation Types' })).toBeVisible()
@@ -399,7 +431,14 @@ test.describe('Curation Type administration as a restricted user', () => {
     test('cannot see or directly access administration', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         await page.goto('/home')
-        await expect(page.getByRole('link', { name: 'Administration', exact: true })).toHaveCount(0)
+        await page.getByRole('button', { name: /Curation Viewer/ }).click()
+        await expect(page.getByRole('link', { name: 'Admin', exact: true })).toHaveCount(0)
+        await expect(page.getByRole('link', { name: 'Logs', exact: true })).toHaveCount(0)
+
+        const dashboardResponse = await page.request.get('/admin/dashboard')
+        expect(dashboardResponse.status()).toBe(403)
+        const logsResponse = await page.request.get('/admin/logs')
+        expect(logsResponse.status()).toBe(403)
 
         await page.goto('/home#/admin/curation-types')
         await expect(page).toHaveURL(/#\/curations$/)

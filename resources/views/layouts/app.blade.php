@@ -68,11 +68,6 @@
                         <li>
                             <a class="nav-link" href="/#/working-groups">Working Groups</a>
                         </li>
-                        @if (Auth::user()->hasAnyRole(['admin', 'programmer']))
-                            <li>
-                                <a class="nav-link" href="/#/admin">Administration</a>
-                            </li>
-                        @endif
                         <li>
                             <a class="nav-link" href="/#/curations/export">Curation Export</a>
                         </li>
@@ -110,6 +105,11 @@
                                         <a class="dropdown-item" href="/bulk-uploads">Bulk Upload</a>
                                         <div class="dropdown-divider"></div>
                                     @endif 
+                                    @if (\Auth::user()->hasAnyRole(['admin', 'programmer']))
+                                        <a class="dropdown-item" href="/admin/dashboard">Admin</a>
+                                        <a class="dropdown-item" href="/admin/logs">Logs</a>
+                                        <div class="dropdown-divider"></div>
+                                    @endif
                                     <a class="dropdown-item" href="https://docs.google.com/document/d/1b0mW4N19cWBIHccodYJ34Gp3BoDyiYkRuqhbjfrUrOA/" target="sop">SOP</a>
 
                                     <div class="dropdown-divider"></div>

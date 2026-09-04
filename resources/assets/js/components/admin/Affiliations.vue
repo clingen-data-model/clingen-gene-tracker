@@ -52,11 +52,12 @@
                 <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit Short Name</b-button>
             </template>
         </b-table>
+        <b-pagination v-if="totalRows > perPage" v-model="currentPage" :total-rows="totalRows" :per-page="perPage" />
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -76,6 +77,9 @@ const fields = computed(() => {
 })
 
 const affiliations = ref([])
+const currentPage = ref(1)
+const perPage = 25
+const totalRows = ref(0)
 const loading = ref(true)
 const saving = ref(false)
 const editing = ref(null)
@@ -94,8 +98,9 @@ function cancelEdit() { editing.value = null; validationErrors.value = {} }
 async function loadAffiliations() {
     loading.value = true
     try {
-        const response = await window.axios.get('/api/admin/affiliations')
-        affiliations.value = response.data
+        const response = await window.axios.get('/api/admin/affiliations', { params: { page: currentPage.value, per_page: perPage } })
+        affiliations.value = response.data.data
+        totalRows.value = response.data.total
     } catch (error) {
         errorMessage.value = error.response?.data?.message || 'Unable to load affiliations.'
     } finally {
@@ -122,5 +127,6 @@ async function save() {
     }
 }
 
+watch(currentPage, loadAffiliations)
 onMounted(loadAffiliations)
 </script>

@@ -40,11 +40,13 @@ class UserController extends Controller
     {
         abort_unless($request->user()->hasPermissionTo('list users'), 403);
 
+        $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
+
         return User::query()
             ->with(['roles:id,name', 'permissions:id,name'])
             ->withCount(['expertPanels', 'affiliations'])
             ->orderBy('name')
-            ->get();
+            ->paginate($perPage);
     }
 
     public function adminOptions(Request $request)

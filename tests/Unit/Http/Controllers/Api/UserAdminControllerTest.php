@@ -49,8 +49,9 @@ class UserAdminControllerTest extends TestCase
         $target->expertPanels()->attach(factory(ExpertPanel::class)->create()->id);
         $target->affiliations()->attach(factory(Affiliation::class)->create(['clingen_id' => '49001'])->id);
 
-        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/users')->assertOk();
-        $listed = collect($response->json())->firstWhere('id', $target->id);
+        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/users?per_page=100')->assertOk();
+        $response->assertJsonStructure(['data', 'current_page', 'per_page', 'total']);
+        $listed = collect($response->json('data'))->firstWhere('id', $target->id);
         $this->assertSame('viewer', $listed['roles'][0]['name']);
         $this->assertSame('list curations', $listed['permissions'][0]['name']);
         $this->assertSame(1, $listed['expert_panels_count']);
@@ -60,6 +61,19 @@ class UserAdminControllerTest extends TestCase
             ->assertOk()
             ->assertJsonFragment(['id' => $this->viewerRole->id, 'name' => 'viewer'])
             ->assertJsonFragment(['id' => $this->directPermission->id, 'name' => 'list curations']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function user_listing_paginates_and_bounds_the_page_size(): void
+    {
+        factory(User::class, 3)->create();
+
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/users?per_page=2')
+            ->assertOk()->assertJsonCount(2, 'data')->assertJsonPath('per_page', 2);
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/users?per_page=1000')
+            ->assertOk()->assertJsonPath('per_page', 100);
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/users?per_page=0')
+            ->assertOk()->assertJsonPath('per_page', 1);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

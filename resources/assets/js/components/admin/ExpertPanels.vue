@@ -58,11 +58,12 @@
                 <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
             </template>
         </b-table>
+        <b-pagination v-if="totalRows > perPage" v-model="currentPage" :total-rows="totalRows" :per-page="perPage" />
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -82,6 +83,9 @@ const fields = computed(() => {
 })
 
 const expertPanels = ref([])
+const currentPage = ref(1)
+const perPage = 25
+const totalRows = ref(0)
 const workingGroups = ref([])
 const loading = ref(true)
 const saving = ref(false)
@@ -112,10 +116,11 @@ async function loadData() {
     loading.value = true
     try {
         const [panelsResponse, groupsResponse] = await Promise.all([
-            window.axios.get('/api/admin/expert-panels'),
+            window.axios.get('/api/admin/expert-panels', { params: { page: currentPage.value, per_page: perPage } }),
             window.axios.get('/api/working-groups'),
         ])
-        expertPanels.value = panelsResponse.data
+        expertPanels.value = panelsResponse.data.data
+        totalRows.value = panelsResponse.data.total
         workingGroups.value = groupsResponse.data
     } catch (error) {
         errorMessage.value = error.response?.data?.message || 'Unable to load expert panels.'
@@ -149,5 +154,6 @@ async function save() {
     }
 }
 
+watch(currentPage, loadData)
 onMounted(loadData)
 </script>

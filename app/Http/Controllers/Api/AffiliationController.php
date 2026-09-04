@@ -13,6 +13,8 @@ class AffiliationController extends Controller
     {
         abort_unless($request->user()->hasAnyRole(['admin', 'programmer']), 403);
 
+        $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
+
         return Affiliation::query()
             ->with([
                 'type:id,name',
@@ -21,7 +23,7 @@ class AffiliationController extends Controller
             ])
             ->withCount('expertPanel')
             ->orderBy('name')
-            ->get();
+            ->paginate($perPage);
     }
 
     public function adminUpdate(AffiliationRequest $request, Affiliation $affiliation)

@@ -87,7 +87,7 @@ const actions = {
     },
     async getFeatures({ commit }) {
         try {
-            const response = await window.axios.get('api/features');
+            const response = await window.axios.get('/api/features');
             commit('setFeatures', response.data);
         } catch (error) {
             console.error(error.response);
