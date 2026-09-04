@@ -1,0 +1,1 @@
+import{K as e,U as t,at as n,tt as r}from"./ui-vendor-Cjxw420V.js";import{r as i}from"./app-DhPNTFmf.js";var a={},o={id:`curations-container`};function s(i,a){let s=n(`router-view`);return r(),t(`div`,o,[e(s)])}var c=i(a,[[`render`,s]]);export{c as default};
