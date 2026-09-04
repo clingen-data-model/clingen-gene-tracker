@@ -42,7 +42,11 @@ class CreateNotificationsForStreamErrors extends Command
      */
     public function handle()
     {
+        // Only the curation-shaped errors: this digest reaches expert panel
+        // coordinators, and every accessor it uses (affiliation_id, gene,
+        // condition, moi) reads a GCI message payload and throws without one.
         $groupedErrors = StreamError::unsent()
+                            ->where('type', 'unmatchable curation')
                             ->with('geneModel', 'diseaseModel', 'moiModel')
                             ->get()
                             ->groupBy('affiliation_id');
