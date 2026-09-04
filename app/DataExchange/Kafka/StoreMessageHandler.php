@@ -3,6 +3,7 @@
 namespace App\DataExchange\Kafka;
 
 use App\IncomingStreamMessage;
+use App\StreamError;
 use Illuminate\Support\Facades\Log;
 
 class StoreMessageHandler extends AbstractMessageHandler
@@ -31,6 +32,17 @@ class StoreMessageHandler extends AbstractMessageHandler
                 'key' => $key,
                 'stored_payload' => $storedMessage->payload,
                 'incoming_payload' => $payload,
+            ]);
+
+            // Both payloads, because deciding which is authoritative needs both.
+            StreamError::create([
+                'type' => 'conflicting message payload',
+                'direction' => 'incoming',
+                'message_payload' => [
+                    'key' => $key,
+                    'stored' => $storedMessage->payload,
+                    'incoming' => $payload,
+                ],
             ]);
 
             return;
