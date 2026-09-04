@@ -340,20 +340,19 @@ class UpdateFromStreamMessageTest extends TestCase
         SetOwner::dispatchSync($curation, $expertPanel1->id, Carbon::now());
         Carbon::setTestNow('2022-07-08');
 
-        $payload = $this->fireTestEvent($this->gdmTransfered);
-        $transferDate = Carbon::parse($payload->date)->toDateString();
+        $this->fireTestEvent($this->gdmTransfered);
 
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel1->id,
-            'start_date' => '2021-05-04',
-            'end_date' => $transferDate,
+            'start_date' => Carbon::parse('2021-05-04'),
+            'end_date' => Carbon::now(),
         ]);
 
         $this->assertDatabaseHas('curation_expert_panel', [
             'curation_id' => $curation->id,
             'expert_panel_id' => $expertPanel2->id,
-            'start_date' => $transferDate,
+            'start_date' => Carbon::now(),
             'end_date' => null,
         ]);
     }
@@ -381,12 +380,12 @@ class UpdateFromStreamMessageTest extends TestCase
 
         Carbon::setTestNow('2022-07-08');
 
-        $payload = $this->fireTestEvent($this->gdmTransfered);
+        $this->fireTestEvent($this->gdmTransfered);
 
         $this->assertDatabaseHas('notes', [
             'subject_type' => 'App\Curation',
             'subject_id' => $curation->id,
-            'content' => 'I am a test note.',
+            'content' => 'Transferred from Test GCEP 2 to Test GCEP 1.',
             'topic' => 'curation transfer (via GCI)'
         ]);
     }
