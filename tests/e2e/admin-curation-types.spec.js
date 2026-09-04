@@ -39,6 +39,7 @@ test.describe('Curation Type administration', () => {
             { name: 'Working Groups', path: 'working-groups', heading: 'Working Group Administration' },
             { name: 'Expert Panels', path: 'expert-panels', heading: 'Expert Panel Administration' },
             { name: 'Affiliations', path: 'affiliations', heading: 'Affiliation Administration' },
+            { name: 'Users', path: 'users', heading: 'User Administration' },
         ]) {
             await page.getByRole('navigation', { name: 'Administration' })
                 .getByRole('link', { name: section.name, exact: true }).click()
@@ -173,6 +174,69 @@ test.describe('Curation Type administration', () => {
         }
     })
 
+    test('privileged user can update and restore a deterministic user account lifecycle', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        const email = 'e2e-managed-user@example.com'
+        const originalName = 'E2E Managed User'
+        const updatedName = 'E2E Updated Managed User'
+        let userId
+        let needsRestoration = false
+
+        try {
+            await page.goto('/home#/admin/users')
+            await expect(page.getByRole('heading', { name: 'User Administration' })).toBeVisible()
+            let row = page.getByRole('row').filter({ hasText: email })
+            await expect(row).toContainText(originalName)
+            await row.getByRole('button', { name: 'Edit' }).click()
+            await page.getByLabel('Name').fill(updatedName)
+
+            const updateResponsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname.startsWith('/api/admin/users/')
+                && response.request().method() === 'PUT'
+            ))
+            await page.getByRole('button', { name: 'Save Changes' }).click()
+            const updateResponse = await updateResponsePromise
+            expect(updateResponse.status()).toBe(200)
+            userId = (await updateResponse.json()).id
+            needsRestoration = true
+
+            row = page.getByRole('row').filter({ hasText: email })
+            await expect(row).toContainText(updatedName)
+            page.once('dialog', dialog => dialog.accept())
+            const deactivateResponsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname === `/api/admin/users/${userId}/deactivate`
+                && response.request().method() === 'PATCH'
+            ))
+            await row.getByRole('button', { name: 'Deactivate' }).click()
+            expect((await deactivateResponsePromise).status()).toBe(200)
+            await expect(row).toContainText('Deactivated')
+
+            page.once('dialog', dialog => dialog.accept())
+            const reactivateResponsePromise = page.waitForResponse(response => (
+                new URL(response.url()).pathname === `/api/admin/users/${userId}/reactivate`
+                && response.request().method() === 'PATCH'
+            ))
+            await row.getByRole('button', { name: 'Reactivate' }).click()
+            expect((await reactivateResponsePromise).status()).toBe(200)
+            await expect(row).toContainText('Active')
+            assertNoApplicationErrors()
+        } finally {
+            if (userId && needsRestoration) {
+                await page.evaluate(async ({ id, name }) => {
+                    const users = await window.axios.get('/api/admin/users')
+                    const user = users.data.find(item => item.id === id)
+                    await window.axios.patch(`/api/admin/users/${id}/reactivate`)
+                    await window.axios.put(`/api/admin/users/${id}`, {
+                        name,
+                        email: user.email,
+                        role_ids: user.roles.map(role => role.id),
+                        permission_ids: user.permissions.map(permission => permission.id),
+                    })
+                }, { id: userId, name: originalName })
+            }
+        }
+    })
+
     test('privileged user can navigate to Curation Types and complete a CRUD workflow', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         const originalName = 'E2E Admin Curation Type'
@@ -247,7 +311,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations']) {
+        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations', 'users']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }
