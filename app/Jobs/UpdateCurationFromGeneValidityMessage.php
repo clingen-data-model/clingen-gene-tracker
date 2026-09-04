@@ -53,23 +53,22 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
      */
     public function handle()
     {
+        $affiliation = $this->findAffiliation();
         $moi = $this->findMoi();
 
-        // Handle transfers separately so ownership fields are updated together. GT-73
-        if ($this->gciMessage->isGdmTransfer()) {
-            $this->transferRecord($moi);
-        } else {
-            $affiliation = $this->findAffiliation();
-            $this->curation->update([
-                'gdm_uuid' => $this->gciMessage->uuid,
-                'affiliation_id' => $affiliation?->id,
-                'moi_id' => $moi?->id,
-                'mondo_id' => $this->gciMessage->mondoId,
-            ]);
-        }
+        $this->curation->update([
+            'gdm_uuid' => $this->gciMessage->uuid,
+            'affiliation_id' => $affiliation?->id,
+            'moi_id' => $moi?->id,
+            'mondo_id' => $this->gciMessage->mondoId
+        ]);
 
         if ($this->gciMessage->isCreate()) {
             return;
+        }
+
+        if ($this->gciMessage->isGdmTransfer()) {
+            $this->transferRecord();
         }
 
         if ($this->gciMessage->isDiseaseChange()) {
@@ -82,60 +81,34 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         }
     }
 
-    // Other than transfer, the affiliation is in the performed_by.on_behalf_of field of the payload. GT-73
     private function findAffiliation(): ?Affiliation
     {
-        return $this->findAffiliationByClingenId($this->gciMessage->affiliation?->id, 'performed_by.on_behalf_of');
-    }
-
-    // Affiliation for transfer is in a different place in the payload than for non-transfer messages, so we need a separate method to find it. GT-73
-    private function findTransferAffiliation(): ?Affiliation
-    {
-        return $this->findAffiliationByClingenId($this->gciMessage->transferToId, 'content.transfer_to.id');
-    }
-
-    private function findAffiliationByClingenId(?string $clingenId, string $source): ?Affiliation
-    {
-        if (!$clingenId) {
-            Log::warning('GCI sync: Affiliation ID missing from message', [
-                'source' => $source,
-                'curation_uuid' => $this->curation->uuid ?? null,
-                'gdm_uuid' => $this->gciMessage->uuid ?? null,
-            ]);
-            return null;
-        }
-
+        $clingenId = $this->gciMessage->affiliation->id;
         $affiliation = Affiliation::findByClingenId($clingenId);
+
         if (!$affiliation) {
             Log::warning('GCI sync: Affiliation not found for ClinGen affiliation id', [
                 'affiliation_id' => $clingenId,
-                'source' => $source,
                 'curation_uuid' => $this->curation->uuid ?? null,
                 'gdm_uuid' => $this->gciMessage->uuid ?? null,
             ]);
         }
+
         return $affiliation;
     }
 
     private function findMoi(): ?ModeOfInheritance
     {
-        $hpId = $this->gciMessage->moi;
-        if (!$hpId) {
-            Log::warning('GCI sync: Mode of inheritance missing from message', [
-                'curation_uuid' => $this->curation->uuid ?? null,
-                'gdm_uuid' => $this->gciMessage->uuid ?? null,
-            ]);
-            return null;
-        }
+        $moi = ModeOfInheritance::findByHpId($this->gciMessage->moi);
 
-        $moi = ModeOfInheritance::findByHpId($hpId);
         if (!$moi) {
             Log::warning('GCI sync: Mode of inheritance not found', [
-                'moi' => $hpId,
+                'moi' => $this->gciMessage->moi,
                 'curation_uuid' => $this->curation->uuid ?? null,
                 'gdm_uuid' => $this->gciMessage->uuid ?? null,
             ]);
         }
+
         return $moi;
     }
 
@@ -152,31 +125,17 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
         );
     }
 
-    private function transferRecord(?ModeOfInheritance $moi): void
+    private function transferRecord()
     {
-        $gcepId = $this->gciMessage->transferToGcepId;
-        $newExpertPanel = $gcepId ? ExpertPanel::findByAffiliationId($gcepId) : null;
-        
+        $gcepID = $this->gciMessage->content->transfer_to->gcep_id;
+        $newExpertPanel = ExpertPanel::findByAffiliationId($gcepID);
         if ($newExpertPanel) {
-            $affiliation = $this->findTransferAffiliation();
-
-            SetOwner::dispatch(
-                $this->curation,
-                $newExpertPanel->id,
-                $this->gciMessage->transferDate,
-                null,
-                [
-                    'gdm_uuid' => $this->gciMessage->uuid,
-                    'affiliation_id' => $affiliation?->id,
-                    'moi_id' => $moi?->id,
-                    'mondo_id' => $this->gciMessage->mondoId,
-                ]
-            );
+            SetOwner::dispatch($this->curation, $newExpertPanel->id, Carbon::now());
 
             if ($this->gciMessage->hasContentNotes()) {
                 $job = new AddNote(
                     subject: $this->curation,
-                    content: $this->gciMessage->contentNotes,
+                    content: 'Transferred from Test GCEP 2 to Test GCEP 1.',
                     topic: 'curation transfer (via GCI)',
                     author: null
                 );
@@ -185,25 +144,18 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
             }
         } else {
             Log::warning('GCI transfer: ExpertPanel not found for affiliation id, possibly related to GT-83', [
-                'gcep_id' => $gcepId,
-                'transfer_from_gcep_id' => $this->gciMessage->transferFromGcepId,
-                'curation_uuid' => $this->curation->uuid ?? null,
-                'gdm_uuid' => $this->gciMessage->uuid ?? null,
-            ]);
-
-            $this->curation->update([
-                'gdm_uuid' => $this->gciMessage->uuid,
-                'moi_id' => $moi?->id,
-                'mondo_id' => $this->gciMessage->mondoId,
+                'gcep_id'    => $gcepID,
+                'curation_uuid'=> $this->curation->uuid ?? null,
+                'gdm_uuid'   => $this->gciMessage->uuid ?? null,
             ]);
         }
+
     }
 
     private function updateDisease()
     {
 
     }
-    
 
     /**
      * gene_validity_events message sets status to 'gdm_transfered' and 'disease_changed'
@@ -214,7 +166,6 @@ class UpdateCurationFromGeneValidityMessage implements ShouldQueue, GeneValidity
     {
         return $status == 'gdm_transferred' || $status == 'disease_changed';
     }
-    
 
     private function addClassification()
     {

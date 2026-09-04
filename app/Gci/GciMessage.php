@@ -10,18 +10,11 @@ use App\Affiliation;
  * @property-read object $payload
  * @property-read string $hgncId
  * @property-read string $mondoId
- * @property-read ?string $status
- * @property-read ?string $moi
- * @property-read ?stdClass $affiliation
+ * @property-read string $status
+ * @property-read string $moi
+ * @property-read stdClass $affiliation
  * @property-read string $classification
- * @property-read Carbon $messageDate
- * @property-read ?string $transferToId 
- * @property-read ?string $transferToGcepId
- * @property-read ?string $transferFromId
- * @property-read ?string $transferFromGcepId
- * @property-read ?Carbon $transferDate
- 
- 
+ * @property-read string $messageDate
  */
 class GciMessage
 {
@@ -63,48 +56,15 @@ class GciMessage
         return $this->payload->gene_validity_evidence_level->genetic_condition->condition;
     }
 
-    public function getMoi(): ?string
+    public function getMoi():string
     {
-        return $this->payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance ?? null;
+        return $this->payload->gene_validity_evidence_level->genetic_condition->mode_of_inheritance;
     }
 
-    public function getAffiliation(): ?stdClass
+    public function getAffiliation():stdClass
     {
-        if (!isset($this->payload->performed_by->on_behalf_of)) { return null; }
         return (object)$this->payload->performed_by->on_behalf_of;
     }
-
-    // Additional methods to access the transfer Affiliation from and to from the payload. GT-73 Issue with Transfer Curation
-    public function getTransferToId(): ?string
-    {
-        if (!$this->isGdmTransfer()) { return null; }
-        return $this->getContent()->transfer_to->id ?? null;
-    }
-
-    public function getTransferToGcepId(): ?string
-    {
-        if (!$this->isGdmTransfer()) { return null; }
-        return $this->getContent()->transfer_to->gcep_id ?? null;
-    }
-
-    public function getTransferFromId(): ?string
-    {
-        if (!$this->isGdmTransfer()) { return null; }
-        return $this->getContent()->transfer_from->id ?? null;
-    }
-    public function getTransferFromGcepId(): ?string
-    {
-        if (!$this->isGdmTransfer()) { return null; }
-        return $this->getContent()->transfer_from->gcep_id ?? null;
-    }
-
-    public function getTransferDate(): ?Carbon
-    {
-        if (!$this->isGdmTransfer()) { return null; }
-        if (isset($this->getContent()->date)) { return Carbon::parse($this->getContent()->date); }
-        return $this->messageDate;
-    }
-    // end of GT-73 Issue with Transfer Curation
 
     public function hasStatus(): bool
     {
