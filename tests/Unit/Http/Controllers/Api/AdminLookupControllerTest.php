@@ -105,7 +105,8 @@ class AdminLookupControllerTest extends TestCase
     public function referenced_curation_status_cannot_be_deleted(): void
     {
         $status = factory(CurationStatus::class)->create();
-        factory(Curation::class)->create(['curation_status_id' => $status->id]);
+        $curation = factory(Curation::class)->create();
+        $curation->updateQuietly(['curation_status_id' => $status->id]);
 
         $this->actingAs($this->programmer, 'api')->deleteJson("/api/admin/curation-statuses/{$status->id}")
             ->assertStatus(409)->assertJson(['message' => 'This curation status is in use and cannot be deleted.']);
