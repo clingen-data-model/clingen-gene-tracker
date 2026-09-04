@@ -154,3 +154,16 @@ user on every queue and console path. Do not reach for it to add history to a fi
 
 `activity_log` (spatie) is pruned at 365 days, so it cannot back a projection
 either.
+
+## StreamError is the operator-visible channel
+
+`stream_errors` is where an ingestion problem becomes visible outside the log file.
+`type` is a MySQL enum, so a new kind of error needs a migration rewriting the whole
+enum definition before anything can write it.
+
+The `dx:notify-errors` digest reaches expert panel coordinators, and every accessor
+it uses (`affiliation_id`, `gene`, `condition`, `moi`) reads a GCI message payload
+and throws without one — `$appends` makes that unavoidable. It therefore selects
+`'unmatchable curation'` by name rather than taking everything unsent. A new type
+that is an operator concern rather than a curator one stays out of the digest and is
+pruned after 30 days by `dx:clean-incoming-errors`.

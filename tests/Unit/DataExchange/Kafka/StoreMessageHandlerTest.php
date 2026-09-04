@@ -6,6 +6,7 @@ use App\DataExchange\Events\Received;
 use App\DataExchange\Kafka\StoreMessageHandler;
 use App\DataExchange\Kafka\SuccessfulMessageHandler;
 use App\IncomingStreamMessage;
+use App\StreamError;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -65,6 +66,31 @@ class StoreMessageHandlerTest extends TestCase
 
         Event::assertDispatchedTimes(Received::class, 1);
         $this->assertEquals(1, IncomingStreamMessage::where('key', self::KEY)->count());
+    }
+
+    /**
+     * The log alone is not visible to anyone watching the application.
+     *
+     * @test
+     */
+    public function records_a_stream_error_when_a_key_returns_with_a_different_payload()
+    {
+        Event::fake([Received::class]);
+        $handler = $this->handler();
+
+        $handler->handle($this->message('report-1', '2020-01-01T00:00:00Z'));
+        $handler->handle($this->message('report-1', '2020-01-01T00:00:00Z', ['extra' => 'changed']));
+
+        $streamErrors = StreamError::where('type', 'conflicting message payload')->get();
+
+        $this->assertCount(1, $streamErrors);
+        $this->assertEquals('incoming', $streamErrors->first()->direction);
+
+        // Both sides are kept: the row exists so a human can pick the authoritative one.
+        $payload = $streamErrors->first()->message_payload;
+        $this->assertEquals(self::KEY, $payload->key);
+        $this->assertFalse(isset($payload->stored->extra));
+        $this->assertEquals('changed', $payload->incoming->extra);
     }
 
     /**
