@@ -38,8 +38,9 @@ class AffiliationAdminControllerTest extends TestCase
         ]);
         $panel = factory(ExpertPanel::class)->create(['name' => 'Linked Expert Panel', 'affiliation_id' => $child->id]);
 
-        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/affiliations')->assertOk();
-        $listed = collect($response->json())->firstWhere('id', $child->id);
+        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/affiliations?per_page=100')->assertOk();
+        $response->assertJsonStructure(['data', 'current_page', 'per_page', 'total']);
+        $listed = collect($response->json('data'))->firstWhere('id', $child->id);
 
         $this->assertSame('Child Affiliation', $listed['name']);
         $this->assertSame(91002, $listed['clingen_id']);
@@ -47,6 +48,19 @@ class AffiliationAdminControllerTest extends TestCase
         $this->assertSame($parent->id, $listed['parent']['id']);
         $this->assertSame($panel->id, $listed['expert_panel']['id']);
         $this->assertSame(1, $listed['expert_panel_count']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function affiliation_listing_paginates_and_bounds_the_page_size(): void
+    {
+        $type = $this->type('pagination-type');
+        $this->affiliation(96001, 'Pagination One', $type);
+        $this->affiliation(96002, 'Pagination Two', $type);
+
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/affiliations?per_page=1')
+            ->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('per_page', 1);
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/affiliations?per_page=1000')
+            ->assertOk()->assertJsonPath('per_page', 100);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

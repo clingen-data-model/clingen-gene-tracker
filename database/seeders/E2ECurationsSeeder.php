@@ -6,11 +6,16 @@ use App\ModeOfInheritance;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class E2ECurationsSeeder extends Seeder
 {
     public function run(): void
     {
+        File::put(
+            storage_path('logs/e2e-admin-viewer.log'),
+            "[2026-09-04 12:00:00] testing.INFO: Deterministic E2E log viewer entry\n"
+        );
         $managedUser = User::updateOrCreate(
             ['email' => 'e2e-managed-user@example.com'],
             ['name' => 'E2E Managed User', 'password' => 'tester', 'deactivated_at' => null]

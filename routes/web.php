@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Api\WorkingGroupController;
+use App\Http\Controllers\Admin\ReadOnlyLogViewerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,14 @@ Auth::routes();
 Route::get('admin/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 
 Route::get('/admin/login', 'Auth\LoginController@showLoginForm');
+
+Route::get('/admin/logs', [ReadOnlyLogViewerController::class, 'index'])
+    ->middleware(['auth', 'role:admin|programmer'])
+    ->name('admin.logs');
+
+Route::get('/admin/dashboard', 'MainController@index')
+    ->middleware(['auth', 'role:admin|programmer'])
+    ->name('admin.dashboard');
 
 Route::middleware(['auth:api-external'])->get('api-v1-docs', function () {
     return View::make('swagger');

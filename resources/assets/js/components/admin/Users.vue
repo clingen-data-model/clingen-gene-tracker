@@ -71,11 +71,12 @@
                 </div>
             </template>
         </b-table>
+        <b-pagination v-if="totalRows > perPage" v-model="currentPage" :total-rows="totalRows" :per-page="perPage" />
     </div>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -95,6 +96,9 @@ const fields = computed(() => {
 })
 
 const users = ref([])
+const currentPage = ref(1)
+const perPage = 25
+const totalRows = ref(0)
 const roles = ref([])
 const permissions = ref([])
 const loading = ref(true)
@@ -128,10 +132,11 @@ async function loadData() {
     loading.value = true
     try {
         const [usersResponse, optionsResponse] = await Promise.all([
-            window.axios.get('/api/admin/users'),
+            window.axios.get('/api/admin/users', { params: { page: currentPage.value, per_page: perPage } }),
             window.axios.get('/api/admin/users/options'),
         ])
-        users.value = usersResponse.data
+        users.value = usersResponse.data.data
+        totalRows.value = usersResponse.data.total
         roles.value = optionsResponse.data.roles
         permissions.value = optionsResponse.data.permissions
     } catch (error) {
@@ -174,5 +179,6 @@ async function changeAccountState(user, action) {
     }
 }
 
+watch(currentPage, loadData)
 onMounted(loadData)
 </script>

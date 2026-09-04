@@ -41,13 +41,23 @@ beforeEach(() => {
     window.axios = {
         get: vi.fn(url => Promise.resolve({ data: url.endsWith('/options')
             ? { roles: [{ id: 2, name: 'viewer' }], permissions: [{ id: 9, name: 'list curations' }] }
-            : [managedUser] })),
+            : { data: [managedUser], total: 30 } })),
         put: vi.fn(),
         patch: vi.fn(),
     }
 })
 
 describe('User administration', () => {
+    it('requests server pages when pagination changes', async () => {
+        const wrapper = mountPage(userWith('list users'))
+        await flushPromises()
+
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/users', { params: { page: 1, per_page: 25 } })
+        wrapper.findComponent({ name: 'BPagination' }).vm.$emit('update:modelValue', 2)
+        await flushPromises()
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/users', { params: { page: 2, per_page: 25 } })
+    })
+
     it('renders account summaries and only permitted controls', async () => {
         const wrapper = mountPage(userWith('list users', 'update users'))
         await flushPromises()

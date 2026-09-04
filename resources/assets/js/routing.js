@@ -1,6 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from './store/index'
 
+if (window.location.pathname === '/admin/dashboard' && !window.location.hash) {
+    window.location.hash = '/admin'
+}
+
 const Curations = () =>
     import('./components/Curations/Curation.vue')
 const CurationCreate = () =>
