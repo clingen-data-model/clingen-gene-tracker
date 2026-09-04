@@ -74,7 +74,7 @@ describe('root Vuex store', () => {
 
         await store.dispatch('getFeatures')
 
-        expect(window.axios.get).toHaveBeenCalledWith('api/features')
+        expect(window.axios.get).toHaveBeenCalledWith('/api/features')
         expect(store.state.features).toEqual(features)
     })
 

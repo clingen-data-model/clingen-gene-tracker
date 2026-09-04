@@ -16,11 +16,13 @@ class ExpertPanelController extends ApiController
     {
         abort_unless($request->user()->hasPermissionTo('list expert-panels'), 403);
 
+        $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
+
         return ExpertPanel::query()
             ->with(['workingGroup:id,name', 'affiliation'])
             ->withCount(['curations', 'users'])
             ->orderBy('name')
-            ->get();
+            ->paginate($perPage);
     }
 
     public function adminStore(ExpertPanelRequest $request)

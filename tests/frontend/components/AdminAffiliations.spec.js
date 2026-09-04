@@ -35,12 +35,22 @@ function buttonByText(wrapper, text) {
 
 beforeEach(() => {
     window.axios = {
-        get: vi.fn().mockResolvedValue({ data: [affiliation] }),
+        get: vi.fn().mockResolvedValue({ data: { data: [affiliation], total: 30 } }),
         put: vi.fn(),
     }
 })
 
 describe('Affiliation administration', () => {
+    it('requests server pages when pagination changes', async () => {
+        const wrapper = mountPage(['admin'])
+        await flushPromises()
+
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/affiliations', { params: { page: 1, per_page: 25 } })
+        wrapper.findComponent({ name: 'BPagination' }).vm.$emit('update:modelValue', 2)
+        await flushPromises()
+        expect(window.axios.get).toHaveBeenCalledWith('/api/admin/affiliations', { params: { page: 2, per_page: 25 } })
+    })
+
     it('renders identity, hierarchy, type, and Expert Panel information as read-only', async () => {
         const wrapper = mountPage([])
         await flushPromises()

@@ -49,15 +49,27 @@ class ExpertPanelAdminControllerTest extends TestCase
         $panel->users()->attach(factory(User::class)->create()->id);
         factory(Curation::class)->create(['expert_panel_id' => $panel->id]);
 
-        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/expert-panels')
+        $response = $this->actingAs($this->programmer, 'api')->getJson('/api/admin/expert-panels?per_page=100')
             ->assertOk();
-        $listedPanel = collect($response->json())->firstWhere('id', $panel->id);
+        $response->assertJsonStructure(['data', 'current_page', 'per_page', 'total']);
+        $listedPanel = collect($response->json('data'))->firstWhere('id', $panel->id);
 
         $this->assertSame('Listed Expert Panel', $listedPanel['name']);
         $this->assertSame(1, $listedPanel['curations_count']);
         $this->assertSame(1, $listedPanel['users_count']);
         $this->assertSame('Panel Working Group', $listedPanel['working_group']['name']);
         $this->assertSame(40099, $listedPanel['affiliation']['clingen_id']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function expert_panel_listing_paginates_and_bounds_the_page_size(): void
+    {
+        factory(ExpertPanel::class, 3)->create();
+
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/expert-panels?per_page=2')
+            ->assertOk()->assertJsonCount(2, 'data')->assertJsonPath('per_page', 2);
+        $this->actingAs($this->programmer, 'api')->getJson('/api/admin/expert-panels?per_page=101')
+            ->assertOk()->assertJsonPath('per_page', 100);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
