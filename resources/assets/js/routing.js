@@ -49,6 +49,8 @@ const AdminAffiliations = () =>
     import('./components/admin/Affiliations.vue')
 const AdminUsers = () =>
     import('./components/admin/Users.vue')
+const AdminOutdatedPhenotypes = () =>
+    import('./components/admin/OutdatedPhenotypes.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -168,6 +170,11 @@ const routes = [{
                 path: '',
                 component: AdministrationHome,
                 name: 'admin-index',
+            },
+            {
+                path: 'outdated-phenotypes',
+                component: AdminOutdatedPhenotypes,
+                name: 'admin-outdated-phenotypes',
             },
             {
                 path: 'curation-types',

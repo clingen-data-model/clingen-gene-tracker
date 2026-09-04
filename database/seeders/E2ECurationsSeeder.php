@@ -54,6 +54,35 @@ class E2ECurationsSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
+        DB::table('phenotypes')->insert([
+            [
+                'id' => 9202,
+                'mim_number' => 990002,
+                'name' => 'E2E outdated phenotype used twice',
+                'moi' => 'Autosomal dominant',
+                'label_obsolete_at' => '2026-01-10 12:00:00',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 9203,
+                'mim_number' => 990003,
+                'name' => 'E2E outdated phenotype used once',
+                'moi' => 'Autosomal recessive',
+                'label_obsolete_at' => '2026-01-11 12:00:00',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'id' => 9204,
+                'mim_number' => 990004,
+                'name' => 'E2E outdated phenotype unused',
+                'moi' => null,
+                'label_obsolete_at' => '2026-01-12 12:00:00',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+        ]);
         DB::table('gene_phenotype')->insert([
             'hgnc_id' => 9202,
             'phenotype_id' => 9201,
@@ -113,6 +142,11 @@ class E2ECurationsSeeder extends Seeder
             'rationale_id' => 6,
             'created_at' => $now,
             'updated_at' => $now,
+        ]);
+        DB::table('curation_phenotype')->insert([
+            ['curation_id' => 9103, 'phenotype_id' => 9202],
+            ['curation_id' => 9104, 'phenotype_id' => 9202],
+            ['curation_id' => 9104, 'phenotype_id' => 9203],
         ]);
     }
 }

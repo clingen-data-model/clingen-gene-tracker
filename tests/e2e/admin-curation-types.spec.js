@@ -27,6 +27,25 @@ function monitorApplicationErrors(page, baseURL) {
 }
 
 test.describe('Curation Type administration', () => {
+    test('dashboard cards show deterministic report counts and navigate to report rows', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home#/admin')
+        await expect(page.getByRole('heading', { name: 'Administration Dashboard' })).toBeVisible()
+
+        const outdatedCard = page.locator('.card').filter({ hasText: 'Outdated Phenotype Labels' }).first()
+        const affectedCard = page.locator('.card').filter({ hasText: 'Affected Curations' })
+        const usedCard = page.locator('.card').filter({ hasText: 'Outdated Phenotype Labels used on Curations' })
+        await expect(outdatedCard.locator('.h2')).toHaveText('3')
+        await expect(affectedCard.locator('.h2')).toHaveText('2')
+        await expect(usedCard.locator('.h2')).toHaveText('2')
+
+        await outdatedCard.getByRole('link', { name: 'View report' }).click()
+        await expect(page).toHaveURL(/#\/admin\/outdated-phenotypes\?tab=phenotypes$/)
+        await expect(page.getByRole('heading', { name: 'Outdated Phenotype Labels' })).toBeVisible()
+        await expect(page.getByRole('row').filter({ hasText: 'E2E outdated phenotype used twice' })).toContainText('2 Curation(s)')
+        assertNoApplicationErrors()
+    })
+
     test('privileged user can navigate to each lookup and organization administration section', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         await page.goto('/home#/admin')
@@ -311,7 +330,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations', 'users']) {
+        for (const path of ['outdated-phenotypes', 'rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations', 'users']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }
