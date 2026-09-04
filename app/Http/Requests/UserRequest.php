@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\User;
-use App\Http\Requests\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,8 +15,9 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        // only allow updates if the user is logged in
-        return \Auth::check();
+        return $this->user()
+            && $this->user()->hasAnyRole(['admin', 'programmer'])
+            && $this->user()->hasPermissionTo('update users');
     }
 
     /**
@@ -27,19 +27,29 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $user = new User();
-        if ($this->route('id')) {
-            $user = User::findOrFail($this->route('id'));
-        }
+        $user = $this->route('user');
+        $userId = $user instanceof User ? $user->getKey() : $user;
 
         return [
-            'name' => 'required|min:5|max:255',
+            'name' => ['required', 'string', 'min:5', 'max:255'],
             'email' => [
-                        'required',
-                        'email',
-                        'max:255',
-                        Rule::unique('users', 'email')->ignore($user)
-                    ]
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($userId),
+            ],
+            'role_ids' => ['present', 'array'],
+            'role_ids.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('roles', 'id')->where('guard_name', 'web'),
+            ],
+            'permission_ids' => ['present', 'array'],
+            'permission_ids.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('permissions', 'id')->where('guard_name', 'web'),
+            ],
         ];
     }
 

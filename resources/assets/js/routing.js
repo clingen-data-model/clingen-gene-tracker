@@ -47,6 +47,8 @@ const AdminExpertPanels = () =>
     import('./components/admin/ExpertPanels.vue')
 const AdminAffiliations = () =>
     import('./components/admin/Affiliations.vue')
+const AdminUsers = () =>
+    import('./components/admin/Users.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -212,6 +214,12 @@ const routes = [{
                 path: 'affiliations',
                 component: AdminAffiliations,
                 name: 'admin-affiliations',
+            },
+            {
+                path: 'users',
+                component: AdminUsers,
+                name: 'admin-users',
+                beforeEnter: requirePermission('list users'),
             },
         ],
     }

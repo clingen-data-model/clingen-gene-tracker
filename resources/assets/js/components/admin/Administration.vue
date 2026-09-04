@@ -52,6 +52,13 @@
                 <router-link class="nav-link" :to="{ name: 'admin-affiliations' }">
                     Affiliations
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list users')"
+                    class="nav-link"
+                    :to="{ name: 'admin-users' }"
+                >
+                    Users
+                </router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

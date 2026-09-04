@@ -11,6 +11,15 @@ class E2ECurationsSeeder extends Seeder
 {
     public function run(): void
     {
+        $managedUser = User::updateOrCreate(
+            ['email' => 'e2e-managed-user@example.com'],
+            ['name' => 'E2E Managed User', 'password' => 'tester', 'deactivated_at' => null]
+        );
+        $managedUser->syncRoles(['viewer']);
+        $managedUser->syncPermissions([]);
+        $managedUser->expertPanels()->detach();
+        $managedUser->affiliations()->detach();
+
         $curatorId = User::where('email', 'super.user@example.com')->value('id');
         $moiId = ModeOfInheritance::where('hp_id', 'HP:0000006')->value('id');
         $now = '2026-01-15 12:00:00';
