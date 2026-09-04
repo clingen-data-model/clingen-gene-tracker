@@ -20,6 +20,41 @@ class E2ECurationsSeeder extends Seeder
         $managedUser->expertPanels()->detach();
         $managedUser->affiliations()->detach();
 
+        DB::table('emails')->insert([
+            'from' => json_encode(['e2e-sender@example.com' => 'E2E Sender']),
+            'sender' => null,
+            'to' => json_encode(['e2e-recipient@example.com' => 'E2E Recipient']),
+            'cc' => null,
+            'bcc' => null,
+            'reply_to' => null,
+            'subject' => 'Deterministic E2E email log',
+            'body' => '<p>Deterministic E2E email body</p>',
+            'created_at' => '2026-01-15 12:00:00',
+            'updated_at' => '2026-01-15 12:00:00',
+        ]);
+        DB::table('notifications')->insert([
+            [
+                'id' => '20000000-0000-4000-8000-000000000001',
+                'type' => 'App\\Notifications\\E2EDeterministicNotice',
+                'notifiable_type' => User::class,
+                'notifiable_id' => $managedUser->id,
+                'data' => json_encode(['message' => 'Deterministic E2E notification payload']),
+                'read_at' => null,
+                'created_at' => '2026-01-15 12:00:00',
+                'updated_at' => '2026-01-15 12:00:00',
+            ],
+            [
+                'id' => '20000000-0000-4000-8000-000000000002',
+                'type' => 'App\\Notifications\\E2EDeletableNotice',
+                'notifiable_type' => User::class,
+                'notifiable_id' => $managedUser->id,
+                'data' => json_encode(['message' => 'Disposable E2E notification']),
+                'read_at' => '2026-01-15 12:05:00',
+                'created_at' => '2026-01-15 12:05:00',
+                'updated_at' => '2026-01-15 12:05:00',
+            ],
+        ]);
+
         $curatorId = User::where('email', 'super.user@example.com')->value('id');
         $moiId = ModeOfInheritance::where('hp_id', 'HP:0000006')->value('id');
         $now = '2026-01-15 12:00:00';

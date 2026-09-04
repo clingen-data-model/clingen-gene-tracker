@@ -25,14 +25,11 @@ class ApiClientRequest extends FormRequest
      */
     public function rules()
     {
-        $apiClient = new ApiClient();
-        if ($this->id) {
-            $apiClient = ApiClient::findOrFail($this->id);
-        }
+        $apiClient = $this->route('api_client');
         
         return [
-            'name' => ['required', Rule::unique('api_clients', 'name')->ignore($apiClient)],
-            'contact_email' => ['required', 'email']
+            'name' => ['required', 'max:255', Rule::unique('api_clients', 'name')->ignore($apiClient)],
+            'contact_email' => ['required', 'email', 'max:255']
         ];
     }
 }

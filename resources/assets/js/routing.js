@@ -51,6 +51,12 @@ const AdminUsers = () =>
     import('./components/admin/Users.vue')
 const AdminOutdatedPhenotypes = () =>
     import('./components/admin/OutdatedPhenotypes.vue')
+const AdminEmails = () =>
+    import('./components/admin/Emails.vue')
+const AdminNotifications = () =>
+    import('./components/admin/Notifications.vue')
+const AdminApiClients = () =>
+    import('./components/admin/ApiClients.vue')
 
 const requireAdministrator = () => {
     const user = store.getters.getUser
@@ -227,6 +233,21 @@ const routes = [{
                 component: AdminUsers,
                 name: 'admin-users',
                 beforeEnter: requirePermission('list users'),
+            },
+            {
+                path: 'emails',
+                component: AdminEmails,
+                name: 'admin-emails',
+            },
+            {
+                path: 'notifications',
+                component: AdminNotifications,
+                name: 'admin-notifications',
+            },
+            {
+                path: 'api-clients',
+                component: AdminApiClients,
+                name: 'admin-api-clients',
             },
         ],
     }

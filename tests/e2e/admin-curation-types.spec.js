@@ -59,6 +59,9 @@ test.describe('Curation Type administration', () => {
             { name: 'Expert Panels', path: 'expert-panels', heading: 'Expert Panel Administration' },
             { name: 'Affiliations', path: 'affiliations', heading: 'Affiliation Administration' },
             { name: 'Users', path: 'users', heading: 'User Administration' },
+            { name: 'Emails', path: 'emails', heading: 'Email Log' },
+            { name: 'Notifications', path: 'notifications', heading: 'Notifications' },
+            { name: 'API Clients', path: 'api-clients', heading: 'API Clients' },
         ]) {
             await page.getByRole('navigation', { name: 'Administration' })
                 .getByRole('link', { name: section.name, exact: true }).click()
@@ -66,6 +69,78 @@ test.describe('Curation Type administration', () => {
             await expect(page.getByRole('heading', { name: section.heading || section.name, exact: true })).toBeVisible()
         }
 
+        assertNoApplicationErrors()
+    })
+
+    test('privileged user can inspect deterministic email and notification records', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home#/admin/emails')
+        const emailRow = page.getByRole('row').filter({ hasText: 'Deterministic E2E email log' })
+        await expect(emailRow).toBeVisible()
+        await emailRow.getByRole('button', { name: 'View' }).click()
+        await expect(page.getByText('<p>Deterministic E2E email body</p>')).toBeVisible()
+
+        await page.goto('/home#/admin/notifications')
+        const noticeRow = page.getByRole('row').filter({ hasText: 'E2EDeterministicNotice' })
+        await expect(noticeRow).toContainText('E2E Managed User')
+        await noticeRow.getByRole('button', { name: 'View' }).click()
+        await expect(page.getByText(/Deterministic E2E notification payload/)).toBeVisible()
+        assertNoApplicationErrors()
+    })
+
+    test('privileged user can delete an isolated deterministic notification', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home#/admin/notifications')
+        const row = page.getByRole('row').filter({ hasText: 'E2EDeletableNotice' })
+        await expect(row).toBeVisible()
+        const responsePromise = page.waitForResponse(response => (
+            new URL(response.url()).pathname === '/api/admin/notifications/20000000-0000-4000-8000-000000000002'
+            && response.request().method() === 'DELETE'
+        ))
+        page.once('dialog', dialog => dialog.accept())
+        await row.getByRole('button', { name: 'Delete' }).click()
+        expect((await responsePromise).status()).toBe(204)
+        await expect(page.getByText('Notification deleted successfully.')).toBeVisible()
+        await expect(row).toHaveCount(0)
+        assertNoApplicationErrors()
+    })
+
+    test('privileged user can create and update a disposable API client and manage one token', async ({ page, baseURL }, testInfo) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        const name = `E2E API Client ${testInfo.retry}`
+        const updatedName = `E2E Updated API Client ${testInfo.retry}`
+        const tokenName = `e2e-token-${testInfo.retry}`
+        await page.goto('/home#/admin/api-clients')
+        await page.getByRole('button', { name: 'Add API Client' }).click()
+        await page.getByLabel('Name').fill(name)
+        await page.getByLabel('Contact Email').fill(`e2e-api-client-${testInfo.retry}@example.com`)
+        const createResponse = page.waitForResponse(response => new URL(response.url()).pathname === '/api/admin/api-clients' && response.request().method() === 'POST')
+        await page.getByRole('button', { name: 'Create API Client' }).click()
+        expect((await createResponse).status()).toBe(201)
+        await expect(page.getByRole('heading', { name: 'API Client Details' })).toBeVisible()
+
+        await page.getByRole('button', { name: 'Close', exact: true }).last().click()
+        const row = page.getByRole('row').filter({ hasText: name })
+        await row.getByRole('button', { name: 'Edit' }).click()
+        await page.getByLabel('Name').fill(updatedName)
+        const updateResponse = page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname.startsWith('/api/admin/api-clients/'))
+        await page.getByRole('button', { name: 'Save Changes' }).click()
+        expect((await updateResponse).status()).toBe(200)
+
+        await page.getByLabel('Token Name').fill(tokenName)
+        const tokenResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/tokens'))
+        await page.getByRole('button', { name: 'Create Token' }).click()
+        expect((await tokenResponse).status()).toBe(201)
+        await expect(page.getByText('Copy this token now. It cannot be retrieved later.')).toBeVisible()
+        await expect(page.locator('code')).not.toBeEmpty()
+
+        const tokenRow = page.getByRole('row').filter({ hasText: tokenName })
+        const revokeResponse = page.waitForResponse(response => response.request().method() === 'DELETE' && new URL(response.url()).pathname.includes('/tokens/'))
+        page.once('dialog', dialog => dialog.accept())
+        await tokenRow.getByRole('button', { name: 'Revoke' }).click()
+        expect((await revokeResponse).status()).toBe(204)
+        await expect(page.getByText('Token revoked successfully.')).toBeVisible()
+        await expect(tokenRow).toHaveCount(0)
         assertNoApplicationErrors()
     })
 
@@ -330,7 +405,7 @@ test.describe('Curation Type administration as a restricted user', () => {
         await expect(page).toHaveURL(/#\/curations$/)
         await expect(page.getByRole('heading', { name: 'Curation Types' })).toHaveCount(0)
 
-        for (const path of ['outdated-phenotypes', 'rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations', 'users']) {
+        for (const path of ['outdated-phenotypes', 'rationales', 'curation-statuses', 'upload-categories', 'mois', 'working-groups', 'expert-panels', 'affiliations', 'users', 'emails', 'notifications', 'api-clients']) {
             await page.goto(`/home#/admin/${path}`)
             await expect(page).toHaveURL(/#\/curations$/)
         }
