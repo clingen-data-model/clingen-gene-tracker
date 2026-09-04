@@ -3,7 +3,10 @@
         <aside class="col-md-3 col-lg-2 mb-4">
             <h1 class="h4">Administration</h1>
             <nav class="nav flex-column" aria-label="Administration">
-                <router-link class="nav-link" :to="{ name: 'admin-index' }">Overview</router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-index' }">Dashboard</router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-outdated-phenotypes' }">
+                    Outdated Phenotype Labels
+                </router-link>
                 <router-link
                     v-if="user.hasPermission('list curation-types')"
                     class="nav-link"

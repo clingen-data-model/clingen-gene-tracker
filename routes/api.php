@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\GeneController;
 use App\Http\Controllers\Api\DefaultApiController;
 use App\Http\Controllers\Api\UploadCategoryController;
 use App\Http\Controllers\Api\AffiliationController;
+use App\Http\Controllers\Api\OutdatedPhenotypeReportController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -76,6 +77,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/curation-types', CurationTypeController::class)->only(['index']);
 
     Route::prefix('admin')->middleware('role:admin|programmer')->group(function () {
+        Route::get('/dashboard', [OutdatedPhenotypeReportController::class, 'dashboard']);
+        Route::get('/reports/outdated-phenotypes', [OutdatedPhenotypeReportController::class, 'phenotypes']);
+        Route::get('/reports/outdated-curations', [OutdatedPhenotypeReportController::class, 'curations']);
+        Route::get('/reports/outdated-phenotypes/export', [OutdatedPhenotypeReportController::class, 'phenotypeCsv']);
+        Route::get('/reports/outdated-curations/export', [OutdatedPhenotypeReportController::class, 'curationCsv']);
         Route::get('/curation-types', [CurationTypeController::class, 'adminIndex']);
         Route::post('/curation-types', [CurationTypeController::class, 'store']);
         Route::put('/curation-types/{curation_type}', [CurationTypeController::class, 'update']);
