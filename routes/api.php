@@ -103,6 +103,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::put('/expert-panels/{expert_panel}', [ExpertPanelController::class, 'adminUpdate']);
         Route::get('/affiliations', [AffiliationController::class, 'adminIndex']);
         Route::put('/affiliations/{affiliation}', [AffiliationController::class, 'adminUpdate']);
+        Route::get('/users/options', [UserController::class, 'adminOptions']);
+        Route::get('/users', [UserController::class, 'adminIndex']);
+        Route::put('/users/{user}', [UserController::class, 'adminUpdate']);
+        Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
+        Route::patch('/users/{user}/reactivate', [UserController::class, 'reactivate']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);
