@@ -62,6 +62,9 @@
                 >
                     Users
                 </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-emails' }">Emails</router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-notifications' }">Notifications</router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-api-clients' }">API Clients</router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

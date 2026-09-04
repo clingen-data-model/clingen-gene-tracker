@@ -34,6 +34,9 @@ use App\Http\Controllers\Api\DefaultApiController;
 use App\Http\Controllers\Api\UploadCategoryController;
 use App\Http\Controllers\Api\AffiliationController;
 use App\Http\Controllers\Api\OutdatedPhenotypeReportController;
+use App\Http\Controllers\Api\EmailAdminController;
+use App\Http\Controllers\Api\NotificationAdminController;
+use App\Http\Controllers\Api\ApiClientAdminController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -114,6 +117,17 @@ Route::middleware(['auth:api'])->group(function () {
         Route::put('/users/{user}', [UserController::class, 'adminUpdate']);
         Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('/users/{user}/reactivate', [UserController::class, 'reactivate']);
+        Route::get('/emails', [EmailAdminController::class, 'index']);
+        Route::get('/emails/{email}', [EmailAdminController::class, 'show']);
+        Route::get('/notifications', [NotificationAdminController::class, 'index']);
+        Route::get('/notifications/{notification}', [NotificationAdminController::class, 'show']);
+        Route::delete('/notifications/{notification}', [NotificationAdminController::class, 'destroy']);
+        Route::get('/api-clients', [ApiClientAdminController::class, 'index']);
+        Route::post('/api-clients', [ApiClientAdminController::class, 'store']);
+        Route::get('/api-clients/{api_client}', [ApiClientAdminController::class, 'show']);
+        Route::put('/api-clients/{api_client}', [ApiClientAdminController::class, 'update']);
+        Route::post('/api-clients/{api_client}/tokens', [ApiClientAdminController::class, 'createToken']);
+        Route::delete('/api-clients/{api_client}/tokens/{token}', [ApiClientAdminController::class, 'destroyToken']);
     });
     Route::resource('/rationales', RationaleController::class)->only(['index']);
     Route::resource('/classifications', ClassificationController::class)->only(['index']);

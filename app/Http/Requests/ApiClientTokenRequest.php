@@ -24,7 +24,7 @@ class ApiClientTokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required']
+            'name' => ['required', 'string', 'max:255']
         ];
     }
 }
