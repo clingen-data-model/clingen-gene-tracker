@@ -25,7 +25,7 @@ services:
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     app:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gt}-app
         init: true
         entrypoint:
