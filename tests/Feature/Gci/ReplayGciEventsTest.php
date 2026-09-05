@@ -27,6 +27,9 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('gci')]
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class ReplayGciEventsTest extends TestCase
 {
     private const GDM_UUID = '0c861e10-78a7-4ebc-ac57-853fb16f94c9';
@@ -63,6 +66,7 @@ class ReplayGciEventsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function replaying_a_curations_events_changes_nothing_the_second_time()
     {
         $curation = $this->makeCuration();
@@ -84,6 +88,7 @@ class ReplayGciEventsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function replaying_does_not_produce_new_outgoing_stream_messages()
     {
         $curation = $this->makeCuration();
@@ -108,6 +113,7 @@ class ReplayGciEventsTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function advancing_the_watermark_does_not_announce_a_change()
     {
         $curation = $this->makeCuration();
@@ -131,6 +137,7 @@ class ReplayGciEventsTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function messages_applied_in_reverse_order_reach_the_same_state()
     {
         $forwards = $this->makeCuration();

@@ -18,6 +18,7 @@ use Tests\TestCase;
  *
  * @group gci
  */
+#[\PHPUnit\Framework\Attributes\Group('gci')]
 class StoreMessageHandlerTest extends TestCase
 {
     private const KEY = 'report-1-2020-01-01T00:00:00Z';
@@ -25,6 +26,7 @@ class StoreMessageHandlerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stores_and_dispatches_a_message_it_has_not_seen()
     {
         Event::fake([Received::class]);
@@ -38,6 +40,7 @@ class StoreMessageHandlerTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_dispatch_a_message_it_has_already_consumed()
     {
         Event::fake([Received::class]);
@@ -56,6 +59,7 @@ class StoreMessageHandlerTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_dispatch_or_die_when_a_key_returns_with_a_different_payload()
     {
         Event::fake([Received::class]);
@@ -73,6 +77,7 @@ class StoreMessageHandlerTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function records_a_stream_error_when_a_key_returns_with_a_different_payload()
     {
         Event::fake([Received::class]);

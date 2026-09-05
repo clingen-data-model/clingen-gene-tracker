@@ -17,6 +17,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class ProjectCurationFieldTest extends TestCase
 {
     private Curation $curation;
@@ -35,6 +37,7 @@ class ProjectCurationFieldTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function derives_contiguous_intervals_including_a_return_to_a_previous_owner()
     {
         [$a, $b] = factory(ExpertPanel::class, 2)->create();
@@ -64,6 +67,7 @@ class ProjectCurationFieldTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_only_the_current_owner_open_ended()
     {
         [$a, $b] = factory(ExpertPanel::class, 2)->create();
@@ -80,6 +84,7 @@ class ProjectCurationFieldTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function re_derives_surrounding_intervals_when_an_owner_is_inserted_mid_timeline()
     {
         [$a, $b, $c] = factory(ExpertPanel::class, 3)->create();
@@ -105,6 +110,7 @@ class ProjectCurationFieldTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function projecting_an_unchanged_value_does_not_touch_the_curation()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-provisional'));
@@ -133,6 +139,7 @@ class ProjectCurationFieldTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function rebuilds_a_current_value_that_has_drifted_from_history()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-approved'));

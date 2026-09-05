@@ -19,6 +19,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class RebuildProjectionsTest extends TestCase
 {
     private Curation $curation;
@@ -33,6 +35,7 @@ class RebuildProjectionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function repairs_a_current_status_that_disagrees_with_history()
     {
         $approved = CurationStatus::find(config('curations.statuses.curation-approved'));
@@ -50,6 +53,7 @@ class RebuildProjectionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function repairs_ownership_intervals()
     {
         [$a, $b] = factory(ExpertPanel::class, 2)->create();
@@ -75,6 +79,7 @@ class RebuildProjectionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dry_run_reports_drift_without_writing()
     {
         $approved = CurationStatus::find(config('curations.statuses.curation-approved'));
@@ -98,6 +103,7 @@ class RebuildProjectionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function rejects_an_unknown_field()
     {
         $this->artisan('curations:rebuild-projections', ['--field' => 'nonsense'])->assertFailed();
