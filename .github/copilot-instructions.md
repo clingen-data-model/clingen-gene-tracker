@@ -46,6 +46,13 @@ When adding a writer, give it a deterministic source key. Do not invent a random
 one, and do not write to the pivots directly — the columns are `NOT NULL`
 specifically so that a direct `attach()` fails loudly.
 
+`source` names the origin: `gci`, `ui`, `revision-backfill`, `imputed`, or
+`backfill` for a row that predates source keys. `backfill` means the origin is
+unknown, not that it is uninteresting —
+`curations:attribute-history-sources` upgrades those rows to `gci` or `ui` where
+the evidence is unambiguous, and deliberately leaves the rest alone. Treat a
+`legacy:` key as a placeholder that a real event may still claim.
+
 ### Side effects fire on projection changes, never on ingestion
 
 `App\Actions\Curations\ProjectCurationField` recomputes the derived data and

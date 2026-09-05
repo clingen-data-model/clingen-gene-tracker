@@ -5,9 +5,12 @@ September 2026. Branch `feat/unified-curation-history`.
 This covers the unification of curation field history, the historical data problems
 that surfaced while doing it, and the Artisan commands written to repair them.
 
-**Nothing in the "Repairing the data" section has been run against real data.** The
-figures below come from dry runs on the development database, except `gci:replay`,
-which has no dry run and was rehearsed inside a rolled-back transaction.
+**Only step 2 has been applied. Everything else is still a dry run, and nothing here
+has touched production.** The figures below come from dry runs on the development
+database, with two exceptions: `gci:replay`, which has no dry run and was rehearsed
+inside a rolled-back transaction, and `curations:attribute-history-sources`, which was
+run for real against the development database — see step 2 for what it did and how the
+result was checked.
 
 ---
 
@@ -143,14 +146,15 @@ interact.
 | # | command | why here |
 |---|---|---|
 | 1 | `curations:restore-status-timestamps` | Everything downstream orders rows by date. Do this first so dedup, projection and ordering all work on real times rather than midnight. |
-| 2 | `gci:replay all` | Recovers the bulk of the missing status and classification rows. Needs step 1 first so its dedup compares against correctly-timed rows. |
-| 3 | `curations:backfill-status-history-from-revisions` | Fills gaps GCI cannot: curations with no messages, where `revisions` is the only witness. |
-| 4 | `curations:impute-uploaded-status` | Dates the imputed row from `min(status_date)`, so history must be as complete as it is going to get before this runs. |
-| 5 | `curations:rebuild-projections` | Recomputes derived values from the repaired history. Belt and braces — each write above already projects. |
-| 6 | `curations:audit-status-transitions` | Measure the result. Its pre-repair figures were taken against day-truncated data where same-day sequences could not be ordered at all. |
+| 2 | `curations:attribute-history-sources` | Gives a legacy row the key its real source event would have produced, so the replay in the next step recognises it on the source-key index rather than on the value/date index behind it. Needs step 1: matching is to the second, and a row still at midnight matches nothing. |
+| 3 | `gci:replay all` | Recovers the bulk of the missing status and classification rows. Needs step 1 first so its dedup compares against correctly-timed rows. |
+| 4 | `curations:backfill-status-history-from-revisions` | Fills gaps GCI cannot: curations with no messages, where `revisions` is the only witness. |
+| 5 | `curations:impute-uploaded-status` | Dates the imputed row from `min(status_date)`, so history must be as complete as it is going to get before this runs. |
+| 6 | `curations:rebuild-projections` | Recomputes derived values from the repaired history. Belt and braces — each write above already projects. |
+| 7 | `curations:audit-status-transitions` | Measure the result. Its pre-repair figures were taken against day-truncated data where same-day sequences could not be ordered at all. |
 
 Every command except `gci:replay` takes `--dry-run`; review each dry run before
-applying it. `gci:replay` has no dry run and writes immediately — see step 2 for how
+applying it. `gci:replay` has no dry run and writes immediately — see step 3 for how
 to rehearse it safely.
 
 ### 1. `curations:restore-status-timestamps`
@@ -187,7 +191,72 @@ Three rules in there were forced by the data, and each was caught by a dry run:
 **Check before applying:** the 10 curations that change current status. They include
 genuine advances as well as demotions, which is what you want to see.
 
-### 2. `gci:replay all`
+### 2. `curations:attribute-history-sources`
+
+```
+php artisan curations:attribute-history-sources --dry-run
+php artisan curations:attribute-history-sources
+```
+
+Every row that predates source keys carries `source = 'backfill'` and a key derived
+from its own id. That is unique and honest, but it says only "this row was here
+already", so the replay in step 3 cannot recognise the row as the event it is and
+falls through to the value/date index instead.
+
+Two kinds of evidence are accepted, and nothing else:
+
+- a stored GCI message asserting the row's value at the row's exact instant. For
+  status the instant may be either the message's `status.date`, which the live
+  writer records, or its emission time, which step 1 writes -- both are instants a
+  writer could legitimately have left on the row;
+- a revision recording the value with a `user_id`. `getSystemUserId()` returns null
+  on every queue and console path, so a user is positive evidence of a human in the
+  UI. Classification has no column on `curations`, so no revision can speak for it.
+
+Anything ambiguous keeps `backfill`, which afterwards means "we looked and could not
+tell" rather than "we never asked". Two rows that resolve to the same key are both
+left alone: one message asserting a value at two instants could have written either,
+and picking one is a guess. Values and dates are never touched, so nothing here can
+change a projection.
+
+**This step has been applied to the development database.** 13,419 of the 39,314 rows
+carrying a placeholder were attributed:
+
+```
+gci, matched a stored message                   10915
+ui, matched a revision with a user               2504
+left as backfill, no evidence                   24173
+left as backfill, more than one message matched  1014
+skipped, key already taken by another row         708
+```
+
+| table | gci | ui | imputed | revision-backfill | backfill |
+|---|---|---|---|---|---|
+| `curation_curation_status` | 13,185 | 2,173 | 2,025 | 6 | 15,924 |
+| `classification_curation` | 4,743 | — | — | — | 1,708 |
+| `curation_expert_panel` | 3 | 331 | — | — | 8,263 |
+
+The 708 skipped as "key already taken" are legacy rows whose event the live writer had
+already recorded properly; they are duplicates, and leaving them as `backfill` is the
+right outcome. Ownership attributes almost entirely to the UI: **only three ownership
+rows in the whole database came from a GCI transfer**, which is worth a second look if
+you expected GCI transfers to be a meaningful share of ownership history.
+
+**Verification.** The three pivots were dumped beforehand, restored into a scratch
+schema and diffed row by row against the result: zero value or date changes in any of
+the three tables, zero rows added or removed, and exactly 13,419 source keys rewritten.
+Re-running attributes nothing further, so the command is idempotent on real data as
+well as in test.
+
+**It was run out of order and should be run again.** Step 1 has not been applied, so
+matching had only the rows whose timestamps were already precise — chiefly
+`classification_date`, which was `datetime` all along, and the status rows written by
+the live GCI path since the schema migration. 6,948 status rows still sit at midnight
+and can match nothing until step 1 restores their time of day; the command reports that
+count on every run. Expect a further tranche of the remaining 25,895 placeholder rows
+to attribute once step 1 has run.
+
+### 3. `gci:replay all`
 
 Not new, but it now recovers far more than it used to, because dedup works at second
 precision instead of day precision.
@@ -212,7 +281,7 @@ for a bulk historical backfill you may want the opposite.
 `SendTransferNotification`, but **is not yet wired to the stream-message listeners**.
 Decide this before running it across the database.
 
-### 3. `curations:backfill-status-history-from-revisions`
+### 4. `curations:backfill-status-history-from-revisions`
 
 For curations whose stored status their history cannot account for — the pointer says
 Published while the only row is the `Uploaded` one from creation. Revisionable logged
@@ -237,10 +306,10 @@ rather than collapsing to one date and being separated by workflow rank.
 **Check before applying:** rows flagged `REVIEW: migration date` (1672, 3940, 5313)
 are dated `2021-05-21`, when migration `2021_05_17_190805` rewrote the pointer — not
 when the status changed. For 5313 that is its only evidence, and it has 7 GCI
-messages that likely carry the true date, so run step 2 first and re-check whether it
+messages that likely carry the true date, so run step 3 first and re-check whether it
 still needs this.
 
-### 4. `curations:impute-uploaded-status`
+### 5. `curations:impute-uploaded-status`
 
 Gives back the `Uploaded` row to curations whose history never recorded one.
 
@@ -264,7 +333,7 @@ The one status change is labelled `drift already pending`: recording anything ru
 projector, which applies corrections that were already outstanding. The report
 separates that from changes the imputation itself causes, and none here are.
 
-### 5. `curations:rebuild-projections`
+### 6. `curations:rebuild-projections`
 
 Recomputes every derived value — ownership `end_date`s and the denormalized current
 value columns — from the history rows. Replaces `curations:order-statuses`,
@@ -272,7 +341,7 @@ value columns — from the history rows. Replaces `curations:order-statuses`,
 deleted.
 
 Pre-repair, `--dry-run` reported 9 curations whose stored current status disagreed
-with history. After steps 1–4 that should be down to the ones flagged above.
+with history. After steps 1–5 that should be down to the ones flagged above.
 
 **A note on same-day ties.** Where two rows still share a timestamp, the tie breaks on
 `curation_status_id`, treating it as a workflow rank. This was chosen against the
@@ -283,7 +352,7 @@ changes 9. The assumption is sound for the linear path `1→2→3→4→5→6→
 same-date tie pairs involve those two. Restoring timestamps (step 1) shrinks the
 number of ties that need breaking at all.
 
-### 6. `curations:audit-status-transitions`
+### 7. `curations:audit-status-transitions`
 
 Measures recorded history against `App\Curations\StatusTransitions`. Reports; does not
 repair. Accepts a curation id for the full annotated sequence of one curation, and
@@ -323,7 +392,7 @@ already documents four of them, under different state names:
 
 Roughly 2,750 further "not in graph" transitions are jumps from an early state to a
 late one, which is the missing-history problem rather than a gap in the graph. Expect
-that number to fall sharply after steps 2–4.
+that number to fall sharply after steps 3–5.
 
 Until these are decided, do not wire `StatusTransitions` into validation. It is a
 hypothesis under test.
@@ -334,7 +403,7 @@ hypothesis under test.
   classifications and no `gdm_uuid` there is no second copy anywhere —
   Revisionable never saw classification, because it is not a column on `curations`.
 - `config('curations.replaying')` is not honoured by the outgoing stream-message
-  listeners (see step 2).
+  listeners (see step 3).
 - The `7`/`8` positions in the tiebreak rank are inherited from their ids rather than
   chosen. Fixing that needs a decision about where `Recuration assigned` and
   `Retired Assignment` sit relative to `Published`.
@@ -355,7 +424,7 @@ Revisionable cannot be the source of truth for field history:
 It stays exactly as it is: a passive attribute-level audit trail. Its one read path,
 the Backpack revise UI on ExpertPanel, User and Affiliation, went away with Backpack,
 so it is now write-only -- whether to keep it at all is an open question. It earned its
-keep here as the only surviving witness to the lost status transitions in step 3.
+keep here as the only surviving witness to the lost status transitions in step 4.
 
 `activity_log` is unsuitable for a different reason: `config/activitylog.php` prunes it
 at 365 days, and a prunable table cannot back a projection.
