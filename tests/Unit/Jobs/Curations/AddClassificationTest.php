@@ -44,7 +44,7 @@ class AddClassificationTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
-    public function allows_current_classification_to_be_added_again_on_a_different_date()
+    public function does_not_add_current_classification_again()
     {
         \Event::fake();
 
@@ -71,17 +71,18 @@ class AddClassificationTest extends TestCase
             'classification_date' => '2019-12-25',
         ]);
 
-        $this->assertDatabaseHas('classification_curation', [
+        $this->assertDatabaseMissing('classification_curation', [
             'curation_id' => $curation->id,
             'classification_id' => $classification->id,
             'classification_date' => '2020-12-25',
         ]);
 
         $this->assertEquals(
-            2,
+            1,
             $curation->fresh()->classifications()->count()
         );
     }
+
     /**
      * @test
      */
