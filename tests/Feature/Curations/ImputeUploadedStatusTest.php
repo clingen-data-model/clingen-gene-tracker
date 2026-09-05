@@ -15,6 +15,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class ImputeUploadedStatusTest extends TestCase
 {
     private Curation $curation;
@@ -29,6 +31,7 @@ class ImputeUploadedStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function dates_the_imputed_row_from_created_at_when_that_precedes_the_history()
     {
         $this->historyStartingAt(config('curations.statuses.precuration'), '2020-09-01');
@@ -50,6 +53,7 @@ class ImputeUploadedStatusTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function falls_back_to_the_first_status_when_it_predates_creation()
     {
         $this->historyStartingAt(config('curations.statuses.precuration'), '2019-01-15');
@@ -68,6 +72,7 @@ class ImputeUploadedStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_disturb_the_current_status()
     {
         $approved = config('curations.statuses.curation-approved');
@@ -83,6 +88,7 @@ class ImputeUploadedStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function is_idempotent()
     {
         $this->historyStartingAt(config('curations.statuses.precuration'), '2020-09-01');
@@ -99,6 +105,7 @@ class ImputeUploadedStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_dry_run_writes_nothing()
     {
         $this->historyStartingAt(config('curations.statuses.precuration'), '2020-09-01');
@@ -117,6 +124,7 @@ class ImputeUploadedStatusTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_a_curation_that_already_has_the_row()
     {
         $this->artisan('curations:impute-uploaded-status', ['curation' => $this->curation->id])
