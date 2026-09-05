@@ -73,7 +73,7 @@ class AddStatusTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
-    public function allows_current_status_to_be_added_again_on_a_different_day()
+    public function does_not_add_status_if_new_status_matches_current_status()
     {
         Carbon::setTestNow('2020-01-15');
         AddStatus::dispatchSync(
@@ -87,7 +87,7 @@ class AddStatusTest extends TestCase
             CurationStatus::find(config('project.curation-statuses.curation-provisional'))
         );
         
-        $this->assertEquals(3, $this->curation->statuses()->count());
+        $this->assertEquals(2, $this->curation->statuses()->count());
     }
     
 
