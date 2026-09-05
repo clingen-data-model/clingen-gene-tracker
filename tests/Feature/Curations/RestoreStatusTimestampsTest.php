@@ -13,6 +13,9 @@ use Tests\TestCase;
  * @group curation-history
  * @group gci
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
+#[\PHPUnit\Framework\Attributes\Group('gci')]
 class RestoreStatusTimestampsTest extends TestCase
 {
     private const GDM_UUID = '0c861e10-78a7-4ebc-ac57-853fb16f94c9';
@@ -29,6 +32,7 @@ class RestoreStatusTimestampsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function takes_the_time_from_the_message_that_announced_the_status()
     {
         $this->message('approved', '2021-05-04T14:30:11.000Z', '2021-05-04T16:00:00.000Z');
@@ -46,6 +50,7 @@ class RestoreStatusTimestampsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_a_backdated_status_at_midnight()
     {
         // Announced in 2021, but the panel dates the decision to 2011. The day is
@@ -65,6 +70,7 @@ class RestoreStatusTimestampsTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_a_day_alone_when_one_of_its_rows_cannot_be_timed()
     {
         $this->message('approved', '2021-05-04T14:30:11.000Z', '2021-05-04T14:30:11.000Z');
@@ -92,6 +98,7 @@ class RestoreStatusTimestampsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function falls_back_to_the_row_write_time_when_it_is_the_same_day()
     {
         $this->midnightRow(config('curations.statuses.precuration'), '2021-05-04', '2021-05-04 11:22:33');
@@ -105,6 +112,7 @@ class RestoreStatusTimestampsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_dry_run_writes_nothing()
     {
         $this->midnightRow(config('curations.statuses.precuration'), '2021-05-04', '2021-05-04 11:22:33');

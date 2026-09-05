@@ -12,6 +12,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class AuditStatusTransitionsTest extends TestCase
 {
     private Curation $curation;
@@ -26,6 +28,7 @@ class AuditStatusTransitionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function reports_a_lawful_sequence_as_legal()
     {
         $this->record(config('curations.statuses.precuration'), '2020-02-01');
@@ -40,6 +43,7 @@ class AuditStatusTransitionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function flags_a_transition_outside_the_graph()
     {
         // Uploaded -> Published is a jump the state machine does not allow, and is
@@ -54,6 +58,7 @@ class AuditStatusTransitionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function summarises_the_whole_database()
     {
         $this->record(config('curations.statuses.published'), '2020-02-01');
@@ -68,6 +73,7 @@ class AuditStatusTransitionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function rejects_an_unknown_ordering()
     {
         $this->artisan('curations:audit-status-transitions', ['--ordering' => 'nonsense'])
@@ -77,6 +83,7 @@ class AuditStatusTransitionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function reports_a_missing_curation()
     {
         $this->artisan('curations:audit-status-transitions', ['curation' => '99999999'])
