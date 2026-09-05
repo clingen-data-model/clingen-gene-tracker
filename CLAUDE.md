@@ -146,9 +146,10 @@ are legitimate.
 
 ## Revisionable is not field history
 
-`venturecraft/revisionable` is a passive attribute-level audit trail, and the
-backing store for the Backpack revise UI on ExpertPanel, User and Affiliation. It
-cannot express curation field history: it stamps its own `created_at` rather than
+`venturecraft/revisionable` is a passive attribute-level audit trail. It used to
+also back the Backpack revise UI on ExpertPanel, User and Affiliation; Backpack is
+gone, so nothing reads it now and it is write-only across the app. It cannot
+express curation field history: it stamps its own `created_at` rather than
 an event date, never sees pivot writes, has no idempotency key, and records a null
 user on every queue and console path. Do not reach for it to add history to a field.
 

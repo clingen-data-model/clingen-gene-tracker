@@ -352,10 +352,10 @@ Revisionable cannot be the source of truth for field history:
 4. No uniqueness, so replays simply append.
 5. `getSystemUserId()` returns null on every queue and console path — every GCI path.
 
-It stays exactly as it is: a passive attribute-level audit trail, and the backing store
-for the Backpack revise UI on ExpertPanel, User and Affiliation, where its assumptions
-do hold. It earned its keep here as the only surviving witness to the lost status
-transitions in step 3.
+It stays exactly as it is: a passive attribute-level audit trail. Its one read path,
+the Backpack revise UI on ExpertPanel, User and Affiliation, went away with Backpack,
+so it is now write-only -- whether to keep it at all is an open question. It earned its
+keep here as the only surviving witness to the lost status transitions in step 3.
 
 `activity_log` is unsuitable for a different reason: `config/activitylog.php` prunes it
 at 365 days, and a prunable table cannot back a projection.
