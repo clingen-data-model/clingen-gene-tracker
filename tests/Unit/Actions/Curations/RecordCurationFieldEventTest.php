@@ -15,6 +15,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class RecordCurationFieldEventTest extends TestCase
 {
     private Curation $curation;
@@ -31,6 +33,7 @@ class RecordCurationFieldEventTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_record_the_same_source_event_twice()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-provisional'));
@@ -49,6 +52,7 @@ class RecordCurationFieldEventTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function recognises_a_replayed_event_even_on_a_different_date()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-provisional'));
@@ -66,6 +70,7 @@ class RecordCurationFieldEventTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_record_a_value_the_timeline_already_holds()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-provisional'));
@@ -83,6 +88,7 @@ class RecordCurationFieldEventTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function records_an_older_event_without_changing_the_current_value()
     {
         $provisional = CurationStatus::find(config('curations.statuses.curation-provisional'));
@@ -107,6 +113,7 @@ class RecordCurationFieldEventTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function the_unique_index_rejects_a_duplicate_source_event()
     {
         $status = CurationStatus::find(config('curations.statuses.curation-provisional'));

@@ -11,6 +11,8 @@ use Tests\TestCase;
  * @group curations
  * @group curation-history
  */
+#[\PHPUnit\Framework\Attributes\Group('curations')]
+#[\PHPUnit\Framework\Attributes\Group('curation-history')]
 class BackfillStatusHistoryFromRevisionsTest extends TestCase
 {
     private Curation $curation;
@@ -35,6 +37,7 @@ class BackfillStatusHistoryFromRevisionsTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function recovers_a_status_row_the_history_lost()
     {
         $published = config('curations.statuses.published');
@@ -63,6 +66,7 @@ class BackfillStatusHistoryFromRevisionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function a_dry_run_writes_nothing()
     {
         $published = config('curations.statuses.published');
@@ -87,6 +91,7 @@ class BackfillStatusHistoryFromRevisionsTest extends TestCase
      *
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_a_curation_whose_history_already_agrees()
     {
         DB::table('revisions')->insert([
@@ -114,6 +119,7 @@ class BackfillStatusHistoryFromRevisionsTest extends TestCase
     /**
      * @test
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function reports_a_curation_it_cannot_repair()
     {
         DB::table('curations')->where('id', $this->curation->id)
