@@ -73,6 +73,36 @@ class AddStatusTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
+    public function anchors_a_bare_past_date_at_noon_rather_than_midnight()
+    {
+        $job = new AddStatus(
+            $this->curation,
+            CurationStatus::find(config('project.curation-statuses.curation-provisional')),
+            '2019-06-15'
+        );
+
+        $this->assertEquals('2019-06-15 12:00:00', $job->date->toDateTimeString());
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function anchors_a_bare_date_of_today_at_the_current_time()
+    {
+        $job = new AddStatus(
+            $this->curation,
+            CurationStatus::find(config('project.curation-statuses.curation-provisional')),
+            Carbon::now()->toDateString()
+        );
+
+        $this->assertTrue($job->date->equalTo(Carbon::now()));
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function does_not_add_status_if_new_status_matches_current_status()
     {
         Carbon::setTestNow('2020-01-15');

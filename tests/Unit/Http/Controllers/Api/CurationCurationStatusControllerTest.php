@@ -135,21 +135,28 @@ class CurationCurationStatusControllerTest extends TestCase
             ->assertJson($this->curation->statuses->first()->toArray());
     }
 
+    /**
+     * A date correction re-records the assertion through AddStatus rather than
+     * editing the row in place, so the corrected entry gets a new pivot id -- the
+     * old one is gone, and the status is found again by its (stable) status id.
+     */
     public function test_updates_status_date_of_related_status()
     {
         $ccs = $this->curation->statuses->random();
-        $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$ccs->pivot->id, [
+        $oldPivotId = $ccs->pivot->id;
+
+        $this->json('PUT', '/api/curations/'.$this->curation->id.'/statuses/'.$oldPivotId, [
             'status_date' => '1982-05-17'
-        ])
-        ->assertStatus(200)
-        ->assertJson($ccs->fresh()->toArray());
+        ])->assertStatus(200);
+
+        $this->assertDatabaseMissing('curation_curation_status', ['id' => $oldPivotId]);
 
         $curation = $this->curation->fresh();
-        $ccs = $curation->statuses->keyBy('pivot.id')->get($ccs->pivot->id);
+        $updated = $curation->statuses->firstWhere('id', $ccs->id);
 
-        $this->assertEquals('1982-05-17', $ccs->pivot->status_date->format('Y-m-d'));
-
-        $this->assertEquals($ccs->id, $curation->curation_status_id);
+        $this->assertNotNull($updated);
+        $this->assertEquals('1982-05-17', $updated->pivot->status_date->format('Y-m-d'));
+        $this->assertEquals($updated->id, $curation->curation_status_id);
     }
 
     public function test_update_status_date_validates_date()
