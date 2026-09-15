@@ -39,9 +39,35 @@ class AddStatus implements ShouldQueue
     ) {
         $this->curation = $curation;
         $this->curationStatus = $curationStatus;
-        $this->date = $date ? Carbon::parse($date) : now();
+        $this->date = $this->resolveDate($date);
         $this->source = $source;
         $this->sourceEventKey = $sourceEventKey ?? $this->defaultSourceEventKey();
+    }
+
+    /**
+     * A bare "Y-m-d" is what a curator's date picker and a bulk upload row supply
+     * -- no time of day was ever known. Anchoring that at midnight misdates it for
+     * anyone reading it in UTC (Eastern midnight reads as the previous evening),
+     * so a past date is anchored at noon Eastern instead, which stays the same
+     * calendar day under any reasonable timezone reinterpretation. Today's date is
+     * given the actual current time, since it's being entered live.
+     *
+     * A caller passing anything else -- a GCI message's own timestamp, say -- is
+     * trusted as-is; only a literal bare date triggers this.
+     */
+    private function resolveDate($date): Carbon
+    {
+        if (!$date) {
+            return now();
+        }
+
+        if (!is_string($date) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return Carbon::parse($date);
+        }
+
+        $parsed = Carbon::parse($date);
+
+        return $parsed->isSameDay(now()) ? now() : $parsed->setTime(12, 0, 0);
     }
 
     /**
