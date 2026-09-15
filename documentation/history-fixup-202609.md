@@ -5,12 +5,12 @@ September 2026. Branch `feat/unified-curation-history`.
 This covers the unification of curation field history, the historical data problems
 that surfaced while doing it, and the Artisan commands written to repair them.
 
-**Only step 2 has been applied. Everything else is still a dry run, and nothing here
-has touched production.** The figures below come from dry runs on the development
-database, with two exceptions: `gci:replay`, which has no dry run and was rehearsed
-inside a rolled-back transaction, and `curations:attribute-history-sources`, which was
-run for real against the development database — see step 2 for what it did and how the
-result was checked.
+**This all happened in a development replica; nothing here has touched
+production.** The figures below come from dry runs on that database, with two
+exceptions: `gci:replay`, which has no dry run and was rehearsed inside a
+rolled-back transaction, and `curations:attribute-history-sources`, which was
+run for real against the development database — see step 2 for what it did and
+how the result was checked.
 
 ---
 
@@ -191,6 +191,30 @@ Three rules in there were forced by the data, and each was caught by a dry run:
 **Check before applying:** the 10 curations that change current status. They include
 genuine advances as well as demotions, which is what you want to see.
 
+**Addendum, later in September 2026: a third source.** This app's own outgoing
+`precuration-events` stream messages turn out to be usable evidence too —
+`App\Curations\OutgoingStatusAssertions` reads them. A `created`/`updated`
+message echoes whatever status was current when a save touched the curation
+(`data.status.name` / `data.status.effective_date`), because it hangs off
+Eloquent's native model events, not a status-specific one. Where a message
+asserts the same status on the same day as a row, that message's own
+`created_at` supplies the row's time — the listener is queued, so it fires
+within moments of the save, same reasoning as "row write time" but sourced from
+the side effect instead of the row itself. Tried after GCI, before row write
+time.
+
+This needed a fourth rule the first three dry runs didn't surface, because it
+was tested against a dev database whose outgoing-message backlog happened to be
+current: **trust a message's `created_at` only when it falls on the same day as
+the status it echoes.** The listener that writes these is queued, and a queue
+that stalls and later catches up on a backlog runs every job at once. Caught
+live in dev: a stuck `gt-queue` worker resumed and drained ~1,824 backlogged
+jobs in a 14-minute window, each stamped with that moment while echoing
+whatever status the curation already held — years-old statuses were about to be
+"recovered" as having happened that afternoon. Nothing in the message content
+distinguishes that from an organic one; only the same-day check does. See the
+class docblock for the full reasoning and the excluded baseline dump.
+
 ### 2. `curations:attribute-history-sources`
 
 ```
@@ -255,6 +279,34 @@ the live GCI path since the schema migration. 6,948 status rows still sit at mid
 and can match nothing until step 1 restores their time of day; the command reports that
 count on every run. Expect a further tranche of the remaining 25,895 placeholder rows
 to attribute once step 1 has run.
+
+**Addendum, later in September 2026: a third kind of evidence.** For status
+only, an outgoing stream message asserting the row's value at the row's exact
+instant — the same evidence step 1's addendum above describes — is now also
+accepted, matched to the second exactly like a GCI message and attributed as
+`ui` (it carries no user, but confirms the write went through `AddStatus`'s
+default UI path, the same conclusion a matching revision would support).
+
+### `gci:produce-baseline` is not part of this sequence
+
+Asked and answered during this work: has it run more than once, and should it
+run again as part of a backfill? No, on both counts.
+
+`stream_messages` (topic `gt-gci`, event `precuration_completed`) shows exactly
+one burst in dev — 1,379 messages created within 53 seconds on 2021-08-26
+10:58:51–10:59:44, the very first row in the whole table — with every other day
+since showing 1–7 messages, the organic `MakeGtGciSyncMessage` listener, which
+reuses the same event name for a different, per-curation reason. No second
+burst appears anywhere through the present. This reads as the one-time bootstrap
+dump at launch, run once and never since.
+
+It should stay that way. Re-running it — with `--truncate`, it wipes
+`stream_messages` outright, including years of organic history; without it, it
+still stamps a fresh burst of messages with today's date while echoing whatever
+status each curation currently holds, which is exactly the contamination step
+1's same-day guard above exists to reject. It is kept in the codebase as a
+historical artifact, not a tool to reach for, and is now gated behind
+`--i-recognize-the-risk` for that reason — see the command's own help text.
 
 ### 3. `gci:replay all`
 
