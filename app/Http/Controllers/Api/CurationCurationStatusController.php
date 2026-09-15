@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Bus;
 use App\Http\Controllers\Controller;
 use App\Jobs\Curations\UpdateCurrentStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
@@ -90,20 +91,46 @@ class CurationCurationStatusController extends Controller
     public function update(Request $request, $curationId, $curationCurationStatusId)
     {
         $request->validate([
-            'status_date' => 'date_format:Y-m-d'
+            'status_date' => 'required|date_format:Y-m-d'
         ]);
         $curation = Curation::findOrFail($curationId);
-               
+
         $relatedStatus = $curation->curationStatuses
             ->firstWhere('pivot.id', $curationCurationStatusId);
 
-        $relatedStatus->pivot->update([
-            'status_date' => $request->status_date
-        ]);
+        if (!$relatedStatus) {
+            return response()->json(['message' => 'Data not found'], 404);
+        }
 
-        UpdateCurrentStatus::dispatch($curation);
-        
-        return $relatedStatus;
+        // Correcting a date is re-recording the same assertion at a different
+        // instant, not editing a cell -- it has to go through the writer so the
+        // source key, idempotency and projection all stay consistent. The old row
+        // is removed first and only committed once the new one is confirmed
+        // written, so a rejected re-record (e.g. the corrected date collapses into
+        // an existing entry) leaves the original row intact.
+        DB::beginTransaction();
+
+        DB::table('curation_curation_status')->where('id', $curationCurationStatusId)->delete();
+
+        $recorded = (new AddStatus($curation, $relatedStatus, $request->status_date))->handle();
+
+        if (!$recorded) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Data not found',
+                'errors' => ['status_date' => ['That date matches what the curation already had at that point in time.']],
+            ], 422);
+        }
+
+        DB::commit();
+
+        return $curation->fresh()
+            ->curationStatuses()
+            ->where('curation_curation_status.curation_status_id', $relatedStatus->id)
+            ->reorder()
+            ->orderByDesc('curation_curation_status.id')
+            ->first();
     }
 
     /**
