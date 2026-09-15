@@ -4,6 +4,7 @@ namespace Tests\Feature\Curations;
 
 use App\Affiliation;
 use App\Curation;
+use App\CurationStatus;
 use App\ExpertPanel;
 use App\IncomingStreamMessage;
 use Carbon\Carbon;
@@ -102,6 +103,66 @@ class AttributeHistorySourcesTest extends TestCase
 
         $this->assertEquals('ui', $this->statusRow()->source);
         $this->assertEquals('ui:status:2021-05-04:'.$status, $this->statusRow()->source_event_key);
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function keys_a_status_row_to_the_ui_when_an_outgoing_message_matches()
+    {
+        $status = config('curations.statuses.curation-approved');
+        $this->legacyStatusRow($status, '2021-05-04 09:15:00');
+        $this->outgoingMessage($status, '2021-05-04T09:00:00.000000Z', '2021-05-04 09:15:00');
+
+        $this->artisan('curations:attribute-history-sources', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('ui', $this->statusRow()->source);
+        $this->assertEquals('ui:status:2021-05-04:'.$status, $this->statusRow()->source_event_key);
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function ignores_the_baseline_dump_when_attributing_a_row()
+    {
+        // gci:produce-baseline stamps every message 'precuration_completed' on the
+        // gt-gci-sync topic; it is not evidence of a UI write.
+        $status = config('curations.statuses.curation-approved');
+        $this->legacyStatusRow($status, '2021-05-04 09:15:00');
+        $this->outgoingMessage(
+            $status,
+            '2021-05-04T09:00:00.000000Z',
+            '2021-05-04 09:15:00',
+            topic: config('dx.topics.outgoing.gt-gci-sync'),
+            eventType: 'precuration_completed'
+        );
+
+        $this->artisan('curations:attribute-history-sources', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('backfill', $this->statusRow()->source);
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prefers_gci_over_an_outgoing_message()
+    {
+        $status = config('curations.statuses.curation-approved');
+        $this->message('approved', '2021-05-04T14:30:11.000Z', '2021-05-04T16:00:00.000Z');
+        $this->legacyStatusRow($status, '2021-05-04 14:30:11');
+        // Same value, same instant -- if the outgoing message won, the key would
+        // be the 'ui:' form instead of the GCI source key.
+        $this->outgoingMessage($status, '2021-05-04T14:30:11.000000Z', '2021-05-04 14:30:11');
+
+        $this->artisan('curations:attribute-history-sources', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('gci', $this->statusRow()->source);
     }
 
     /**
@@ -257,6 +318,30 @@ class AttributeHistorySourcesTest extends TestCase
             'status_date' => $date,
             'source' => 'backfill',
             'source_event_key' => 'legacy:curation_curation_status:'.$statusId.':'.$date,
+        ]);
+    }
+
+    private function outgoingMessage(
+        int $statusId,
+        string $effectiveDate,
+        string $createdAt,
+        ?string $topic = null,
+        string $eventType = 'updated'
+    ): void {
+        DB::table('stream_messages')->insert([
+            'topic' => $topic ?? config('dx.topics.outgoing.precuration-events'),
+            'message' => json_encode([
+                'event_type' => $eventType,
+                'data' => [
+                    'id' => $this->curation->id,
+                    'status' => [
+                        'name' => CurationStatus::find($statusId)->name,
+                        'effective_date' => $effectiveDate,
+                    ],
+                ],
+            ]),
+            'created_at' => $createdAt,
+            'updated_at' => $createdAt,
         ]);
     }
 
