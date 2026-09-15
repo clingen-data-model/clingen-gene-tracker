@@ -9,22 +9,29 @@
             <tr>
                 <th>{{itemLabel}}</th>
                 <th>Date</th>
+                <th v-if="canViewSource">Source</th>
+                <th v-if="canViewSource">Source Event Key</th>
             </tr>
-            <tr 
-                v-for="(item, idx) in orderedItems" 
+            <tr
+                v-for="(item, idx) in orderedItems"
                 :key="(indexAttribute) ? item[indexAttribute] : idx"
                 :class="{'table-primary highlight': (idx == 0)}"
             >
                 <td>{{item.name}}</td>
                 <td>{{formatDate(item.pivot[dateField], 'YYYY-MM-DD')}}</td>
+                <td v-if="canViewSource">{{item.pivot.source}}</td>
+                <td v-if="canViewSource">{{item.pivot.source_event_key}}</td>
             </tr>
         </table>
     </div>
 </template>
 <script setup>
 import { computed } from 'vue'
+import { useStore } from 'vuex'
 import moment from 'moment'
 import { formatDate } from '../../filters'
+
+const store = useStore()
 
 const props = defineProps({
     items: {
@@ -43,8 +50,16 @@ const props = defineProps({
         type: String,
         required: false,
         default: null
+    },
+    showSource: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 })
+
+const user = computed(() => store.getters.getUser)
+const canViewSource = computed(() => props.showSource && user.value.canAccessAdministration())
 
 const orderedItems = computed(() => {
     if (props.items) {
