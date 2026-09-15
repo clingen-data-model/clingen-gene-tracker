@@ -126,12 +126,21 @@ day are recovered by:
 podman exec gt-app php artisan curations:restore-status-timestamps --dry-run
 ```
 
-Two rules matter there. Take the time from a GCI message's **emission** date, not
-its `status.date`: GCI fills `status.date` for `approved` messages with a
-synthetic `16:00:00Z` that sorts after the publish that really followed it. And
-apply times a whole day at a time — timing some rows of a day and not others is
-worse than timing none, because the untimed ones sort to the front of that day
-regardless of when they happened.
+Three sources feed it, tried in order: a GCI message's **emission** date, not its
+`status.date` (GCI fills `status.date` for `approved` messages with a synthetic
+`16:00:00Z` that sorts after the publish that really followed it); this app's
+own outgoing stream messages via `App\Curations\OutgoingStatusAssertions`,
+trusted only when same-day with the status they echo (a stalled queue catching
+up on a backlog stamps every job with the catch-up moment instead); and the
+row's own `created_at`, if it was written the same day it is dated. Apply times
+a whole day at a time regardless of source — timing some rows of a day and not
+others is worse than timing none, because the untimed ones sort to the front of
+that day regardless of when they happened.
+
+`curations:attribute-history-sources` then attributes placeholder `backfill`
+source keys to a real origin; it matches to the second, so run it after this.
+See `documentation/history-fixup-202609.md` for the full repair-sequence writeup,
+including where `gci:produce-baseline` does (and does not) fit in.
 
 ## The status state machine
 

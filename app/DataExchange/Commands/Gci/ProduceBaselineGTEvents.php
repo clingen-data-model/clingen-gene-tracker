@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Bus;
 use App\Jobs\Curations\CreateStreamMessage;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * One-time bootstrap that seeded GCI with a baseline snapshot of pre-curations
+ * at launch (2021-08-26, going by the single burst in stream_messages -- see
+ * documentation/history-fixup-202609.md). Kept as a historical artifact, not a
+ * tool to reach for again: with --truncate it wipes stream_messages outright,
+ * and even without it, re-running produces a fresh burst of messages stamped
+ * with today's date while echoing whatever status each curation currently
+ * holds -- exactly the kind of stale evidence
+ * App\Curations\OutgoingStatusAssertions has to guard against elsewhere.
+ * --i-recognize-the-risk exists so this isn't run by accident.
+ */
 class ProduceBaselineGTEvents extends Command
 {
     /**
@@ -18,14 +29,19 @@ class ProduceBaselineGTEvents extends Command
      *
      * @var string
      */
-    protected $signature = 'gci:produce-baseline {--limit= : number of messags to produce} {--topic=test} {--print : print the ouput} {--truncate : truncate the stream_messages table before}';
+    protected $signature = 'gci:produce-baseline
+                            {--limit= : number of messags to produce}
+                            {--topic=test}
+                            {--print : print the ouput}
+                            {--truncate : truncate the stream_messages table before}
+                            {--i-recognize-the-risk : required to actually run -- see class docblock}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Produce events that provide baseline state of pre-curations for gci';
+    protected $description = 'One-time launch bootstrap, already run in production -- do not re-run without reading the class docblock';
 
     /**
      * Create a new command instance.
@@ -44,6 +60,18 @@ class ProduceBaselineGTEvents extends Command
      */
     public function handle()
     {
+        if (!$this->option('i-recognize-the-risk')) {
+            $this->error(
+                'Refusing to run without --i-recognize-the-risk. This command already ran '
+                .'once, at launch. Re-running it truncates stream_messages with --truncate, '
+                .'and even without that flag stamps a fresh burst of messages with today\'s '
+                .'date while echoing whatever status each curation currently holds -- see the '
+                .'class docblock and documentation/history-fixup-202609.md before using it.'
+            );
+
+            return self::FAILURE;
+        }
+
         $this->truncateStreamMessages();
 
         $curations = $this->getCurations();

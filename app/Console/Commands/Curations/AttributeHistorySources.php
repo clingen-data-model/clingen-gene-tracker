@@ -5,6 +5,7 @@ namespace App\Console\Commands\Curations;
 use App\Curation;
 use App\Curations\CurationField;
 use App\Curations\DuplicateKey;
+use App\Curations\OutgoingStatusAssertions;
 use App\DataExchange\Maps\GciStatusMap;
 use App\Exceptions\GciSyncException;
 use App\ExpertPanel;
@@ -25,12 +26,17 @@ use Illuminate\Support\Facades\DB;
  * event that first created it a no-op on the source-key index rather than on the
  * value/date index behind it.
  *
- * Two kinds of evidence, and nothing else:
+ * Three kinds of evidence, and nothing else:
  *
  *  - a stored GCI message asserting this value at this exact instant. The row's
  *    date has to match to the second, so this is worth running only after
  *    curations:restore-status-timestamps has put the time of day back -- before
  *    that, every legacy status row sits at midnight and matches nothing;
+ *  - for status only, this app's own outgoing stream message echoing this value
+ *    at this exact instant -- see OutgoingStatusAssertions. It carries no user,
+ *    so it is attributed as `ui` rather than a source of its own: it confirms
+ *    the write went through AddStatus's default UI path, the same conclusion a
+ *    matching revision would support, just to the second instead of the day;
  *  - a revision recording this value with a user_id. Revisionable's
  *    getSystemUserId() returns null on every queue and console path, so a user
  *    is positive evidence that a human set the value in the UI.
@@ -53,6 +59,8 @@ class AttributeHistorySources extends Command
 
     private GciClassificationMap $classificationMap;
 
+    private OutgoingStatusAssertions $outgoingAssertions;
+
     private array $counts = [
         'gci' => 0,
         'ui' => 0,
@@ -63,10 +71,14 @@ class AttributeHistorySources extends Command
 
     private array $samples = [];
 
-    public function handle(GciStatusMap $statusMap, GciClassificationMap $classificationMap): int
-    {
+    public function handle(
+        GciStatusMap $statusMap,
+        GciClassificationMap $classificationMap,
+        OutgoingStatusAssertions $outgoingAssertions
+    ): int {
         $this->statusMap = $statusMap;
         $this->classificationMap = $classificationMap;
+        $this->outgoingAssertions = $outgoingAssertions;
 
         $fields = $this->fields();
         $query = $this->query();
@@ -126,6 +138,7 @@ class AttributeHistorySources extends Command
         }
 
         $gci = $this->gciAssertionsFor($curation, $field);
+        $stream = $this->streamAssertionsFor($curation, $field);
         $ui = $this->uiAssertionsFor($curation, $field);
 
         $attributions = [];
@@ -135,7 +148,7 @@ class AttributeHistorySources extends Command
             $value = (int) $row->{$field->valueColumn()};
             $date = (string) $row->{$field->dateColumn()};
 
-            [$source, $key] = $this->attributionFor($field, $value, $date, $gci, $ui);
+            [$source, $key] = $this->attributionFor($field, $value, $date, $gci, $stream, $ui);
 
             if ($key === null) {
                 continue;
@@ -160,8 +173,9 @@ class AttributeHistorySources extends Command
     }
 
     /**
-     * GCI is preferred over a revision: it matches an external event to the
-     * second, where a revision only puts a user on the day.
+     * GCI is preferred over the other two: it matches an external event to the
+     * second, where a stream message matches our own echo to the second and a
+     * revision only puts a user on the day.
      *
      * @return array{0: ?string, 1: ?string}
      */
@@ -170,6 +184,7 @@ class AttributeHistorySources extends Command
         int $value,
         string $date,
         array $gci,
+        array $stream,
         array $ui
     ): array {
         $keys = array_keys($gci[$value.'|'.substr($date, 0, 19)] ?? []);
@@ -186,7 +201,9 @@ class AttributeHistorySources extends Command
             return [null, null];
         }
 
-        if (isset($ui[$value.'|'.substr($date, 0, 10)])) {
+        if (isset($stream[$value.'|'.substr($date, 0, 19)])
+            || isset($ui[$value.'|'.substr($date, 0, 10)])
+        ) {
             return ['ui', 'ui:'.$field->value.':'.substr($date, 0, 10).':'.$value];
         }
 
@@ -254,6 +271,31 @@ class AttributeHistorySources extends Command
             foreach ($this->instantsFor($message, $field) as $instant) {
                 $assertions[$value.'|'.$instant][$message->sourceKey] = true;
             }
+        }
+
+        return $assertions;
+    }
+
+    /**
+     * Every status this curation's own outgoing messages asserted as current, at
+     * the instant (to the second) a status writer could have left on the row --
+     * the message's own created_at, which is what
+     * curations:restore-status-timestamps writes when it recovers a row from
+     * this same evidence. Status only: outgoing messages carry no equivalent
+     * field for classification or expert panel.
+     *
+     * @return array<string, bool> "value|instant" => true
+     */
+    private function streamAssertionsFor(Curation $curation, CurationField $field): array
+    {
+        if ($field !== CurationField::Status) {
+            return [];
+        }
+
+        $assertions = [];
+
+        foreach ($this->outgoingAssertions->forCuration($curation->id) as $assertion) {
+            $assertions[$assertion['status_id'].'|'.$assertion['observed_at']] = true;
         }
 
         return $assertions;
@@ -416,7 +458,7 @@ class AttributeHistorySources extends Command
             ['outcome', 'rows'],
             [
                 ['gci, matched a stored message', $this->counts['gci']],
-                ['ui, matched a revision with a user', $this->counts['ui']],
+                ['ui, matched an outgoing message or a revision with a user', $this->counts['ui']],
                 ['left as backfill, no evidence', $this->counts['no evidence']],
                 ['left as backfill, more than one message matched', $this->counts['ambiguous']],
                 ['skipped, key already taken by another row', $this->counts['collision']],

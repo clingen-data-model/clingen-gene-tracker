@@ -6,6 +6,7 @@ use App\Actions\Curations\ProjectCurationField;
 use App\Curation;
 use App\Curations\CurationField;
 use App\Curations\DuplicateKey;
+use App\Curations\OutgoingStatusAssertions;
 use App\DataExchange\Maps\GciStatusMap;
 use App\Exceptions\GciSyncException;
 use App\Gci\GciMessage;
@@ -19,12 +20,16 @@ use Illuminate\Support\Facades\DB;
  * Recovers the time of day for status history rows that were truncated to midnight.
  *
  * Status dates used to be stored as dates, so a curation that moved twice in one
- * day left rows nothing could order. Two sources can put the time back:
+ * day left rows nothing could order. Three sources can put the time back:
  *
  *  - the GCI messages, whose emission times are still stored verbatim in
  *    incoming_stream_messages. Their emission times are used rather than their
  *    status.date, which GCI fills with a synthetic fixed time for approved
  *    messages and which therefore misorders a same-day approve/publish pair;
+ *  - this app's own outgoing stream messages, which echo whatever status was
+ *    current whenever a save touched the curation. The message's created_at is
+ *    used, since it was written within moments of the save that produced it --
+ *    see OutgoingStatusAssertions for why the baseline dump is excluded;
  *  - the row's own created_at, where the row was written the same day it is dated,
  *    which makes the write time the moment the status was recorded.
  *
@@ -42,8 +47,11 @@ class RestoreStatusTimestamps extends Command
 
     private GciStatusMap $statusMap;
 
+    private OutgoingStatusAssertions $outgoingAssertions;
+
     private array $counts = [
         'gci message' => 0,
+        'stream message' => 0,
         'row write time' => 0,
         'time unknown' => 0,
         'day left whole' => 0,
@@ -54,9 +62,10 @@ class RestoreStatusTimestamps extends Command
 
     private array $moved = [];
 
-    public function handle(GciStatusMap $statusMap): int
+    public function handle(GciStatusMap $statusMap, OutgoingStatusAssertions $outgoingAssertions): int
     {
         $this->statusMap = $statusMap;
+        $this->outgoingAssertions = $outgoingAssertions;
 
         $dryRun = (bool) $this->option('dry-run');
         $query = $this->query();
@@ -103,6 +112,7 @@ class RestoreStatusTimestamps extends Command
     {
         $statusBefore = (int) $curation->curation_status_id;
         $assertions = $this->gciAssertionsFor($curation);
+        $streamAssertions = $this->streamAssertionsFor($curation);
         $changed = false;
 
         $rows = DB::table('curation_curation_status')
@@ -120,7 +130,7 @@ class RestoreStatusTimestamps extends Command
 
         foreach ($rows as $row) {
             $day = substr((string) $row->status_date, 0, 10);
-            [$timestamp, $source] = $this->timestampFor($row, $assertions);
+            [$timestamp, $source] = $this->timestampFor($row, $assertions, $streamAssertions);
 
             if ($timestamp === null) {
                 $unresolvedDays[$day] = true;
@@ -243,14 +253,42 @@ class RestoreStatusTimestamps extends Command
     }
 
     /**
+     * This curation's own outgoing messages, by status id and the day they
+     * asserted -- keyed the same way as gciAssertionsFor, but the value taken is
+     * when the message was created rather than the (still-truncated) date it
+     * echoed. The earliest such message wins: a later one may just be echoing
+     * the same still-current status because something unrelated changed.
+     *
+     * @return array<string, string>
+     */
+    private function streamAssertionsFor(Curation $curation): array
+    {
+        $assertions = [];
+
+        foreach ($this->outgoingAssertions->forCuration($curation->id) as $assertion) {
+            $key = $assertion['status_id'].'|'.substr($assertion['instant'], 0, 10);
+
+            if (!isset($assertions[$key]) || $assertion['observed_at'] < $assertions[$key]) {
+                $assertions[$key] = $assertion['observed_at'];
+            }
+        }
+
+        return $assertions;
+    }
+
+    /**
      * @return array{0: ?string, 1: string}
      */
-    private function timestampFor($row, array $assertions): array
+    private function timestampFor($row, array $assertions, array $streamAssertions): array
     {
         $key = $row->curation_status_id.'|'.substr((string) $row->status_date, 0, 10);
 
         if (isset($assertions[$key])) {
             return [$assertions[$key], 'gci message'];
+        }
+
+        if (isset($streamAssertions[$key])) {
+            return [$streamAssertions[$key], 'stream message'];
         }
 
         if ($row->created_at
@@ -289,13 +327,14 @@ class RestoreStatusTimestamps extends Command
     private function report(bool $dryRun): void
     {
         $verb = $dryRun ? 'would be' : 'were';
-        $recovered = $this->counts['gci message'] + $this->counts['row write time'];
+        $recovered = $this->counts['gci message'] + $this->counts['stream message'] + $this->counts['row write time'];
 
         $this->info($recovered.' status row(s) '.$verb.' given a time:');
         $this->table(
             ['time taken from', 'rows'],
             [
                 ['gci message', $this->counts['gci message']],
+                ['stream message', $this->counts['stream message']],
                 ['row write time', $this->counts['row write time']],
                 ['left at midnight (time unknown)', $this->counts['time unknown']],
                 ['left alone, day had a row we could not time', $this->counts['day left whole']],

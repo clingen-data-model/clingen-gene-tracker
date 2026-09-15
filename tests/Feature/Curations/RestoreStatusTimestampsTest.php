@@ -3,6 +3,7 @@
 namespace Tests\Feature\Curations;
 
 use App\Curation;
+use App\CurationStatus;
 use App\IncomingStreamMessage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +100,66 @@ class RestoreStatusTimestampsTest extends TestCase
      * @test
      */
     #[\PHPUnit\Framework\Attributes\Test]
+    public function takes_the_time_from_an_outgoing_message_when_no_gci_message_matches()
+    {
+        $status = config('curations.statuses.precuration');
+        $this->midnightRow($status, '2021-05-04');
+        $this->outgoingMessage($status, '2021-05-04T00:00:00.000000Z', '2021-05-04 11:22:33');
+
+        $this->artisan('curations:restore-status-timestamps', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('2021-05-04 11:22:33', $this->statusDate($status));
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function ignores_the_baseline_dump_when_recovering_a_time()
+    {
+        // gci:produce-baseline stamps every message 'precuration_completed' on the
+        // gt-gci-sync topic; its created_at is when the dump ran, not when the
+        // status changed, so it must not be usable as a time source.
+        $status = config('curations.statuses.precuration');
+        $this->midnightRow($status, '2021-05-04');
+        $this->outgoingMessage(
+            $status,
+            '2021-05-04T00:00:00.000000Z',
+            '2021-05-04 11:22:33',
+            topic: config('dx.topics.outgoing.gt-gci-sync'),
+            eventType: 'precuration_completed'
+        );
+
+        $this->artisan('curations:restore-status-timestamps', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('2021-05-04 00:00:00', $this->statusDate($status));
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function ignores_an_outgoing_message_whose_created_at_lands_on_a_different_day()
+    {
+        // A stalled queue worker catching up on a backlog runs every job at once,
+        // stamping created_at with the catch-up moment rather than the moment the
+        // status actually changed. Observed directly in dev.
+        $status = config('curations.statuses.precuration');
+        $this->midnightRow($status, '2021-05-04');
+        $this->outgoingMessage($status, '2021-05-04T00:00:00.000000Z', '2021-06-15 09:00:00');
+
+        $this->artisan('curations:restore-status-timestamps', ['curation' => $this->curation->id])
+            ->assertSuccessful();
+
+        $this->assertEquals('2021-05-04 00:00:00', $this->statusDate($status));
+    }
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function falls_back_to_the_row_write_time_when_it_is_the_same_day()
     {
         $this->midnightRow(config('curations.statuses.precuration'), '2021-05-04', '2021-05-04 11:22:33');
@@ -143,6 +204,30 @@ class RestoreStatusTimestampsTest extends TestCase
             'source_event_key' => 'legacy:test:'.$statusId.':'.$date,
             'created_at' => $writtenAt ?? '2021-06-01 09:00:00',
             'updated_at' => $writtenAt ?? '2021-06-01 09:00:00',
+        ]);
+    }
+
+    private function outgoingMessage(
+        int $statusId,
+        string $effectiveDate,
+        string $createdAt,
+        ?string $topic = null,
+        string $eventType = 'updated'
+    ): void {
+        DB::table('stream_messages')->insert([
+            'topic' => $topic ?? config('dx.topics.outgoing.precuration-events'),
+            'message' => json_encode([
+                'event_type' => $eventType,
+                'data' => [
+                    'id' => $this->curation->id,
+                    'status' => [
+                        'name' => CurationStatus::find($statusId)->name,
+                        'effective_date' => $effectiveDate,
+                    ],
+                ],
+            ]),
+            'created_at' => $createdAt,
+            'updated_at' => $createdAt,
         ]);
     }
 
