@@ -130,7 +130,7 @@ class Curation extends Model implements Notable
     {
         return $this->belongsToMany(ExpertPanel::class)
                 ->using(CurationExpertPanel::class)
-                ->withPivot(['start_date', 'end_date'])
+                ->withPivot(['start_date', 'end_date', 'source', 'source_event_key'])
                 ->withTimestamps();
     }
 
@@ -153,7 +153,7 @@ class Curation extends Model implements Notable
     {
         return $this->belongsToMany(CurationStatus::class)
                 ->using(CurationCurationStatus::class)
-                ->withPivot('id', 'status_date', 'created_at', 'updated_at')
+                ->withPivot('id', 'status_date', 'source', 'source_event_key', 'created_at', 'updated_at')
                 ->orderBy('curation_curation_status.status_date', 'DESC')
                 ->orderBy('curation_curation_status.curation_status_id', 'DESC')
                 ->orderBy('curation_curation_status.id', 'DESC')
@@ -183,7 +183,7 @@ class Curation extends Model implements Notable
     public function classifications()
     {
         return $this->belongsToMany(Classification::class)
-                ->withPivot('id', 'classification_date')
+                ->withPivot('id', 'classification_date', 'source', 'source_event_key')
                 ->withTimestamps()
                 ->orderBy('classification_date', 'desc')
                 ->orderBy('classification_curation.id', 'desc')

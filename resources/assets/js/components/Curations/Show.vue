@@ -98,11 +98,12 @@
                                         hide-label="Hide history"
                                     ></toggle-button>
                                     <transition name="fade">
-                                        <history-table 
-                                            :items="curation.expert_panels" 
-                                            item-label="Expert Panel" 
-                                            date-field="start_date" 
-                                            v-show="showOwnerHistory" 
+                                        <history-table
+                                            :items="curation.expert_panels"
+                                            item-label="Expert Panel"
+                                            date-field="start_date"
+                                            show-source
+                                            v-show="showOwnerHistory"
                                             index-attribute="id"
                                         ></history-table>
                                     </transition>
@@ -167,10 +168,11 @@
                                     </button>
                                 </div>
                                 <transition name="fade">
-                                    <history-table 
-                                        :items="curation.curation_statuses" 
-                                        item-label="Status" 
+                                    <history-table
+                                        :items="curation.curation_statuses"
+                                        item-label="Status"
                                         date-field="status_date"
+                                        show-source
                                         v-show="showStatusHistory"
                                     ></history-table>
                                 </transition>
