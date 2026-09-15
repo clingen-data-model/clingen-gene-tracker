@@ -10,14 +10,18 @@
                 <tr>
                     <th>Status</th>
                     <th>Date</th>
+                    <th v-if="canViewSource">Source</th>
+                    <th v-if="canViewSource">Source Event Key</th>
                 </tr>
-                <tr 
-                    v-for="(status, idx) in orderedStatuses" 
-                    :key="status.pivot.id" 
+                <tr
+                    v-for="(status, idx) in orderedStatuses"
+                    :key="status.pivot.id"
                     :class="{'table-primary highlight': (idx == 0)}"
                 >
                     <td>{{status.name}}</td>
                     <td>{{formatDate(status.pivot.status_date, 'YYYY-MM-DD')}}</td>
+                    <td v-if="canViewSource">{{status.pivot.source}}</td>
+                    <td v-if="canViewSource">{{status.pivot.source_event_key}}</td>
                 </tr>
             </tbody>
         </table>
@@ -25,6 +29,7 @@
 </template>
 <script setup>
 import { computed } from 'vue'
+import { useStore } from 'vuex'
 import moment from 'moment'
 import { formatDate } from '../../filters'
 
@@ -34,6 +39,10 @@ const props = defineProps({
         required: true
     }
 })
+
+const store = useStore()
+const user = computed(() => store.getters.getUser)
+const canViewSource = computed(() => user.value.canAccessAdministration())
 
 /** THE STATUSES ORDERED BY THE NEWEST FIRST, ORDERED BASED ON STATUS_DATE DESC, UPDATED_AT DESC */
 const orderedStatuses = computed(() => {

@@ -11,14 +11,18 @@
                 <tr>
                     <th>Classification</th>
                     <th>Date</th>
+                    <th v-if="canViewSource">Source</th>
+                    <th v-if="canViewSource">Source Event Key</th>
                 </tr>
-                <tr 
-                    v-for="(classification, idx) in orderedClassifications" 
-                    :key="classification.pivot.id" 
+                <tr
+                    v-for="(classification, idx) in orderedClassifications"
+                    :key="classification.pivot.id"
                     :class="{'table-primary highlight': (idx == 0)}"
                 >
                     <td>{{classification.name}}</td>
                     <td>{{formatDate(classification.pivot.classification_date, 'YYYY-MM-DD')}}</td>
+                    <td v-if="canViewSource">{{classification.pivot.source}}</td>
+                    <td v-if="canViewSource">{{classification.pivot.source_event_key}}</td>
                 </tr>
             </tbody>
         </table>
@@ -26,6 +30,7 @@
 </template>
 <script setup>
 import { computed } from 'vue'
+import { useStore } from 'vuex'
 import moment from 'moment'
 import { formatDate } from '../../filters'
 
@@ -35,6 +40,10 @@ const props = defineProps({
         required: true
     }
 })
+
+const store = useStore()
+const user = computed(() => store.getters.getUser)
+const canViewSource = computed(() => user.value.canAccessAdministration())
 
 const orderedClassifications = computed(() => {
     if (props.curation.classifications) {
