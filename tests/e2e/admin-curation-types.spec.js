@@ -100,13 +100,20 @@ test.describe('Curation Type administration', () => {
         const emailRow = page.getByRole('row').filter({ hasText: 'Deterministic E2E email log' })
         await expect(emailRow).toBeVisible()
         await emailRow.getByRole('button', { name: 'View' }).click()
-        await expect(page.getByText('<p>Deterministic E2E email body</p>')).toBeVisible()
+        const preview = page.locator('iframe[title="Email body preview"]')
+        await expect(preview).toHaveAttribute('sandbox', '')
+        await expect(preview.contentFrame().locator('p')).toHaveText('Deterministic E2E email body')
+        expect(await preview.contentFrame().locator('body').evaluate(() => {
+            try { return window.parent.document === document }
+            catch (error) { return error.name === 'SecurityError' }
+        })).toBe(true)
 
         await page.goto('/home#/admin/notifications')
         const noticeRow = page.getByRole('row').filter({ hasText: 'E2EDeterministicNotice' })
         await expect(noticeRow).toContainText('E2E Managed User')
         await noticeRow.getByRole('button', { name: 'View' }).click()
-        await expect(page.getByText(/Deterministic E2E notification payload/)).toBeVisible()
+        await expect(page.locator('pre')).toHaveText('{\n  "message": "Deterministic E2E notification payload"\n}')
+        expect(await page.locator('pre').textContent()).toContain('\n  "message":')
         assertNoApplicationErrors()
     })
 

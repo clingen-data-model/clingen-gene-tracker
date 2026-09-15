@@ -10,7 +10,7 @@
                 <dt class="col-sm-2">Recipient</dt><dd class="col-sm-10">{{ recipient(selected) }}</dd>
                 <dt class="col-sm-2">Type</dt><dd class="col-sm-10">{{ selected.readable_type || selected.type }}</dd>
                 <dt class="col-sm-2">Read</dt><dd class="col-sm-10">{{ selected.read_at ? `Yes (${dateTime(selected.read_at)})` : 'No' }}</dd>
-                <dt class="col-sm-2">Payload</dt><dd class="col-sm-10"><pre class="border rounded p-3 text-wrap">{{ payload(selected.data) }}</pre></dd>
+                <dt class="col-sm-2">Payload</dt><dd class="col-sm-10"><pre class="notification-payload border rounded p-3">{{ payload(selected.data) }}</pre></dd>
             </dl>
             <b-button variant="secondary" @click="selected = null">Close</b-button>
         </b-card>
@@ -52,7 +52,12 @@ const showError = computed({ get: () => Boolean(errorMessage.value), set: value 
 function dateTime(value) { return value ? new Date(value).toLocaleString() : '—' }
 function recipient(item) { return item.recipient?.name || item.recipient?.email || '—' }
 function payload(value) {
-    if (value === null || value === undefined || value === '') return '—'
+    if (value === null || value === undefined || value === '') return 'No payload available.'
+    if (typeof value === 'string') {
+        try { value = JSON.parse(value) }
+        catch { return value }
+    }
+    if (value === null) return 'No payload available.'
     return typeof value === 'string' ? value : JSON.stringify(value, null, 2)
 }
 async function load() {
@@ -80,3 +85,7 @@ async function remove(item) {
 watch(currentPage, load)
 onMounted(load)
 </script>
+
+<style scoped>
+.notification-payload { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>

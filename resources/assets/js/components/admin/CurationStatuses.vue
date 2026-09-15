@@ -25,8 +25,10 @@
         <div v-if="loading" class="text-center py-5" role="status"><b-spinner label="Loading curation statuses" /><span class="visually-hidden">Loading curation statuses</span></div>
         <b-table v-else :items="items" :fields="fields" responsive striped hover show-empty empty-text="No curation statuses found.">
             <template #cell(actions)="{ item }">
-                <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
-                <b-button v-if="canDelete" class="ms-2" size="sm" variant="outline-danger" @click="remove(item)">Delete</b-button>
+                <div class="d-flex flex-nowrap gap-2">
+                    <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
+                    <b-button v-if="canDelete" size="sm" variant="outline-danger" @click="remove(item)">Delete</b-button>
+                </div>
             </template>
         </b-table>
     </div>
@@ -42,7 +44,7 @@ const canUpdate = computed(() => user.value.hasPermission('update curation-statu
 const canDelete = computed(() => user.value.hasPermission('delete curation-statuses'))
 const fields = computed(() => {
     const values = [{ key: 'name', label: 'Name', sortable: true }, { key: 'description', label: 'Description' }]
-    if (canUpdate.value || canDelete.value) values.push({ key: 'actions', label: 'Actions' })
+    if (canUpdate.value || canDelete.value) values.push({ key: 'actions', label: 'Actions',  thClass: 'text-nowrap', tdClass: 'text-nowrap' })
     return values
 })
 const items = ref([]); const loading = ref(true); const saving = ref(false); const editing = ref(null)

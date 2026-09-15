@@ -4,11 +4,13 @@
         <b-alert v-if="errorMessage" variant="danger" show>{{ errorMessage }}</b-alert>
         <div v-if="loading" class="text-center my-4"><b-spinner label="Loading dashboard" /></div>
         <div v-else class="row">
-            <div v-for="card in cards" :key="card.label" class="col-md-4 mb-3">
-                <b-card>
+            <div v-for="card in cards" :key="card.label" class="col-md-4 mb-3 d-flex">
+                <b-card class="w-100 h-100" body-class="d-flex flex-column">
                     <div class="h2 mb-0">{{ card.value }}</div>
                     <div class="text-muted">{{ card.label }}</div>
-                    <router-link class="btn btn-sm btn-link px-0" :to="card.to">View report »</router-link>
+                    <router-link class="btn btn-sm btn-link px-0 mt-auto" :to="card.to">
+                        View report »
+                    </router-link>
                 </b-card>
             </div>
         </div>

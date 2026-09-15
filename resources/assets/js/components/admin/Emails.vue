@@ -13,7 +13,7 @@
                 <dt class="col-sm-2">BCC</dt><dd class="col-sm-10">{{ addresses(selected.bcc) }}</dd>
                 <dt class="col-sm-2">Reply To</dt><dd class="col-sm-10">{{ addresses(selected.reply_to) }}</dd>
                 <dt class="col-sm-2">Subject</dt><dd class="col-sm-10">{{ selected.subject || '—' }}</dd>
-                <dt class="col-sm-2">Body</dt><dd class="col-sm-10"><pre class="border rounded p-3 text-wrap">{{ selected.body || '—' }}</pre></dd>
+                <dt class="col-sm-2">Body</dt><dd class="col-sm-10"><EmailBodyPreview :body="selected.body" /></dd>
             </dl>
             <b-button variant="secondary" @click="selected = null">Close</b-button>
         </b-card>
@@ -31,6 +31,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import EmailBodyPreview from './EmailBodyPreview.vue'
 
 const fields = [
     { key: 'created_at', label: 'Sent' }, { key: 'from', label: 'From' },
