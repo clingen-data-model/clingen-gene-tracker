@@ -144,7 +144,7 @@
                 <div>{{ getDiseaseEntityColumn(item) }}</div>
             </template>
             <template v-slot:cell(actions)="{item}" class="text-end">
-                <div>
+                <div class="d-flex justify-content-end action-buttons">
                     <router-link 
                         v-if="user.canEditCuration(item)"
                         :id="'edit-curation-'+item.id+'-btn'"
@@ -459,5 +459,8 @@ defineExpose({
 .toolbar-slide-leave-to {
     opacity: 0;
     transform: translateY(-4px);
+}
+.action-buttons {
+    gap: 0.3rem;
 }
 </style>

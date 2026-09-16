@@ -11,6 +11,13 @@
         <b-alert v-model="showSuccess" variant="success" dismissible>{{ successMessage }}</b-alert>
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
 
+        <RevisionHistory
+            v-if="revisionRecord"
+            :endpoint="`/api/admin/expert-panels/${revisionRecord.id}/revisions`"
+            :name="revisionRecord.name"
+            @close="revisionRecord = null"
+        />
+
         <b-card v-if="editing" class="mb-4" :title="editing.id ? 'Edit Expert Panel' : 'Add Expert Panel'">
             <b-form @submit.prevent="save">
                 <b-form-group label="Name" label-for="expert-panel-name">
@@ -55,7 +62,10 @@
             <template #cell(curations_count)="{ item }">{{ item.curations_count || 0 }}</template>
             <template #cell(users_count)="{ item }">{{ item.users_count || 0 }}</template>
             <template #cell(actions)="{ item }">
-                <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
+                <div class="d-flex flex-wrap gap-2">
+                    <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
+                    <b-button v-if="canViewRevisions" size="sm" variant="outline-primary" @click="revisionRecord = item">Revisions</b-button>
+                </div>
             </template>
         </b-table>
         <b-pagination v-if="totalRows > perPage" v-model="currentPage" :total-rows="totalRows" :per-page="perPage" />
@@ -65,11 +75,14 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import RevisionHistory from './RevisionHistory.vue'
 
 const store = useStore()
 const user = computed(() => store.getters.getUser)
 const canCreate = computed(() => user.value.hasPermission('create expert-panels'))
 const canUpdate = computed(() => user.value.hasPermission('update expert-panels'))
+const canViewRevisions = computed(() => user.value.hasPermission('list expert-panels'))
+const revisionRecord = ref(null)
 const fields = computed(() => {
     const values = [
         { key: 'name', label: 'Name', sortable: true },
@@ -78,7 +91,7 @@ const fields = computed(() => {
         { key: 'curations_count', label: 'Curations', sortable: true },
         { key: 'users_count', label: 'Members', sortable: true },
     ]
-    if (canUpdate.value) values.push({ key: 'actions', label: 'Actions' })
+    if (canViewRevisions.value || canUpdate.value) values.push({ key: 'actions', label: 'Actions' })
     return values
 })
 

@@ -60,13 +60,11 @@
                         <div class="col-md-4">
                             <button type="button" class="btn btn-secondary" @click="router.push('/curations')">Cancel</button>
                         </div>
-                        <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-end">
+                        <div v-if="!updatedCuration.is_archived || user.canManageArchive()" class="col-md-8 text-end d-flex justify-content-end gap-2">
                             <button type="button" class="btn btn-secondary" id="curation" @click="updateCuration()">Save</button>
                             <button v-if="nextStep" type="button" class="btn btn-secondary" @click="updateCuration(exit)">Save &amp; exit</button>
-                            <b-button variant="primary" @click="updateCuration(navBack, 'back')" v-show="currentStepIdx > 0">Back</b-button>
-                            <b-button variant="primary" @click="updateCuration(navNext, 'next')">
-                                {{ (!nextStep) ? 'Save and exit' : 'Next'}}
-                            </b-button>
+                            <b-button v-show="currentStepIdx > 0" variant="primary" @click="updateCuration(navBack, 'back')">Back</b-button>
+                            <b-button variant="primary" @click="updateCuration(navNext, 'next')">{{ !nextStep ? 'Save and exit' : 'Next' }}</b-button>
                         </div>
                     </div>
                 </b-form>

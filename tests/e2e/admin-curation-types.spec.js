@@ -306,6 +306,57 @@ test.describe('Curation Type administration', () => {
         }
     })
 
+    test('a saved user name change appears in read-only revision history', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        const email = 'e2e-managed-user@example.com'
+        const originalName = 'E2E Managed User'
+        const updatedName = 'E2E Revision History User'
+        let savedUser
+
+        try {
+            await page.goto('/home#/admin/users')
+            const row = page.getByRole('row').filter({ hasText: email })
+            await expect(row).toContainText(originalName)
+            await row.getByRole('button', { name: 'Edit', exact: true }).click()
+            await page.getByLabel('Name', { exact: true }).fill(updatedName)
+            const saved = page.waitForResponse(response => (
+                new URL(response.url()).pathname.startsWith('/api/admin/users/')
+                && response.request().method() === 'PUT'
+            ))
+            await page.getByRole('button', { name: 'Save Changes', exact: true }).click()
+            const response = await saved
+            expect(response.status()).toBe(200)
+            savedUser = await response.json()
+            await expect(row).toContainText(updatedName)
+
+            const loaded = page.waitForResponse(response => (
+                new URL(response.url()).pathname === `/api/admin/users/${savedUser.id}/revisions`
+            ))
+            await row.getByRole('button', { name: 'Revisions', exact: true }).click()
+            expect((await loaded).status()).toBe(200)
+            const history = page.getByRole('region', { name: `Revisions: ${updatedName}` })
+            const change = history.getByRole('row').filter({ hasText: updatedName }).first()
+            await expect(change.getByRole('cell', { name: 'Name', exact: true })).toBeVisible()
+            await expect(change.getByRole('cell', { name: originalName, exact: true })).toBeVisible()
+            await expect(change.getByRole('cell', { name: updatedName, exact: true })).toBeVisible()
+            await expect(change.getByRole('cell').nth(3)).toHaveText('Super User')
+            await expect(change.getByRole('cell').nth(4)).not.toBeEmpty()
+            await history.getByRole('button', { name: 'Close Revisions' }).click()
+            await expect(history).toHaveCount(0)
+            assertNoApplicationErrors()
+        } finally {
+            if (savedUser) {
+                await page.evaluate(async user => {
+                    await window.axios.put(`/api/admin/users/${user.id}`, {
+                        name: 'E2E Managed User', email: user.email,
+                        role_ids: user.roles.map(role => role.id),
+                        permission_ids: user.permissions.map(permission => permission.id),
+                    })
+                }, savedUser)
+            }
+        }
+    })
+
     test('privileged user can update and restore a deterministic user account lifecycle', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         const email = 'e2e-managed-user@example.com'

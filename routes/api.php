@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\OutdatedPhenotypeReportController;
 use App\Http\Controllers\Api\EmailAdminController;
 use App\Http\Controllers\Api\NotificationAdminController;
 use App\Http\Controllers\Api\ApiClientAdminController;
+use App\Http\Controllers\Api\AdminRevisionController;
 
 Route::middleware('client')->prefix("client/v1")->group(function () {
     // Diseases
@@ -80,6 +81,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/curation-types', CurationTypeController::class)->only(['index']);
 
     Route::prefix('admin')->middleware('role:admin|programmer')->group(function () {
+        Route::get('/users/{user}/revisions', [AdminRevisionController::class, 'users']);
+        Route::get('/expert-panels/{expertPanel}/revisions', [AdminRevisionController::class, 'expertPanels']);
+        Route::get('/affiliations/{affiliation}/revisions', [AdminRevisionController::class, 'affiliations']);
         Route::get('/dashboard', [OutdatedPhenotypeReportController::class, 'dashboard']);
         Route::get('/reports/outdated-phenotypes', [OutdatedPhenotypeReportController::class, 'phenotypes']);
         Route::get('/reports/outdated-curations', [OutdatedPhenotypeReportController::class, 'curations']);

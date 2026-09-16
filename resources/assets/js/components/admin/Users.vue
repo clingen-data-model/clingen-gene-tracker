@@ -10,6 +10,13 @@
         <b-alert v-model="showSuccess" variant="success" dismissible>{{ successMessage }}</b-alert>
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
 
+        <RevisionHistory
+            v-if="revisionRecord"
+            :endpoint="`/api/admin/users/${revisionRecord.id}/revisions`"
+            :name="revisionRecord.name"
+            @close="revisionRecord = null"
+        />
+
         <b-card v-if="editing" class="mb-4" title="Edit User">
             <b-form @submit.prevent="save">
                 <b-form-group label="Name" label-for="user-name">
@@ -54,7 +61,8 @@
             </template>
             <template #cell(expert_panels_count)="{ item }">{{ item.expert_panels_count || 0 }}</template>
             <template #cell(actions)="{ item }">
-                <div class="d-flex gap-2">
+                <div class="d-flex flex-wrap gap-2">
+                    <b-button v-if="canViewRevisions" size="sm" variant="outline-primary" @click="revisionRecord = item">Revisions</b-button>
                     <b-button v-if="canUpdate" size="sm" variant="outline-primary" @click="startEdit(item)">Edit</b-button>
                     <b-button
                         v-if="canDeactivate && !item.deactivated_at"
@@ -78,11 +86,14 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import RevisionHistory from './RevisionHistory.vue'
 
 const store = useStore()
 const currentUser = computed(() => store.getters.getUser)
 const canUpdate = computed(() => currentUser.value.hasPermission('update users'))
 const canDeactivate = computed(() => currentUser.value.hasPermission('deactivate users'))
+const canViewRevisions = computed(() => currentUser.value.hasPermission('list users'))
+const revisionRecord = ref(null)
 const fields = computed(() => {
     const values = [
         { key: 'name', label: 'Name', sortable: true },
@@ -91,7 +102,7 @@ const fields = computed(() => {
         { key: 'status', label: 'Status', sortable: true },
         { key: 'expert_panels_count', label: 'Expert Panels', sortable: true },
     ]
-    if (canUpdate.value || canDeactivate.value) values.push({ key: 'actions', label: 'Actions' })
+    if (canViewRevisions.value || canUpdate.value || canDeactivate.value) values.push({ key: 'actions', label: 'Actions' })
     return values
 })
 
