@@ -1,10 +1,14 @@
 <style>
     .criteria-table {
-        font-size: .8em;
+        font-size: .95em;
+        line-height: 1.4;
+    }
+    .criteria-table small {
+        font-size: inherit;
     }
 </style>
 <template>
-    <div class="criteria-table" style="line-height: 1">
+    <div class="criteria-table">
         <table class="table table-bordered">
             <thead>
                 <tr><th>Criteria</th><th>Question</th></tr>

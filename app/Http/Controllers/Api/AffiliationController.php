@@ -14,8 +14,13 @@ class AffiliationController extends Controller
         abort_unless($request->user()->hasAnyRole(['admin', 'programmer']), 403);
 
         $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
+        $search = trim($request->validate(['search' => ['nullable', 'string', 'max:200']])['search'] ?? '');
 
         return Affiliation::query()
+            ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
+                ->where('name', 'like', '%'.$search.'%')
+                ->orWhere('short_name', 'like', '%'.$search.'%')
+                ->orWhere('clingen_id', 'like', '%'.$search.'%')))
             ->with([
                 'type:id,name',
                 'parent:id,name,short_name,clingen_id',

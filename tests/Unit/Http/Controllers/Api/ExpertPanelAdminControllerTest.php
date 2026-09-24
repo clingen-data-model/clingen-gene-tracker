@@ -73,18 +73,20 @@ class ExpertPanelAdminControllerTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function authorized_user_can_create_and_update_only_local_fields(): void
+    public function authorized_user_can_create_and_update_local_fields_and_existing_affiliation(): void
     {
         $firstGroup = factory(WorkingGroup::class)->create();
         $secondGroup = factory(WorkingGroup::class)->create();
         $affiliation = factory(Affiliation::class)->create(['clingen_id' => 40100]);
         $otherAffiliation = factory(Affiliation::class)->create(['clingen_id' => 40101]);
+        $affiliation->refresh();
+        $otherAffiliation->refresh();
 
         $created = $this->actingAs($this->programmer, 'api')->postJson('/api/admin/expert-panels', [
             'name' => 'Created Expert Panel',
             'working_group_id' => $firstGroup->id,
             'affiliation_id' => $affiliation->id,
-        ])->assertCreated()->assertJsonPath('affiliation_id', null)->json();
+        ])->assertCreated()->assertJsonPath('affiliation_id', $affiliation->id)->json();
 
         $member = factory(User::class)->create();
         $createdPanel = ExpertPanel::findOrFail($created['id']);
@@ -98,7 +100,8 @@ class ExpertPanelAdminControllerTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('name', 'Updated Expert Panel')
             ->assertJsonPath('working_group_id', $secondGroup->id)
-            ->assertJsonPath('affiliation_id', $affiliation->id)
+            ->assertJsonPath('affiliation_id', $otherAffiliation->id)
+            ->assertJsonPath('affiliation.clingen_id', 40101)
             ->assertJsonPath('users_count', 1);
 
         $this->assertDatabaseHas('expert_panel_user', [
@@ -106,6 +109,8 @@ class ExpertPanelAdminControllerTest extends TestCase
             'user_id' => $member->id,
             'is_curator' => 1,
         ]);
+        $this->assertSame($affiliation->getAttributes(), $affiliation->fresh()->getAttributes());
+        $this->assertSame($otherAffiliation->getAttributes(), $otherAffiliation->fresh()->getAttributes());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]

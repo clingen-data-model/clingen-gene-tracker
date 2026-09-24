@@ -2,7 +2,7 @@
     .search-select-component {
         position: relative;
         overflow: visible;
-        height: 2.5rem
+        min-height: 2.5rem
     }
 
     .search-select-container {
@@ -62,7 +62,10 @@
     }
 
     .result-container {
-        position:relative;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 10;
     }
 
     .option-list {
@@ -99,10 +102,17 @@
                         {{modelValue}}
                     </slot>
                 </label>  
-                <button @click="removeSelection()" :disabled="disabled">x</button>
+                <button type="button" :aria-label="`Clear ${ariaLabel || 'selection'}`" @click="removeSelection()" :disabled="disabled">x</button>
             </div>
             <input 
                 type="text" 
+                :id="inputId"
+                role="combobox"
+                :aria-label="ariaLabel || placeholder || 'Search options'"
+                :aria-expanded="hasOptions"
+                :aria-controls="listId"
+                :aria-activedescendant="hasOptions && cursorPosition !== null ? `${listId}-${cursorPosition}` : undefined"
+                aria-autocomplete="list"
                 v-model="searchText" 
                 ref="input" 
                 class="input" 
@@ -114,12 +124,14 @@
             >
         </div>
         <div v-show="hasOptions" class="result-container">
-            <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
+            <ul :id="listId" role="listbox" class="option-list" :style="`max-height: ${optionsListHeight}px`">
                 <li v-for="(opt, idx) in filteredOptions" 
                     :key="idx" 
                     class="filtered-option"
                     :class="{highlighted: (idx === cursorPosition)}"
-                    :id="`option-${idx}`"
+                    :id="`${listId}-${idx}`"
+                    role="option"
+                    :aria-selected="idx === cursorPosition"
                     @click="setSelection(opt)"
                 >
                     <slot :option="opt" :index="idx" name="option">{{opt}}</slot>
@@ -129,7 +141,7 @@
     </div>
 </template>
 <script setup>
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, useId, watch } from 'vue'
 import { debounce } from 'lodash'
 
 function inView(elem)
@@ -152,6 +164,8 @@ function inView(elem)
 }
 
 const props = defineProps({
+    inputId: { type: String, default: undefined },
+    ariaLabel: { type: String, default: '' },
     throttle: {
         required: false,
         type: Number,
@@ -188,6 +202,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const input = ref(null)
+const listId = useId()
 const searchText = ref('')
 const cursorPosition = ref(null)
 const filteredOptions = ref([])
@@ -253,6 +268,9 @@ function resetCursor() {
 }
 
 function startKeydownTimer(evt) {
+    if (showingOptions.value && ['Enter', 'ArrowUp', 'ArrowDown', 'Escape'].includes(evt.key)) {
+        evt.preventDefault()
+    }
     if (evt.key == currentKey.value) {
         return
     }
@@ -318,8 +336,8 @@ function handleKeyEvent(evt) {
 }
 
 function scrollToHighlightedOption() {
-    const option = document.getElementById('option-' + cursorPosition.value)
-    if (!inView(option)) {
+    const option = document.getElementById(`${listId}-${cursorPosition.value}`)
+    if (option && !inView(option)) {
         option.scrollIntoView()
     }
 }

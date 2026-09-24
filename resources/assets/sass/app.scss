@@ -2,6 +2,7 @@
 @use 'transitions';
 @use 'bootstrap/scss/bootstrap' as * with (
     $body-bg: app.$body-bg,
+    $card-bg: #fff,
     $font-family-sans-serif: app.$font-family-sans-serif,
     $font-size-base: app.$font-size-base,
     $line-height-base: app.$line-height-base

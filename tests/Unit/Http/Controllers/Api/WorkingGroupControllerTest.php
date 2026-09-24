@@ -40,7 +40,23 @@ class WorkingGroupControllerTest extends TestCase
         $this->withoutExceptionHandling();
         $response = $this->actingAs($this->user, 'api')
             ->call('GET', '/api/working-groups/');
-        $this->assertEquals($this->groups->toArray(), $response->original->toArray());
+        $this->assertEquals($this->groups->loadCount('expertPanels')->toArray(), $response->original->toArray());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function index_counts_expert_panels_without_loading_them()
+    {
+        factory(\App\ExpertPanel::class, 3)->create(['working_group_id' => $this->group->id]);
+
+        $response = $this->actingAs($this->user, 'api')->getJson('/api/working-groups');
+        $response->assertOk();
+        $groups = collect($response->json())->keyBy('id');
+
+        $this->assertSame(3, $groups[$this->group->id]['expert_panels_count']);
+        $this->assertSame(0, $groups[$this->groups->get(1)->id]['expert_panels_count']);
+        foreach ($response->original as $group) {
+            $this->assertFalse($group->relationLoaded('expertPanels'));
+        }
     }
 
     /**

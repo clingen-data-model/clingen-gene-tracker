@@ -66,7 +66,7 @@ describe('Expert Panel administration', () => {
         expect(wrapper.text()).not.toContain('Delete')
     })
 
-    it('creates and updates name and Working Group without sending affiliation', async () => {
+    it('creates and updates name and Working Group with an explicit empty affiliation', async () => {
         window.axios.get.mockImplementation(url => Promise.resolve({ data: url === '/api/working-groups'
             ? [{ id: 7, name: 'Selectable Working Group' }]
             : { data: [], total: 0 } }))
@@ -85,20 +85,20 @@ describe('Expert Panel administration', () => {
         await buttonByText(wrapper, 'Add Expert Panel').trigger('click')
         await wrapper.get('#expert-panel-name').setValue('Created Expert Panel')
         await wrapper.get('#expert-panel-working-group').setValue('7')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(window.axios.post).toHaveBeenCalledWith('/api/admin/expert-panels', {
-            name: 'Created Expert Panel', working_group_id: 7,
+            name: 'Created Expert Panel', working_group_id: 7, affiliation_id: null,
         })
 
         await buttonByText(wrapper, 'Edit').trigger('click')
-        expect(wrapper.text()).toContain('Affiliation linkage cannot be changed')
+        expect(wrapper.get('input[placeholder="Search Affiliations by name or ClinGen ID"]').exists()).toBe(true)
         await wrapper.get('#expert-panel-name').setValue('Updated Expert Panel')
         await wrapper.get('#expert-panel-working-group').setValue('')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(window.axios.put).toHaveBeenCalledWith('/api/admin/expert-panels/8', {
-            name: 'Updated Expert Panel', working_group_id: null,
+            name: 'Updated Expert Panel', working_group_id: null, affiliation_id: null,
         })
     })
 
@@ -110,7 +110,7 @@ describe('Expert Panel administration', () => {
         await flushPromises()
 
         await buttonByText(wrapper, 'Add Expert Panel').trigger('click')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(wrapper.text()).toContain('The name field is required.')
         expect(wrapper.text()).not.toContain('Delete')

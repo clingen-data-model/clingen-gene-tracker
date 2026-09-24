@@ -60,6 +60,11 @@ const fields = [
     {
         key: 'name',
         sortable: true
+    },
+    {
+        key: 'expert_panels_count',
+        label: 'Expert Panels',
+        sortable: true
     }
 ]
 

@@ -4,46 +4,12 @@
             <h1 class="h4">Administration</h1>
             <nav class="nav flex-column" aria-label="Administration">
                 <router-link class="nav-link" :to="{ name: 'admin-index' }">Dashboard</router-link>
-                <router-link class="nav-link" :to="{ name: 'admin-outdated-phenotypes' }">
-                    Outdated Phenotype Labels
-                </router-link>
                 <router-link
-                    v-if="user.hasPermission('list curation-types')"
+                    v-if="user.hasPermission('list users')"
                     class="nav-link"
-                    :to="{ name: 'admin-curation-types' }"
+                    :to="{ name: 'admin-users' }"
                 >
-                    Curation Types
-                </router-link>
-                <router-link
-                    v-if="user.hasPermission('list rationales')"
-                    class="nav-link"
-                    :to="{ name: 'admin-rationales' }"
-                >
-                    Rationales
-                </router-link>
-                <router-link
-                    v-if="user.hasPermission('list curation-statuses')"
-                    class="nav-link"
-                    :to="{ name: 'admin-curation-statuses' }"
-                >
-                    Curation Statuses
-                </router-link>
-                <router-link class="nav-link" :to="{ name: 'admin-upload-categories' }">
-                    Upload Categories
-                </router-link>
-                <router-link
-                    v-if="user.hasPermission('list mois')"
-                    class="nav-link"
-                    :to="{ name: 'admin-mois' }"
-                >
-                    Modes of Inheritance
-                </router-link>
-                <router-link
-                    v-if="user.hasPermission('list working-groups')"
-                    class="nav-link"
-                    :to="{ name: 'admin-working-groups' }"
-                >
-                    Working Groups
+                    Users
                 </router-link>
                 <router-link
                     v-if="user.hasPermission('list expert-panels')"
@@ -56,15 +22,49 @@
                     Affiliations
                 </router-link>
                 <router-link
-                    v-if="user.hasPermission('list users')"
+                    v-if="user.hasPermission('list working-groups')"
                     class="nav-link"
-                    :to="{ name: 'admin-users' }"
+                    :to="{ name: 'admin-working-groups' }"
                 >
-                    Users
+                    Working Groups
                 </router-link>
+                <router-link
+                    v-if="user.hasPermission('list curation-types')"
+                    class="nav-link"
+                    :to="{ name: 'admin-curation-types' }"
+                >
+                    Curation Types
+                </router-link>
+                <router-link
+                    v-if="user.hasPermission('list curation-statuses')"
+                    class="nav-link"
+                    :to="{ name: 'admin-curation-statuses' }"
+                >
+                    Curation Statuses
+                </router-link>
+                <router-link
+                    v-if="user.hasPermission('list rationales')"
+                    class="nav-link"
+                    :to="{ name: 'admin-rationales' }"
+                >
+                    Rationales
+                </router-link>
+                <router-link
+                    v-if="user.hasPermission('list mois')"
+                    class="nav-link"
+                    :to="{ name: 'admin-mois' }"
+                >
+                    Modes of Inheritance
+                </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-upload-categories' }">
+                    Upload Categories
+                </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-outdated-phenotypes' }">
+                    Outdated Phenotype Labels
+                </router-link>
+                <router-link class="nav-link" :to="{ name: 'admin-api-clients' }">API Clients</router-link>
                 <router-link class="nav-link" :to="{ name: 'admin-emails' }">Emails</router-link>
                 <router-link class="nav-link" :to="{ name: 'admin-notifications' }">Notifications</router-link>
-                <router-link class="nav-link" :to="{ name: 'admin-api-clients' }">API Clients</router-link>
             </nav>
         </aside>
         <section class="col-md-9 col-lg-10">

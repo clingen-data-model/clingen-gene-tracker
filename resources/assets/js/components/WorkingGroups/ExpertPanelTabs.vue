@@ -28,7 +28,8 @@ function getUserRoles(user) {
             <template #title>
                 People &nbsp;<span class="badge rounded-pill bg-primary">{{ activeMembers.length }}</span>
             </template>
-            <table class="table table-striped">
+            <div class="table-responsive">
+            <table class="table table-striped w-100">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -44,6 +45,7 @@ function getUserRoles(user) {
                     </tr>
                 </tbody>
             </table>
+            </div>
         </b-tab>
         <b-tab>
             <template #title>

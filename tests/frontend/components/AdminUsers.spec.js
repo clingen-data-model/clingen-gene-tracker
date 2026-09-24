@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import registerBootstrapVueNext from '../../../resources/assets/js/bootstrap-vue-next'
 import AdminUsers from '../../../resources/assets/js/components/admin/Users.vue'
+import SearchSelect from '../../../resources/assets/js/components/forms/SearchSelect.vue'
 
 function userWith(...permissions) {
     return { hasPermission: permission => permissions.includes(permission) }
@@ -43,11 +44,58 @@ beforeEach(() => {
             ? { roles: [{ id: 2, name: 'viewer' }], permissions: [{ id: 9, name: 'list curations' }] }
             : { data: [managedUser], total: 30 } })),
         put: vi.fn(),
+        post: vi.fn(),
         patch: vi.fn(),
     }
 })
 
 describe('User administration', () => {
+    it('creates a user with roles, permissions and membership flags without a password field', async () => {
+        const panel = { id: 42, name: 'Selectable Expert Panel' }
+        window.axios.get.mockImplementation(url => Promise.resolve({ data: url.endsWith('/options')
+            ? { roles: managedUser.roles, permissions: managedUser.permissions, expert_panels: [panel] }
+            : { data: [], total: 0 } }))
+        window.axios.post.mockResolvedValue({ data: managedUser })
+        const wrapper = mountPage(userWith('list users', 'create users'))
+        await flushPromises()
+        await buttonByText(wrapper, 'Add User').trigger('click')
+        expect(wrapper.text()).toContain('Create User')
+        expect(wrapper.find('input[type="password"]').exists()).toBe(false)
+        await wrapper.get('#user-name').setValue('Managed User')
+        await wrapper.get('#user-email').setValue('managed@example.com')
+        await wrapper.get('#user-roles').setValue(['2'])
+        await wrapper.get('#user-permissions').setValue(['9'])
+        await buttonByText(wrapper, 'Add Expert Panel').trigger('click')
+        wrapper.getComponent(SearchSelect).vm.$emit('update:modelValue', panel)
+        await flushPromises()
+        const flags = wrapper.findAll('input[type="checkbox"]')
+        await flags[0].setValue(true)
+        await flags[2].setValue(true)
+        await wrapper.get('form:not([role="search"])').trigger('submit')
+        await flushPromises()
+        expect(window.axios.post).toHaveBeenCalledWith('/api/admin/users', {
+            name: 'Managed User', email: 'managed@example.com', role_ids: [2], permission_ids: [9],
+            expert_panels: [{ id: 42, is_curator: true, is_coordinator: false, can_edit_curations: true }],
+        })
+        expect(window.axios.put).not.toHaveBeenCalled()
+        expect(wrapper.text()).toContain('User created successfully.')
+        wrapper.unmount()
+    })
+
+    it('keeps the create form and input when validation fails', async () => {
+        window.axios.post.mockRejectedValue({ response: { status: 422, data: { errors: { email: ['The email has already been taken.'] } } } })
+        const wrapper = mountPage(userWith('list users', 'create users'))
+        await flushPromises()
+        await buttonByText(wrapper, 'Add User').trigger('click')
+        await wrapper.get('#user-email').setValue('duplicate@example.com')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
+        await flushPromises()
+        expect(wrapper.text()).toContain('The email has already been taken.')
+        expect(wrapper.get('#user-email').element.value).toBe('duplicate@example.com')
+        expect(buttonByText(wrapper, 'Create User').exists()).toBe(true)
+        wrapper.unmount()
+    })
+
     it('requests server pages when pagination changes', async () => {
         const wrapper = mountPage(userWith('list users'))
         await flushPromises()
@@ -73,14 +121,14 @@ describe('User administration', () => {
         expect(wrapper.text()).not.toContain('Delete')
     })
 
-    it('updates identity, roles, and direct permissions without a membership payload', async () => {
+    it('updates identity, roles, and direct permissions with an explicit membership payload', async () => {
         window.axios.put.mockResolvedValue({ data: { ...managedUser, name: 'Updated Managed User' } })
         const wrapper = mountPage(userWith('list users', 'update users'))
         await flushPromises()
 
         await buttonByText(wrapper, 'Edit').trigger('click')
         await wrapper.get('#user-name').setValue('Updated Managed User')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
 
         expect(window.axios.put).toHaveBeenCalledWith('/api/admin/users/7', {
@@ -88,8 +136,9 @@ describe('User administration', () => {
             email: 'managed@example.com',
             role_ids: [2],
             permission_ids: [9],
+            expert_panels: [],
         })
-        expect(window.axios.put.mock.calls[0][1]).not.toHaveProperty('expert_panels')
+        expect(window.axios.put.mock.calls[0][1].expert_panels).toEqual([])
         expect(window.axios.put.mock.calls[0][1]).not.toHaveProperty('affiliations')
         expect(wrapper.text()).toContain('User updated successfully.')
     })
@@ -102,7 +151,7 @@ describe('User administration', () => {
         await flushPromises()
 
         await buttonByText(wrapper, 'Edit').trigger('click')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(wrapper.text()).toContain('The email has already been taken.')
     })

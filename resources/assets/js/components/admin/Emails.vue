@@ -2,6 +2,7 @@
     <div>
         <h2>Email Log</h2>
         <p class="text-muted">Read-only records of mail sent by the application.</p>
+        <AdminSearch placeholder="Subject, sender or recipient" @search="applySearch" />
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
         <b-card v-if="selected" class="mb-4" title="Email Details">
             <dl class="row mb-0">
@@ -30,6 +31,7 @@
 </template>
 
 <script setup>
+import AdminSearch from './AdminSearch.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import EmailBodyPreview from './EmailBodyPreview.vue'
 
@@ -38,6 +40,7 @@ const fields = [
     { key: 'to', label: 'To' }, { key: 'subject', label: 'Subject' }, { key: 'actions', label: 'Actions' },
 ]
 const emails = ref([])
+const search = ref('')
 const loading = ref(true)
 const selected = ref(null)
 const currentPage = ref(1)
@@ -55,7 +58,7 @@ function dateTime(value) { return value ? new Date(value).toLocaleString() : 'â€
 async function load() {
     loading.value = true
     try {
-        const response = await window.axios.get('/api/admin/emails', { params: { page: currentPage.value, per_page: perPage } })
+        const response = await window.axios.get('/api/admin/emails', { params: { page: currentPage.value, per_page: perPage, ...(search.value ? { search: search.value } : {}) } })
         emails.value = response.data.data
         totalRows.value = response.data.total
     } catch (error) { errorMessage.value = error.response?.data?.message || 'Unable to load emails.' }
@@ -66,5 +69,11 @@ async function view(item) {
     catch (error) { errorMessage.value = error.response?.data?.message || 'Unable to load the email.' }
 }
 watch(currentPage, load)
+function applySearch(value) {
+    search.value = value
+    if (currentPage.value !== 1) currentPage.value = 1
+    else load()
+}
+
 onMounted(load)
 </script>

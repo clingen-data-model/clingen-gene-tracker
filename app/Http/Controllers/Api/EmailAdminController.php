@@ -11,7 +11,14 @@ class EmailAdminController extends Controller
     public function index(Request $request)
     {
         $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
-        $emails = Email::query()->orderByDesc('created_at')->orderByDesc('id')->paginate($perPage);
+        $search = trim($request->validate(['search' => ['nullable', 'string', 'max:200']])['search'] ?? '');
+        $emails = Email::query()
+            ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
+                ->where('subject', 'like', '%'.$search.'%')
+                ->orWhereRaw('LOWER(`from`) LIKE ?', ['%'.mb_strtolower($search).'%'])
+                ->orWhereRaw('LOWER(`sender`) LIKE ?', ['%'.mb_strtolower($search).'%'])
+                ->orWhereRaw('LOWER(`to`) LIKE ?', ['%'.mb_strtolower($search).'%'])))
+            ->orderByDesc('created_at')->orderByDesc('id')->paginate($perPage);
         $emails->getCollection()->transform(fn (Email $email) => $this->serialize($email));
 
         return $emails;

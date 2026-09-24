@@ -20,7 +20,6 @@
                             <div class="form-group">
                                 <label><strong>How would you like to proceed?</strong></label>
                                 <b-form-radio-group id="btnradios2"
-                                    size="lg"
                                     v-model="updatedCuration.curation_type_id"
                                     :options="options"
                                     stacked

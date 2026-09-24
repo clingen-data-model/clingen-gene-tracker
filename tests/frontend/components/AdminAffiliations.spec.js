@@ -75,7 +75,7 @@ describe('Affiliation administration', () => {
         expect(wrapper.text()).toContain('ClinGen identity, names, types, and hierarchy are synchronized externally')
         expect(wrapper.text()).toContain('Canonical Affiliation')
         await wrapper.get('#affiliation-short-name').setValue('Updated')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
 
         expect(window.axios.put).toHaveBeenCalledWith('/api/admin/affiliations/7', { short_name: 'Updated' })
@@ -93,7 +93,7 @@ describe('Affiliation administration', () => {
         expect(wrapper.find('input[name="clingen_id"]').exists()).toBe(false)
         expect(wrapper.find('select[name="affiliation_type_id"]').exists()).toBe(false)
         expect(wrapper.find('select[name="parent_id"]').exists()).toBe(false)
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(wrapper.text()).toContain('The short name is too long.')
     })

@@ -1,17 +1,9 @@
 <style scoped>
-    .phenotype {
-        color: #666;
-        margin-bottom: .5rem;
-    }
-    .phenotype.curated {
-        color: #000;
-    }
-    .phenotypes-table {
-        width: 100%;
-        table-layout: fixed;
-    }
-    .phenotypes-table th {
-        width: calc(50% - 3rem);
+    :deep(tr.gene-result > td) {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--bs-border-color);
+        vertical-align: top;
     }
     .phenotypes-table th:first-child {
         width: 6rem;
@@ -24,8 +16,9 @@
         </div>
         <div class="card-body">
             <p class="text-grey">
-                Look OMIM phenotypes for genes by gene symbol.
+                Look up OMIM phenotypes for genes by gene symbol.
             </p>
+            <p class="text-muted">OMIM data last updated: {{ omimUpdatedDate }}</p>
             <div class="alert alert-danger" v-if="formErrors.length > 0">
                 <ul class="mb-0">
                     <li v-for="(msg, idx) in formErrors" :key="idx">{{msg}}</li>
@@ -41,33 +34,34 @@
 
 
             <div v-if="results.length > 0">
-                <h5>Curations:</h5>
+                <h5>Genes and phenotypes:</h5>
                 <b-table 
                     :fields="fields" 
                     :items="filteredResults"
                     primary-key="id"
-                    bordered
+                    responsive
+                    tbody-tr-class="gene-result"
                     show-empty
                     :empty-text="emptyText"
                     :busy="loadingResults"
-                    :small="true"
-                    class="text-small"
-                    striped
                 >
                     <template #table-busy>
                         <div class="text-center">
-                            Looking for curations...
+                            Looking for phenotypes...
                         </div>
+                    </template>
+                    <template #cell(gene_symbol)="{value}">
+                        <strong>{{ value }}</strong>
                     </template>
                     <template v-slot:cell(phenotypes)="{value}">
                         <strong v-if="value.length == 0" class="mb-3 d-block">
                             No OMIM phenotypes were found for this gene.
                         </strong>
-                        <table class="table phenotypes-table w-100" v-else>
+                        <table class="table table-borderless table-sm phenotypes-table mb-0" v-else>
                             <thead>
                                 <tr>
-                                    <th width="10%">OMIM ID</th>
-                                    <th width="45%">Name</th>
+                                    <th>OMIM ID</th>
+                                    <th>Name</th>
                                     <th>MOI</th>
                                 </tr>
                             </thead>
@@ -86,7 +80,9 @@
     </div>
 </template>
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import moment from 'moment'
+import { formatDate } from '../filters'
 import LookupForm from './Curations/BulkLookup/LookupForm.vue'
 
 const geneSymbols = ref('')
@@ -98,6 +94,22 @@ const fields = [
 const loadingResults = ref(false)
 const filters = reactive({ gene: [] })
 const formErrors = ref([])
+const omimUpdatedAt = ref(null)
+const omimUpdatedDate = computed(() => {
+    const value = omimUpdatedAt.value
+    return typeof value === 'string' && moment(value, moment.ISO_8601, true).isValid()
+        ? formatDate(value, 'MMMM D, YYYY')
+        : 'Unknown'
+})
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('/api/omim/genemap-status')
+        omimUpdatedAt.value = response.data.last_genemap_download
+    } catch {
+        omimUpdatedAt.value = null
+    }
+})
 
 const emptyText = computed(() => 'Add comma speparated gene symbols in the textarea to do a bulk lookup')
 const filteredResults = computed(() => JSON.parse(JSON.stringify(results.value)))

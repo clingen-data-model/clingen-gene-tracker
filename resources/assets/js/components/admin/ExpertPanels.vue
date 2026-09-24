@@ -6,8 +6,9 @@
         </div>
 
         <p class="text-muted">
-            Affiliation identity is managed separately and is read-only here. Memberships are managed through users.
+            Select an existing Affiliation. Its identity fields are managed separately. Memberships are managed through users.
         </p>
+        <AdminSearch placeholder="Panel name, affiliation or ClinGen ID" @search="applySearch" />
         <b-alert v-model="showSuccess" variant="success" dismissible>{{ successMessage }}</b-alert>
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
 
@@ -38,9 +39,13 @@
                         {{ message }}
                     </b-form-invalid-feedback>
                 </b-form-group>
-                <b-form-group v-if="editing.id" class="mt-3" label="Affiliation">
-                    <b-form-input :model-value="affiliationLabel(editing.affiliation)" disabled />
-                    <div class="form-text">Affiliation linkage cannot be changed from Expert Panel administration.</div>
+                <b-form-group class="mt-3" label="Affiliation" label-for="expert-panel-affiliation">
+                    <SearchSelect input-id="expert-panel-affiliation" aria-label="Affiliation" v-model="form.affiliation"
+                        :options="affiliations" :search-function="searchAffiliations" :disabled="saving" placeholder="Search Affiliations by name or ClinGen ID">
+                        <template #selection-label="{ selection }">{{ affiliationLabel(selection) }}</template>
+                        <template #option="{ option }">{{ affiliationLabel(option) }}</template>
+                    </SearchSelect>
+                    <div v-for="message in validationErrors.affiliation_id || []" :key="message" class="text-danger">{{ message }}</div>
                 </b-form-group>
                 <div class="mt-3">
                     <b-button type="submit" variant="primary" :disabled="saving">
@@ -73,9 +78,11 @@
 </template>
 
 <script setup>
+import AdminSearch from './AdminSearch.vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import RevisionHistory from './RevisionHistory.vue'
+import SearchSelect from '../forms/SearchSelect.vue'
 
 const store = useStore()
 const user = computed(() => store.getters.getUser)
@@ -100,10 +107,12 @@ const currentPage = ref(1)
 const perPage = 25
 const totalRows = ref(0)
 const workingGroups = ref([])
+const affiliations = ref([])
+const search = ref('')
 const loading = ref(true)
 const saving = ref(false)
 const editing = ref(null)
-const form = reactive({ name: '', working_group_id: null })
+const form = reactive({ name: '', working_group_id: null, affiliation: null })
 const validationErrors = ref({})
 const successMessage = ref('')
 const errorMessage = ref('')
@@ -121,20 +130,26 @@ function affiliationLabel(affiliation) {
 }
 function fieldState(field) { return validationErrors.value[field]?.length ? false : null }
 function clearMessages() { validationErrors.value = {}; successMessage.value = ''; errorMessage.value = '' }
-function startCreate() { clearMessages(); editing.value = {}; form.name = ''; form.working_group_id = null }
-function startEdit(panel) { clearMessages(); editing.value = panel; form.name = panel.name; form.working_group_id = panel.working_group_id }
+function startCreate() { clearMessages(); editing.value = {}; form.name = ''; form.working_group_id = null; form.affiliation = null }
+function startEdit(panel) { clearMessages(); editing.value = panel; form.name = panel.name; form.working_group_id = panel.working_group_id; form.affiliation = panel.affiliation || null }
+function searchAffiliations(value, options) {
+    const query = value.trim().toLowerCase()
+    return query ? options.filter(affiliation => `${affiliationLabel(affiliation)} ${affiliation.short_name || ''}`.toLowerCase().includes(query)) : []
+}
 function cancelEdit() { editing.value = null; validationErrors.value = {} }
 
 async function loadData() {
     loading.value = true
     try {
-        const [panelsResponse, groupsResponse] = await Promise.all([
-            window.axios.get('/api/admin/expert-panels', { params: { page: currentPage.value, per_page: perPage } }),
+        const [panelsResponse, groupsResponse, optionsResponse] = await Promise.all([
+            window.axios.get('/api/admin/expert-panels', { params: { page: currentPage.value, per_page: perPage, ...(search.value ? { search: search.value } : {}) } }),
             window.axios.get('/api/working-groups'),
+            window.axios.get('/api/admin/expert-panels/options'),
         ])
         expertPanels.value = panelsResponse.data.data
         totalRows.value = panelsResponse.data.total
         workingGroups.value = groupsResponse.data
+        affiliations.value = optionsResponse.data.affiliations || []
     } catch (error) {
         errorMessage.value = error.response?.data?.message || 'Unable to load expert panels.'
     } finally {
@@ -145,7 +160,7 @@ async function loadData() {
 async function save() {
     clearMessages()
     saving.value = true
-    const payload = { name: form.name, working_group_id: form.working_group_id ?? null }
+    const payload = { name: form.name, working_group_id: form.working_group_id ?? null, affiliation_id: form.affiliation?.id ?? null }
     try {
         if (editing.value.id) {
             const response = await window.axios.put(`/api/admin/expert-panels/${editing.value.id}`, payload)
@@ -168,5 +183,11 @@ async function save() {
 }
 
 watch(currentPage, loadData)
+function applySearch(value) {
+    search.value = value
+    if (currentPage.value !== 1) currentPage.value = 1
+    else loadData()
+}
+
 onMounted(loadData)
 </script>

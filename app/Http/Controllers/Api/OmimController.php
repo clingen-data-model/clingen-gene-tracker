@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Clients\OmimClient as Omim;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OmimGeneRequest;
+use Illuminate\Support\Facades\DB;
 
 class OmimController extends Controller
 {
@@ -19,6 +20,18 @@ class OmimController extends Controller
     public function __construct(OmimClient $client)
     {
         $this->omim = $client;
+    }
+
+    public function genemapStatus()
+    {
+        // Read the stored value without the AppState date cast, which can throw
+        // for invalid data. The lookup UI displays Unknown in that case.
+        return [
+            'last_genemap_download' => DB::table('app_states')
+                ->where('id', 1)
+                ->where('name', 'last_genemap_download')
+                ->value('value'),
+        ];
     }
 
     /**

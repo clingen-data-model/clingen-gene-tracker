@@ -5,6 +5,7 @@
             <b-button v-if="canCreate" variant="primary" @click="startCreate">Add Working Group</b-button>
         </div>
 
+        <AdminSearch placeholder="Working Group name" @search="applySearch" />
         <b-alert v-model="showSuccess" variant="success" dismissible>{{ successMessage }}</b-alert>
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
 
@@ -64,6 +65,7 @@
 </template>
 
 <script setup>
+import AdminSearch from './AdminSearch.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 
@@ -82,6 +84,7 @@ const fields = computed(() => {
 })
 
 const workingGroups = ref([])
+const search = ref('')
 const loading = ref(true)
 const saving = ref(false)
 const editing = ref(null)
@@ -111,7 +114,7 @@ function clearMessages() {
 async function loadWorkingGroups() {
     loading.value = true
     try {
-        const response = await window.axios.get('/api/admin/working-groups')
+        const response = await window.axios.get('/api/admin/working-groups', { params: search.value ? { search: search.value } : {} })
         workingGroups.value = response.data
     } catch (error) {
         errorMessage.value = error.response?.data?.message || 'Unable to load working groups.'
@@ -175,6 +178,11 @@ async function remove(workingGroup) {
     } catch (error) {
         errorMessage.value = error.response?.data?.message || 'Unable to delete the working group.'
     }
+}
+
+function applySearch(value) {
+    search.value = value
+    loadWorkingGroups()
 }
 
 onMounted(loadWorkingGroups)

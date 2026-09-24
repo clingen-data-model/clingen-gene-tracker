@@ -164,11 +164,10 @@ class UserAdminControllerTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function creation_and_deletion_are_not_admin_operations(): void
+    public function deletion_is_not_an_admin_operation(): void
     {
         $target = factory(User::class)->create();
 
-        $this->actingAs($this->programmer, 'api')->postJson('/api/admin/users', [])->assertStatus(405);
         $this->actingAs($this->programmer, 'api')->deleteJson("/api/admin/users/{$target->id}")->assertStatus(405);
         $this->assertDatabaseHas('users', ['id' => $target->id, 'deleted_at' => null]);
     }

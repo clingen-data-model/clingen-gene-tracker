@@ -1,26 +1,6 @@
 <template>
-  <div class="border p-3">
-    <div class="d-flex mb-3">
-      <button
-        type="button"
-        class="btn btn-sm me-2"
-        :class="currentTab === 'manual' ? 'btn-primary' : 'btn-light border'"
-        @click="currentTab = 'manual'"
-      >
-        Manual entry
-      </button>
-
-      <button
-        type="button"
-        class="btn btn-sm"
-        :class="currentTab === 'csv' ? 'btn-primary' : 'btn-light border'"
-        @click="currentTab = 'csv'"
-      >
-        CSV Upload
-      </button>
-    </div>
-
-    <div v-if="currentTab === 'manual'">
+  <b-tabs vertical pills card class="border lookup-form" v-model:index="numericCurrentTab" nav-wrapper-class="align-self-stretch" content-class="lookup-form-content">
+    <b-tab title="Manual entry" title-link-class="text-start">
       <label for="gene-symbol-input">Gene Symbols:</label>
       &nbsp;
       <textarea
@@ -34,7 +14,7 @@
         @input="$emit('update:modelValue', $event.target.value)"
       />
 
-      <div class="mt-1">
+      <div class="mt-1 d-flex flex-wrap gap-2">
         <button
           type="button"
           class="btn btn-sm btn-light border"
@@ -53,15 +33,15 @@
 
         <button
           type="button"
-          class="btn btn-primary btn-sm float-end"
+          class="btn btn-primary btn-sm ms-auto"
           @click="$emit('getCsv')"
         >
           Get CSV
         </button>
       </div>
-    </div>
+    </b-tab>
 
-    <div v-if="currentTab === 'csv'">
+    <b-tab title="CSV Upload" title-link-class="text-start">
       <div>
         <label for="csv-upload">CSV file: </label>
         <input
@@ -88,7 +68,7 @@
         </div>
       </div>
 
-      <div class="mt-2">
+      <div class="mt-2 d-flex flex-wrap gap-2">
         <button
           type="button"
           class="btn btn-primary btn-sm"
@@ -99,14 +79,14 @@
 
         <button
           type="button"
-          class="btn btn-primary btn-sm float-end"
+          class="btn btn-primary btn-sm ms-auto"
           @click="$emit('getCsv')"
         >
           Get CSV
         </button>
       </div>
-    </div>
-  </div>
+    </b-tab>
+  </b-tabs>
 </template>
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
@@ -120,10 +100,10 @@ const fileInput = ref(null)
 
 const numericCurrentTab = computed({
   get() {
-    return parseInt(currentTab.value)
+    return currentTab.value === 'csv' ? 1 : 0
   },
   set(value) {
-    currentTab.value = value
+    currentTab.value = value === 1 ? 'csv' : 'manual'
   }
 })
 
@@ -165,3 +145,18 @@ onMounted(() => {
   currentTab.value = ['manual', 'csv'].includes(storedTab) ? storedTab : 'manual'
 })
 </script>
+
+<style scoped>
+:deep(.lookup-form-content) {
+  flex: 1;
+  min-width: 0;
+}
+@media (max-width: 575.98px) {
+  .lookup-form {
+    flex-direction: column;
+  }
+  :deep(.lookup-form-content) {
+    width: 100%;
+  }
+}
+</style>

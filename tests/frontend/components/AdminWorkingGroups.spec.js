@@ -62,13 +62,13 @@ describe('Working Group administration', () => {
 
         await buttonByText(wrapper, 'Add Working Group').trigger('click')
         await wrapper.get('#working-group-name').setValue('Created Group')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(window.axios.post).toHaveBeenCalledWith('/api/admin/working-groups', { name: 'Created Group' })
 
         await buttonByText(wrapper, 'Edit').trigger('click')
         await wrapper.get('#working-group-name').setValue('Updated Group')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(window.axios.put).toHaveBeenCalledWith('/api/admin/working-groups/8', { name: 'Updated Group' })
         expect(wrapper.text()).toContain('Working group updated successfully.')
@@ -92,7 +92,7 @@ describe('Working Group administration', () => {
         await flushPromises()
 
         await buttonByText(wrapper, 'Add Working Group').trigger('click')
-        await wrapper.get('form').trigger('submit')
+        await wrapper.get('form:not([role="search"])').trigger('submit')
         await flushPromises()
         expect(wrapper.text()).toContain('The name field is required.')
 

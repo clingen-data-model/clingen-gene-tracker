@@ -14,11 +14,18 @@ class WorkingGroupController extends ApiController
 {
     protected $modelClass = WorkingGroup::class;
 
+    protected function getBaseQuery()
+    {
+        return parent::getBaseQuery()->withCount('expertPanels');
+    }
+
     public function adminIndex(Request $request)
     {
         abort_unless($request->user()->hasPermissionTo('list working-groups'), 403);
+        $search = trim($request->validate(['search' => ['nullable', 'string', 'max:200']])['search'] ?? '');
 
         return WorkingGroup::query()
+            ->when($search !== '', fn ($query) => $query->where('name', 'like', '%'.$search.'%'))
             ->withCount('expertPanels')
             ->orderBy('name')
             ->get();

@@ -17,7 +17,7 @@ class UserRequest extends FormRequest
     {
         return $this->user()
             && $this->user()->hasAnyRole(['admin', 'programmer'])
-            && $this->user()->hasPermissionTo('update users');
+            && $this->user()->hasPermissionTo($this->isMethod('post') ? 'create users' : 'update users');
     }
 
     /**
@@ -45,6 +45,12 @@ class UserRequest extends FormRequest
                 Rule::exists('roles', 'id')->where('guard_name', 'web'),
             ],
             'permission_ids' => ['present', 'array'],
+            'expert_panels' => ['sometimes', 'array'],
+            'expert_panels.*' => ['array:id,is_curator,is_coordinator,can_edit_curations'],
+            'expert_panels.*.id' => ['required', 'integer', 'distinct', Rule::exists('expert_panels', 'id')],
+            'expert_panels.*.is_curator' => ['required', 'boolean'],
+            'expert_panels.*.is_coordinator' => ['required', 'boolean'],
+            'expert_panels.*.can_edit_curations' => ['required', 'boolean'],
             'permission_ids.*' => [
                 'integer',
                 'distinct',

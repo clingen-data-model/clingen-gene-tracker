@@ -12,6 +12,12 @@ class E2ECurationsSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::table('app_states')->where('id', 1)->where('name', 'last_genemap_download')
+            ->update(['value' => '2026-09-23 12:00:00']);
+
+        // Link the existing deterministic panels for Working Group detail coverage.
+        DB::table('expert_panels')->whereIn('id', [5, 6])->update(['working_group_id' => 16]);
+
         File::put(
             storage_path('logs/e2e-admin-viewer.log'),
             "[2026-09-04 12:00:00] testing.INFO: Deterministic E2E log viewer entry\n"

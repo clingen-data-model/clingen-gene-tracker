@@ -111,6 +111,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/working-groups', [WorkingGroupController::class, 'store']);
         Route::put('/working-groups/{working_group}', [WorkingGroupController::class, 'update']);
         Route::delete('/working-groups/{working_group}', [WorkingGroupController::class, 'destroy']);
+        Route::get('/expert-panels/options', [ExpertPanelController::class, 'adminOptions']);
         Route::get('/expert-panels', [ExpertPanelController::class, 'adminIndex']);
         Route::post('/expert-panels', [ExpertPanelController::class, 'adminStore']);
         Route::put('/expert-panels/{expert_panel}', [ExpertPanelController::class, 'adminUpdate']);
@@ -118,6 +119,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::put('/affiliations/{affiliation}', [AffiliationController::class, 'adminUpdate']);
         Route::get('/users/options', [UserController::class, 'adminOptions']);
         Route::get('/users', [UserController::class, 'adminIndex']);
+        Route::post('/users', [UserController::class, 'adminStore']);
         Route::put('/users/{user}', [UserController::class, 'adminUpdate']);
         Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate']);
         Route::patch('/users/{user}/reactivate', [UserController::class, 'reactivate']);
@@ -141,6 +143,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/bulk-lookup/csv', [BulkLookupController::class, 'download']);
 
     // OMIM
+    Route::get('/omim/genemap-status', [OmimController::class, 'genemapStatus']);
     Route::get('/omim/entry', [OmimController::class, 'entry']);
     Route::get('/omim/search', [OmimController::class, 'search']);
     Route::get('/omim/gene/{geneSymbol}', [OmimController::class, 'gene']);

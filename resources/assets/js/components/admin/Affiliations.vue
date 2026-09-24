@@ -6,6 +6,7 @@
             Only the local short name can be edited here.
         </p>
 
+        <AdminSearch placeholder="Name, short name or ClinGen ID" @search="applySearch" />
         <b-alert v-model="showSuccess" variant="success" dismissible>{{ successMessage }}</b-alert>
         <b-alert v-model="showError" variant="danger" dismissible>{{ errorMessage }}</b-alert>
 
@@ -67,6 +68,7 @@
 </template>
 
 <script setup>
+import AdminSearch from './AdminSearch.vue'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import RevisionHistory from './RevisionHistory.vue'
@@ -93,6 +95,7 @@ const affiliations = ref([])
 const currentPage = ref(1)
 const perPage = 25
 const totalRows = ref(0)
+const search = ref('')
 const loading = ref(true)
 const saving = ref(false)
 const editing = ref(null)
@@ -111,7 +114,7 @@ function cancelEdit() { editing.value = null; validationErrors.value = {} }
 async function loadAffiliations() {
     loading.value = true
     try {
-        const response = await window.axios.get('/api/admin/affiliations', { params: { page: currentPage.value, per_page: perPage } })
+        const response = await window.axios.get('/api/admin/affiliations', { params: { page: currentPage.value, per_page: perPage, ...(search.value ? { search: search.value } : {}) } })
         affiliations.value = response.data.data
         totalRows.value = response.data.total
     } catch (error) {
@@ -141,5 +144,11 @@ async function save() {
 }
 
 watch(currentPage, loadAffiliations)
+function applySearch(value) {
+    search.value = value
+    if (currentPage.value !== 1) currentPage.value = 1
+    else loadAffiliations()
+}
+
 onMounted(loadAffiliations)
 </script>

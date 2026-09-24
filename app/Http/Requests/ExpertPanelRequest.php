@@ -48,6 +48,7 @@ class ExpertPanelRequest extends FormRequest
                 'nullable',
                 Rule::exists('working_groups', 'id')->whereNull('deleted_at'),
             ],
+            'affiliation_id' => ['nullable', 'integer', Rule::exists('affiliations', 'id')->whereNull('deleted_at')],
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Notification;
+use App\User;
 use Illuminate\Http\Request;
 
 class NotificationAdminController extends Controller
@@ -11,7 +12,12 @@ class NotificationAdminController extends Controller
     public function index(Request $request)
     {
         $perPage = min(max((int) $request->input('per_page', 25), 1), 100);
+        $search = trim($request->validate(['search' => ['nullable', 'string', 'max:200']])['search'] ?? '');
         $notifications = Notification::query()
+            ->when($search !== '', fn ($query) => $query->where(fn ($query) => $query
+                ->where('type', 'like', '%'.$search.'%')
+                ->orWhereHasMorph('notifiable', [User::class], fn ($query) => $query
+                    ->where('name', 'like', '%'.$search.'%')->orWhere('email', 'like', '%'.$search.'%'))))
             ->with('notifiable')
             ->orderByDesc('created_at')
             ->orderByDesc('id')

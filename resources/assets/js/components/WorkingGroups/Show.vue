@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 import { useStore } from 'vuex'
 import ExpertPanelTabs from './ExpertPanelTabs.vue'
@@ -7,6 +7,11 @@ import ExpertPanelTabs from './ExpertPanelTabs.vue'
 const props = defineProps(['id'])
 const store = useStore()
 const loading = ref(false)
+const activePanelIndex = ref(0)
+
+watch(() => props.id, () => {
+    activePanelIndex.value = 0
+})
 
 const groups = computed(() => store.getters['workingGroups/Items'])
 const group = computed(() => {
@@ -49,8 +54,8 @@ onMounted(() => {
           <h4 class="mb-0">Expert Panels</h4>
           <a v-if="group.id" class="btn btn-outline-primary btn-sm" :href="`/working-groups/${group.id}/export`">Download WG Export</a>
         </div>
-        <b-tabs pills card vertical v-show="hasPanels" nav-wrapper-class="w-25">
-          <b-tab v-for="panel in group.expert_panels" :key="panel.id" :title="panel.name" lazy>
+        <b-tabs v-if="hasPanels" :key="group.id" v-model:index="activePanelIndex" pills card vertical nav-wrapper-class="w-25" content-class="expert-panel-content">
+          <b-tab v-for="panel in group.expert_panels" :key="panel.id" :title="panel.name" title-link-class="text-start" lazy>
             <ExpertPanelTabs :expert-panel="panel" />
           </b-tab>
         </b-tabs>
@@ -64,3 +69,10 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(.expert-panel-content) {
+    flex: 1;
+    min-width: 0;
+}
+</style>
