@@ -30,5 +30,9 @@
     },
     "dependencies": {
         "autotrack": "^2.4.1"
+    },
+    "allowScripts": {
+        "@parcel/watcher@2.6.0": true,
+        "vue-demi@0.14.10": true
     }
 }

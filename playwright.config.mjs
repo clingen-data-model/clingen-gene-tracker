@@ -11,6 +11,7 @@ const e2eEnvironment = {
     SESSION_COOKIE: 'genetracker_e2e_session',
     CACHE_DRIVER: 'array',
     QUEUE_CONNECTION: 'sync',
+    MAIL_MAILER: 'array',
     DX_ENABLE_PUSH: 'false',
     TRANSFERS_ENABLED: 'true',
 }
