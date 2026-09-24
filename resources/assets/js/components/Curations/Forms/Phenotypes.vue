@@ -141,8 +141,7 @@ const showRationale = true
                     <label for="rationale_id">What is your rationale for this curation?</label>
                     <select v-model="updatedCuration.rationales" 
                         multiple class="form-control" 
-                        row="8"
-                        style="height: 8.5em"
+                        size="7"
                     >
                         <option v-for="rationale in rationales" :key="rationale.id"
                             :value="rationale"
@@ -171,7 +170,7 @@ const showRationale = true
                 </div>
                 <div class="form-group">
                     <label for="rationale_notes">Provide your Rationale:</label>
-                    <textarea id="rationale_notes" v-model="updatedCuration.rationale_notes" class="form-control" rows="4"></textarea>
+                    <textarea id="rationale_notes" v-model="updatedCuration.rationale_notes" class="form-control" rows="3"></textarea>
                     <validation-error :messages="errors.rationale_notes"></validation-error>
                 </div>
             </div>

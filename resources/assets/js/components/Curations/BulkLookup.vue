@@ -35,9 +35,7 @@
                 <strong>
                     No curations found for {{ notFoundGenes.length }} {{ notFoundGenes.length === 1 ? 'gene' : 'genes' }}:
                 </strong>
-                <div class="mt-2">
-                    <span v-for="gene in notFoundGenes" :key="gene" class="badge bg-light text-dark border me-1 mb-1">{{ gene }}</span>
-                </div>
+                <span v-for="gene in notFoundGenes" :key="gene" class="badge bg-light text-dark border me-1 mb-1">{{ gene }}</span>
             </div>
             <div v-if="results.length > 0">
                 <h5>Curations:</h5>
