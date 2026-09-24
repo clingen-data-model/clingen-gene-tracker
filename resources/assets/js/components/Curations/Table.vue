@@ -32,15 +32,11 @@
                             >
                                 Clear
                             </button>
-                            <div class="form-check form-check-inline ms-2">
-                              <input
-                                id="exclude-archived"
-                                v-model="excludeArchived"
-                                type="checkbox"
-                                class="form-check-input"
-                              />
-                              <label for="exclude-archived" class="form-check-label">Exclude archived</label>
-                            </div>
+                            <select id="archive-filter" v-model="archiveFilter" class="form-select form-select-sm archive-filter ms-2" aria-label="Archived curations">
+                                <option value="exclude">Exclude archived</option>
+                                <option value="include">Include archived</option>
+                                <option value="only">Only archived</option>
+                            </select>
                     </div>
                 </div>
 
@@ -158,6 +154,14 @@
                     </delete-button>
                 </div>
             </template>
+            <template #cell(id)="{ item }">
+                <div>
+                    <strong>Precuration ID:</strong> {{ item.id }}
+                    <div v-if="item.gdm_uuid" class="text-muted small">
+                        <strong>GCI UUID:</strong> {{ item.gdm_uuid || '—' }}
+                    </div>
+                </div>
+            </template>
         </b-table>
         <div class="row border-top pt-4">
             <div class="col-md-6">Total Records: {{totalRows}}</div>
@@ -222,9 +226,10 @@ const advancedFilters = ref({
     expert_panel: '',
     curator: '',
     current_status: '',
+    gdm_uuid_status: '',
     id: ''
 })
-const excludeArchived = ref(false)
+const archiveFilter = ref('exclude')
 let refreshPending = false
 const fields = [
                 {
@@ -293,6 +298,22 @@ const fields = [
                     advancedFilter: { type: 'text' }
                 },
                 {
+                    key: 'gdm_uuid_status',
+                    label: 'GCI UUID',
+                    sortable: false,
+                    filterable: true,
+                    thClass: 'd-none',
+                    tdClass: 'd-none',
+                    advancedFilter: {
+                        type: 'select',
+                        options: [
+                            { value: '', text: 'Any' },
+                            { value: 'has', text: 'Has GCI UUID' },
+                            { value: 'none', text: 'No GCI UUID' }
+                        ]
+                    }
+                },
+                {
                     key: 'actions',
                     label: '',
                     sortable: false,
@@ -304,13 +325,13 @@ const user = computed(() => store.getters.getUser)
 const loading = computed(() => false)
 const filterableFields = computed(() => fields.filter(field => field.filterable))
 const hasActiveFilters = computed(() => {
+    if (archiveFilter.value !== 'exclude') {
+        return true
+    }
     if (filter.value && filter.value.trim() !== '') {
         return true
     }
-
-    return Object.values(advancedFilters.value).some(value => (
-        value !== null && value !== undefined && String(value).trim() !== ''
-    ))
+    return Object.values(advancedFilters.value).some(value => (value !== null && value !== undefined && String(value).trim() !== ''))
 })
 const activeFilterCount = computed(() => Object.values(advancedFilters.value).filter(value => (
     value !== null && value !== undefined && String(value).trim() !== ''
@@ -326,7 +347,7 @@ function curationProvider(ctx) {
         sortDesc: sort?.order === 'desc',
         ...props.searchParams,
         filters: JSON.stringify(advancedFilters.value),
-        exclude_archived: excludeArchived.value ? 1 : 0
+        archive_filter: archiveFilter.value
     }
 
     return getPageOfCurations(context).then(response => {
@@ -337,7 +358,7 @@ function curationProvider(ctx) {
 
 function clearFilters() {
     filter.value = null
-    excludeArchived.value = false
+    archiveFilter.value = 'exclude'
     advancedFilters.value = {
         gene_symbol: '',
         mode_of_inheritance: '',
@@ -345,6 +366,7 @@ function clearFilters() {
         expert_panel: '',
         curator: '',
         current_status: '',
+        gdm_uuid_status: '',
         id: ''
     }
     resetCurrentPage()
@@ -393,7 +415,7 @@ watch(filter, (to, from) => {
         refreshTable()
     }
 })
-watch(excludeArchived, () => {
+watch(archiveFilter, () => {
     resetCurrentPage()
     refreshTable()
 })
@@ -462,5 +484,9 @@ defineExpose({
 }
 .action-buttons {
     gap: 0.3rem;
+}
+.archive-filter {
+    flex: 0 0 160px;
+    width: 160px;
 }
 </style>

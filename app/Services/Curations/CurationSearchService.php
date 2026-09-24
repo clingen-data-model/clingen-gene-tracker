@@ -137,6 +137,8 @@ class CurationSearchService implements SearchService
 
         $query->where(function ($q) use ($filter) {
             $q->where('curations.gene_symbol', 'like', '%' . $filter . '%')
+                ->orWhere('curations.uuid', 'like', '%' . $filter . '%')
+                ->orWhere('curations.gdm_uuid', 'like', '%' . $filter . '%')
                 ->orWhere('expert_panels.name', 'like', '%' . $filter . '%')
                 ->orWhere('users.name', 'like', '%' . $filter . '%')
                 ->orWhere('curations.hgnc_name', 'like', '%' . $filter . '%')
@@ -169,41 +171,19 @@ class CurationSearchService implements SearchService
     {
         switch ($field) {
             case 'gene_symbol':
-                $query->where(
-                    'curations.gene_symbol',
-                    'like',
-                    '%' . $filter . '%'
-                );
+                $query->where('curations.gene_symbol', 'like', '%' . $filter . '%');
                 break;
-
             case 'expert_panel':
-                $query->where(
-                    'expert_panels.name',
-                    'like',
-                    '%' . $filter . '%'
-                );
+                $query->where('expert_panels.name', 'like', '%' . $filter . '%');
                 break;
-
             case 'curator':
-                $query->where(
-                    'users.name',
-                    'like',
-                    '%' . $filter . '%'
-                );
+                $query->where('users.name', 'like', '%' . $filter . '%');
                 break;
-
             case 'hgnc_name':
-                $query->where(
-                    'curations.hgnc_name',
-                    'like',
-                    '%' . $filter . '%'
-                );
+                $query->where('curations.hgnc_name', 'like', '%' . $filter . '%');
                 break;
-
             default:
-                throw new Exception(
-                    'Unknown filter field ' . $field
-                );
+                throw new Exception('Unknown filter field ' . $field);
         }
     }
 
@@ -280,6 +260,16 @@ class CurationSearchService implements SearchService
                 });
                 break;
 
+            case 'gdm_uuid_status':
+                if ($value === 'has') {
+                    $query->whereNotNull('curations.gdm_uuid')->where('curations.gdm_uuid', '!=', '');
+                } elseif ($value === 'none') {
+                    $query->where(function ($q) {
+                        $q->whereNull('curations.gdm_uuid')->orWhere('curations.gdm_uuid', '');
+                    });
+                }
+                break;
+
             default:
                 throw new Exception('Unknown advanced filter ' . $field);
         }
@@ -287,9 +277,32 @@ class CurationSearchService implements SearchService
 
     private function applyArchiveFilter($query, $params)
     {
+        if (isset($params['archive_filter'])) {
+            switch ($params['archive_filter']) {
+                case 'exclude':
+                    $query->whereNull('curations.archived_at');
+                    break;
+
+                case 'only':
+                    $query->whereNotNull('curations.archived_at');
+                    break;
+
+                case 'include':
+                    // No archive restriction.
+                    break;
+            }
+
+            return;
+        }
+
+        // Backward compatibility for existing callers.
         $excludeArchived = $params['exclude_archived'] ?? false;
 
-        if ((string) $excludeArchived === '1' || $excludeArchived === true || (string) $excludeArchived === 'true') {
+        if (
+            (string) $excludeArchived === '1'
+            || $excludeArchived === true
+            || (string) $excludeArchived === 'true'
+        ) {
             $query->whereNull('curations.archived_at');
         }
     }
