@@ -1,0 +1,1 @@
+import{K as e,U as t,at as n,tt as r}from"./ui-vendor-Cglh0kQH.js";import{r as i}from"./app-m9aXicoL.js";var a={},o={id:`working-groups-container`};function s(i,a){let s=n(`router-view`);return r(),t(`div`,o,[e(s)])}var c=i(a,[[`render`,s]]);export{c as default};
