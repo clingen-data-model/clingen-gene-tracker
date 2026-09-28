@@ -22,7 +22,7 @@ const environment = {
 
 const server = spawn(
     'php',
-    ['-S', '127.0.0.1:8013', '-t', 'public', 'scripts/e2e-server.php'],
+    ['-d', 'upload_max_filesize=6M', '-d', 'post_max_size=8M', '-S', '127.0.0.1:8013', '-t', 'public', 'scripts/e2e-server.php'],
     { env: environment, stdio: ['ignore', 'inherit', 'inherit'] },
 )
 

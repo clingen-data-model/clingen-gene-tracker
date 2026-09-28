@@ -32,7 +32,7 @@ export default defineConfig({
         screenshot: 'only-on-failure',
     },
     webServer: process.env.PLAYWRIGHT_EXTERNAL_SERVER ? undefined : {
-        command: 'php -S 127.0.0.1:8013 -t public scripts/e2e-server.php',
+        command: 'php -d upload_max_filesize=6M -d post_max_size=8M -S 127.0.0.1:8013 -t public scripts/e2e-server.php',
         url: `${baseURL}/login`,
         env: e2eEnvironment,
         reuseExistingServer: false,

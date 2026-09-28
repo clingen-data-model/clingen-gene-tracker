@@ -61,17 +61,7 @@ if (!function_exists('logDebug')) {
 if (!function_exists('getMaxUploadSize')) {
     function getMaxUploadSize()
     {
-        $multipliers = [
-            'g' => 1000000,
-            'm' => 1000,
-            'k' => 1,
-        ];
-
-        $iniSize = ini_get('upload_max_filesize');
-        $unit = strtolower(substr($iniSize, -1));
-        $size = (int) substr($iniSize, 0, strlen($iniSize) - 1);
-
-        return $size * ($multipliers[$unit]);
+        return (int) config('project.max-upload-size-kb');
     }
 }
 
@@ -79,14 +69,14 @@ if (!function_exists('getMaxUploadSizeForHumans')) {
     function getMaxUploadSizeForHumans()
     {
         $max = getMaxUploadSize();
-        if ($max >= 1000000) {
-            return (string) ($max / 1000000).'GB';
+        if ($max >= 1024 * 1024) {
+            return (string) ($max / (1024 * 1024)).' GB';
         }
-        if ($max >= 1000) {
-            return (string) ($max / 1000).'MB';
+        if ($max >= 1024) {
+            return (string) ($max / 1024).' MB';
         }
 
-        return (string) $max.'KB';
+        return (string) $max.' KB';
     }
 }
 

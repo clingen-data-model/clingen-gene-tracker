@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // File validation uses kilobytes (6 * 1024).
+    'max-upload-size-kb' => 6144,
     'curation-types' => [
         'single-omim' => 'Curate a single gene-disease entity from this list',
         'single-new' => 'Curate a single gene-disease entity not on this list',

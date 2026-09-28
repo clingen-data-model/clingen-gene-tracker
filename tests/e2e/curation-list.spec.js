@@ -47,9 +47,12 @@ test.describe('authenticated curation list', () => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         await openCurationList(page)
 
-        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
+        await expect(page.getByLabel('Archived curations')).toHaveValue('exclude')
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
+        await expect(page.getByRole('link', { name: 'E2E-BRAVO', exact: true })).toBeVisible()
         await expect(page.getByRole('link', { name: 'E2E-JULIET', exact: true })).toBeVisible()
-        await expect(page.getByText('Total Records: 12')).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-KILO', exact: true })).toBeVisible()
+        await expect(page.getByText('Total Records: 11', { exact: true })).toBeVisible()
 
         const search = page.getByPlaceholder('Search curations by gene, disease, curator, status, or ID')
         const searched = waitForCurationList(page)
@@ -58,14 +61,15 @@ test.describe('authenticated curation list', () => {
 
         await expect(page.getByRole('link', { name: 'E2E-FOXTROT', exact: true })).toBeVisible()
         await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
-        await expect(page.getByText('Total Records: 1')).toBeVisible()
+        await expect(page.getByText('Total Records: 1', { exact: true })).toBeVisible()
 
         const restored = waitForCurationList(page)
         await page.getByRole('button', { name: 'Clear' }).click()
         await restored
 
-        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
-        await expect(page.getByText('Total Records: 12')).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
+        await expect(page.getByRole('link', { name: 'E2E-BRAVO', exact: true })).toBeVisible()
+        await expect(page.getByText('Total Records: 11', { exact: true })).toBeVisible()
         assertNoApplicationErrors()
     })
 
@@ -93,24 +97,32 @@ test.describe('authenticated curation list', () => {
         await panelFilter.fill('Epilepsy GCEP')
         await filtered
 
-        await expect(page.getByText('Total Records: 6')).toBeVisible()
-        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
+        await expect(page.getByText('Total Records: 5', { exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
         await expect(page.getByRole('link', { name: 'E2E-BRAVO', exact: true })).toHaveCount(0)
 
         const archivedFiltered = waitForCurationList(page)
-        await page.getByLabel('Exclude archived').check()
+        await page.getByLabel('Archived curations').selectOption('include')
         await archivedFiltered
 
-        await expect(page.getByText('Total Records: 5')).toBeVisible()
-        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
+        await expect(page.getByText('Total Records: 6', { exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
+
+        const onlyArchived = waitForCurationList(page)
+        await page.getByLabel('Archived curations').selectOption('only')
+        await onlyArchived
+        await expect(page.getByText('Total Records: 1', { exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-CHARLIE', exact: true })).toHaveCount(0)
 
         const restored = waitForCurationList(page)
         await page.getByRole('button', { name: 'Clear' }).click()
         await restored
 
-        await expect(page.getByText('Total Records: 12')).toBeVisible()
-        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toBeVisible()
-        await expect(page.getByLabel('Exclude archived')).not.toBeChecked()
+        await expect(page.getByText('Total Records: 11', { exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
+        await expect(page.getByLabel('Archived curations')).toHaveValue('exclude')
+        await expect(panelFilter).toHaveValue('')
         assertNoApplicationErrors()
     })
 
@@ -122,13 +134,45 @@ test.describe('authenticated curation list', () => {
         await page.getByRole('menuitem', { name: 'Go to page 2' }).first().click()
         await secondPage
 
-        await expect(page.getByRole('link', { name: 'E2E-KILO', exact: true })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'E2E-KILO', exact: true })).toHaveCount(0)
         await expect(page.getByRole('link', { name: 'E2E-LIMA', exact: true })).toBeVisible()
         await expect(page.getByRole('link', { name: 'E2E-ALPHA', exact: true })).toHaveCount(0)
 
         await page.getByRole('link', { name: 'E2E-LIMA', exact: true }).click()
         await expect(page).toHaveURL(/\/home#\/curations\/9112$/)
         await expect(page.getByRole('heading', { name: /Curation: E2E-LIMA/ })).toBeVisible()
+        assertNoApplicationErrors()
+    })
+
+    test('searches GCI UUIDs, filters their presence, and displays them with Precuration ID', async ({ page, baseURL }) => {
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        const uuid = '10000000-0000-4000-8000-000000009103'
+        await openCurationList(page)
+        const searched = waitForCurationList(page)
+        await page.getByPlaceholder('Search curations by gene, disease, curator, status, or ID').fill(uuid)
+        await searched
+        await expect(page.getByText('Total Records: 1', { exact: true })).toBeVisible()
+        const row = page.getByRole('row').filter({ has: page.getByRole('link', { name: 'E2E-CHARLIE', exact: true }) })
+        const identifiers = row.getByRole('cell').filter({ hasText: 'Precuration ID:' })
+        await expect(identifiers).toContainText('9103')
+        await expect(identifiers).toContainText(`GCI UUID: ${uuid}`)
+        const cleared = waitForCurationList(page)
+        await page.getByRole('button', { name: 'Clear', exact: true }).click()
+        await cleared
+        await page.getByRole('button', { name: 'More filters' }).click()
+        const gciStatus = page.getByRole('combobox').filter({ has: page.getByRole('option', { name: 'Has GCI UUID', exact: true }) })
+        for (const [status, count] of [['has', 1], ['none', 10]]) {
+            const filtered = waitForCurationList(page)
+            await gciStatus.selectOption(status)
+            await filtered
+            await expect(page.getByText(`Total Records: ${count}`, { exact: true })).toBeVisible()
+            await expect(page.getByRole('link', { name: 'E2E-CHARLIE', exact: true })).toHaveCount(status === 'has' ? 1 : 0)
+        }
+        const restored = waitForCurationList(page)
+        await page.getByRole('button', { name: 'Clear', exact: true }).click()
+        await restored
+        await expect(gciStatus).toHaveValue('')
+        await expect(page.getByText('Total Records: 11', { exact: true })).toBeVisible()
         assertNoApplicationErrors()
     })
 })

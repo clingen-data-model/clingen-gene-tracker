@@ -87,14 +87,14 @@ describe('Curations/Table provider contract', () => {
                 working_group_id: 9,
                 perPage: 50,
                 sortBy: 'id',
-                exclude_archived: 99,
+                archive_filter: 'only',
             },
         })
 
         await wrapper.find('button').trigger('click')
         const advancedInputs = wrapper.findAll('.toolbar-filters input')
         await advancedInputs[0].setValue('BRCA')
-        await wrapper.find('#exclude-archived').setValue(true)
+        await wrapper.find('#archive-filter').setValue('include')
         await nextTick()
         refresh.mockClear()
 
@@ -121,9 +121,10 @@ describe('Curations/Table provider contract', () => {
                 expert_panel: '',
                 curator: '',
                 current_status: '',
+                gdm_uuid_status: '',
                 id: '',
             }),
-            exclude_archived: 1,
+            archive_filter: 'include',
         })
         expect(result).toBe(rows)
         expect(wrapper.text()).toContain('Total Records: 37')
@@ -146,7 +147,7 @@ describe('Curations/Table provider contract', () => {
             filter: null,
             sortBy: 'mondo_id',
             sortDesc: false,
-            exclude_archived: 0,
+            archive_filter: 'exclude',
         }))
         wrapper.unmount()
     })
@@ -182,10 +183,10 @@ describe('Curations/Table provider contract', () => {
         await nextTick()
 
         const searchInput = wrapper.find('input[placeholder^="Search curations"]')
-        const archiveInput = wrapper.find('#exclude-archived')
+        const archiveInput = wrapper.find('#archive-filter')
         searchInput.element.value = 'BRCA'
         searchInput.element.dispatchEvent(new Event('input'))
-        archiveInput.element.checked = true
+        archiveInput.element.value = 'only'
         archiveInput.element.dispatchEvent(new Event('change'))
 
         await nextTick()
@@ -194,6 +195,38 @@ describe('Curations/Table provider contract', () => {
         expect(table.props('currentPage')).toBe(1)
         expect(refresh).toHaveBeenCalledOnce()
 
+        wrapper.unmount()
+    })
+
+    it.each(['exclude', 'include', 'only'])('sends the %s archive state to the provider', async state => {
+        getPageOfCurations.mockResolvedValue({ data: { data: [], meta: { total: 0 } } })
+        const wrapper = mountTable()
+        await wrapper.get('#archive-filter').setValue(state)
+        await wrapper.getComponent(BTableStub).props('provider')({ currentPage: 1, perPage: 10, sortBy: [] })
+        expect(getPageOfCurations).toHaveBeenLastCalledWith(expect.objectContaining({ archive_filter: state }))
+        wrapper.unmount()
+    })
+
+    it('sends GCI UUID status and clears it along with archive and keyword filters', async () => {
+        getPageOfCurations.mockResolvedValue({ data: { data: [], meta: { total: 0 } } })
+        const wrapper = mountTable()
+        await wrapper.find('button').trigger('click')
+        const gciStatus = wrapper.findAll('.toolbar-filters select').find(select => select.text().includes('Has GCI UUID'))
+        const provider = wrapper.getComponent(BTableStub).props('provider')
+        for (const status of ['has', 'none']) {
+            await gciStatus.setValue(status)
+            await provider({ currentPage: 1, perPage: 10, sortBy: [] })
+            expect(JSON.parse(getPageOfCurations.mock.calls.at(-1)[0].filters).gdm_uuid_status).toBe(status)
+        }
+        await wrapper.get('#archive-filter').setValue('only')
+        await wrapper.get('input[placeholder^="Search curations"]').setValue('10000000-0000-4000-8000-000000009103')
+        await wrapper.findAll('button').find(button => button.text() === 'Clear').trigger('click')
+        const table = wrapper.getComponent(BTableStub)
+        await provider({ currentPage: table.props('currentPage'), perPage: 10, filter: table.props('filter'), sortBy: [] })
+        const request = getPageOfCurations.mock.calls.at(-1)[0]
+        expect(request).toMatchObject({ currentPage: 1, filter: null, archive_filter: 'exclude' })
+        expect(Object.values(JSON.parse(request.filters)).every(value => value === '')).toBe(true)
+        expect(wrapper.get('#archive-filter').element.value).toBe('exclude')
         wrapper.unmount()
     })
 })
