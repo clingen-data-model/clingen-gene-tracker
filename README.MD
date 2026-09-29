@@ -90,6 +90,19 @@ docker compose run --no-deps --rm -it --entrypoint php app artisan user:create -
 Of course you can change the email and names as you see fit. The email will end up being the login
 identifier. You'll be prompted for a password and password confirmation.
 
+## Upload size
+
+Document and bulk spreadsheet uploads allow up to **6 MB** (6,144 KB), configured
+by `project.max-upload-size-kb`. The document information panel receives the same
+value through the Blade/Vuex bootstrap.
+
+`public/.htaccess` (Apache PHP module) and `public/.user.ini` (PHP-FPM/CGI) set
+`upload_max_filesize=6M` and `post_max_size=8M`. Deployments must permit these
+overrides, or apply those settings in their PHP configuration. Reverse proxies
+must also allow an 8 MB request body to leave room for multipart form overhead.
+For PHP's built-in server, supply `-d upload_max_filesize=6M -d post_max_size=8M`;
+the Playwright server commands already do this.
+
 ## Running
 
 Once everything above is setup, you should be able to just run the following:
