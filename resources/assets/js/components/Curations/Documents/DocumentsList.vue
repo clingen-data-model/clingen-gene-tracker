@@ -33,6 +33,12 @@
                     >
                         <i class="material-icons">delete</i>
                 </a>
+                </template>
+                <template #cell(category)="{ item }">
+                    {{ item.category ? item.category.name : '--' }}
+                </template>
+                <template #cell(uploader)="{ item }">
+                    {{ item.uploader ? item.uploader.name : '--' }}
                 </template>    
             </b-table>
         </div>
@@ -78,7 +84,7 @@ import { formatDate } from '../../../filters'
 
 const props = defineProps({
     curation: {
-        reqired: true,
+        required: true,
         type: Object
     }
 })
@@ -100,7 +106,7 @@ const fields = [
         sortable: true
     },
     {
-        key: 'category.name',
+        key: 'category',
         sortable: true,
         label: 'Category'
     },
@@ -113,13 +119,13 @@ const fields = [
         }
     },
     {
-        key: 'uploader.name',
+        key: 'uploader',
         label: 'Uploaded by',
         sortable: true
     },
     'action'
 ]
-const filteredFields = ['name', 'id', 'category', 'uploader', 'uploader']
+const filteredFields = ['name', 'id', 'category', 'uploader']
 
 async function getDocuments() {
     if (!props.curation.id) {
