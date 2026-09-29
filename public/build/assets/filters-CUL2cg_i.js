@@ -1,0 +1,1 @@
+import{t as e}from"./vendor-DVMI17BV.js";function t(t,n=`YYYY-MM-DD HH:mm`){return t===null?null:e(t).format(n)}export{t};
