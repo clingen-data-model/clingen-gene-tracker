@@ -15,6 +15,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Notifications\Curations\PhenotypeOmimEntryMoved;
 use App\Notifications\Curations\HgncIdNotFoundNotification;
 use App\Notifications\Curations\PhenotypeNomenclatureUpdated;
+use Illuminate\Notifications\AnonymousNotifiable;
 
 /**
  * @group notifications
@@ -80,5 +81,125 @@ class SendNotificationDigestTest extends TestCase
         $this->artisan('send-notifications');
         $this->assertEquals(0, $this->user1->unreadNotifications->count());
         $this->assertEquals(0, $this->user2->unreadNotifications->count());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function sends_combined_digest_to_additional_recipients()
+    {
+        config()->set('notifications.digest_additional_emails', [
+            'recipient1@example.org',
+            'recipient2@example.org',
+        ]);
+
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        // Existing users should still receive their own digests.
+        Notification::assertSentTo(
+            $this->user1,
+            CurationNotificationsDigest::class
+        );
+
+        Notification::assertSentTo(
+            $this->user2,
+            CurationNotificationsDigest::class
+        );
+
+        // Check both additional recipients.
+        foreach ([
+            'recipient1@example.org',
+            'recipient2@example.org',
+        ] as $email) {
+            Notification::assertSentOnDemand(
+                CurationNotificationsDigest::class,
+                function ($notification, $channels, $notifiable) use ($email) {
+                    return $notifiable->routeNotificationFor('mail') === $email
+                        && $notification->groupedNotifications->count() === 5;
+                }
+            );
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function combined_digest_contains_all_individual_notifications()
+    {
+        config()->set('notifications.digest_additional_emails', [
+            'recipient1@example.org',
+        ]);
+
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        $individualCount = 0;
+        $combinedCount = null;
+
+        foreach ([$this->user1, $this->user2] as $user) {
+            Notification::assertSentTo(
+                $user,
+                CurationNotificationsDigest::class,
+                function ($notification) use (&$individualCount) {
+                    $individualCount += $notification
+                        ->groupedNotifications
+                        ->sum(fn ($group) => $group->count());
+
+                    return true;
+                }
+            );
+        }
+
+        Notification::assertSentOnDemand(
+            CurationNotificationsDigest::class,
+            function ($notification, $channels, $notifiable) use (&$combinedCount) {
+                if ($notifiable->routeNotificationFor('mail') !== 'recipient1@example.org') {
+                    return false;
+                }
+
+                $combinedCount = $notification
+                    ->groupedNotifications
+                    ->sum(fn ($group) => $group->count());
+
+                return true;
+            }
+        );
+
+        $this->assertNotNull($combinedCount);
+        $this->assertEquals($individualCount, $combinedCount);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function combined_digest_renders_for_email_only_recipient()
+    {
+        config()->set('notifications.digest_additional_emails', [
+            'recipient1@example.org',
+        ]);
+
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        Notification::assertSentOnDemand(
+            CurationNotificationsDigest::class,
+            function ($notification, $channels, $notifiable) {
+                if ($notifiable->routeNotificationFor('mail') !== 'recipient1@example.org') {
+                    return false;
+                }
+
+                $mail = $notification->toMail($notifiable);
+
+                $html = view('email.curation_notifications_digest', [
+                    'groups' => $notification->groupedNotifications,
+                    'user' => $notifiable,
+                ])->render();
+
+                $this->assertStringContainsString(
+                    'Updates from the past week.',
+                    $html
+                );
+
+                return true;
+            }
+        );
     }
 }
