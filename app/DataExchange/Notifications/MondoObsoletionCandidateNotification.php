@@ -12,7 +12,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class MondoObsoletionCandidateNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     /**
      * Create a new notification instance.
@@ -21,6 +21,7 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
      */
     public function __construct(public Curation $curation, public $messageData)
     {
+        $this->initializeDigestEventId();
     }
 
     /**

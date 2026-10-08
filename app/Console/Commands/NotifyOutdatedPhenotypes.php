@@ -133,8 +133,9 @@ class NotifyOutdatedPhenotypes extends Command
                     })->values()->all(),
             ];
 
+            $eventId = 'omim-batch:'.\App\Notifications\DigestEventIdentity::hash($payload);
             foreach ($users as $user) {
-                $user->notify(new OmimOutdatedPhenotypesNotification($payload));
+                $user->notify((new OmimOutdatedPhenotypesNotification($payload))->withDigestEventId($eventId));
             }
         }
 

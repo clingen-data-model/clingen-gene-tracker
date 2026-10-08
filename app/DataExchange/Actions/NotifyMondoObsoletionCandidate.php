@@ -13,11 +13,14 @@ class NotifyMondoObsoletionCandidate
         Curation::mondoId($data->content->mondo_id)->get()
             ->each(function ($curation) use ($data) {
                 Bus::dispatch(
-                    new NotifyCoordinatorsAboutCuration(
+                    (new NotifyCoordinatorsAboutCuration(
                         $curation, 
                         MondoObsoletionCandidateNotification::class, 
                         $data
-                    )
+                    ))->withDigestEventId('mondo-candidate:'.\App\Notifications\DigestEventIdentity::hash([
+                        'curation_id' => $curation->id,
+                        'message' => $data,
+                    ]))
                 );
             });
     }

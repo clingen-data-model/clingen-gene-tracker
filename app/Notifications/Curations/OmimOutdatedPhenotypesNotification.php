@@ -9,11 +9,13 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class OmimOutdatedPhenotypesNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     public function __construct(
         public array $payload // store only arrays/scalars here
-    ) {}
+    ) {
+        $this->initializeDigestEventId();
+    }
 
     public function via($notifiable)
     {

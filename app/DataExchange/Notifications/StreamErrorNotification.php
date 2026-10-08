@@ -9,7 +9,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class StreamErrorNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     protected $streamErrors;
 
@@ -22,6 +22,9 @@ class StreamErrorNotification extends Notification implements DigestibleNotifica
     {
         //
         $this->streamErrors = $streamErrors;
+        $this->withDigestEventId('stream-errors:'.\App\Notifications\DigestEventIdentity::hash(
+            $streamErrors->pluck('id')->sort()->values()->all()
+        ));
     }
 
     /**

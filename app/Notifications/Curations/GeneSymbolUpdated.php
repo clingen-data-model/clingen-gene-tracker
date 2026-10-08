@@ -13,7 +13,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class GeneSymbolUpdated extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     private $curation;
     private $oldGeneSymbol;
@@ -25,6 +25,7 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
      */
     public function __construct(Curation $curation, string $oldGeneSymbol)
     {
+        $this->initializeDigestEventId();
         $this->curation = $curation;
         $this->oldGeneSymbol = $oldGeneSymbol;
     }

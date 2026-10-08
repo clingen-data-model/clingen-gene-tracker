@@ -13,7 +13,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     private $curation;
     private $oldName;
@@ -26,6 +26,7 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
      */
     public function __construct(Curation $curation, Phenotype $phenotype, $oldName)
     {
+        $this->initializeDigestEventId();
         $this->curation = $curation;
         $this->oldName = $oldName;
         $this->phenotype = $phenotype;

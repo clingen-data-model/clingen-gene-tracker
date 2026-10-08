@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 
 class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     /**
      * Create a new notification instance.
@@ -27,6 +27,7 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
         private string $oldName, 
         private int $oldMimNumber)
     {
+        $this->initializeDigestEventId();
     }
 
     /**

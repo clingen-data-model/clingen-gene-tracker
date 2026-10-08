@@ -13,7 +13,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class PhenotypeAddedForCurationNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     /**
      * Create a new notification instance.
@@ -22,6 +22,7 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
      */
     public function __construct(private Curation $curation, private Phenotype $phenotype)
     {
+        $this->initializeDigestEventId();
     }
 
     /**

@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     private $curation;
     private $phenotype;
@@ -25,6 +25,7 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
      */
     public function __construct(Curation $curation, Phenotype $phenotype)
     {
+        $this->initializeDigestEventId();
         //
         $this->curation = $curation;
         $this->phenotype = $phenotype;

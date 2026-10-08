@@ -12,7 +12,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class NameChangedNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     public $curation;
     public $oldName;
@@ -24,6 +24,7 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
      */
     public function __construct(Curation $curation, Array $additional)
     {
+        $this->initializeDigestEventId();
         $this->curation = $curation;
         $this->oldName = $additional['oldName'];
     }

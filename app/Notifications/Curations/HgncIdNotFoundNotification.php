@@ -15,7 +15,7 @@ use App\Notifications\DigestibleNotificationInterface;
 
 class HgncIdNotFoundNotification extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     protected $curation;
 
@@ -26,6 +26,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
      */
     public function __construct(Curation $curation)
     {
+        $this->initializeDigestEventId();
         //
         $this->curation = $curation;
     }

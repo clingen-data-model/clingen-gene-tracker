@@ -15,7 +15,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class MondoIdNotFound extends Notification implements DigestibleNotificationInterface
 {
-    use Queueable;
+    use Queueable, \App\Notifications\HasDigestEventIdentity;
 
     protected $curation;
 
@@ -26,6 +26,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
      */
     public function __construct(Curation $curation)
     {
+        $this->initializeDigestEventId();
         $this->curation = $curation;
     }
 
