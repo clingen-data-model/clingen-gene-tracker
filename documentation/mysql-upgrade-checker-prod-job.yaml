@@ -1,0 +1,73 @@
+# MySQL Upgrade Checker Job
+#
+# Runs MySQL Shell's upgrade checker (util.checkForServerUpgrade) against an
+# existing, older MySQL server and reports anything that would block or
+# complicate an upgrade to TARGET_VERSION.
+#
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-upgrade-checker-prod
+  labels:
+    app: mysql-upgrade-checker-prod
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 1800
+  ttlSecondsAfterFinished: 604800   # keep finished Job/logs for 7 days
+  template:
+    metadata:
+      labels:
+        app: mysql-upgrade-checker-prod
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: upgrade-checker
+          # Use the image for the version you are upgrading TO.
+          # The official mysql image ships with mysqlsh.
+          image: mysql:8.4.11
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DB_HOST
+              value: "genetracker-prod-mysql"          # Service name of the old DB
+            - name: DB_PORT
+              value: "3306"
+            - name: TARGET_VERSION
+              value: "8.4.11"                 # version you plan to upgrade to
+            - name: MYSQL_USER
+              value: "root"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: genetracker-prod-mysql
+                  key: MYSQL_ROOT_PASSWORD
+            # mysqlsh wants a writable config/home dir
+            - name: MYSQLSH_USER_CONFIG_HOME
+              value: /tmp/mysqlsh
+            - name: HOME
+              value: /tmp
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              mkdir -p "$MYSQLSH_USER_CONFIG_HOME"
+              echo "Checking ${DB_HOST}:${DB_PORT} for upgrade to ${TARGET_VERSION}"
+              mysqlsh --no-wizard \
+                --host="$DB_HOST" --port="$DB_PORT" \
+                --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" \
+                -- util check-for-server-upgrade \
+                --target-version="$TARGET_VERSION" \
+                --output-format=JSON
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
