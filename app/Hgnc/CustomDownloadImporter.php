@@ -121,7 +121,7 @@ class CustomDownloadImporter
         Log::info('Getting data from hgnc.');
         $queryString = $this->queryStringFromParams($params);
 
-        $url = 'www.genenames.org/cgi-bin/download/custom?'.$queryString;
+        $url = 'http://www.genenames.org/cgi-bin/download/custom?'.$queryString;
         Log::debug($url);
 
         $response = $this->client->request('GET', $url);
