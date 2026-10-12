@@ -10,10 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
 use Illuminate\Support\Collection;
+use App\Notifications\HasValidUniqueNotifications;
 
 class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     private $curation;
     private $phenotype;
@@ -73,25 +75,16 @@ class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotifi
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'phenotype.id']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->data['curation']['id'].'-'.$item->data['phenotype']['id'];
     }
 
-    public static function getUnique(Collection $collection): Collection
-    {
-        return $collection;
-    }
-
-    public static function filterInvalid(Collection $collection): Collection
-    {
-        return $collection;
-    }
-
-    public static function getValidUnique(Collection $collection): Collection
-    {
-        return $collection;
-    }
     public static function getDigestTemplate(): string
     {
         return 'email.curations.omim_entry_moved';

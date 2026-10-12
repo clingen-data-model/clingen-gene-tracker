@@ -10,10 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
+use App\Notifications\HasValidUniqueNotifications;
 
 class GeneSymbolUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     private $curation;
     private $oldGeneSymbol;
@@ -67,26 +69,14 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'oldGeneSymbol', 'curation.gene_symbol']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-    }
-
-    public static function getUnique(Collection $items): Collection
-    {
-        return $items->unique(function ($item) {
-            return static::uniqueStringForItem($item);
-        });
-    }
-
-    public static function filterInvalid(Collection $collection): Collection
-    {
-        return $collection;
-    }
-
-    public static function getValidUnique(Collection $collection): Collection
-    {
-        return $collection;
     }
 
     public static function getDigestTemplate(): string

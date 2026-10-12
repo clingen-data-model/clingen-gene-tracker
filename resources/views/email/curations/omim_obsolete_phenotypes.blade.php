@@ -4,7 +4,7 @@
 @endphp
 
 {{-- Show the intro only once per digest section --}}
-@if(isset($user))
+@if(!empty($user->name))
 <p>Hi {{ $user->name }},</p>
 @endif
 

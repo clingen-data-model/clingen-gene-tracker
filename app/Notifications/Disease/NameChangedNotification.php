@@ -9,10 +9,12 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
+use App\Notifications\HasValidUniqueNotifications;
 
 class NameChangedNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use \App\Notifications\HasValidUniqueNotifications;
 
     public $curation;
     public $oldName;
@@ -66,27 +68,16 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'curation.mondo_id', 'oldName', 'curation.disease.name']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return 'disease-name-changed-'.$item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
     }
 
-    public static function getUnique(Collection $items): Collection
-    {
-        return $items->unique(function ($item) {
-            return static::uniqueStringForItem($item);
-        });
-    }
-
-    public static function filterInvalid(Collection $collection): Collection
-    {
-        return $collection;
-    }
-
-    public static function getValidUnique(Collection $collection): Collection
-    {
-        return $collection;
-    }
     public static function getDigestTemplate(): string
     {
         return 'email.digest.disease_name_changed';

@@ -11,10 +11,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Collection;
+use App\Notifications\HasValidUniqueNotifications;
 
 class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     /**
      * Create a new notification instance.
@@ -76,23 +78,24 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        $phenotypes = collect($item->data['phenotypes'] ?? []);
+        if ($phenotypes->contains(fn ($phenotype) => !isset($phenotype['id']))) {
+            return static::digestKeyForFields($item, ['curation.id', 'oldMimNumber', 'phenotypes']);
+        }
+
+        return static::digestContentKey([
+            'change' => static::digestKeyForFields($item, ['curation.id', 'oldMimNumber']),
+            'destinations' => $phenotypes->pluck('id')->unique()->sort()->values()->all(),
+        ]);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->id;
     }
 
-    public static function getUnique(Collection $collection):Collection
-    {
-        return $collection;
-    }
-    public static function filterInvalid(Collection $collection):Collection
-    {
-        return $collection;
-    }
-    public static function getValidUnique(Collection $collection):Collection
-    {
-        return static::getUnique(static::filterInvalid($collection));
-    }
     
     public static function getDigestTemplate(): string
     {

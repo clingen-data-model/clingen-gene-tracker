@@ -10,10 +10,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\HasValidUniqueNotifications;
 
 class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     private $curation;
     private $oldName;
@@ -75,23 +77,16 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
             'template' => 'email.digest.pheno_name_updated'
         ];
     }
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'phenotype.id', 'oldName', 'phenotype.name']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->id;
     }
 
-    public static function getUnique(Collection $collection):Collection
-    {
-        return $collection;
-    }
-    public static function filterInvalid(Collection $collection):Collection
-    {
-        return $collection;
-    }
-    public static function getValidUnique(Collection $collection):Collection
-    {
-        return $collection;
-    }
     public static function getDigestTemplate(): string
     {
         return 'email.digest.pheno_name_updated';

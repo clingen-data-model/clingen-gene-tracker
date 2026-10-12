@@ -12,10 +12,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Exceptions\HttpUnexpectedResponseException;
 use App\Notifications\DigestibleNotificationInterface;
+use App\Notifications\HasValidUniqueNotifications;
 
 class HgncIdNotFoundNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     protected $curation;
 
@@ -76,16 +78,14 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'curation.gene_symbol']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-    }
-
-    public static function getUnique(Collection $collection):Collection
-    {
-        return $collection->unique(function ($item) {
-            return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-        });
     }
 
     public static function filterInvalid(Collection $collection):Collection
@@ -93,7 +93,7 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         $hgncClient = app()->make(HgncClientContract::class);
         return $collection->filter(function ($item) use ($hgncClient) {
             $curation = Curation::find($item->data['curation']['id']);
-            if (!is_null($curation->hgnc_id)) {
+            if (!$curation || !is_null($curation->hgnc_id)) {
                 return false;
             }
             if ($curation->gene_symbol == $item->data['curation']['gene_symbol']) {
@@ -109,11 +109,6 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
                 return true;
             }
         });
-    }
-
-    public static function getValidUnique($collection):Collection
-    {
-        return static::filterInvalid(static::getUnique($collection));
     }
 
     public static function getDigestTemplate(): string

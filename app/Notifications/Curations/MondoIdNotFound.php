@@ -12,10 +12,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\HasValidUniqueNotifications;
 
 class MondoIdNotFound extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
+    use HasValidUniqueNotifications;
 
     protected $curation;
 
@@ -69,17 +71,16 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
         ];
     }
 
+    public static function digestUniqueKey($item): string
+    {
+        return static::digestKeyForFields($item, ['curation.id', 'curation.mondo_id']);
+    }
+
     public static function uniqueStringForItem($item): string
     {
         return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
     }
 
-   public static function getUnique(Collection $collection):Collection
-    {
-        return $collection->unique(function ($item) {
-            return static::uniqueStringForItem($item);
-        });
-    }
     public static function filterInvalid(Collection $collection):Collection
     {
         return $collection->filter(function ($item) {
@@ -100,11 +101,6 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
             }
         });
     }
-    public static function getValidUnique(Collection $collection):Collection
-    {
-        return static::filterInvalid(static::getUnique($collection));
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.mondoid_not_found';
