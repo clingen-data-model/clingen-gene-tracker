@@ -74,11 +74,6 @@ class GeneSymbolUpdated extends Notification implements DigestibleNotificationIn
         return static::digestKeyForFields($item, ['curation.id', 'oldGeneSymbol', 'curation.gene_symbol']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.gene_symbol_updated';

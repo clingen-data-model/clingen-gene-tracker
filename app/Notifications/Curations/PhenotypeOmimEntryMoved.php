@@ -91,12 +91,6 @@ class PhenotypeOmimEntryMoved extends Notification implements DigestibleNotifica
         ]);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->id;
-    }
-
-    
     public static function getDigestTemplate(): string
     {
         return 'email.digest.omim_entry_moved';

@@ -50,11 +50,6 @@ class MondoObsoletionCandidateNotification extends Notification implements Diges
         return static::digestKeyForFields($item, ['curation.id', 'curation.mondo_id', 'message_data.content']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.mondo_obsoletion_candidate';

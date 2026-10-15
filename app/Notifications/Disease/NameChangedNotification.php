@@ -73,11 +73,6 @@ class NameChangedNotification extends Notification implements DigestibleNotifica
         return static::digestKeyForFields($item, ['curation.id', 'curation.mondo_id', 'oldName', 'curation.disease.name']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return 'disease-name-changed-'.$item->data['curation']['id'].'-'.$item->data['curation']['mondo_id'];
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.disease_name_changed';

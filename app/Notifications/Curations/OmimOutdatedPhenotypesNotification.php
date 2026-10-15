@@ -38,11 +38,6 @@ class OmimOutdatedPhenotypesNotification extends Notification implements Digesti
         return static::digestKeyForFields($item, ['digest_key']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->data['digest_key'] ?? (string) $item->id;
-    }
-
     public static function filterInvalid(Collection $collection): Collection
     {
         return $collection->filter(function ($n) {

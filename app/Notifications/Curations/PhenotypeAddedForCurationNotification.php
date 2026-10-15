@@ -68,11 +68,6 @@ class PhenotypeAddedForCurationNotification extends Notification implements Dige
         return static::digestKeyForFields($item, ['curation.id', 'phenotype.id']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->data['curation']['id'].'-'.$item->data['phenotype']['id'];
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.phenotype_added';

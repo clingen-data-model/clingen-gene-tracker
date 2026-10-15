@@ -60,7 +60,7 @@ class DeleteDuplicateNotifications extends Command
                 $progress = $this->output->createProgressBar($this->option('chunk-size'));
                 $chunk->each(function ($notification) use ($uniqueRecords, &$deletes, $progress, &$notifications_processed) {
                     $type = $notification->type;
-                    $uniqueString = $notification->type::uniqueStringForItem($notification);
+                    $uniqueString = $notification->type::digestUniqueKey($notification);
                     $uniqueStringWithUserId = $uniqueString.'-user:'.$notification->notifiable_id;
                     $notifications_processed++;
                     

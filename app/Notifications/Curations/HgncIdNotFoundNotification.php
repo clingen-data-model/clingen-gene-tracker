@@ -83,11 +83,6 @@ class HgncIdNotFoundNotification extends Notification implements DigestibleNotif
         return static::digestKeyForFields($item, ['curation.id', 'curation.gene_symbol']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->data['curation']['id'].'-'.$item->data['curation']['gene_symbol'];
-    }
-
     public static function filterInvalid(Collection $collection):Collection
     {
         $hgncClient = app()->make(HgncClientContract::class);

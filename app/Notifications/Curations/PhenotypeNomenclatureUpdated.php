@@ -82,11 +82,6 @@ class PhenotypeNomenclatureUpdated extends Notification implements DigestibleNot
         return static::digestKeyForFields($item, ['curation.id', 'phenotype.id', 'oldName', 'phenotype.name']);
     }
 
-    public static function uniqueStringForItem($item): string
-    {
-        return $item->id;
-    }
-
     public static function getDigestTemplate(): string
     {
         return 'email.digest.pheno_name_updated';
