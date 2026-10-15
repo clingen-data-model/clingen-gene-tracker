@@ -44,18 +44,12 @@ class SendNotificationDigest extends Command
     public function handle()
     {
         $recipients = DigestRecipients::normalize(config('notifications.curation_digest_additional_emails', ''));
-        $combined = collect();
-        $pendingRead = collect();
         Log::info('Sending notification digests.');
         // Make sure notifications have been created for all unsent streaming service errors
         $this->call('dx:notify-errors');
 
-        $hasUnread = User::has('unreadNotifications');
-
-        $bar = $this->output->createProgressBar($hasUnread->count());
-        
-        // Keyset iteration remains stable as unread records are marked read.
-        $hasUnread->with('unreadNotifications')->eachById(function ($user) use ($bar, $recipients, &$combined, &$pendingRead) {
+        $digests = collect();
+        User::has('unreadNotifications')->with('unreadNotifications')->eachById(function ($user) use ($digests) {
             $groupedNotifications =  $user->unreadNotifications
                                         ->groupBy('type')
                                         ->map(function ($group, $class) {
@@ -67,44 +61,72 @@ class SendNotificationDigest extends Command
             if ($groupedNotifications->count() == 0) {
                 return;
             }
-            
-            // Capture eligible snapshots before marking source records read.
-            if ($recipients) {
-                foreach ($groupedNotifications as $class => $group) {
-                    $combined->put($class, $combined->get($class, collect())->concat($group));
-                }
-            }
-            if (in_array(strtolower(trim($user->email)), $recipients, true)) {
-                $pendingRead = $pendingRead->concat($user->unreadNotifications);
-                $bar->advance();
-                return;
-            }
+            $digests->put($user->id, ['user' => $user, 'groups' => $groupedNotifications]);
+        });
 
-            $user->notify(new CurationNotificationsDigest($groupedNotifications));
-            $user->unreadNotifications
-                ->each
-                ->update([
-                    'read_at' => Carbon::now()
-                ]);
+        // Nothing is marked read until the combined digest is out, so a rerun after its failure rebuilds it in full.
+        if ($recipients) {
+            $delivered = $this->sendCombinedDigest($recipients, $digests);
+            $digests = $digests->reject(function ($digest) use ($recipients, $delivered) {
+                $email = strtolower(trim($digest['user']->email));
+                if (!in_array($email, $recipients, true)) {
+                    return false;
+                }
+                if (in_array($email, $delivered, true)) {
+                    $this->markRead($digest['user']);
+                }
+                return true;
+            });
+        }
+
+        $bar = $this->output->createProgressBar($digests->count());
+        $digests->each(function ($digest) use ($bar) {
+            $digest['user']->notify(new CurationNotificationsDigest($digest['groups']));
+            $this->markRead($digest['user']);
             $bar->advance();
         });
         $bar->finish();
+        Log::info('Sent notification digests.');
+    }
 
-        if ($recipients && $combined->isNotEmpty()) {
-            $combined = $combined->map(fn ($group, $class) => $class::getValidUnique($group))
-                ->filter(fn ($group) => $group->isNotEmpty());
-            if ($combined->isNotEmpty()) {
-                foreach ($recipients as $email) {
-                    try {
-                        Notification::route('mail', $email)->notify(new CurationNotificationsDigest($combined));
-                    } catch (\Throwable $exception) {
-                        Log::error('Failed to send combined curation digest.', ['email' => $email, 'exception' => $exception]);
-                        throw $exception;
-                    }
+    private function sendCombinedDigest(array $recipients, $digests): array
+    {
+        // Groups were validated per user; only cross-user duplicates remain.
+        $combined = $digests->pluck('groups')
+            ->reduce(function ($carry, $groups) {
+                foreach ($groups as $class => $group) {
+                    $carry->put($class, $carry->get($class, collect())->concat($group));
                 }
-                $pendingRead->each->update(['read_at' => Carbon::now()]);
+                return $carry;
+            }, collect())
+            ->map(fn ($group, $class) => $class::getUnique($group))
+            ->filter(fn ($group) => $group->isNotEmpty());
+
+        if ($combined->isEmpty()) {
+            return [];
+        }
+
+        $delivered = [];
+        $lastException = null;
+        foreach ($recipients as $email) {
+            try {
+                Notification::route('mail', $email)->notify(new CurationNotificationsDigest($combined));
+                $delivered[] = $email;
+            } catch (\Throwable $exception) {
+                Log::error('Failed to send combined curation digest.', ['email' => $email, 'exception' => $exception]);
+                $lastException = $exception;
             }
         }
-        Log::info('Sent notification digests.');
+        // Total failure (e.g. mail transport down) stops the run before anything is marked read.
+        if (empty($delivered)) {
+            throw $lastException;
+        }
+
+        return $delivered;
+    }
+
+    private function markRead(User $user): void
+    {
+        $user->unreadNotifications->each->update(['read_at' => Carbon::now()]);
     }
 }

@@ -7,7 +7,9 @@ use App\Curation;
 use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Notifications\ChannelManager;
 use App\Notifications\Curations\MondoIdNotFound;
 use App\Notifications\CurationNotificationsDigest;
 use App\Notifications\Curations\GeneSymbolUpdated;
@@ -80,5 +82,72 @@ class SendNotificationDigestTest extends TestCase
         $this->artisan('send-notifications');
         $this->assertEquals(0, $this->user1->unreadNotifications->count());
         $this->assertEquals(0, $this->user2->unreadNotifications->count());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function sends_combined_digest_to_additional_recipients_in_place_of_their_own()
+    {
+        config(['notifications.curation_digest_additional_emails' => $this->user1->email.', extra@example.com']);
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        foreach ([$this->user1->email, 'extra@example.com'] as $email) {
+            Notification::assertSentOnDemand(
+                CurationNotificationsDigest::class,
+                fn ($notification, $channels, $notifiable) => $notifiable->routes['mail'] === $email
+                    && $notification->groupedNotifications->count() == 5
+            );
+        }
+        Notification::assertNotSentTo($this->user1, CurationNotificationsDigest::class);
+        Notification::assertSentTo($this->user2, CurationNotificationsDigest::class);
+        $this->assertEquals(0, $this->user1->fresh()->unreadNotifications->count());
+        $this->assertEquals(0, $this->user2->fresh()->unreadNotifications->count());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function leaves_everything_unread_when_combined_digest_fails_for_every_recipient()
+    {
+        config(['notifications.curation_digest_additional_emails' => 'extra@example.com']);
+        $this->failMailTo(['extra@example.com']);
+
+        try {
+            Artisan::call('send-notifications');
+            $this->fail('Expected the combined digest failure to propagate.');
+        } catch (\RuntimeException $exception) {
+            $this->assertEquals('mail failed', $exception->getMessage());
+        }
+
+        $this->assertEquals(5, $this->user1->fresh()->unreadNotifications->count());
+        $this->assertEquals(1, $this->user2->fresh()->unreadNotifications->count());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function continues_when_combined_digest_fails_for_some_recipients()
+    {
+        config(['notifications.curation_digest_additional_emails' => $this->user1->email.', extra@example.com']);
+        $this->failMailTo([$this->user1->email]);
+
+        Artisan::call('send-notifications');
+
+        $this->assertEquals(5, $this->user1->fresh()->unreadNotifications->count());
+        $this->assertEquals(0, $this->user2->fresh()->unreadNotifications->count());
+    }
+
+    private function failMailTo(array $failing): void
+    {
+        // The real mail driver may already be cached, which would shadow the extension.
+        app(ChannelManager::class)->forgetDrivers()->extend('mail', fn () => new class($failing) {
+            public function __construct(private array $failing)
+            {
+            }
+
+            public function send($notifiable, $notification)
+            {
+                if (in_array($notifiable->routeNotificationFor('mail', $notification), $this->failing, true)) {
+                    throw new \RuntimeException('mail failed');
+                }
+            }
+        });
     }
 }
