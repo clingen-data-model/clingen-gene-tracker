@@ -2,11 +2,8 @@
 
 namespace App\Notifications\Curations;
 
-use App\Contracts\MondoClient;
 use App\Curation;
-use App\Exceptions\HttpNotFoundException;
 use App\Notifications\DigestibleNotificationInterface;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
@@ -80,20 +77,7 @@ class MondoIdNotFound extends Notification implements DigestibleNotificationInte
     {
         return $collection->filter(function ($item) {
             $curation = Curation::find($item->data['curation']['id']);
-            if (!$curation) {
-                return false;
-            }
-            if ($curation->mondo_id == $item->data['curation']['mondo_id']) {
-                return true;
-            }
-
-            try {
-                return false;
-            } catch (HttpNotFoundException $e) {
-                return true;
-            } catch (ClientException $e) {
-                return true;
-            }
+            return $curation && $curation->mondo_id == $item->data['curation']['mondo_id'];
         });
     }
     public static function getDigestTemplate(): string
