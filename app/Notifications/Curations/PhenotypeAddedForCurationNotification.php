@@ -5,7 +5,6 @@ namespace App\Notifications\Curations;
 use App\Curation;
 use App\Phenotype;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

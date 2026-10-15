@@ -4,6 +4,7 @@ namespace App\Notifications\Curations;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use App\Notifications\DigestibleNotificationInterface;
 use App\Notifications\HasValidUniqueNotifications;
@@ -32,7 +33,7 @@ class OmimOutdatedPhenotypesNotification extends Notification implements Digesti
     public static function digestUniqueKey($item): string
     {
         if (empty($item->data['digest_key'])) {
-            return static::digestContentKey(\Illuminate\Support\Arr::except($item->data, ['template', 'digest_event_id']));
+            return static::digestContentKey(Arr::except($item->data, ['template', 'digest_event_id']));
         }
 
         return static::digestKeyForFields($item, ['digest_key']);

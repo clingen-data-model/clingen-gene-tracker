@@ -4,7 +4,6 @@ namespace App\Notifications\Disease;
 
 use App\Curation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +13,7 @@ use App\Notifications\HasValidUniqueNotifications;
 class NameChangedNotification extends Notification implements DigestibleNotificationInterface
 {
     use Queueable;
-    use \App\Notifications\HasValidUniqueNotifications;
+    use HasValidUniqueNotifications;
 
     public $curation;
     public $oldName;

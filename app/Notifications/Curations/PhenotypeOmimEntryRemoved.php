@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Notifications\DigestibleNotificationInterface;
-use Illuminate\Support\Collection;
 use App\Notifications\HasValidUniqueNotifications;
 
 class PhenotypeOmimEntryRemoved extends Notification implements DigestibleNotificationInterface
