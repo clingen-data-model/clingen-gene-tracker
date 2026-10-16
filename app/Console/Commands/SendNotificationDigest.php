@@ -80,12 +80,24 @@ class SendNotificationDigest extends Command
         }
 
         $bar = $this->output->createProgressBar($digests->count());
-        $digests->each(function ($digest) use ($bar) {
-            $digest['user']->notify(new CurationNotificationsDigest($digest['groups']));
-            $this->markRead($digest['user']);
+        $sent = 0;
+        $lastException = null;
+        $digests->each(function ($digest) use ($bar, &$sent, &$lastException) {
+            try {
+                $digest['user']->notify(new CurationNotificationsDigest($digest['groups']));
+                $this->markRead($digest['user']);
+                $sent++;
+            } catch (\Throwable $exception) {
+                Log::error('Failed to send curation digest.', ['user_id' => $digest['user']->id, 'exception' => $exception]);
+                $lastException = $exception;
+            }
             $bar->advance();
         });
         $bar->finish();
+        // Surface total failure (e.g. mail transport down) as a failed run.
+        if ($sent === 0 && $lastException) {
+            throw $lastException;
+        }
         Log::info('Sent notification digests.');
     }
 

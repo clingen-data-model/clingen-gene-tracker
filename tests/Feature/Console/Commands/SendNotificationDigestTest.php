@@ -134,6 +134,33 @@ class SendNotificationDigestTest extends TestCase
         $this->assertEquals(0, $this->user2->fresh()->unreadNotifications->count());
     }
 
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function continues_to_other_users_when_one_users_digest_fails()
+    {
+        $this->failMailTo([$this->user1->email]);
+
+        Artisan::call('send-notifications');
+
+        $this->assertEquals(5, $this->user1->fresh()->unreadNotifications->count());
+        $this->assertEquals(0, $this->user2->fresh()->unreadNotifications->count());
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function fails_the_run_when_every_users_digest_fails()
+    {
+        $this->failMailTo([$this->user1->email, $this->user2->email]);
+
+        try {
+            Artisan::call('send-notifications');
+            $this->fail('Expected the digest failure to propagate.');
+        } catch (\RuntimeException $exception) {
+            $this->assertEquals('mail failed', $exception->getMessage());
+        }
+
+        $this->assertEquals(5, $this->user1->fresh()->unreadNotifications->count());
+        $this->assertEquals(1, $this->user2->fresh()->unreadNotifications->count());
+    }
+
     private function failMailTo(array $failing): void
     {
         // The real mail driver may already be cached, which would shadow the extension.
