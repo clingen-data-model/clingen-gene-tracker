@@ -30,6 +30,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createPermissionGroup('mois');
         $managePanelCurations = Permission::firstOrcreate(['name' => 'manage panel curations']);
         $updateGdmUuid = Permission::firstOrcreate(['name' => 'update curation gdm_uuid']);
+        Permission::firstOrcreate(['name' => 'receive all curation digests']);
 
         /**
          * Programmer role can do everything.

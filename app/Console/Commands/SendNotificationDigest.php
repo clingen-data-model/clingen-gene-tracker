@@ -3,12 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Notifications\CurationNotificationsDigest;
-use App\Notifications\DigestRecipients;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
 
 class SendNotificationDigest extends Command
 {
@@ -43,7 +42,7 @@ class SendNotificationDigest extends Command
      */
     public function handle()
     {
-        $recipients = DigestRecipients::normalize(config('notifications.curation_digest_additional_emails', ''));
+        $recipients = User::permission('receive all curation digests')->active()->get();
         Log::info('Sending notification digests.');
         // Make sure notifications have been created for all unsent streaming service errors
         $this->call('dx:notify-errors');
@@ -65,14 +64,14 @@ class SendNotificationDigest extends Command
         });
 
         // Nothing is marked read until the combined digest is out, so a rerun after its failure rebuilds it in full.
-        if ($recipients) {
+        if ($recipients->isNotEmpty()) {
             $delivered = $this->sendCombinedDigest($recipients, $digests);
             $digests = $digests->reject(function ($digest) use ($recipients, $delivered) {
-                $email = strtolower(trim($digest['user']->email));
-                if (!in_array($email, $recipients, true)) {
+                $userId = $digest['user']->id;
+                if (!$recipients->contains('id', $userId)) {
                     return false;
                 }
-                if (in_array($email, $delivered, true)) {
+                if (in_array($userId, $delivered, true)) {
                     $this->markRead($digest['user']);
                 }
                 return true;
@@ -101,7 +100,7 @@ class SendNotificationDigest extends Command
         Log::info('Sent notification digests.');
     }
 
-    private function sendCombinedDigest(array $recipients, $digests): array
+    private function sendCombinedDigest(Collection $recipients, $digests): array
     {
         // Groups were validated per user; only cross-user duplicates remain.
         $combined = $digests->pluck('groups')
@@ -120,12 +119,12 @@ class SendNotificationDigest extends Command
 
         $delivered = [];
         $lastException = null;
-        foreach ($recipients as $email) {
+        foreach ($recipients as $recipient) {
             try {
-                Notification::route('mail', $email)->notify(new CurationNotificationsDigest($combined));
-                $delivered[] = $email;
+                $recipient->notify(new CurationNotificationsDigest($combined));
+                $delivered[] = $recipient->id;
             } catch (\Throwable $exception) {
-                Log::error('Failed to send combined curation digest.', ['email' => $email, 'exception' => $exception]);
+                Log::error('Failed to send combined curation digest.', ['user_id' => $recipient->id, 'exception' => $exception]);
                 $lastException = $exception;
             }
         }

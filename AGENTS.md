@@ -220,6 +220,15 @@ E2E-specific deterministic fixtures may be seeded only from the E2E preparation 
 
 Do not run Playwright against a normal development database.
 
+## Notification digests
+
+`send-notifications` emails each user a digest of their unread notifications.
+
+Active users with the `receive all curation digests` permission (direct or via a role) instead receive one combined digest of every user's notifications.
+
+- Grant the permission through the admin Users screen; do not reintroduce an env/config recipient list.
+- Roles and permissions are created by `RolesAndPermissionsSeeder`, which deploy re-runs; new roles/permissions do not need migrations.
+
 ## Next modernization steps
 
 Do not combine major migrations.

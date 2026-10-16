@@ -7,6 +7,8 @@ use App\Curation;
 use App\Phenotype;
 use Carbon\Carbon;
 use Tests\TestCase;
+use Database\Seeders\RolesAndPermissionsSeeder;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\ChannelManager;
@@ -29,9 +31,12 @@ class SendNotificationDigestTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private const ALL_DIGESTS = 'receive all curation digests';
+
     public function setup():void
     {
         parent::setup();
+        $this->seed(RolesAndPermissionsSeeder::class);
         $users = factory(User::class, 2)->create();
         $this->user1 = $users->first();
         $this->user2 = $users->last();
@@ -85,31 +90,60 @@ class SendNotificationDigestTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function sends_combined_digest_to_additional_recipients_in_place_of_their_own()
+    public function sends_combined_digest_to_permission_holders_in_place_of_their_own()
     {
-        config(['notifications.curation_digest_additional_emails' => $this->user1->email.', extra@example.com']);
+        $extra = $this->digestRecipient();
+        $this->user1->givePermissionTo(self::ALL_DIGESTS);
         Notification::fake();
 
         $this->artisan('send-notifications');
 
-        foreach ([$this->user1->email, 'extra@example.com'] as $email) {
-            Notification::assertSentOnDemand(
-                CurationNotificationsDigest::class,
-                fn ($notification, $channels, $notifiable) => $notifiable->routes['mail'] === $email
-                    && $notification->groupedNotifications->count() == 5
-            );
+        foreach ([$this->user1, $extra] as $recipient) {
+            Notification::assertSentTo($recipient, CurationNotificationsDigest::class, function ($notification) {
+                return $notification->groupedNotifications->count() == 5;
+            });
         }
-        Notification::assertNotSentTo($this->user1, CurationNotificationsDigest::class);
-        Notification::assertSentTo($this->user2, CurationNotificationsDigest::class);
+        Notification::assertSentToTimes($this->user1, CurationNotificationsDigest::class, 1);
+        Notification::assertSentTo($this->user2, CurationNotificationsDigest::class, function ($notification) {
+            return $notification->groupedNotifications->count() == 1;
+        });
         $this->assertEquals(0, $this->user1->fresh()->unreadNotifications->count());
         $this->assertEquals(0, $this->user2->fresh()->unreadNotifications->count());
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
+    public function sends_combined_digest_to_holders_of_a_role_with_the_permission()
+    {
+        $role = Role::create(['name' => 'digest-test-role']);
+        $role->givePermissionTo(self::ALL_DIGESTS);
+        $extra = factory(User::class)->create();
+        $extra->assignRole($role);
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        Notification::assertSentTo($extra, CurationNotificationsDigest::class, function ($notification) {
+            return $notification->groupedNotifications->count() == 5;
+        });
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function skips_deactivated_permission_holders()
+    {
+        $extra = $this->digestRecipient();
+        $extra->update(['deactivated_at' => Carbon::now()]);
+        Notification::fake();
+
+        $this->artisan('send-notifications');
+
+        Notification::assertNotSentTo($extra, CurationNotificationsDigest::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function leaves_everything_unread_when_combined_digest_fails_for_every_recipient()
     {
-        config(['notifications.curation_digest_additional_emails' => 'extra@example.com']);
-        $this->failMailTo(['extra@example.com']);
+        $extra = $this->digestRecipient();
+        $this->failMailTo([$extra->email]);
 
         try {
             Artisan::call('send-notifications');
@@ -125,7 +159,8 @@ class SendNotificationDigestTest extends TestCase
     #[\PHPUnit\Framework\Attributes\Test]
     public function continues_when_combined_digest_fails_for_some_recipients()
     {
-        config(['notifications.curation_digest_additional_emails' => $this->user1->email.', extra@example.com']);
+        $this->digestRecipient();
+        $this->user1->givePermissionTo(self::ALL_DIGESTS);
         $this->failMailTo([$this->user1->email]);
 
         Artisan::call('send-notifications');
@@ -159,6 +194,11 @@ class SendNotificationDigestTest extends TestCase
 
         $this->assertEquals(5, $this->user1->fresh()->unreadNotifications->count());
         $this->assertEquals(1, $this->user2->fresh()->unreadNotifications->count());
+    }
+
+    private function digestRecipient(): User
+    {
+        return tap(factory(User::class)->create())->givePermissionTo(self::ALL_DIGESTS);
     }
 
     private function failMailTo(array $failing): void
