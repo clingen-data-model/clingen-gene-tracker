@@ -23,8 +23,7 @@ class TestGeneSeeder extends Seeder
         ];
 
         foreach ($genes as $symbol => $hgnc_id) {
-            Gene::create([
-                'hgnc_id' => $hgnc_id,
+            Gene::withTrashed()->firstOrCreate(['hgnc_id' => $hgnc_id], [
                 'gene_symbol' => $symbol,
                 'hgnc_name' => uniqid(),
                 'hgnc_status' => 'Approved'

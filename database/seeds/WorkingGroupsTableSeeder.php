@@ -34,7 +34,7 @@ class WorkingGroupsTableSeeder extends Seeder
         ];
 
         foreach ($wgs as $wg) {
-            WorkingGroup::create($wg);
+            WorkingGroup::withTrashed()->firstOrCreate(['id' => $wg['id']], $wg);
         }
     }
 }

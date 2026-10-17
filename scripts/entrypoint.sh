@@ -35,7 +35,7 @@ fi
 
 
 echo "Running migrations..."
-php artisan migrate --force --no-interaction
+php artisan migrate --force --no-interaction --seed
 
 if [[ "$env" == "production" ]]; then
     echo "Caching configuration..."

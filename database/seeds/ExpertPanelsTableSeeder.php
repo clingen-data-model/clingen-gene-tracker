@@ -207,7 +207,7 @@ class ExpertPanelsTableSeeder extends Seeder
         ];
 
         foreach ($eps as $ep) {
-            ExpertPanel::create($ep);
+            ExpertPanel::firstOrCreate(['id' => $ep['id']], $ep);
         }
     }
 }
