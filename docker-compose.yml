@@ -53,7 +53,7 @@ services:
 
     nginx:
         container_name: ${DOCKER_NAME:-gt}-nginx
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         depends_on:
             - app
         ports:
@@ -89,7 +89,7 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8037}:8025'
 
     scheduler:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gt}-scheduler
         depends_on:
             - app
@@ -112,7 +112,7 @@ services:
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     queue:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gt}-queue
         depends_on:
             - app
