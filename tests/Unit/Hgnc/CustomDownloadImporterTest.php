@@ -108,7 +108,40 @@ class CustomDownloadImporterTest extends TestCase
             'updated_at' => Carbon::now()
         ]);
     }
-    
+
+    /**
+     * @test
+     */
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function updates_gene_without_omim_id_even_if_not_recently_modified()
+    {
+        Gene::create([
+            'hgnc_id' => 5,
+            'gene_symbol' => 'A1BG',
+            'hgnc_name' => 'alpha-1-B glycoprotein',
+            'hgnc_status' => 'Approved',
+            'date_modified' => '2020-09-17',
+        ]);
+        Gene::create([
+            'hgnc_id' => 24086,
+            'gene_symbol' => 'A1CF',
+            'hgnc_name' => 'APOBEC1 complementation factor',
+            'hgnc_status' => 'Approved',
+            'date_modified' => '2016-10-05',
+            'omim_id' => null,
+        ]);
+
+        $data = file_get_contents(base_path('tests/files/hgnc_api/custom_download.txt'));
+        $importer = $this->getImporter([new Response(200, [], $data)]);
+
+        foreach ($importer->import() as $a) {}
+
+        $this->assertDatabaseHas('genes', [
+            'hgnc_id' => 24086,
+            'omim_id' => 618199,
+        ]);
+    }
+
 
     private function getImporter($responses)
     {

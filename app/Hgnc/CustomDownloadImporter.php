@@ -176,8 +176,6 @@ class CustomDownloadImporter
 
             $data = array_combine($columnNames, $cols);
             $hgncId = substr($data['hgnc_id'], 5);
-            
-            if ($hgncId == '16216')
 
             if (!empty($hgncId) && $hgncsWithoutOmimId->contains($hgncId)) {
                 $hgncRecord = new HgncRecord($data);
