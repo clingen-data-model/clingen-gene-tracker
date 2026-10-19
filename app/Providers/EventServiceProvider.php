@@ -71,6 +71,10 @@ class EventServiceProvider extends ServiceProvider
         ]
     ];
 
+    protected $subscribe = [
+        \App\Listeners\RecordCommandResourceUsage::class,
+    ];
+
     /**
      * Register any events for your application.
      *
@@ -84,6 +88,8 @@ class EventServiceProvider extends ServiceProvider
     public function register(): void
     {
         parent::register();
+        // Holds per-process nesting state across CommandStarting/CommandFinished.
+        $this->app->singleton(\App\Listeners\RecordCommandResourceUsage::class);
         $eventClasses = getClassesAtPath(app_path('Events/'));
         $this->registerRecordableEventListeners($eventClasses);
     }

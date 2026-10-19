@@ -16,6 +16,9 @@ return [
 
     'default' => env('LOG_CHANNEL', 'stack'),
 
+    // See App\Listeners\RecordCommandResourceUsage.
+    'record_command_resource_usage' => env('RECORD_COMMAND_RESOURCE_USAGE', true),
+
     /*
     |--------------------------------------------------------------------------
     | Log Channels
