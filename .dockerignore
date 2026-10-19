@@ -22,8 +22,6 @@ _ide_helper.php
 .styleci.yml
 .env.dusk.local
 .oauth-public.key
-.openshift/crons
-.openshift/secrets
 .oauth-private.key
 .php_cs.cache
 .php_cs.dist

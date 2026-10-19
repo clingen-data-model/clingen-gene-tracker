@@ -5,7 +5,6 @@ auth.json
 .phpunit.result.cache
 /.idea
 /.vscode
-/.openshift/secrets
 /node_modules
 /public/hot
 /public/storage
