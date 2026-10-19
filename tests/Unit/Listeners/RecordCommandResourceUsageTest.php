@@ -51,12 +51,21 @@ class RecordCommandResourceUsageTest extends TestCase
     #[Test]
     public function records_only_outermost_of_nested_commands()
     {
-        $this->start('schedule:run');
+        $this->start('omim:update-data');
         $this->start('omim:check-moved-and-removed');
         $this->finish('omim:check-moved-and-removed');
+        $this->finish('omim:update-data');
+
+        $this->assertSame(['omim:update-data'], DB::table('command_resource_usages')->pluck('command')->all());
+    }
+
+    #[Test]
+    public function does_not_record_scheduler_runs()
+    {
+        $this->start('schedule:run');
         $this->finish('schedule:run');
 
-        $this->assertSame(['schedule:run'], DB::table('command_resource_usages')->pluck('command')->all());
+        $this->assertSame(0, DB::table('command_resource_usages')->count());
     }
 
     #[Test]

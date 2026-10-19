@@ -240,5 +240,6 @@ The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is comple
 `App\Listeners\RecordCommandResourceUsage` records CPU time and peak memory of each top-level artisan process in `command_resource_usages`, for tuning scheduled-task resource requests.
 
 - Nested `Artisan::call()` commands are attributed to the outer command.
+- `schedule:run` is not recorded; scheduled commands run as separate processes and are recorded individually.
 - The listener must stay a container singleton (bound in `EventServiceProvider::register()`); it tracks nesting across events.
 - Disable with `RECORD_COMMAND_RESOURCE_USAGE=false`; it is disabled in `phpunit.xml`.

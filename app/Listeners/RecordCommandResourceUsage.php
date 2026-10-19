@@ -16,6 +16,10 @@ use Throwable;
  */
 class RecordCommandResourceUsage
 {
+    // Each scheduled task runs in its own process and is recorded on its own;
+    // the per-minute scheduler run itself would only add noise.
+    private const IGNORED_COMMANDS = ['schedule:run'];
+
     private int $depth = 0;
 
     private ?float $startedAt = null;
@@ -40,6 +44,10 @@ class RecordCommandResourceUsage
         // Commands invoked via Artisan::call() share the process, so only the
         // outermost one has meaningful process-wide usage.
         if ($this->depth === 0 || --$this->depth > 0 || ! config('logging.record_command_resource_usage')) {
+            return;
+        }
+
+        if (in_array($event->command, self::IGNORED_COMMANDS, true)) {
             return;
         }
 
