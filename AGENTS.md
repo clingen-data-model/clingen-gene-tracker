@@ -244,3 +244,15 @@ The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is comple
 - The listener must stay a container singleton (bound in `EventServiceProvider::register()`); it tracks nesting across events.
 - Disable with `RECORD_COMMAND_RESOURCE_USAGE=false`; it is disabled in `phpunit.xml`.
 - Rows are inserted when a command starts (usage columns null until it finishes), so in-progress and crashed runs are visible.
+
+## Scheduling
+
+Deployment to OpenShift is via the Helm chart in https://github.com/clingen-data-model/cgwi-php-helm. Its scheduler CronJob runs `schedule:run` infrequently rather than every minute, so scheduled tasks catch up instead of matching the exact minute.
+
+- `App\Console\Kernel::resolveConsoleSchedule()` builds a `CatchUpSchedule`, whose `exec()` (mirrored from Laravel's `Schedule::exec()`) creates `CatchUpEvent`s; check both on Laravel upgrades.
+- A `CatchUpEvent` is due when its expression's most recent due time is later than its command's latest `command_resource_usages.started_at`; it runs once per invocation however many slots were missed.
+- Tasks are matched by artisan command name (arguments ignored); manual runs and failed runs count.
+- Commands with no recorded runs use the table's earliest row as their last run.
+- With recording disabled or no recorded runs at all, events fall back to Laravel's exact-minute matching.
+- Callback/job events (`call()`, `job()`) are not affected.
+- Keep `Kernel::schedule()` expressions as the intended run times.
