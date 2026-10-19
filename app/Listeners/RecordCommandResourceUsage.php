@@ -24,6 +24,8 @@ class RecordCommandResourceUsage
 
     private ?float $startedAt = null;
 
+    private ?int $rowId = null;
+
     public function subscribe(Dispatcher $events): array
     {
         return [
@@ -34,8 +36,28 @@ class RecordCommandResourceUsage
 
     public function handleStarting(CommandStarting $event): void
     {
-        if ($this->depth++ === 0) {
-            $this->startedAt = microtime(true);
+        if ($this->depth++ > 0) {
+            return;
+        }
+
+        $this->startedAt = microtime(true);
+        $this->rowId = null;
+
+        if (! config('logging.record_command_resource_usage') || in_array($event->command, self::IGNORED_COMMANDS, true)) {
+            return;
+        }
+
+        // Inserted up front so in-progress and crashed runs are visible, which
+        // schedule:run-overdue relies on to avoid re-running them.
+        try {
+            $this->rowId = DB::table('command_resource_usages')->insertGetId([
+                'command' => Str::limit((string) $event->command, 255, ''),
+                'input' => Str::limit((string) $event->input, 1000, ''),
+                'host' => Str::limit((string) gethostname(), 255, ''),
+                'started_at' => date('Y-m-d H:i:s', (int) $this->startedAt),
+            ]);
+        } catch (Throwable $e) {
+            report($e);
         }
     }
 
@@ -43,11 +65,7 @@ class RecordCommandResourceUsage
     {
         // Commands invoked via Artisan::call() share the process, so only the
         // outermost one has meaningful process-wide usage.
-        if ($this->depth === 0 || --$this->depth > 0 || ! config('logging.record_command_resource_usage')) {
-            return;
-        }
-
-        if (in_array($event->command, self::IGNORED_COMMANDS, true)) {
+        if ($this->depth === 0 || --$this->depth > 0 || $this->rowId === null) {
             return;
         }
 
@@ -55,12 +73,8 @@ class RecordCommandResourceUsage
             $self = getrusage();
             $children = getrusage(1); // RUSAGE_CHILDREN
 
-            DB::table('command_resource_usages')->insert([
-                'command' => Str::limit((string) $event->command, 255, ''),
-                'input' => Str::limit((string) $event->input, 1000, ''),
+            DB::table('command_resource_usages')->where('id', $this->rowId)->update([
                 'exit_code' => $event->exitCode,
-                'host' => Str::limit((string) gethostname(), 255, ''),
-                'started_at' => date('Y-m-d H:i:s', (int) $this->startedAt),
                 'wall_seconds' => round(microtime(true) - $this->startedAt, 3),
                 'cpu_user_seconds' => $this->seconds($self, 'utime'),
                 'cpu_system_seconds' => $this->seconds($self, 'stime'),

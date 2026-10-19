@@ -243,3 +243,4 @@ The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is comple
 - `schedule:run` is not recorded; scheduled commands run as separate processes and are recorded individually.
 - The listener must stay a container singleton (bound in `EventServiceProvider::register()`); it tracks nesting across events.
 - Disable with `RECORD_COMMAND_RESOURCE_USAGE=false`; it is disabled in `phpunit.xml`.
+- Rows are inserted when a command starts (usage columns null until it finishes), so in-progress and crashed runs are visible.

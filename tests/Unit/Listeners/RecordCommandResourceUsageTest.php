@@ -49,6 +49,18 @@ class RecordCommandResourceUsageTest extends TestCase
     }
 
     #[Test]
+    public function records_start_before_command_finishes()
+    {
+        $this->start('omim:update-data');
+
+        $row = DB::table('command_resource_usages')->sole();
+        $this->assertSame('omim:update-data', $row->command);
+        $this->assertNotNull($row->started_at);
+        $this->assertNull($row->exit_code);
+        $this->assertNull($row->wall_seconds);
+    }
+
+    #[Test]
     public function records_only_outermost_of_nested_commands()
     {
         $this->start('omim:update-data');
