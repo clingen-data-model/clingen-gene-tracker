@@ -8,6 +8,8 @@ return [
     'storage_path' => env('APP_STORAGE_PATH'),
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => 'UTC',
+    // How late a scheduled task may start and still run; see App\Console\Scheduling\CatchUpSchedule.
+    'schedule_catch_up_minutes' => env('SCHEDULE_CATCH_UP_MINUTES', 60),
     'locale' => 'en',
     'fallback_locale' => 'en',
     'key' => env('APP_KEY'),

@@ -242,3 +242,15 @@ The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is comple
 - Nested `Artisan::call()` commands are attributed to the outer command.
 - The listener must stay a container singleton (bound in `EventServiceProvider::register()`); it tracks nesting across events.
 - Disable with `RECORD_COMMAND_RESOURCE_USAGE=false`; it is disabled in `phpunit.xml`.
+
+## Scheduled tasks
+
+In OpenShift, `schedule:run` is triggered by a CronJob a few times an hour, not every minute, and can start late.
+
+- `App\Console\Kernel::resolveConsoleSchedule()` uses `App\Console\Scheduling\CatchUpSchedule`.
+- An event runs if its latest cron occurrence is within `app.schedule_catch_up_minutes` (`SCHEDULE_CATCH_UP_MINUTES`, default 60) and has not already been claimed in the cache.
+- Missed occurrences collapse into a single run.
+- Claims need a shared cache store (redis).
+- Keep the CronJob interval shorter than the catch-up window.
+- Define schedules in `Kernel::schedule()` as usual; do not add per-task OpenShift CronJobs.
+

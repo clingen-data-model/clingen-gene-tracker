@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Scheduling\CatchUpSchedule;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Console\Commands\PopulateMimNames;
@@ -66,6 +67,13 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('dx:clean-incoming-errors')
             ->monthly();
+    }
+
+    public function resolveConsoleSchedule()
+    {
+        return tap(new CatchUpSchedule($this->scheduleTimezone()), function ($schedule) {
+            $this->schedule($schedule->useCache($this->scheduleCache()));
+        });
     }
 
     /**
