@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use App\Hgnc\HgncRecord;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class CustomDownloadImporter
@@ -49,42 +48,46 @@ class CustomDownloadImporter
         $params = $params ?? $this->defaultParams;
 
         yield 'fetching data...';
-        $customDownload = $this->fetchCustomDownload($params);
+        $path = $this->fetchCustomDownload($params);
 
-        yield 'parsing data...';
-        $records = $this->parseCustomResponse($customDownload);
-        
-        Log::debug('filtered records: '.$records->count());
-
-        yield 'storing '.$records->count().' gene records...';
-
+        yield 'storing gene records...';
         $count = 0;
-        $records->each(function (HgncRecord $record) use (&$count) {
-            $count++;
-            $prevSymbols = null;
+        try {
+            foreach ($this->parseCustomResponse($path) as $record) {
+                $this->storeRecord($record);
+                $count++;
+            }
+        } finally {
+            unlink($path);
+        }
 
-            $prevSymbols = $this->parsePreviousSymbols($record);
-            $aliasSymbols = $this->parseAliasSymbols($record);
-
-            $newAttributes = [
-                'gene_symbol'       => $record->approved_symbol,
-                'omim_id'           => $record->omim_id ? $record->omim_id : null,
-                'ncbi_gene_id'      => (!empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
-                'hgnc_name'         => ($record->status == 'Symbol Withdrawn') 
-                                            ? 'symbol withdrawn' 
-                                            : $record->approved_name,
-                'hgnc_status'       => $record->status,
-                'previous_symbols'  => $prevSymbols,
-                'alias_symbols'     => $aliasSymbols,
-                'date_approved'     => $this->getValueOrNull($record->date_approved),
-                'date_modified'     => $this->getValueOrNull($record->date_modified),
-                'date_symbol_changed' => $this->getValueOrNull($record->date_symbol_changed),
-                'date_name_changed' => $this->getValueOrNull($record->date_name_changed),
-            ];
-
-            Gene::updateOrCreate(['hgnc_id' => $record->hgnc_id], $newAttributes);
-        });
+        Log::debug('stored records: '.$count);
+        yield 'stored '.$count.' gene records';
         yield 'done';
+    }
+
+    private function storeRecord(HgncRecord $record)
+    {
+        $prevSymbols = $this->parsePreviousSymbols($record);
+        $aliasSymbols = $this->parseAliasSymbols($record);
+
+        $newAttributes = [
+            'gene_symbol'       => $record->approved_symbol,
+            'omim_id'           => $record->omim_id ? $record->omim_id : null,
+            'ncbi_gene_id'      => (!empty($record->ncbi_gene_id)) ? $record->ncbi_gene_id : null,
+            'hgnc_name'         => ($record->status == 'Symbol Withdrawn') 
+                                        ? 'symbol withdrawn' 
+                                        : $record->approved_name,
+            'hgnc_status'       => $record->status,
+            'previous_symbols'  => $prevSymbols,
+            'alias_symbols'     => $aliasSymbols,
+            'date_approved'     => $this->getValueOrNull($record->date_approved),
+            'date_modified'     => $this->getValueOrNull($record->date_modified),
+            'date_symbol_changed' => $this->getValueOrNull($record->date_symbol_changed),
+            'date_name_changed' => $this->getValueOrNull($record->date_name_changed),
+        ];
+
+        Gene::updateOrCreate(['hgnc_id' => $record->hgnc_id], $newAttributes);
     }
 
     private function getValueOrNull($attr)
@@ -116,7 +119,10 @@ class CustomDownloadImporter
     }
     
 
-    public function fetchCustomDownload(array $params): String
+    /**
+     * Downloads to a temp file, whose path is returned; the caller must delete it.
+     */
+    public function fetchCustomDownload(array $params): string
     {
         Log::info('Getting data from hgnc.');
         $queryString = $this->queryStringFromParams($params);
@@ -124,80 +130,79 @@ class CustomDownloadImporter
         $url = 'http://www.genenames.org/cgi-bin/download/custom?'.$queryString;
         Log::debug($url);
 
-        $response = $this->client->request('GET', $url);
-        $contents = $response->getBody()->getContents();
-        Log::debug('Got response with length'.strlen($contents));
-        
-        return $contents;
+        $path = tempnam(sys_get_temp_dir(), 'hgnc');
+        try {
+            $this->client->request('GET', $url, ['sink' => $path]);
+        } catch (\Throwable $e) {
+            unlink($path);
+            throw $e;
+        }
+        Log::debug('Got response with length '.filesize($path));
+
+        return $path;
     }
 
     private function getGeneData()
     {
-        $genes = Gene::select('hgnc_id', 'date_modified', 'omim_id')->get();
+        $lastModified = Gene::max('date_modified');
 
         return [
-            $genes->filter(function ($gene) {
-                return is_null($gene->omim_id);
-            })->pluck('hgnc_id'),
-            $genes->pluck('date_modified', 'hgnc_id')->max()
+            Gene::whereNull('omim_id')->toBase()->pluck('hgnc_id')->flip()->all(),
+            $lastModified ? Carbon::parse($lastModified) : null,
         ];
     }
 
-    private function parseCustomResponse(String $responseString): Collection
+    private function parseCustomResponse(string $path): \Generator
     {
-        
+        // Snapshot before the caller starts updating genes.
         [$hgncsWithoutOmimId, $genesLastModified] = $this->getGeneData();
 
-        $lines = explode("\n", $responseString);
-        
-        $columnNames = null;
-        $collection = collect();
-        
-        Log::debug('lines in download: '.count($lines));
-        foreach ($lines as $idx => $line) {
-            $line = rtrim($line, "\r\n");
-            $cols = explode("\t", $line);
+        $handle = fopen($path, 'r');
+        try {
+            $columnNames = null;
+            while (($line = fgets($handle)) !== false) {
+                $line = rtrim($line, "\r\n");
+                $cols = explode("\t", $line);
 
-            // Get the column keys.
-            if ($idx == 0) {
-                $columnNames = array_map(function ($heading) {
-                    $heading = preg_replace('/\(.*\)$/', '', $heading);
+                // Get the column keys.
+                if ($columnNames === null) {
+                    $columnNames = array_map(function ($heading) {
+                        $heading = preg_replace('/\(.*\)$/', '', $heading);
 
-                    return Str::snake(strtolower($heading));
-                }, $cols);
-                continue;
-            }
-
-            // The last line comes in with single column with empty string value
-            // causes an error so break when we hit that case.
-            if (count($columnNames) != count($cols)) {
-                break;
-            }
-
-            $data = array_combine($columnNames, $cols);
-            $hgncId = substr($data['hgnc_id'], 5);
-
-            if (!empty($hgncId) && $hgncsWithoutOmimId->contains($hgncId)) {
-                $hgncRecord = new HgncRecord($data);
-                $collection->push($hgncRecord);
-                continue;
-            }
-
-            if ($genesLastModified) {
-                if ($data['date_modified'] == '' && Carbon::parse($data['date_approved'])->lt($genesLastModified)) {
+                        return Str::snake(strtolower($heading));
+                    }, $cols);
                     continue;
                 }
-                
-                if ($data['date_modified'] !== '' && Carbon::parse($data['date_modified'])->lt($genesLastModified)) {
+
+                // The last line comes in with single column with empty string value
+                // causes an error so break when we hit that case.
+                if (count($columnNames) != count($cols)) {
+                    break;
+                }
+
+                $data = array_combine($columnNames, $cols);
+                $hgncId = substr($data['hgnc_id'], 5);
+
+                if (isset($hgncsWithoutOmimId[$hgncId])) {
+                    yield new HgncRecord($data);
                     continue;
                 }
-            }
 
-            $hgncRecord = new HgncRecord($data);
-            $collection->push($hgncRecord);
+                if ($genesLastModified) {
+                    if ($data['date_modified'] == '' && Carbon::parse($data['date_approved'])->lt($genesLastModified)) {
+                        continue;
+                    }
+                    
+                    if ($data['date_modified'] !== '' && Carbon::parse($data['date_modified'])->lt($genesLastModified)) {
+                        continue;
+                    }
+                }
+
+                yield new HgncRecord($data);
+            }
+        } finally {
+            fclose($handle);
         }
-
-        return $collection;
     }
 
     private function queryStringFromParams($params)
