@@ -27,17 +27,21 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('app:clear-exports')
-            ->dailyAt("00:00:00");
+            ->dailyAt("00:00:00")
+            ->catchUp();
 
         $schedule->command('hgnc:update-data')
-            ->dailyAt("01:00:00");
+            ->dailyAt("01:00:00")
+            ->catchUp();
         
             $schedule->command('mondo:update-data')
-            ->dailyAt("02:00:00");
+            ->dailyAt("02:00:00")
+            ->catchUp();
 
         $schedule->command('omim:update-data')
             ->dailyAt("03:00:00")
             ->withoutOverlapping()
+            ->catchUp()
             ->after(function () {
                 Artisan::call('omim:check-moved-and-removed');
                 Artisan::call('omim:notify-outdated-phenotypes');
@@ -47,25 +51,36 @@ class Kernel extends ConsoleKernel
         if (config('dx.consume', true)) {
             $schedule->command('gci:consume')
                 ->everyTenMinutes()
-                ->withoutOverlapping();
+                ->withoutOverlapping()
+                ->catchUp();
             $schedule->command('dx:consume-mondo')
-                ->weekly()->mondays()->at('5:10');
+                ->weekly()->mondays()->at('5:10')
+                ->catchUp();
         }
 
         $schedule->command('notifications:delete-duplicates')
-            ->dailyAt('4:00');
+            ->dailyAt('4:00')
+            ->catchUp();
 
         $schedule->command('send-notifications')
-            ->weekly()->mondays()->at('6:00');
+            ->weekly()->mondays()->at('6:00')
+            ->catchUp();
 
         $schedule->command('affiliations:update-data')
-            ->everySixHours();
+            ->everySixHours()
+            ->catchUp();
 
         $schedule->command('notifications:clean -f -q')
-            ->monthly();
+            ->monthly()
+            ->catchUp();
 
         $schedule->command('dx:clean-incoming-errors')
-            ->monthly();
+            ->monthly()
+            ->catchUp();
+
+        $schedule->command('schedule-runs:prune')
+            ->daily()
+            ->catchUp();
     }
 
     /**

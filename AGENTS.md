@@ -243,3 +243,14 @@ The Vue 3, Vite, Sass, Vitest, and Playwright modernization foundation is comple
 - `schedule:run` is not recorded; scheduled commands run as separate processes and are recorded individually.
 - The listener must stay a container singleton (bound in `EventServiceProvider::register()`); it tracks nesting across events.
 - Disable with `RECORD_COMMAND_RESOURCE_USAGE=false`; it is disabled in `phpunit.xml`.
+
+## Scheduling
+
+Deployment to OpenShift is via the Helm chart in https://github.com/clingen-data-model/cgwi-php-helm. Its scheduler CronJob runs `schedule:run` infrequently rather than every minute, so scheduled tasks use `clingen-data-model/laravel-schedule-ketchup` to catch up instead of matching the exact minute.
+
+- Opt each event in with `->catchUp()`; events without it only run when `schedule:run` lands on a matching minute.
+- An opted-in event is due when its most recent scheduled time is later than its latest `schedule_runs.started_at`; it runs once however many slots were missed.
+- Keep `Kernel::schedule()` expressions as the intended run times.
+- `schedule_runs` also records wall time, CPU and peak memory of each scheduled task, manual runs of scheduled commands, and `schedule:run` itself, for tuning scheduler resource requests. Unscheduled commands are not recorded.
+- Nested `Artisan::call()` commands (e.g. `omim:update-data`'s `->after()` callbacks) are counted toward the outer `schedule:run` row.
+- `schedule-runs:prune` (scheduled daily) deletes rows older than `SCHEDULE_RUNS_PRUNE_AFTER_DAYS` (default 90).
