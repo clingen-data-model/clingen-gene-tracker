@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffad8b120b0b48124ca022d97f29cf91",
+    "content-hash": "300e63c5bd81c4779a188576f2a64d77",
     "packages": [
         {
             "name": "box/spout",
@@ -208,6 +208,62 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "clingen-data-model/laravel-schedule-ketchup",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clingen-data-model/laravel-schedule-ketchup.git",
+                "reference": "544b4133979c8026d2e9a8ea6731a20ab34b40dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clingen-data-model/laravel-schedule-ketchup/zipball/544b4133979c8026d2e9a8ea6731a20ab34b40dc",
+                "reference": "544b4133979c8026d2e9a8ea6731a20ab34b40dc",
+                "shasum": ""
+            },
+            "require": {
+                "dragonmantank/cron-expression": "^3.3",
+                "illuminate/console": "^12.0|^13.0",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ScheduleKetchup\\CatchUpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ScheduleKetchup\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Run Laravel scheduled tasks whose scheduled time has passed since they last ran, for apps that invoke schedule:run infrequently.",
+            "keywords": [
+                "catch-up",
+                "cron",
+                "laravel",
+                "schedule",
+                "scheduler"
+            ],
+            "support": {
+                "issues": "https://github.com/clingen-data-model/laravel-schedule-ketchup/issues",
+                "source": "https://github.com/clingen-data-model/laravel-schedule-ketchup/tree/v1.0.0"
+            },
+            "time": "2026-10-21T00:58:16+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -11079,5 +11135,5 @@
         "php": "^8.4"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
