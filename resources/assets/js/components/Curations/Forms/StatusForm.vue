@@ -20,6 +20,14 @@
                     <h3>Update Curation Status</h3>
                 </div>
             </template>
+            <div
+                v-if="updateErrors.length"
+                class="alert alert-danger"
+            >
+                <div v-for="message in updateErrors" :key="message">
+                    {{ message }}
+                </div>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -47,7 +55,13 @@
                             <div class="flex-grow-1 me-2">
                                 <date-input 
                                     v-model="newStatusDate"
+                                    min="2020-01-01"
                                 ></date-input>
+                                 <div class="text-danger" v-if="errors.status_date">
+                                    <div v-for="message in errors.status_date" :key="message">
+                                        <small>{{ message }}</small>
+                                    </div>
+                                </div>
                             </div>
                             <b-button 
                                 variant="primary"
@@ -66,6 +80,7 @@
                                 <date-input
                                     :id="'status-date-'+status.id"
                                     :model-value="status.pivot.status_date"
+                                    min="2020-01-01"
                                     @update:model-value="updateStatusDate(status.pivot,$event)"
                                 ></date-input>
                             </div>
@@ -98,8 +113,8 @@ const curationCopy = ref({})
 const modalVisible = ref(false)
 const newStatusDate = ref(new Date())
 const newStatusId = ref(null)
-const errors = ref([])
-
+const errors = ref({})
+const updateErrors = ref([])
 const user = computed(() => store.getters.getUser)
 const curationStatuses = computed(() => store.getters['curationStatuses/Items'])
 const statusOptions = computed(() => {
@@ -111,6 +126,7 @@ watch(() => props.modelValue, value => {
 }, { immediate: true, deep: true })
 
 function addStatus() {
+    errors.value = {}
     store.dispatch('curations/linkNewStatus', {
         curation: curationCopy.value,
         data: {
@@ -121,20 +137,23 @@ function addStatus() {
         newStatusId.value = null
         newStatusDate.value = new Date()
     }).catch(response => {
-        errors.value = response.data.errors
+        errors.value = response.response?.data?.errors ?? response.data?.errors ?? {}
     })
 }
 
 function updateStatusDate(pivot, newDate) {
+    updateErrors.value = []
+
     if (!pivot || moment(pivot.status_date).diff(newDate) == 0) {
         return
     }
+
     store.dispatch('curations/updateStatusDate', {
         curation: curationCopy.value,
         pivotId: pivot.id,
         statusDate: moment(newDate).format('YYYY-MM-DD')
-    }).catch(response => {
-        errors.value = response.data.errors
+    }).catch(error => {
+        updateErrors.value = error.response?.data?.errors?.status_date ?? error.data?.errors?.status_date ?? ['Unable to update status date.']
     })
 }
 

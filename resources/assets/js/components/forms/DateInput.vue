@@ -51,14 +51,19 @@ const formattedDate = computed(() => {
     }
 
     const fmtdt = formatDate(props.modelValue)
-    console.log(fmtdt)
     return fmtdt
 })
 
 function setDate(event) {
-    const date = new Date(Date.parse(event.target.value))
-    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset()*60*1000)
-
+    const input = event.target
+    if (!input.value || !input.validity.valid) {
+        return
+    }
+    const date = new Date(Date.parse(input.value))
+    if (Number.isNaN(date.getTime())) {
+        return
+    }
+    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000)
     emit('update:modelValue', adjustedDate)
 }
 

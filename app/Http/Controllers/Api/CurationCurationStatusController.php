@@ -39,7 +39,11 @@ class CurationCurationStatusController extends Controller
                 'required',
                 'exists:curation_statuses,id',
             ],
-            'status_date' => 'nullable|date_format:Y-m-d'
+            'status_date' => [
+                'nullable',
+                'date_format:Y-m-d',
+                'after_or_equal:2020-01-01',
+            ],
         ]);
 
         $curation = Curation::findOrFail($curationId);
@@ -86,7 +90,11 @@ class CurationCurationStatusController extends Controller
     public function update(Request $request, $curationId, $curationCurationStatusId)
     {
         $request->validate([
-            'status_date' => 'date_format:Y-m-d'
+            'status_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:2020-01-01',
+            ],
         ]);
         $curation = Curation::findOrFail($curationId);
                
