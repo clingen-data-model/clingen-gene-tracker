@@ -75,7 +75,7 @@ describe('Admin navigation', () => {
         const wrapper = mountPage(Administration)
         expect(wrapper.findAll('nav a').map(link => link.text())).toEqual([
             'Dashboard', 'Users', 'Expert Panels', 'Affiliations', 'Working Groups', 'Curation Types', 'Curation Statuses',
-            'Rationales', 'Modes of Inheritance', 'Upload Categories', 'Outdated Phenotype Labels', 'API Clients', 'Emails', 'Notifications',
+            'Rationales', 'Modes of Inheritance', 'Upload Categories', 'Outdated Phenotype Labels', 'GCI Reconciliation', 'API Clients', 'Emails', 'Notifications',
         ])
     })
     it('preserves the existing permission-sensitive links', () => {

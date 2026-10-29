@@ -62,6 +62,7 @@
                 <router-link class="nav-link" :to="{ name: 'admin-outdated-phenotypes' }">
                     Outdated Phenotype Labels
                 </router-link>
+                <router-link v-if="user.hasPermission('list gci-reconciliation')" class="nav-link" :to="{ name: 'admin-gci-reconciliation' }">GCI Reconciliation</router-link>
                 <router-link class="nav-link" :to="{ name: 'admin-api-clients' }">API Clients</router-link>
                 <router-link class="nav-link" :to="{ name: 'admin-emails' }">Emails</router-link>
                 <router-link class="nav-link" :to="{ name: 'admin-notifications' }">Notifications</router-link>
