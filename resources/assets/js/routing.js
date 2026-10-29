@@ -249,6 +249,12 @@ const routes = [{
                 name: 'admin-notifications',
             },
             {
+                path: 'gci-reconciliation',
+                component: () => import('./components/admin/GciReconciliation.vue'),
+                name: 'admin-gci-reconciliation',
+                beforeEnter: requirePermission('list gci-reconciliation'),
+            },
+            {
                 path: 'api-clients',
                 component: AdminApiClients,
                 name: 'admin-api-clients',

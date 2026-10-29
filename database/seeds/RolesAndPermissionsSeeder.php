@@ -18,6 +18,8 @@ class RolesAndPermissionsSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
+        $this->createPermissionGroup('gci-reconciliation', ['list', 'upload', 'review', 'execute', 'export']);
+
         // create permissions
         $this->createPermissionGroup('users', ['list', 'create', 'update', 'delete', 'deactivate']);
         $this->createPermissionGroup('expert-panels', ['list', 'create', 'update', 'delete', 'deactivate']);
@@ -46,6 +48,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'curations');
         $this->givePermissionsToRole($role, 'mois');
         $this->giveRolePermissionTo($role, $updateGdmUuid);
+        $this->givePermissionsToRole($role, 'gci-reconciliation', ['list', 'upload', 'review', 'execute', 'export']);
 
         /**
          * Admin Role can do most things.
@@ -60,6 +63,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->givePermissionsToRole($role, 'curations');
         $this->givePermissionsToRole($role, 'mois', ['list', 'update']);
         $this->giveRolePermissionTo($role, $updateGdmUuid);
+        $this->givePermissionsToRole($role, 'gci-reconciliation', ['list', 'upload', 'review', 'execute', 'export']);
 
         // $role = Role::firstOrcreate(['name' => 'coordinator']);
         // if (!$role->hasPermissionTo($managePanelCurations->name)) {

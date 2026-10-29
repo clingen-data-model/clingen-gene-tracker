@@ -81,6 +81,19 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('/curation-types', CurationTypeController::class)->only(['index']);
 
     Route::prefix('admin')->middleware('role:admin|programmer')->group(function () {
+        Route::prefix('gci-reconciliation')->group(function () {
+            Route::get('runs', [\App\Http\Controllers\Api\GciReconciliationController::class, 'runs'])->middleware('permission:list gci-reconciliation');
+            Route::post('runs', [\App\Http\Controllers\Api\GciReconciliationController::class, 'createRun'])->middleware('permission:upload gci-reconciliation');
+            Route::post('runs/{uuid}/uploads', [\App\Http\Controllers\Api\GciReconciliationController::class, 'upload'])->middleware('permission:upload gci-reconciliation');
+            Route::post('runs/{uuid}/reconcile', [\App\Http\Controllers\Api\GciReconciliationController::class, 'reconcile'])->middleware('permission:upload gci-reconciliation');
+            Route::get('records', [\App\Http\Controllers\Api\GciReconciliationController::class, 'index'])->middleware('permission:list gci-reconciliation');
+            Route::get('records/{id}', [\App\Http\Controllers\Api\GciReconciliationController::class, 'show'])->middleware('permission:list gci-reconciliation');
+            Route::post('review', [\App\Http\Controllers\Api\GciReconciliationController::class, 'review'])->middleware('permission:review gci-reconciliation');
+            Route::post('preview', [\App\Http\Controllers\Api\GciReconciliationController::class, 'preview'])->middleware('permission:execute gci-reconciliation');
+            Route::post('execute', [\App\Http\Controllers\Api\GciReconciliationController::class, 'execute'])->middleware('permission:execute gci-reconciliation');
+            Route::post('export', [\App\Http\Controllers\Api\GciReconciliationController::class, 'export'])->middleware('permission:export gci-reconciliation');
+        });
+
         Route::get('/users/{user}/revisions', [AdminRevisionController::class, 'users']);
         Route::get('/expert-panels/{expertPanel}/revisions', [AdminRevisionController::class, 'expertPanels']);
         Route::get('/affiliations/{affiliation}/revisions', [AdminRevisionController::class, 'affiliations']);
