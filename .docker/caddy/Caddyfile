@@ -1,0 +1,23 @@
+{
+	auto_https off
+	admin off
+}
+
+:8080 {
+	root * /srv/app/public
+	encode zstd gzip
+	request_body {
+		max_size 16MB
+	}
+	log
+
+	php_fastcgi app:9000 {
+		env PHP_VALUE <<EOF
+			upload_max_filesize=16M
+			post_max_size=16M
+			max_execution_time=180
+			EOF
+		read_timeout 180s
+	}
+	file_server
+}

@@ -25,7 +25,7 @@ services:
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     app:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gt}-app
         init: true
         entrypoint:
@@ -51,21 +51,17 @@ services:
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
-    nginx:
-        container_name: ${DOCKER_NAME:-gt}-nginx
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+    caddy:
+        container_name: ${DOCKER_NAME:-gt}-caddy
+        image: caddy:2.10-alpine
         depends_on:
             - app
         ports:
             - "${APP_PORT:-8012}:8080"
         volumes:
-            - .:/srv/app
-        user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
-        init: true
-        entrypoint:
-            - /usr/sbin/nginx
-            - -g
-            - "daemon off;"
+            - ./public:/srv/app/public:ro
+            - ./storage/app/public:/srv/app/storage/app/public:ro
+            - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 
     redis:
         container_name: ${DOCKER_NAME:-gt}-redis
@@ -89,7 +85,7 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8037}:8025'
 
     scheduler:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gt}-scheduler
         depends_on:
             - app
@@ -112,7 +108,7 @@ services:
         user: ${DOCKER_USER:?Check the README, you need to set DOCKER_USER in your environment or .env file}
 
     queue:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gt}-queue
         depends_on:
             - app

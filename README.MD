@@ -117,7 +117,7 @@ this will be reachable at `http://localhost:8012`.
 
 ## Accessing container services
 
-The `docker-compose.yml` only exposes the nginx container to the host. The primary reason for this is
+The `docker-compose.yml` only exposes the caddy container to the host. The primary reason for this is
 to prevent various containers in different project (e.g., mysql or redis containers) from stepping
 on each others' toes by trying to open the same port. Your options for getting to those services are:
 
