@@ -41,7 +41,9 @@ class GciReconciliationController extends Controller
     public function show(int $id, Workflow $workflow)
     {
         $row = Record::findOrFail($id);
-        return ['record' => $row, 'candidates' => $workflow->candidates($row),
+        $curation = \App\Curation::find($row->resolved_gt_curation_id ?: $row->gt_curation_id);
+        return ['current_ownership' => $curation ? app(GciReconciliationExecutor::class)->ownershipSnapshot($curation) : null,
+            'record' => $row, 'candidates' => $workflow->candidates($row),
             'history' => DB::table('gci_reconciliation_audits')->where('reconciliation_id', $id)->orderBy('id')->get()];
     }
     public function review(Request $request, GciReconciliationExecutor $executor)

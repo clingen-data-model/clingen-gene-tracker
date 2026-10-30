@@ -26,7 +26,7 @@
                 <select id="gci-queue" v-model="filters.queue" class="form-select">
                     <option value="">All records</option><option value="review">Needs Review</option>
                     <option value="not_found">Not Found in GT</option><option value="uuid">Precuration ID / GDM UUID Mismatch</option>
-                    <option value="conflict">Ambiguous / Conflict</option><option value="deleted">Deleted GT Curations</option>
+                    <option value="affiliation">Affiliation / Expert Panel Mismatch</option><option value="conflict">Ambiguous / Conflict</option><option value="deleted">Deleted GT Curations</option>
                     <option value="safe">Safe GCI to GT Updates</option><option value="export">Needs GCI Precuration ID Export</option>
                 </select>
             </div>
@@ -66,6 +66,12 @@
             <p>Issues: {{ (detail.record.issue_codes || []).join(', ') || 'None' }}</p>
             <p>Retired: {{ detail.record.gt_is_retired ? 'Yes' : 'No' }} - Deleted GT IDs: {{ (detail.record.deleted_gt_curation_ids || []).join(', ') || (detail.record.precuration_id_exists_deleted ? detail.record.gci_precuration_id : 'None') }}</p>
             <p>Possible GT candidates (investigation hints only):</p><ul><li v-for="candidate in detail.candidates" :key="candidate.id">GT {{ candidate.id }} - {{ candidate.gdm_uuid || 'No GDM UUID' }} - {{ candidate.mondo_id }}</li></ul>
+            <div v-if="detail.current_ownership" class="border rounded p-2 mb-2">
+                <p>GCI parent affiliation: {{ detail.record.gci_affiliation_id }}</p>
+                <p>Current GT parent affiliation / GCEP: {{ detail.current_ownership.parent_clingen_id || 'None' }} - {{ detail.current_ownership.parent_name || 'None' }}</p>
+                <p>GT stored parent affiliation: {{ detail.current_ownership.stored_parent_clingen_id || 'None' }} - {{ detail.current_ownership.stored_parent_name || 'None' }}</p>
+                <p>Current GT Expert Panel: {{ detail.current_ownership.expert_panel_id }} - {{ detail.current_ownership.expert_panel_name }}</p>
+            </div>
             <p>Existing decision: {{ detail.record.resolution || 'None' }} - {{ detail.record.review_notes }}</p>
             <p>Reviewed by {{ detail.record.reviewed_by || 'None' }} at {{ detail.record.reviewed_at || 'None' }}</p>
             <p>Execution: {{ detail.record.execution_status }} - {{ detail.record.execution_error }}</p>
@@ -78,7 +84,7 @@
                 <fieldset :disabled="busy">
                 <div class="row g-2">
                     <div class="col-md-6"><label for="review-status" class="form-label">Review status</label><select id="review-status" v-model="decision.review_status" class="form-select"><option v-for="status in reviewStatuses" :key="status">{{ status }}</option></select></div>
-                    <div class="col-md-6"><label for="review-resolution" class="form-label">Resolution</label><select id="review-resolution" v-model="decision.resolution" class="form-select"><option value="">Choose resolution</option><option v-for="resolution in resolutions" :key="resolution">{{ resolution }}</option></select></div>
+                    <div class="col-md-6"><label for="review-resolution" class="form-label">Resolution</label><select id="review-resolution" v-model="decision.resolution" class="form-select"><option value="">Choose resolution</option><option v-for="resolution in reviewResolutions" :key="resolution" :value="resolution">{{ resolutionLabel(resolution) }}</option></select></div>
                     <div class="col-md-6"><label for="resolved-id" class="form-label">Resolved GT curation ID (manual match)</label><input id="resolved-id" v-model="decision.resolved_gt_curation_id" type="number" min="1" class="form-control" /></div>
                     <div class="col-12"><label for="review-notes" class="form-label">Review notes</label><textarea id="review-notes" v-model="decision.review_notes" class="form-control" /></div>
                 </div>
@@ -90,10 +96,18 @@
         </div></section>
         <section v-if="preview" class="card border-primary"><div class="card-body">
             <h3 class="h5">Execution preview</h3>
-            <p>{{ preview.summary.selected }} selected - {{ preview.summary.ready }} ready - Disease updates: {{ preview.summary.disease_updates }} - MoI updates: {{ preview.summary.moi_updates }} - GDM UUID updates: {{ preview.summary.uuid_updates }} - New GT curations: {{ preview.summary.new_curations }}</p>
-            <p>Existing curations retain their gene and expert panel. Preview expires in 15 minutes.</p>
+            <p>{{ preview.summary.selected }} selected - {{ preview.summary.ready }} ready - Disease updates: {{ preview.summary.disease_updates }} - MoI updates: {{ preview.summary.moi_updates }} - GDM UUID updates: {{ preview.summary.uuid_updates }} - Ownership / Expert Panel changes: {{ preview.summary.ownership_updates }} - New GT curations: {{ preview.summary.new_curations }}</p>
+            <p>Only the displayed fields will change. Ownership changes require an explicitly reviewed affiliation decision. Preview expires in 15 minutes.</p>
             <ul><li v-for="item in preview.errors" :key="item.id" class="text-danger">Record {{ item.id }} excluded: {{ item.error }}</li></ul>
-            <div v-for="plan in preview.plans" :key="plan.id" class="border rounded p-2 mb-2"><strong>Record {{ plan.id }}: {{ plan.resolution }} - GT {{ plan.target_id || 'new curation' }}</strong><pre>{{ JSON.stringify(plan.changes, null, 2) }}</pre></div>
+            <div v-for="plan in preview.plans" :key="plan.id" class="border rounded p-2 mb-2"><strong>Record {{ plan.id }}: {{ plan.resolution }} - GT {{ plan.target_id || 'new curation' }}</strong><div v-if="plan.ownership" class="mt-2">
+                <h4 class="h6">Ownership / Expert Panel change</h4>
+                <p>Current GT parent affiliation: {{ plan.ownership.current.parent_clingen_id || 'None' }} - {{ plan.ownership.current.parent_name || 'None' }}</p>
+                <p>GT stored parent affiliation: {{ plan.ownership.current.stored_parent_clingen_id || 'None' }} - {{ plan.ownership.current.stored_parent_name || 'None' }}</p>
+                <p>Current GT Expert Panel: {{ plan.ownership.current.expert_panel_id }} - {{ plan.ownership.current.expert_panel_name }}</p>
+                <p>GCI parent affiliation: {{ plan.ownership.gci_affiliation_id }}</p>
+                <p>Resolved target parent: {{ plan.ownership.target.parent_clingen_id }} - {{ plan.ownership.target.parent_name }}</p>
+                <p>Resolved target Expert Panel: {{ plan.ownership.target.expert_panel_id }} - {{ plan.ownership.target.expert_panel_name }}</p>
+            </div><pre>{{ JSON.stringify(plan.changes, null, 2) }}</pre></div>
             <button class="btn btn-danger" :disabled="busy || !preview.plans.length" @click="execute">Confirm Apply {{ preview.plans.length }} previewed decisions</button>
             <button class="btn btn-outline-secondary ms-2" @click="preview = null">Cancel</button>
         </div></section>
@@ -111,7 +125,13 @@ const label = ref(''), busy = ref(false), error = ref(''), message = ref(''), in
 const page = ref(1), lastPage = ref(1), total = ref(0)
 const filters = reactive({ run_uuid: '', queue: 'review', gci_gene_symbol: '', gci_affiliation_id: '' })
 const reviewStatuses = ['PENDING', 'REVIEWED', 'NEEDS_FURTHER_REVIEW']
-const resolutions = ['UPDATE_GT_DISEASE_MOI', 'UPDATE_GT_GDM_UUID', 'MATCH_EXISTING_GT_CURATION', 'CREATE_GT_CURATION', 'UPDATE_GCI_PRECURATION_ID', 'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW']
+const resolutions = ['UPDATE_GT_DISEASE_MOI', 'UPDATE_GT_GDM_UUID', 'UPDATE_GT_AFFILIATION', 'MATCH_EXISTING_GT_CURATION', 'CREATE_GT_CURATION', 'UPDATE_GCI_PRECURATION_ID', 'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW']
+const resolutionLabel = value => value === 'UPDATE_GT_AFFILIATION' ? 'Update GT Affiliation / Expert Panel' : value
+const reviewResolutions = computed(() => resolutions.filter(value => value !== 'UPDATE_GT_AFFILIATION' ||
+    (selected.value.length > 0 && selected.value.every(id => {
+        const row = detail.value?.record.id === id ? detail.value.record : rows.value.find(row => row.id === id)
+        return row?.can_update_affiliation
+    }))))
 const decision = reactive({ review_status: 'REVIEWED', resolution: '', review_notes: '', resolved_gt_curation_id: '' })
 const filterOptions = { source_type: ['HAS_PRECURATION_ID', 'NO_PRECURATION_ID'], match_status: ['CONFIRMED', 'NOT_FOUND_IN_GT', 'AMBIGUOUS_GDM_UUID', 'ALREADY_RECONCILED', 'CONFLICT'], match_method: ['PRECURATION_ID', 'GDM_UUID'], review_status: reviewStatuses, resolution: resolutions, execution_status: ['NOT_READY', 'PENDING', 'APPLIED', 'FAILED', 'NO_ACTION'] }
 const flags = ['has_identity_warning', 'disease_match', 'moi_match', 'gdm_uuid_match', 'gene_match', 'affiliation_match', 'gt_is_retired']

@@ -7,6 +7,13 @@ class Record extends Model
 {
     protected $table = 'gci_gt_reconciliations';
     protected $guarded = [];
+    protected $appends = ['can_update_affiliation'];
+
+    public function getCanUpdateAffiliationAttribute(): bool
+    {
+        return Decision::affiliationEligible($this) && $this->execution_status !== 'APPLIED';
+    }
+
     protected $casts = [
         'raw_payload' => 'array', 'issue_codes' => 'array', 'conflicting_gt_curation_ids' => 'array',
         'deleted_gt_curation_ids' => 'array', 'gt_is_retired' => 'boolean',
@@ -23,6 +30,7 @@ class Record extends Model
         }
         if (!empty($filters['issue'])) $q->whereJsonContains('issue_codes', $filters['issue']);
         switch ($filters['queue'] ?? '') {
+            case 'affiliation': $q->where('affiliation_match', false); break;
             case 'not_found': $q->where('match_status', 'NOT_FOUND_IN_GT'); break;
             case 'uuid': $q->where(fn ($q) => $q->where('gdm_uuid_match', false)->orWhere('precuration_id_match', false)); break;
             case 'conflict': $q->whereIn('match_status', ['AMBIGUOUS_GDM_UUID', 'CONFLICT', 'ALREADY_RECONCILED']); break;
