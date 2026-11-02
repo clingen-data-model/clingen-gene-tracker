@@ -75,6 +75,18 @@ class CreateGciGtReconciliationsTable extends Migration
             $table->text('review_notes')->nullable();
             $table->string('resolution', 60)->nullable();
 
+            $table->boolean('gt_is_retired')->default(false)->index();
+            $table->json('deleted_gt_curation_ids')->nullable();
+            $table->unsignedInteger('resolved_gt_curation_id')->nullable();
+            $table->unsignedInteger('reviewed_by')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->string('execution_status', 30)->default('NOT_READY')->index();
+            $table->unsignedInteger('executed_by')->nullable();
+            $table->timestamp('executed_at')->nullable();
+            $table->text('execution_error')->nullable();
+            $table->timestamp('exported_at')->nullable();
+            $table->unsignedInteger('exported_by')->nullable();
+
             $table->timestamps();
 
             $table->unique(

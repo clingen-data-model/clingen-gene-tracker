@@ -2,11 +2,9 @@
 namespace Tests\Feature;
 
 use App\{Affiliation, Curation, Disease, ExpertPanel, Gene, ModeOfInheritance, User};
-use App\Services\GciReconciliation\{Decision, GciReconciliationExecutor, PayloadReader, Reconciler, Record, Run, Workflow};
-use Illuminate\Http\UploadedFile;
+use App\Services\GciReconciliation\{Decision, Comparison, SafeUpdates, PrecurationExport, Review, PayloadReader, Reconciler, Record};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class GciReconciliationTest extends TestCase
@@ -17,7 +15,7 @@ class GciReconciliationTest extends TestCase
     private $gene;
     private $disease;
     private $moi;
-    private GciReconciliationExecutor $executor;
+    protected $fakeCurationSavedEvent = false;
 
     public function setUp(): void
     {
@@ -29,7 +27,6 @@ class GciReconciliationTest extends TestCase
         $this->gene = factory(Gene::class)->create(['gene_symbol' => 'GCI_TEST_GENE']);
         $this->disease = factory(Disease::class)->create(['mondo_id' => 'MONDO:9988110', 'is_obsolete' => false]);
         $this->moi = ModeOfInheritance::where('hp_id', 'HP:0000006')->firstOrFail();
-        $this->executor = app(GciReconciliationExecutor::class);
     }
     protected function tearDown(): void
     {
@@ -56,20 +53,8 @@ class GciReconciliationTest extends TestCase
             $paths[] = $path; $this->paths[] = $path;
         }
         $uuid = (string) Str::uuid();
-        Run::create(['uuid' => $uuid, 'status' => 'COMPLETED']);
         app(Reconciler::class)->reconcile($uuid, 'test', ...$paths);
         return Record::where('run_uuid', $uuid)->orderBy('id')->get();
-    }
-    private function approve(Record $r, string $resolution, ?int $resolved = null): void
-    {
-        $this->executor->review([$r->id], ['review_status' => 'REVIEWED', 'resolution' => $resolution,
-            'review_notes' => 'Investigated', 'resolved_gt_curation_id' => $resolved], $this->actor->id);
-    }
-    private function apply(Record $r): array
-    {
-        $preview = $this->executor->preview([$r->id], $this->actor->id);
-        $this->assertEmpty($preview['errors']);
-        return $this->executor->execute($preview['uuid'], $this->actor->id);
     }
     public function test_matching_normalization_fallback_deleted_retired_and_candidates(): void
     {
@@ -92,183 +77,178 @@ class GciReconciliationTest extends TestCase
         $this->assertContains($deleted->id, $rows[3]->deleted_gt_curation_ids);
         $this->assertSame('AMBIGUOUS_GDM_UUID', $rows[4]->match_status);
         $this->assertNull($rows[5]->gt_curation_id);
-        $this->assertNotEmpty(app(Workflow::class)->candidates($rows[5]));
+        $this->assertNotEmpty(app(Comparison::class)->candidates($rows[5]));
         $this->assertFalse(Record::filtered(['run_uuid' => $rows[2]->run_uuid])->whereKey($rows[2]->id)->exists());
         $this->assertTrue(Record::filtered(['include_retired' => true])->whereKey($rows[2]->id)->exists());
     }
-    public function test_safe_disease_and_moi_updates_preview_audit_and_idempotency(): void
+    public function test_safe_commands_dry_run_apply_history_and_immutable_snapshots(): void
     {
-        foreach (['disease', 'moi', 'both'] as $case) {
-            $c = $this->curation(['mondo_id' => $case === 'moi' ? $this->disease->mondo_id : null, 'moi_id' => $case === 'disease' ? $this->moi->id : null]);
-            $r = $this->reconcile([$this->item(['precurationId' => (string) $c->id, 'PK' => $c->gdm_uuid])], [])->first();
-            $this->assertTrue($r->safe_update_candidate);
-            $this->approve($r, Decision::UPDATE);
-            $this->assertSame($this->actor->id, $r->fresh()->reviewed_by);
-            $this->assertNotNull($r->fresh()->reviewed_at);
-            $before = $c->fresh()->only(['mondo_id', 'moi_id']);
-            $preview = $this->executor->preview([$r->id], $this->actor->id);
-            $this->assertSame($before, $c->fresh()->only(['mondo_id', 'moi_id']));
-            $result = $this->executor->execute($preview['uuid'], $this->actor->id);
-            $this->assertSame('APPLIED', $result[0]['status'], json_encode($result));
+        foreach (['has', 'no'] as $source) foreach (['disease', 'moi', 'both'] as $case) {
+            $c = $this->curation(['mondo_id' => $case === 'moi' ? $this->disease->mondo_id : null,
+                'moi_id' => $case === 'disease' ? $this->moi->id : null]);
+            $item = $this->item(['PK' => $c->gdm_uuid]);
+            if ($source === 'has') $item['precurationId'] = (string) $c->id;
+            $r = $this->reconcile($source === 'has' ? [$item] : [], $source === 'no' ? [$item] : [])->first();
+            $snapshot = $r->only(['raw_payload', 'gt_mondo_id', 'gt_moi_hp_id', 'disease_match', 'moi_match', 'issue_codes']);
+            $before = $c->fresh()->getAttributes();
+            $messages = DB::table('stream_messages')->count();
+            $this->artisan('gci:apply-safe-updates', ['--id' => [$r->id]])->assertExitCode(0);
+            $this->assertEquals($before, $c->fresh()->getAttributes());
+            $this->assertSame('NOT_READY', $r->fresh()->execution_status);
+            $this->assertSame($messages, DB::table('stream_messages')->count());
+            $this->artisan('gci:apply-safe-updates', ['--apply' => true, '--id' => [$r->id], '--user' => $this->actor->id])->assertExitCode(0);
+            $this->assertSame('APPLIED', $r->fresh()->execution_status);
+            $this->assertEquals($this->actor->id, $r->fresh()->executed_by);
             $this->assertSame($this->disease->mondo_id, $c->fresh()->mondo_id);
             $this->assertSame($this->moi->id, $c->fresh()->moi_id);
-            $this->assertSame($r->disease_match, $r->fresh()->disease_match);
-            $this->assertNotEmpty($this->executor->preview([$r->id], $this->actor->id)['errors']);
-            $this->assertDatabaseHas('gci_reconciliation_audits', ['reconciliation_id' => $r->id, 'kind' => 'APPLIED', 'actor_id' => $this->actor->id]);
+            foreach (['gene_symbol', 'gdm_uuid', 'affiliation_id', 'expert_panel_id'] as $field) $this->assertEquals($before[$field], $c->fresh()->$field);
+            $this->assertSame($snapshot, $r->fresh()->only(array_keys($snapshot)));
+            $this->assertGreaterThan($messages, DB::table('stream_messages')->count());
+            $this->assertDatabaseHas('revisions', ['revisionable_id' => $c->id, 'key' => $case === 'moi' ? 'moi_id' : 'mondo_id', 'user_id' => $this->actor->id]);
+            $this->assertTrue(app(Comparison::class)->describe($r)['current_matches_gci']);
+            $this->assertSame('SKIPPED', app(SafeUpdates::class)->apply($r->id, null)['status']);
         }
     }
-    public function test_uuid_correction_requires_review(): void
+    public function test_identity_mismatches_and_live_changes_block_updates(): void
     {
-        $c = $this->curation(); $item = $this->item(['precurationId' => (string) $c->id]);
-        $r = $this->reconcile([$item], [])->first();
-        $this->assertFalse($r->safe_update_candidate);
-        $this->assertNotEmpty($this->executor->preview([$r->id], $this->actor->id)['errors']);
-        $this->approve($r, Decision::UUID);
-        $this->assertSame('APPLIED', $this->apply($r)[0]['status']);
-        $this->assertSame($item['PK'], $c->fresh()->gdm_uuid);
+        foreach (['gene', 'affiliation', 'uuid', 'duplicate', 'live'] as $problem) {
+            $c = $this->curation(['mondo_id' => null]);
+            $item = $this->item(['PK' => $c->gdm_uuid, 'precurationId' => (string) $c->id]);
+            if ($problem === 'gene') $item['gene'] = 'OTHER';
+            if ($problem === 'affiliation') $item['affiliation'] = '999999';
+            if ($problem === 'uuid') $item['PK'] = (string) Str::uuid();
+            if ($problem === 'duplicate') $this->curation(['gdm_uuid' => $c->gdm_uuid]);
+            $r = $this->reconcile([$item], [])->first();
+            if ($problem === 'live') $c->update(['gdm_uuid' => (string) Str::uuid()]);
+            $inspection = app(SafeUpdates::class)->inspect([$r]);
+            $this->assertEmpty($inspection['plans'], $problem);
+            $this->assertNotEmpty($inspection['excluded']);
+            $this->assertNull($c->fresh()->mondo_id);
+        }
     }
-    public function test_creation_uses_uploaded_status_and_exports_original_schema(): void
+    public function test_missing_mappings_fail_safely_and_other_rows_continue(): void
     {
-        $item = $this->item(); $r = $this->reconcile([], [$item])->first();
-        $this->approve($r, Decision::CREATE);
-        $start = now()->startOfSecond();
-        $result = $this->apply($r);
-        $this->assertSame('APPLIED', $result[0]['status'], json_encode($result));
-        $c = Curation::findOrFail($r->fresh()->resolved_gt_curation_id);
-        $this->assertSame(config('curations.statuses.uploaded'), $c->curation_status_id);
-        $this->assertSame($this->panel->affiliation->parent_id, $c->affiliation_id);
-        $this->assertTrue(\Carbon\Carbon::parse($c->current_status_date)->gte($start));
-        $payload = app(Workflow::class)->export([$r->id], $this->actor->id);
-        $this->assertEquals($item + ['precurationId' => (string) $c->id], $payload['Items'][0]);
-        $this->assertSame(1, $payload['Count']);
-        $this->assertArrayHasKey('ScannedCount', $payload);
-        $this->assertNotNull($r->fresh()->exported_at);
-    }
-    public function test_direct_and_manually_resolved_exports_exclude_unresolved(): void
-    {
-        $c = $this->curation(); $manual = $this->curation();
-        $rows = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid]), $this->item(), $this->item()]);
-        $this->approve($rows[1], Decision::MATCH, $manual->id); $this->apply($rows[1]);
-        $payload = app(Workflow::class)->export($rows->modelKeys(), $this->actor->id);
-        $this->assertSame(2, $payload['Count']);
-        $this->assertSame([(string) $c->id, (string) $manual->id], array_column($payload['Items'], 'precurationId'));
-        $this->assertNull($rows[1]->fresh()->gt_curation_id);
-    }
-    public function test_stale_preview_failure_does_not_corrupt_other_record(): void
-    {
-        $a = $this->curation(['mondo_id' => null]); $b = $this->curation(['mondo_id' => null]);
-        $rows = $this->reconcile([$this->item(['PK' => $a->gdm_uuid, 'precurationId' => $a->id]), $this->item(['PK' => $b->gdm_uuid, 'precurationId' => $b->id])], []);
-        foreach ($rows as $r) $this->approve($r, Decision::UPDATE);
-        $preview = $this->executor->preview($rows->modelKeys(), $this->actor->id);
-        DB::table('curations')->where('id', $a->id)->update(['mondo_id' => 'MONDO:1234567']);
-        $result = $this->executor->execute($preview['uuid'], $this->actor->id);
-        $this->assertSame(['FAILED', 'APPLIED'], array_column($result, 'status'));
-        $this->assertSame('MONDO:1234567', $a->fresh()->mondo_id);
-        $this->assertSame($this->disease->mondo_id, $b->fresh()->mondo_id);
+        $has = [];
+        foreach (['disease', 'moi', 'valid'] as $case) {
+            $c = $this->curation(['mondo_id' => null, 'moi_id' => null]);
+            $item = $this->item(['PK' => $c->gdm_uuid, 'precurationId' => (string) $c->id]);
+            if ($case === 'disease') $item['disease'] = 'MONDO_9999999';
+            if ($case === 'moi') $item['modeInheritance'] = 'Unknown (HP:9999999)';
+            $has[] = $item;
+        }
+        $rows = $this->reconcile($has, []);
+        $this->artisan('gci:apply-safe-updates', ['--apply' => true, '--run' => $rows[0]->run_uuid])->assertExitCode(1);
         $this->assertSame('FAILED', $rows[0]->fresh()->execution_status);
+        $this->assertSame('FAILED', $rows[1]->fresh()->execution_status);
+        $this->assertSame('APPLIED', $rows[2]->fresh()->execution_status);
+        $this->assertNull(Curation::find($rows[0]->gt_curation_id)->mondo_id);
     }
-    public function test_missing_mappings_and_ambiguous_affiliation_prevent_creation(): void
+    public function test_live_comparison_and_search_leave_snapshots_unchanged(): void
     {
-        $r = $this->reconcile([], [$this->item()])->first(); $this->approve($r, Decision::CREATE);
-        $this->disease->update(['is_obsolete' => true]);
-        $this->assertNotEmpty($this->executor->preview([$r->id], $this->actor->id)['errors']);
-        $this->disease->update(['is_obsolete' => false]);
-        $r->update(['gci_moi_hp_id' => 'HP:9999999']);
-        $this->assertNotEmpty($this->executor->preview([$r->id], $this->actor->id)['errors']);
-        $r->update(['gci_moi_hp_id' => $this->moi->hp_id]);
-        factory(ExpertPanel::class)->create(['affiliation_id' => $this->panel->affiliation_id]);
-        $this->assertNotEmpty($this->executor->preview([$r->id], $this->actor->id)['errors']);
-        $this->assertFalse(Curation::where('gdm_uuid', $r->gci_gdm_uuid)->exists());
-    }
-    public function test_upload_pair_and_duplicate_hash_are_validated_and_reconciled(): void
-    {
-        $run = Run::create(['uuid' => (string) Str::uuid(), 'status' => 'DRAFT']);
-        $workflow = app(Workflow::class);
-        foreach ([PayloadReader::HAS => [$this->item(['precurationId' => '4294967294'])], PayloadReader::NO => [$this->item()]] as $type => $items) {
-            $contents = json_encode(['Items' => $items]);
-            $upload = $workflow->upload($run, UploadedFile::fake()->createWithContent('anything.json', $contents), $type, $this->actor->id);
-            $this->paths[] = $upload->path;
-            $same = $workflow->upload($run, UploadedFile::fake()->createWithContent('renamed.json', $contents), $type, $this->actor->id);
-            $this->assertSame($upload->id, $same->id);
-            $this->assertStringStartsWith(storage_path('app/'), $upload->path);
+        $c = $this->curation(['mondo_id' => null]);
+        $r = $this->reconcile([$this->item(['precurationId' => (string) $c->id, 'PK' => $c->gdm_uuid])], [])->first();
+        $snapshot = $r->getAttributes();
+        $this->assertFalse(app(Comparison::class)->describe($r)['current_matches_gci']);
+        app(\App\Services\Curations\UpdateCuration::class)->update($c, ['mondo_id' => $this->disease->mondo_id]);
+        $this->assertTrue(app(Comparison::class)->describe($r)['current_matches_gci']);
+        $this->assertSame($snapshot, $r->fresh()->getAttributes());
+        foreach (['gci_precuration_id', 'gt_curation_id', 'resolved_gt_curation_id'] as $field) {
+            $r->update([$field => 4294967290]);
+            $this->assertTrue(Record::filtered(['curation_id' => 4294967290])->whereKey($r->id)->exists());
+            $r->update([$field => $snapshot[$field]]);
         }
-        $workflow->reconcile($run, $this->actor->id);
-        $this->assertSame('COMPLETED', $run->fresh()->status);
-        $this->assertSame(2, Record::where('run_uuid', $run->uuid)->count());
+        foreach (['gci_gdm_uuid', 'gt_gdm_uuid'] as $field) {
+            $uuid = (string) Str::uuid(); $r->update([$field => $uuid]);
+            $this->assertTrue(Record::filtered(['gdm_uuid' => $uuid])->whereKey($r->id)->exists());
+        }
     }
-    public function test_invalid_review_combination_is_rejected(): void
+    public function test_export_preserves_raw_values_and_includes_reviewed_manual_targets(): void
     {
-        $r = $this->reconcile([], [$this->item()])->first();
-        $this->expectException(ValidationException::class);
-        $this->approve($r, Decision::UPDATE);
+        $c = $this->curation(); $manual = $this->curation(['gdm_uuid' => null]);
+        $items = [$this->item(['PK' => $c->gdm_uuid]), $this->item(), $this->item()];
+        $rows = $this->reconcile([], $items);
+        app(Review::class)->save([$rows[1]->id], ['review_status' => 'REVIEWED', 'resolution' => Decision::MATCH,
+            'resolved_gt_curation_id' => $manual->id, 'review_notes' => 'Confirmed manually'], $this->actor->id);
+        $result = app(PrecurationExport::class)->payload($rows->fresh());
+        $this->assertSame(2, $result['payload']['Count']);
+        $this->assertEquals($items[0] + ['precurationId' => (string) $c->id], $result['payload']['Items'][0]);
+        $this->assertSame((string) $manual->id, $result['payload']['Items'][1]['precurationId']);
+        $this->assertSame(Decision::EXPORT, app(Comparison::class)->describe($rows[0])['gci_action']);
+        $path = sys_get_temp_dir().'/gci-export-'.Str::uuid().'.json'; $this->paths[] = $path;
+        $this->artisan('gci:export-precuration-ids', ['--run' => $rows[0]->run_uuid, '--output' => $path])->assertExitCode(0);
+        $this->assertSame(2, json_decode(file_get_contents($path), true)['Count']);
+        $this->assertNotNull($rows[0]->fresh()->exported_at);
+        $this->assertNull($rows[2]->fresh()->exported_at);
     }
-    public function test_deleted_precuration_id_is_detected_but_never_matched(): void
+    public function test_admin_authorization_review_and_read_only_routes(): void
     {
-        $c = $this->curation(); $c->delete();
-        $r = $this->reconcile([$this->item(['PK' => $c->gdm_uuid, 'precurationId' => $c->id])], [])->first();
-        $this->assertNull($r->gt_curation_id);
-        $this->assertEquals(1, $r->precuration_id_exists_deleted);
-        $this->assertSame('NOT_FOUND_IN_GT', $r->match_status);
-    }
-    public function test_duplicate_input_and_affiliation_warnings_exclude_safe_updates(): void
-    {
-        $c = $this->curation(['mondo_id' => null]);
-        $item = $this->item(['PK' => $c->gdm_uuid, 'precurationId' => $c->id]);
-        $rows = $this->reconcile([$item, $item], []);
-        $this->assertTrue($rows[0]->has_identity_warning);
-        $this->assertFalse($rows[0]->safe_update_candidate);
-        $row = $this->reconcile([array_merge($item, ['affiliation' => '998899'])], [])->first();
-        $this->assertFalse($row->safe_update_candidate);
-        $this->assertTrue($row->has_identity_warning);
-    }
-    public function test_creation_mapping_failure_after_preview_is_recorded_without_partial_creation(): void
-    {
-        $r = $this->reconcile([], [$this->item()])->first();
-        $this->approve($r, Decision::CREATE);
-        $preview = $this->executor->preview([$r->id], $this->actor->id);
-        $this->assertEmpty($preview['errors']);
-        DB::table('diseases')->where('id', $this->disease->id)->update(['is_obsolete' => true]);
-        $result = $this->executor->execute($preview['uuid'], $this->actor->id);
-        $this->assertSame('FAILED', $result[0]['status']);
-        $this->assertStringContainsString('Disease', $r->fresh()->execution_error);
-        $this->assertFalse(Curation::where('gdm_uuid', $r->gci_gdm_uuid)->exists());
-        $this->assertDatabaseHas('gci_reconciliation_audits', ['reconciliation_id' => $r->id, 'kind' => 'FAILED']);
-    }
-    public function test_unknown_gene_prevents_creation(): void
-    {
-        $r = $this->reconcile([], [$this->item(['gene' => 'UNKNOWN_GCI_GENE'])])->first();
-        $this->approve($r, Decision::CREATE);
-        $preview = $this->executor->preview([$r->id], $this->actor->id);
-        $this->assertStringContainsString('Gene', $preview['errors'][0]['error']);
-    }
-    public function test_preview_cannot_be_replayed(): void
-    {
-        $c = $this->curation(['mondo_id' => null]);
-        $r = $this->reconcile([$this->item(['PK' => $c->gdm_uuid, 'precurationId' => $c->id])], [])->first();
-        $this->approve($r, Decision::UPDATE);
-        $preview = $this->executor->preview([$r->id], $this->actor->id);
-        $this->executor->execute($preview['uuid'], $this->actor->id);
-        $this->expectException(ValidationException::class);
-        $this->executor->execute($preview['uuid'], $this->actor->id);
-    }
-    public function test_no_action_and_deleted_targets_do_not_export(): void
-    {
-        $a = $this->curation(); $b = $this->curation();
-        $rows = $this->reconcile([], [$this->item(['PK' => $a->gdm_uuid]), $this->item(['PK' => $b->gdm_uuid])]);
-        $this->approve($rows[0], 'NO_ACTION'); $b->delete();
-        $this->expectException(ValidationException::class);
-        app(Workflow::class)->export($rows->modelKeys(), $this->actor->id);
-    }
-    public function test_execution_permission_is_independent_from_review_permission(): void
-    {
-        $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+        $c = $this->curation(); $r = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid])])->first();
+        $this->actingAs($this->actor, 'api')->getJson('/api/admin/gci-reconciliation/records')->assertForbidden();
         $this->actor->assignRole('admin');
-        $role = \Spatie\Permission\Models\Role::findByName('admin');
-        $role->revokePermissionTo('execute gci-reconciliation');
-        $this->actingAs($this->actor, 'api')->postJson('/api/admin/gci-reconciliation/preview', ['ids' => [1]])->assertForbidden();
-        $this->actingAs($this->actor, 'api')->getJson('/api/admin/gci-reconciliation/runs')->assertOk();
-        $other = factory(User::class)->create();
-        $this->actingAs($other, 'api')->getJson('/api/admin/gci-reconciliation/runs')->assertForbidden();
+        foreach (['list', 'review'] as $action) $this->actor->givePermissionTo(\Spatie\Permission\Models\Permission::findOrCreate($action.' gci-reconciliation', 'web'));
+        $this->actor->unsetRelation('permissions');
+        $this->getJson('/api/admin/gci-reconciliation/records?curation_id='.$c->id)->assertOk()->assertJsonFragment(['gt_curation_id' => $c->id]);
+        $this->getJson('/api/admin/gci-reconciliation/records/'.$r->id)->assertOk()->assertJsonPath('record.current_matches_gci', true);
+        $before = $c->fresh()->getAttributes();
+        $this->postJson('/api/admin/gci-reconciliation/review', ['ids' => [$r->id], 'review_status' => 'REVIEWED',
+            'resolution' => Decision::AFFILIATION, 'review_notes' => 'Manual follow-up'])->assertNoContent();
+        $this->assertEquals($before, $c->fresh()->getAttributes());
+        foreach (['runs', 'uploads', 'preview', 'execute', 'export'] as $endpoint) $this->postJson('/api/admin/gci-reconciliation/'.$endpoint)->assertNotFound();
     }
-}
+    public function test_failed_normal_update_rolls_back_gt_history_and_records_failure(): void
+    {
+        $c = $this->curation(['mondo_id' => null]);
+        $r = $this->reconcile([$this->item(['precurationId' => (string) $c->id, 'PK' => $c->gdm_uuid])], [])->first();
+        $messages = DB::table('stream_messages')->count();
+        $revisions = DB::table('revisions')->count();
+        $this->instance(\App\Services\Curations\UpdateCuration::class, new class extends \App\Services\Curations\UpdateCuration {
+            public function update(Curation $curation, array $attributes): Curation {
+                parent::update($curation, $attributes);
+                throw new \RuntimeException('Simulated application failure');
+            }
+        });
+        $this->assertSame('FAILED', app(SafeUpdates::class)->apply($r->id, null)['status']);
+        $this->assertNull($c->fresh()->mondo_id);
+        $this->assertSame($messages, DB::table('stream_messages')->count());
+        $this->assertSame($revisions, DB::table('revisions')->count());
+        $this->assertSame('Simulated application failure', $r->fresh()->execution_error);
+    }
+    public function test_export_excludes_duplicate_uuid_and_unresolved_manual_decisions(): void
+    {
+        $c = $this->curation();
+        $r = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid])])->first();
+        $r->update(['resolution' => Decision::AFFILIATION]);
+        $this->assertSame(0, app(PrecurationExport::class)->payload([$r])['payload']['Count']);
+        $r->update(['resolution' => null]);
+        $duplicate = $this->curation(['gdm_uuid' => $c->gdm_uuid]);
+        $duplicate->delete();
+        $this->assertSame(0, app(PrecurationExport::class)->payload([$r])['payload']['Count']);
+    }
+    public function test_multiple_runs_require_an_explicit_selection(): void
+    {
+        $r = $this->reconcile([], [$this->item()])->first();
+        $this->reconcile([], [$this->item()]);
+        $this->artisan('gci:apply-safe-updates')->assertExitCode(1);
+        $this->artisan('gci:apply-safe-updates', ['--run' => $r->run_uuid])->assertExitCode(0);
+    }
 
+    public function test_final_migration_creates_retained_schema_without_workflow_tables(): void
+    {
+        $original = DB::getDefaultConnection();
+        config(['database.connections.gci_schema_test' => ['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => '']]);
+        try {
+            DB::setDefaultConnection('gci_schema_test');
+            require_once database_path('migrations/2026_07_29_000000_create_gci_gt_reconciliations_table.php');
+            (new \CreateGciGtReconciliationsTable)->up();
+            $schema = DB::connection()->getSchemaBuilder();
+            $this->assertTrue($schema->hasColumns('gci_gt_reconciliations', ['raw_payload', 'gt_mondo_id', 'gt_is_retired',
+                'deleted_gt_curation_ids', 'resolved_gt_curation_id', 'reviewed_by', 'reviewed_at', 'execution_status',
+                'executed_by', 'executed_at', 'execution_error', 'exported_at']));
+            foreach (['runs', 'uploads', 'audits', 'previews'] as $suffix) $this->assertFalse($schema->hasTable('gci_reconciliation_'.$suffix));
+        } finally {
+            DB::setDefaultConnection($original);
+            DB::purge('gci_schema_test');
+        }
+    }
+
+}

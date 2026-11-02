@@ -121,7 +121,7 @@ class CurationController extends Controller
         $data = $this->setMondoId($data);
 
         try {
-            $curation->update($data);
+            app(\App\Services\Curations\UpdateCuration::class)->update($curation, $data);
             $this->setPhenotypes($curation, $request);
             $this->setRationales($curation, $request->rationales);
             $this->syncArchivedCurationLinks($curation, $request->all());

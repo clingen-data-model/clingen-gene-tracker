@@ -33,7 +33,6 @@ class Reconciler
         $byUuid = $this->indexByGdmUuid(array_values(array_filter($all, fn ($c) => $c['deleted_at'] === null)));
         $reserved = $seen = [];
         DB::transaction(function () use ($runUuid, $label, $hasPath, $noPath, $has, $no, $byId, $byUuid, &$reserved, &$seen) {
-            Run::firstOrCreate(['uuid' => $runUuid], ['label' => $label, 'status' => 'COMPLETED', 'started_at' => now(), 'completed_at' => now()]);
             $this->processHasPrecurationFile($runUuid, $label, $hasPath, $has['Items'], $byId, $byUuid, $reserved, $seen);
             $this->processNoPrecurationFile($runUuid, $label, $noPath, $no['Items'], $byUuid, $reserved, $seen);
         });
