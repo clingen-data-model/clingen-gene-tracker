@@ -43,4 +43,20 @@ describe('GCI information and review page', () => {
         wrapper.unmount()
     })
 
+    it.each([
+        ['PENDING', 'NOT_READY', 'Pending'],
+        ['REVIEWED', 'APPLIED', 'Reviewed / Applied'],
+        ['REVIEWED', 'NO_ACTION', 'Reviewed / No action'],
+        ['REVIEWED', 'RESOLVED_MANUALLY', 'Reviewed / Resolved manually'],
+        ['REVIEWED', 'NOT_READY', 'Reviewed / Not ready'],
+    ])('displays %s + %s as %s', async (review_status, execution_status, label) => {
+        const record = { id: 1, review_status, execution_status }
+        window.axios = { get: vi.fn().mockResolvedValue({ data: { data: [record], current_page: 1, last_page: 1, total: 1 } }) }
+        const store = createStore({ getters: { getUser: () => ({ hasPermission: () => true }) } })
+        const wrapper = mount(Component, { global: { plugins: [store], stubs: { RouterLink: true } } })
+        await flushPromises()
+        expect(wrapper.get('tbody tr').findAll('td')[5].text()).toBe(label)
+        wrapper.unmount()
+    })
+
 })

@@ -251,4 +251,46 @@ class GciReconciliationTest extends TestCase
         }
     }
 
+    public function test_review_records_manual_resolution_from_live_gt_without_changing_snapshots_or_gt(): void
+    {
+        $c = $this->curation(['mondo_id' => null]);
+        $r = $this->reconcile([$this->item(['PK' => $c->gdm_uuid, 'precurationId' => (string) $c->id])], [])->first();
+        $snapshot = $r->getAttributes();
+        $review = app(Review::class);
+        $review->save([$r->id], ['review_status' => 'REVIEWED'], $this->actor->id);
+        $this->assertSame('NOT_READY', $r->fresh()->execution_status);
+        app(\App\Services\Curations\UpdateCuration::class)->update($c, ['mondo_id' => $this->disease->mondo_id]);
+        $review->save([$r->id], ['review_status' => 'PENDING'], $this->actor->id);
+        $this->assertSame('NOT_READY', $r->fresh()->execution_status);
+        $beforeGt = $c->fresh()->getAttributes();
+        $revisions = DB::table('revisions')->count();
+        $messages = DB::table('stream_messages')->count();
+        $review->save([$r->id], ['review_status' => 'REVIEWED'], $this->actor->id);
+        $this->assertSame('RESOLVED_MANUALLY', $r->fresh()->execution_status);
+        $this->assertEquals($beforeGt, $c->fresh()->getAttributes());
+        $this->assertSame($revisions, DB::table('revisions')->count());
+        $this->assertSame($messages, DB::table('stream_messages')->count());
+        foreach (['review_status', 'reviewed_by', 'reviewed_at', 'execution_status', 'updated_at'] as $key) unset($snapshot[$key]);
+        $this->assertSame($snapshot, array_intersect_key($r->fresh()->getAttributes(), $snapshot));
+        $c->update(['mondo_id' => null]);
+        $review->save([$r->id], ['review_status' => 'REVIEWED'], $this->actor->id);
+        $this->assertSame('NOT_READY', $r->fresh()->execution_status);
+    }
+    public function test_review_preserves_completed_actions_and_marks_already_matching_rows_no_action(): void
+    {
+        $rows = [];
+        foreach (['APPLIED', 'NO_ACTION', 'NOT_READY'] as $status) {
+            $c = $this->curation();
+            $r = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid])])->first();
+            $r->update(['execution_status' => $status]);
+            $rows[] = $r;
+        }
+        app(Review::class)->save(array_map(fn ($r) => $r->id, $rows), ['review_status' => 'REVIEWED'], $this->actor->id);
+        $this->assertSame('APPLIED', $rows[0]->fresh()->execution_status);
+        $this->assertSame('NO_ACTION', $rows[1]->fresh()->execution_status);
+        $this->assertSame('NO_ACTION', $rows[2]->fresh()->execution_status);
+        $this->assertTrue(Record::filtered(['queue' => 'export'])->whereKey($rows[2]->id)->exists());
+        $this->assertSame(1, app(PrecurationExport::class)->payload([$rows[2]->fresh()])['payload']['Count']);
+    }
+
 }

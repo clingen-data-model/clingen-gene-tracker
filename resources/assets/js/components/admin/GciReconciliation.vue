@@ -13,7 +13,7 @@
                 <div class="col-md-8"><label for="queue" class="form-label">Finding category</label><select id="queue" v-model="filters.queue" class="form-select"><option value="">All records</option><option value="review">Needs Review</option><option value="not_found">Not Found in GT</option><option value="uuid">Precuration ID / GDM UUID Mismatch</option><option value="affiliation">Affiliation / Expert Panel Mismatch</option><option value="conflict">Ambiguous / Conflict</option><option value="deleted">Deleted GT Curations</option><option value="safe">Phase 1 disease / MoI candidates</option><option value="export">GCI precuration-ID export candidates</option></select></div>
             </div>
             <details class="my-3"><summary>Additional snapshot filters</summary><div class="row g-2 mt-1">
-                <div v-for="(options, key) in filterOptions" :key="key" class="col-md-4"><label :for="'filter-' + key" class="form-label">{{ readable(key) }}</label><select :id="'filter-' + key" v-model="filters[key]" class="form-select"><option value="">Any</option><option v-for="option in options" :key="option" :value="option">{{ option }}</option></select></div>
+                <div v-for="(options, key) in filterOptions" :key="key" class="col-md-4"><label :for="'filter-' + key" class="form-label">{{ readable(key) }}</label><select :id="'filter-' + key" v-model="filters[key]" class="form-select"><option value="">Any</option><option v-for="option in options" :key="option" :value="option">{{ statusLabels[option] || option }}</option></select></div>
                 <div v-for="key in flags" :key="key" class="col-md-4"><label :for="'filter-' + key" class="form-label">{{ readable(key) }}</label><select :id="'filter-' + key" v-model="filters[key]" class="form-select"><option value="">Any</option><option value="1">Yes</option><option value="0">No</option></select></div>
                 <div class="col-md-4"><label for="issue" class="form-label">Issue code</label><input id="issue" v-model="filters.issue" class="form-control" /></div>
             </div></details>
@@ -21,8 +21,8 @@
             <button class="btn btn-primary" :disabled="busy">Search / Apply filters</button>
         </form>
         <p class="text-muted">Filters describe the original findings. Current GT comparisons are recalculated when loaded. Refresh after editing a curation.</p>
-        <div class="table-responsive"><table class="table table-striped align-middle"><thead><tr><th><input type="checkbox" aria-label="Select visible records for review" :checked="allSelected" @change="selected = $event.target.checked ? rows.map(r => r.id) : []" /></th><th>Gene / GCEP</th><th>GT ID</th><th>Original finding</th><th>Current GT</th><th>Review / CLI action</th><th></th></tr></thead><tbody>
-            <tr v-for="row in rows" :key="row.id"><td><input v-model="selected" type="checkbox" :value="row.id" :aria-label="'Select record ' + row.id" /></td><td>{{ row.gci_gene_symbol }} / {{ row.gci_affiliation_id }}</td><td>{{ row.resolved_gt_curation_id || row.gt_curation_id || 'Unresolved' }}</td><td>{{ row.match_status }}<br /><small>{{ (row.issue_codes || []).join(', ') }}</small></td><td>{{ row.current_matches_gci ? 'Matches GCI now' : 'Discrepancy / investigation needed' }}<br /><small>{{ row.gci_action }}</small></td><td>{{ row.review_status }} / {{ row.execution_status }}</td><td><button class="btn btn-sm btn-outline-primary" :disabled="busy" @click="open(row.id)">Inspect {{ row.id }}</button></td></tr>
+        <div class="table-responsive"><table class="table table-striped align-middle"><thead><tr><th><input type="checkbox" aria-label="Select visible records for review" :checked="allSelected" @change="selected = $event.target.checked ? rows.map(r => r.id) : []" /></th><th>Gene / GCEP</th><th>GT ID</th><th>Original finding</th><th>Current GT</th><th>Review / Action</th><th></th></tr></thead><tbody>
+            <tr v-for="row in rows" :key="row.id"><td><input v-model="selected" type="checkbox" :value="row.id" :aria-label="'Select record ' + row.id" /></td><td>{{ row.gci_gene_symbol }} / {{ row.gci_affiliation_id }}</td><td>{{ row.resolved_gt_curation_id || row.gt_curation_id || 'Unresolved' }}</td><td>{{ row.match_status }}<br /><small>{{ (row.issue_codes || []).join(', ') }}</small></td><td>{{ row.current_matches_gci ? 'Matches GCI now' : 'Discrepancy / investigation needed' }}<br /><small>{{ row.gci_action }}</small></td><td>{{ reviewLabel(row) }}</td><td><button class="btn btn-sm btn-outline-primary" :disabled="busy" @click="open(row.id)">Inspect {{ row.id }}</button></td></tr>
         </tbody></table></div>
         <p v-if="!rows.length">No records match these filters.</p>
         <div class="d-flex gap-2 mb-3"><button class="btn btn-outline-secondary" :disabled="busy || page <= 1" @click="loadPage(page - 1)">Previous</button><span>Page {{ page }} of {{ lastPage }} - {{ total }} records</span><button class="btn btn-outline-secondary" :disabled="busy || page >= lastPage" @click="loadPage(page + 1)">Next</button></div>
@@ -41,13 +41,13 @@
             <router-link v-if="detail.record.current_gt" class="btn btn-outline-primary me-2" :to="'/curations/' + detail.record.current_gt.curation_id">Open GT curation</router-link>
             <button class="btn btn-outline-secondary" :disabled="busy" @click="open(detail.record.id)">Refresh current GT</button>
             <p class="mt-3">Reviewed by {{ detail.record.reviewed_by || 'None' }} at {{ detail.record.reviewed_at || 'None' }}</p>
-            <p>CLI action: {{ detail.record.execution_status }} - {{ detail.record.execution_error }} - {{ detail.record.executed_at }}</p>
+            <p>Review / Action: {{ reviewLabel(detail.record) }} - {{ detail.record.execution_error }} - {{ detail.record.executed_at }}</p>
             <p>Last JSON export generated: {{ detail.record.exported_at || 'Never' }} (does not confirm GCI import).</p>
         </div></section>
         <form v-if="canReview" class="card" @submit.prevent="saveReview"><fieldset class="card-body" :disabled="busy || !selected.length">
             <h3 class="h5">Record review for {{ selected.length }} selected rows</h3>
             <p>These decisions do not execute GT changes.</p>
-            <label for="review-status" class="form-label">Review status</label><select id="review-status" v-model="decision.review_status" class="form-select mb-2"><option v-for="status in reviewStatuses" :key="status">{{ status }}</option></select>
+            <label for="review-status" class="form-label">Review status</label><select id="review-status" v-model="decision.review_status" class="form-select mb-2"><option v-for="status in reviewStatuses" :key="status" :value="status">{{ statusLabels[status] || status }}</option></select>
             <label for="review-resolution" class="form-label">Resolution / follow-up</label><select id="review-resolution" v-model="decision.resolution" class="form-select mb-2"><option value="">No decision</option><option v-for="resolution in resolutions" :key="resolution">{{ resolution }}</option></select>
             <label for="resolved-id" class="form-label">Resolved GT curation ID</label><input id="resolved-id" v-model="decision.resolved_gt_curation_id" type="number" min="1" class="form-control mb-2" />
             <label for="review-notes" class="form-label">Review notes</label><textarea id="review-notes" v-model="decision.review_notes" class="form-control mb-2" />
@@ -64,10 +64,17 @@ const base = '/api/admin/gci-reconciliation'
 const rows = ref([]), selected = ref([]), detail = ref(null), busy = ref(false), error = ref(''), message = ref(''), includeRetired = ref(false)
 const page = ref(1), lastPage = ref(1), total = ref(0)
 const filters = reactive({ curation_id: '', gdm_uuid: '', queue: '', gci_gene_symbol: '', gci_affiliation_id: '' })
+const statusLabels = { PENDING: 'Pending', REVIEWED: 'Reviewed', NEEDS_FURTHER_REVIEW: 'Needs further review', APPLIED: 'Applied', NO_ACTION: 'No action', RESOLVED_MANUALLY: 'Resolved manually', NOT_READY: 'Not ready', FAILED: 'Failed' }
+function reviewLabel(row) {
+    if (row.review_status === 'PENDING') return 'Pending'
+    const review = statusLabels[row.review_status] || row.review_status
+    if (row.review_status !== 'REVIEWED') return review
+    return `${review} / ${statusLabels[row.execution_status] || row.execution_status || 'Not ready'}`
+}
 const reviewStatuses = ['PENDING', 'REVIEWED', 'NEEDS_FURTHER_REVIEW']
 const resolutions = ['UPDATE_GT_DISEASE_MOI', 'UPDATE_GT_GDM_UUID', 'UPDATE_GT_AFFILIATION', 'MATCH_EXISTING_GT_CURATION', 'CREATE_GT_CURATION', 'UPDATE_GCI_PRECURATION_ID', 'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW']
 const decision = reactive({ review_status: 'REVIEWED', resolution: '', review_notes: '', resolved_gt_curation_id: '' })
-const filterOptions = { source_type: ['HAS_PRECURATION_ID', 'NO_PRECURATION_ID'], match_status: ['CONFIRMED', 'NOT_FOUND_IN_GT', 'AMBIGUOUS_GDM_UUID', 'ALREADY_RECONCILED', 'CONFLICT'], match_method: ['PRECURATION_ID', 'GDM_UUID'], review_status: reviewStatuses, resolution: resolutions, execution_status: ['NOT_READY', 'PENDING', 'APPLIED', 'FAILED', 'NO_ACTION'] }
+const filterOptions = { source_type: ['HAS_PRECURATION_ID', 'NO_PRECURATION_ID'], match_status: ['CONFIRMED', 'NOT_FOUND_IN_GT', 'AMBIGUOUS_GDM_UUID', 'ALREADY_RECONCILED', 'CONFLICT'], match_method: ['PRECURATION_ID', 'GDM_UUID'], review_status: reviewStatuses, resolution: resolutions, execution_status: ['NOT_READY', 'PENDING', 'APPLIED', 'FAILED', 'NO_ACTION', 'RESOLVED_MANUALLY'] }
 const flags = ['has_identity_warning', 'disease_match', 'moi_match', 'gdm_uuid_match', 'gene_match', 'affiliation_match', 'gt_is_retired']
 const comparisons = [['Precuration ID', 'gci_precuration_id', 'gt_curation_id', 'curation_id', 'precuration_id_match'], ['GDM UUID', 'gci_gdm_uuid', 'gt_gdm_uuid', 'gdm_uuid', 'gdm_uuid_match'], ['Gene', 'gci_gene_symbol', 'gt_gene_symbol', 'gene_symbol', 'gene_match'], ['Disease', 'gci_mondo_id', 'gt_mondo_id', 'mondo_id', 'disease_match'], ['MoI', 'gci_moi_hp_id', 'gt_moi_hp_id', 'moi_hp_id', 'moi_match'], ['Affiliation', 'gci_affiliation_id', 'gt_affiliation_id', 'affiliation_id', 'affiliation_match']]
 const allSelected = computed(() => rows.value.length > 0 && rows.value.every(row => selected.value.includes(row.id)))

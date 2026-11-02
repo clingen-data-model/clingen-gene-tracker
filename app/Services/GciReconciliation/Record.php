@@ -35,7 +35,7 @@ class Record extends Model
             case 'conflict': $q->whereIn('match_status', ['AMBIGUOUS_GDM_UUID', 'CONFLICT', 'ALREADY_RECONCILED']); break;
             case 'deleted': $q->where(fn ($q) => $q->where('precuration_id_exists_deleted', true)->orWhereNotNull('gt_deleted_at')->orWhereJsonLength('deleted_gt_curation_ids', '>', 0)); break;
             case 'safe': $q->safeIdentity()->where(fn ($q) => $q->where('disease_match', false)->orWhere('moi_match', false)); break;
-            case 'export': $q->where('source_type', PayloadReader::NO)->whereNull('exported_at')->whereNotIn('execution_status', ['FAILED', 'NO_ACTION'])->where(fn ($q) => $q->where('match_status', 'CONFIRMED')->orWhereNotNull('resolved_gt_curation_id')); break;
+            case 'export': $q->where('source_type', PayloadReader::NO)->whereNull('exported_at')->where('execution_status', '!=', 'FAILED')->where(fn ($q) => $q->where('match_status', 'CONFIRMED')->orWhereNotNull('resolved_gt_curation_id')); break;
             case 'review': $q->where('review_status', '!=', 'REVIEWED'); break;
         }
         return $q;
