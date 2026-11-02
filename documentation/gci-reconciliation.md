@@ -46,7 +46,7 @@ first, UUID fallback, HAS before NO, and the existing duplicate/conflict rules.
 JSON property ordering is irrelevant. Reconciliation records findings without
 changing GT. `--label` is optional. Existing summary/report exports remain.
 
-Apply and export accept `--run=<uuid>` and repeatable `--id=<row-id>`. If rows from
+Apply and both exports accept `--run=<uuid>` and repeatable `--id=<row-id>`. If rows from
 multiple reconciliation runs exist, select one explicitly to avoid mixing stale
 snapshots. No browser run-management screen is required.
 
@@ -121,9 +121,43 @@ review decision establishes that manual identity. Export does not assign UUIDs.
 Output preserves original raw `gene`, `modeInheritance`, `affiliation`, `disease`
 and `PK`, adding string `precurationId`. Envelope fields are `Items`, `Count`,
 `ScannedCount`, and `ConsumedCapacity`, compatible with the source export. The
-command reports count/path and marks exported_at; it never overwrites existing
+command reports count/path and skipped rows/reasons; it never overwrites existing
 files. Default output is private storage. Generating a file does not confirm its
 import into GCI. Disease/MoI corrections and ID export are independent actions.
+
+## GCI action decisions and export
+
+`DELETE_GCI_DATA` and `MOVE_TO_PARKING_LOT` are manual review outcomes. Existing
+resolutions, including `KEEP_DELETED`, are unchanged. Saving either decision never
+mutates GT or marks it APPLIED. Reviewed rows display `Reviewed / Delete GCI data`
+or `Reviewed / Move to parking lot`. Both are available in the resolution filter
+and excluded from precuration-ID exports and safe-update candidate lists.
+
+```sh
+php artisan gci:export-actions --output=/private/path/gci-actions.json
+```
+
+The action export includes only REVIEWED rows with either new resolution and a
+valid original GCI UUID. No GT match or target ID is required: a reviewed decision
+to delete/park a GCI record can be valid even when no GT target exists. Pending,
+further-review and other resolutions are excluded. Conflicting actions for one
+UUID are skipped; identical duplicates are emitted once. Skipped rows and reasons
+are printed. Its exact envelope is:
+
+```json
+{
+  "Items": [
+    {"PK": "ed091980-d2c9-488a-8d92-712d5cdf169a", "resolution": "DELETE_GCI_DATA"}
+  ],
+  "Count": 1
+}
+```
+
+Both export commands leave GT and reconciliation rows unchanged, including
+`exported_at`. That column is now historical only. They create a new JSON file,
+even for zero eligible rows, and report its path, count and skipped records.
+Existing generic Artisan resource-usage instrumentation remains unchanged.
+Neither command sends requests to GCI; the GCI team performs those actions.
 
 ## History compatibility
 

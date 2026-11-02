@@ -175,9 +175,11 @@ class GciReconciliationTest extends TestCase
         $this->assertSame((string) $manual->id, $result['payload']['Items'][1]['precurationId']);
         $this->assertSame(Decision::EXPORT, app(Comparison::class)->describe($rows[0])['gci_action']);
         $path = sys_get_temp_dir().'/gci-export-'.Str::uuid().'.json'; $this->paths[] = $path;
+        $exportSnapshot = $rows->fresh()->map->getAttributes()->all();
         $this->artisan('gci:export-precuration-ids', ['--run' => $rows[0]->run_uuid, '--output' => $path])->assertExitCode(0);
+        $this->assertSame($exportSnapshot, $rows->fresh()->map->getAttributes()->all());
         $this->assertSame(2, json_decode(file_get_contents($path), true)['Count']);
-        $this->assertNotNull($rows[0]->fresh()->exported_at);
+        $this->assertNull($rows[0]->fresh()->exported_at);
         $this->assertNull($rows[2]->fresh()->exported_at);
     }
     public function test_admin_authorization_review_and_read_only_routes(): void
@@ -291,6 +293,62 @@ class GciReconciliationTest extends TestCase
         $this->assertSame('NO_ACTION', $rows[2]->fresh()->execution_status);
         $this->assertTrue(Record::filtered(['queue' => 'export'])->whereKey($rows[2]->id)->exists());
         $this->assertSame(1, app(PrecurationExport::class)->payload([$rows[2]->fresh()])['payload']['Count']);
+    }
+
+    public function test_gci_action_reviews_exports_and_filters_preserve_gt_and_existing_decisions(): void
+    {
+        $this->actor->assignRole('admin');
+        foreach (['list', 'review'] as $action) $this->actor->givePermissionTo(\Spatie\Permission\Models\Permission::findOrCreate($action.' gci-reconciliation', 'web'));
+        $this->actingAs($this->actor, 'api');
+        $c = $this->curation();
+        $rows = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid]), $this->item(), $this->item(), $this->item()]);
+        $beforeGt = $c->fresh()->getAttributes();
+        $revisions = DB::table('revisions')->count();
+        foreach ([Decision::DELETE_GCI, Decision::PARKING_LOT, 'KEEP_DELETED'] as $index => $resolution) {
+            $this->postJson('/api/admin/gci-reconciliation/review', ['ids' => [$rows[$index]->id],
+                'review_status' => 'REVIEWED', 'resolution' => $resolution])->assertNoContent();
+            $this->getJson('/api/admin/gci-reconciliation/records?resolution='.$resolution)
+                ->assertOk()->assertJsonFragment(['id' => $rows[$index]->id, 'resolution' => $resolution]);
+        }
+        $rows[3]->update(['resolution' => Decision::DELETE_GCI]); // Pending is not an approved GCI action.
+        $this->assertSame($beforeGt, $c->fresh()->getAttributes());
+        $this->assertSame($revisions, DB::table('revisions')->count());
+        foreach ([0, 1] as $index) {
+            $r = $rows[$index]->fresh();
+            $this->assertNotSame('APPLIED', $r->execution_status);
+            $this->assertSame($r->resolution, app(Comparison::class)->describe($r)['gci_action']);
+            $this->assertFalse(Record::filtered(['queue' => 'export'])->whereKey($r->id)->exists());
+            $this->assertFalse(Record::filtered(['queue' => 'safe'])->whereKey($r->id)->exists());
+        }
+        $this->assertSame(0, app(PrecurationExport::class)->payload($rows->fresh())['payload']['Count']);
+        $expected = ['Items' => [
+            ['PK' => $rows[0]->gci_gdm_uuid, 'resolution' => Decision::DELETE_GCI],
+            ['PK' => $rows[1]->gci_gdm_uuid, 'resolution' => Decision::PARKING_LOT],
+        ], 'Count' => 2];
+        $this->assertSame($expected, app(\App\Services\GciReconciliation\ActionExport::class)->payload($rows->fresh())['payload']);
+        $snapshot = $rows->fresh()->map->getAttributes()->all();
+        foreach (['gci:export-actions' => $expected, 'gci:export-precuration-ids' => null] as $command => $payload) {
+            $path = sys_get_temp_dir().'/gci-export-'.Str::uuid().'.json'; $this->paths[] = $path;
+            $this->artisan($command, ['--run' => $rows[0]->run_uuid, '--output' => $path])->assertExitCode(0);
+            $actual = json_decode(file_get_contents($path), true);
+            if ($payload) $this->assertSame($payload, $actual); else $this->assertSame(0, $actual['Count']);
+            $this->assertSame($snapshot, $rows->fresh()->map->getAttributes()->all());
+        }
+    }
+    public function test_action_export_excludes_invalid_conflicting_and_other_outcomes(): void
+    {
+        $uuid = (string) Str::uuid();
+        $rows = collect([
+            new Record(['id' => 1, 'review_status' => 'REVIEWED', 'resolution' => Decision::DELETE_GCI, 'gci_gdm_uuid' => $uuid]),
+            new Record(['id' => 2, 'review_status' => 'REVIEWED', 'resolution' => Decision::PARKING_LOT, 'gci_gdm_uuid' => $uuid]),
+            new Record(['id' => 3, 'review_status' => 'REVIEWED', 'resolution' => Decision::DELETE_GCI, 'gci_gdm_uuid' => 'invalid']),
+        ]);
+        foreach ([Decision::EXPORT, Decision::UPDATE, 'NO_ACTION', 'KEEP_DELETED', null] as $resolution) {
+            $rows->push(new Record(['review_status' => 'REVIEWED', 'resolution' => $resolution, 'gci_gdm_uuid' => (string) Str::uuid()]));
+        }
+        $result = app(\App\Services\GciReconciliation\ActionExport::class)->payload($rows);
+        $this->assertSame(['Items' => [], 'Count' => 0], $result['payload']);
+        $this->assertCount(8, $result['skipped']);
     }
 
 }

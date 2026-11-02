@@ -13,7 +13,7 @@ class PrecurationExport
             try {
                 $this->check($r->source_type === PayloadReader::NO, 'Record already has a GCI precuration ID.');
                 $this->check($r->review_status !== 'NEEDS_FURTHER_REVIEW'
-                    && !in_array($r->resolution, array_merge(Decision::NONE, ['NEEDS_FURTHER_REVIEW']), true)
+                    && !in_array($r->resolution, array_merge(Decision::NONE, Decision::GCI_ACTIONS, ['NEEDS_FURTHER_REVIEW']), true)
                     && $r->execution_status !== 'FAILED', 'Unresolved review, failed action, or no-action decision.');
                 $direct = $r->match_status === 'CONFIRMED' && $r->match_method === 'GDM_UUID'
                     && !$r->has_identity_warning && !$r->gdm_uuid_duplicate_in_gt && $r->gene_match && $r->affiliation_match

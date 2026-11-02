@@ -59,4 +59,24 @@ describe('GCI information and review page', () => {
         wrapper.unmount()
     })
 
+    it.each([
+        ['DELETE_GCI_DATA', 'Delete GCI data'],
+        ['MOVE_TO_PARKING_LOT', 'Move to parking lot'],
+    ])('supports the %s review outcome and resolution filter', async (resolution, label) => {
+        const record = { id: 1, review_status: 'REVIEWED', execution_status: 'NOT_READY', resolution }
+        const get = vi.fn().mockResolvedValue({ data: { data: [record], current_page: 1, last_page: 1, total: 1 } })
+        window.axios = { get }
+        const store = createStore({ getters: { getUser: () => ({ hasPermission: () => true }) } })
+        const wrapper = mount(Component, { global: { plugins: [store], stubs: { RouterLink: true } } })
+        await flushPromises()
+        expect(wrapper.get(`#review-resolution option[value="${resolution}"]`).text()).toBe(label)
+        expect(wrapper.get('#review-resolution option[value="KEEP_DELETED"]').exists()).toBe(true)
+        expect(wrapper.get('tbody tr').findAll('td')[5].text()).toBe(`Reviewed / ${label}`)
+        await wrapper.get('#filter-resolution').setValue(resolution)
+        await wrapper.get('form').trigger('submit')
+        await flushPromises()
+        expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/records', { params: expect.objectContaining({ resolution }) })
+        wrapper.unmount()
+    })
+
 })

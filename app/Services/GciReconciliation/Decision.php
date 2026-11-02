@@ -9,8 +9,11 @@ final class Decision
     public const MATCH = 'MATCH_EXISTING_GT_CURATION';
     public const CREATE = 'CREATE_GT_CURATION';
     public const EXPORT = 'UPDATE_GCI_PRECURATION_ID';
+    public const DELETE_GCI = 'DELETE_GCI_DATA';
+    public const PARKING_LOT = 'MOVE_TO_PARKING_LOT';
+    public const GCI_ACTIONS = [self::DELETE_GCI, self::PARKING_LOT];
     public const NONE = ['NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED'];
-    public const RESOLUTIONS = [self::UPDATE, self::UUID, self::AFFILIATION, self::MATCH, self::CREATE, self::EXPORT,
+    public const RESOLUTIONS = [self::UPDATE, self::UUID, self::AFFILIATION, self::MATCH, self::CREATE, self::EXPORT, self::DELETE_GCI, self::PARKING_LOT,
         'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW'];
     public const REVIEW_STATUSES = ['PENDING', 'REVIEWED', 'NEEDS_FURTHER_REVIEW'];
 

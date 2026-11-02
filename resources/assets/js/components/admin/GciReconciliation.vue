@@ -42,13 +42,13 @@
             <button class="btn btn-outline-secondary" :disabled="busy" @click="open(detail.record.id)">Refresh current GT</button>
             <p class="mt-3">Reviewed by {{ detail.record.reviewed_by || 'None' }} at {{ detail.record.reviewed_at || 'None' }}</p>
             <p>Review / Action: {{ reviewLabel(detail.record) }} - {{ detail.record.execution_error }} - {{ detail.record.executed_at }}</p>
-            <p>Last JSON export generated: {{ detail.record.exported_at || 'Never' }} (does not confirm GCI import).</p>
+            <p>Legacy export timestamp: {{ detail.record.exported_at || 'Never' }} (exports are now read-only; this timestamp is not updated).</p>
         </div></section>
         <form v-if="canReview" class="card" @submit.prevent="saveReview"><fieldset class="card-body" :disabled="busy || !selected.length">
             <h3 class="h5">Record review for {{ selected.length }} selected rows</h3>
             <p>These decisions do not execute GT changes.</p>
             <label for="review-status" class="form-label">Review status</label><select id="review-status" v-model="decision.review_status" class="form-select mb-2"><option v-for="status in reviewStatuses" :key="status" :value="status">{{ statusLabels[status] || status }}</option></select>
-            <label for="review-resolution" class="form-label">Resolution / follow-up</label><select id="review-resolution" v-model="decision.resolution" class="form-select mb-2"><option value="">No decision</option><option v-for="resolution in resolutions" :key="resolution">{{ resolution }}</option></select>
+            <label for="review-resolution" class="form-label">Resolution / follow-up</label><select id="review-resolution" v-model="decision.resolution" class="form-select mb-2"><option value="">No decision</option><option v-for="resolution in resolutions" :key="resolution" :value="resolution">{{ statusLabels[resolution] || resolution }}</option></select>
             <label for="resolved-id" class="form-label">Resolved GT curation ID</label><input id="resolved-id" v-model="decision.resolved_gt_curation_id" type="number" min="1" class="form-control mb-2" />
             <label for="review-notes" class="form-label">Review notes</label><textarea id="review-notes" v-model="decision.review_notes" class="form-control mb-2" />
             <button class="btn btn-primary">Save review</button>
@@ -64,15 +64,17 @@ const base = '/api/admin/gci-reconciliation'
 const rows = ref([]), selected = ref([]), detail = ref(null), busy = ref(false), error = ref(''), message = ref(''), includeRetired = ref(false)
 const page = ref(1), lastPage = ref(1), total = ref(0)
 const filters = reactive({ curation_id: '', gdm_uuid: '', queue: '', gci_gene_symbol: '', gci_affiliation_id: '' })
-const statusLabels = { PENDING: 'Pending', REVIEWED: 'Reviewed', NEEDS_FURTHER_REVIEW: 'Needs further review', APPLIED: 'Applied', NO_ACTION: 'No action', RESOLVED_MANUALLY: 'Resolved manually', NOT_READY: 'Not ready', FAILED: 'Failed' }
+const gciActions = ['DELETE_GCI_DATA', 'MOVE_TO_PARKING_LOT']
+const statusLabels = { DELETE_GCI_DATA: 'Delete GCI data', MOVE_TO_PARKING_LOT: 'Move to parking lot', PENDING: 'Pending', REVIEWED: 'Reviewed', NEEDS_FURTHER_REVIEW: 'Needs further review', APPLIED: 'Applied', NO_ACTION: 'No action', RESOLVED_MANUALLY: 'Resolved manually', NOT_READY: 'Not ready', FAILED: 'Failed' }
 function reviewLabel(row) {
     if (row.review_status === 'PENDING') return 'Pending'
     const review = statusLabels[row.review_status] || row.review_status
     if (row.review_status !== 'REVIEWED') return review
+    if (gciActions.includes(row.resolution)) return `${review} / ${statusLabels[row.resolution]}`
     return `${review} / ${statusLabels[row.execution_status] || row.execution_status || 'Not ready'}`
 }
 const reviewStatuses = ['PENDING', 'REVIEWED', 'NEEDS_FURTHER_REVIEW']
-const resolutions = ['UPDATE_GT_DISEASE_MOI', 'UPDATE_GT_GDM_UUID', 'UPDATE_GT_AFFILIATION', 'MATCH_EXISTING_GT_CURATION', 'CREATE_GT_CURATION', 'UPDATE_GCI_PRECURATION_ID', 'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW']
+const resolutions = ['UPDATE_GT_DISEASE_MOI', 'UPDATE_GT_GDM_UUID', 'UPDATE_GT_AFFILIATION', 'MATCH_EXISTING_GT_CURATION', 'CREATE_GT_CURATION', 'UPDATE_GCI_PRECURATION_ID', 'NO_ACTION', 'HISTORICAL_NO_ACTION', 'KEEP_DELETED', 'NEEDS_FURTHER_REVIEW', ...gciActions]
 const decision = reactive({ review_status: 'REVIEWED', resolution: '', review_notes: '', resolved_gt_curation_id: '' })
 const filterOptions = { source_type: ['HAS_PRECURATION_ID', 'NO_PRECURATION_ID'], match_status: ['CONFIRMED', 'NOT_FOUND_IN_GT', 'AMBIGUOUS_GDM_UUID', 'ALREADY_RECONCILED', 'CONFLICT'], match_method: ['PRECURATION_ID', 'GDM_UUID'], review_status: reviewStatuses, resolution: resolutions, execution_status: ['NOT_READY', 'PENDING', 'APPLIED', 'FAILED', 'NO_ACTION', 'RESOLVED_MANUALLY'] }
 const flags = ['has_identity_warning', 'disease_match', 'moi_match', 'gdm_uuid_match', 'gene_match', 'affiliation_match', 'gt_is_retired']

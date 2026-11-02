@@ -1,7 +1,7 @@
 <?php
 namespace App\Console\Commands\Gci;
 
-use App\Services\GciReconciliation\{PrecurationExport, Record, Selection};
+use App\Services\GciReconciliation\{PrecurationExport, Selection};
 use Illuminate\Console\Command;
 
 class ExportPrecurationIds extends Command
@@ -16,10 +16,7 @@ class ExportPrecurationIds extends Command
         try {
             $result = $export->payload($selection->query($this->option('run'), $this->option('id'))->get());
             $path = $this->option('output') ?: storage_path('app/gdmHasPreCurId-'.now()->format('Ymd-His').'-'.\Illuminate\Support\Str::random(6).'.json');
-            if (!$result['ids']) {
-                $this->warn('No eligible records. No export file written.');
-                return self::SUCCESS;
-            }
+            foreach ($result['skipped'] as $skipped) $this->line('Skipped row '.$skipped['id'].': '.$skipped['reason']);
             $json = json_encode($result['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
             $handle = @fopen($path, 'x'); // Never overwrite a source file or earlier export.
             if (!$handle) throw new \RuntimeException('Cannot create new export file: '.$path);
@@ -31,7 +28,6 @@ class ExportPrecurationIds extends Command
                 throw $e;
             }
             fclose($handle);
-            Record::whereIn('id', $result['ids'])->update(['exported_at' => now()]);
             $this->info('Exported '.count($result['ids']).' records to '.$path);
             $this->line('Skipped '.count($result['skipped']).' unresolved/ineligible records. GCI import remains a separate step.');
             return self::SUCCESS;

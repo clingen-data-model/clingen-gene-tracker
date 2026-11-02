@@ -28,7 +28,10 @@ class Review
                 $row->reviewed_at = now();
                 // Track review completion without mutating GT or its immutable snapshot.
                 if (!in_array($row->execution_status, ['APPLIED', 'NO_ACTION'], true)) {
-                    if ($row->review_status === 'REVIEWED' && app(Comparison::class)->describe($row)['current_matches_gci']) {
+                    if (in_array($row->resolution, Decision::GCI_ACTIONS, true)) {
+                        // Completion is the reviewed GCI decision, not a GT execution.
+                        $row->execution_status = 'NOT_READY';
+                    } elseif ($row->review_status === 'REVIEWED' && app(Comparison::class)->describe($row)['current_matches_gci']) {
                         $snapshotMatched = $row->match_status === 'CONFIRMED' && !$row->has_identity_warning
                             && $row->gdm_uuid_match && $row->gene_match && $row->affiliation_match
                             && $row->disease_match && $row->moi_match
