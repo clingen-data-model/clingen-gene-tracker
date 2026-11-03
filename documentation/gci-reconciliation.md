@@ -86,9 +86,10 @@ behavior, including its existing transaction/queue timing.
 ## Admin information and review
 
 Visit `/home#/admin/gci-reconciliation`. The browser can list, inspect, filter and
-save individual/bulk review decisions and notes. It cannot upload, reconcile,
-preview, execute GT changes or export JSON. API routes are limited to GET records,
-GET records/{id}, and POST review, protected by list/review permissions.
+save individual/bulk review decisions and notes, and download JSON exports. It
+cannot upload, reconcile, preview or execute GT changes. API routes include GET
+records, GET records/{id}, POST review and the read-only download routes below,
+protected by list/review permissions.
 
 `GT / Precuration ID` searches GCI precuration ID, original GT ID and resolved GT
 ID. `GCI / GDM UUID` searches GCI and original GT UUID. Other filters cover source,
@@ -158,6 +159,28 @@ Both export commands leave GT and reconciliation rows unchanged, including
 even for zero eligible rows, and report its path, count and skipped records.
 Existing generic Artisan resource-usage instrumentation remains unchanged.
 Neither command sends requests to GCI; the GCI team performs those actions.
+
+## Browser downloads
+
+The **Export JSON** controls above the table provide four options: Precuration IDs
+and GCI Actions, each with **All eligible** and **Filtered** scopes. Filtered means
+the full result set using the last successfully applied table filters, including
+retired handling, not just the visible page or unsaved edits to search inputs.
+All eligible ignores table filters and includes all rows before export eligibility
+is applied. Neither scope changes GT or reconciliation rows.
+
+GET `/api/admin/gci-reconciliation/export/precuration-ids?scope=all|filtered`
+and GET `/api/admin/gci-reconciliation/export/actions?scope=all|filtered` use the
+existing admin/programmer role and `list gci-reconciliation` permission. Filtered
+requests accept the same query parameters and validation as the list endpoint;
+both use `Record::filtered`. Pagination parameters do not limit downloads.
+
+Payloads are produced by the exact `PrecurationExport` and `ActionExport` services
+used by Artisan. Filenames are `gci-precuration-id-updates-YYYYMMDD-HHMMSS.json`
+and `gci-actions-YYYYMMDD-HHMMSS.json`. No server-side export files are retained.
+Responses include exported/skipped counts in headers; the UI reports those counts.
+Zero eligible rows return HTTP 422 with a useful message, displayed in the page.
+Existing service handling of conflicting/duplicate source records still applies.
 
 ## History compatibility
 
