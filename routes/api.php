@@ -82,6 +82,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::prefix('admin')->middleware('role:admin|programmer')->group(function () {
         Route::prefix('gci-reconciliation')->group(function () {
+            Route::get('export/{type}', [\App\Http\Controllers\Api\GciReconciliationController::class, 'download'])->whereIn('type', ['precuration-ids', 'actions'])->middleware('permission:list gci-reconciliation');
             Route::get('records', [\App\Http\Controllers\Api\GciReconciliationController::class, 'index'])->middleware('permission:list gci-reconciliation');
             Route::get('records/{id}', [\App\Http\Controllers\Api\GciReconciliationController::class, 'show'])->middleware('permission:list gci-reconciliation');
             Route::post('review', [\App\Http\Controllers\Api\GciReconciliationController::class, 'review'])->middleware('permission:review gci-reconciliation');

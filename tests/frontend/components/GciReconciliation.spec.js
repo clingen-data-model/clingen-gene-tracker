@@ -79,4 +79,37 @@ describe('GCI information and review page', () => {
         wrapper.unmount()
     })
 
+    it('downloads all or the last applied filters and reports empty-export errors', async () => {
+        const get = vi.fn().mockResolvedValue({ data: { data: [], current_page: 1, last_page: 1, total: 0 } })
+        window.axios = { get }
+        vi.useFakeTimers()
+        const create = vi.fn().mockReturnValue('blob:test')
+        vi.stubGlobal('URL', { createObjectURL: create, revokeObjectURL: vi.fn() })
+        const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+        const store = createStore({ getters: { getUser: () => ({ hasPermission: () => true }) } })
+        const wrapper = mount(Component, { global: { plugins: [store], stubs: { RouterLink: true } } })
+        try {
+            await flushPromises()
+            await wrapper.get('#gt-id').setValue('123')
+            await wrapper.get('form').trigger('submit')
+            await flushPromises()
+            await wrapper.get('#gt-id').setValue('456') // Draft filter must not change the export scope.
+            get.mockResolvedValue({ data: new Blob(['{}']), headers: { 'content-disposition': 'attachment; filename=gci-actions-20261103-120000.json', 'x-export-count': '2' } })
+            await wrapper.findAll('button').find(b => b.text() === 'GCI Actions - Filtered').trigger('click')
+            await flushPromises()
+            expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/actions', { params: { curation_id: 123, include_retired: 0, scope: 'filtered' }, responseType: 'blob' })
+            expect(click).toHaveBeenCalledOnce()
+            expect(wrapper.get('[role=status]').text()).toContain('Downloaded 2 records')
+            await wrapper.findAll('button').find(b => b.text() === 'Precuration IDs - All eligible').trigger('click')
+            await flushPromises()
+            expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/precuration-ids', { params: { scope: 'all' }, responseType: 'blob' })
+            get.mockRejectedValue({ response: { data: { errors: { export: ['No eligible records remain for this export and scope.'] } } } })
+            await wrapper.findAll('button').find(b => b.text() === 'Precuration IDs - Filtered').trigger('click')
+            await flushPromises()
+            expect(wrapper.get('[role=alert]').text()).toContain('No eligible records')
+        } finally {
+            vi.runAllTimers(); vi.useRealTimers(); wrapper.unmount(); click.mockRestore(); vi.unstubAllGlobals()
+        }
+    })
+
 })

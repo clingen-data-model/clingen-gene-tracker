@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\GciReconciliation\{Record, Review, Comparison, Decision};
+use App\Services\GciReconciliation\{Record, Review, Comparison, Decision, PrecurationExport, ActionExport};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -10,7 +10,14 @@ class GciReconciliationController extends Controller
 {
     public function index(Request $request)
     {
-        $filters = $request->validate([
+        $filters = $this->filters($request);
+        $rows = Record::filtered($filters)->orderBy('id')->paginate(50);
+        $rows->getCollection()->transform(fn ($row) => array_merge($row->toArray(), app(Comparison::class)->describe($row)));
+        return $rows;
+    }
+    private function filters(Request $request): array
+    {
+        return $request->validate([
             'curation_id' => 'nullable|integer|min:1', 'gdm_uuid' => 'nullable|uuid',
             'include_retired' => 'sometimes|boolean', 'run_uuid' => 'nullable|uuid',
             'source_type' => 'nullable|string', 'match_status' => 'nullable|string', 'match_method' => 'nullable|string',
@@ -20,10 +27,31 @@ class GciReconciliationController extends Controller
             'gdm_uuid_match' => 'nullable|boolean', 'gene_match' => 'nullable|boolean', 'affiliation_match' => 'nullable|boolean',
             'gt_is_retired' => 'nullable|boolean', 'issue' => 'nullable|string|max:100', 'queue' => 'nullable|string',
         ]);
-        $rows = Record::filtered($filters)->orderBy('id')->paginate(50);
-        $rows->getCollection()->transform(fn ($row) => array_merge($row->toArray(), app(Comparison::class)->describe($row)));
-        return $rows;
     }
+
+    public function download(Request $request, string $type)
+    {
+        $scope = $request->validate(['scope' => ['required', Rule::in(['all', 'filtered'])]])['scope'];
+        $filters = $this->filters($request);
+        $query = $scope === 'filtered' ? Record::filtered($filters) : Record::query();
+        $export = $type === 'actions' ? app(ActionExport::class) : app(PrecurationExport::class);
+        try {
+            $result = $export->payload($query->orderBy('id')->get());
+        } catch (\RuntimeException $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['export' => $e->getMessage()]);
+        }
+        if (!$result['payload']['Count']) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['export' => 'No eligible records remain for this export and scope.']);
+        }
+        $filename = ($type === 'actions' ? 'gci-actions-' : 'gci-precuration-id-updates-').now()->format('Ymd-His').'.json';
+        $json = json_encode($result['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        return response()->streamDownload(function () use ($json) { echo $json; }, $filename, [
+            'Content-Type' => 'application/json', 'Cache-Control' => 'private, no-store',
+            'X-Export-Count' => (string) $result['payload']['Count'],
+            'X-Export-Skipped' => (string) count($result['skipped']),
+        ]);
+    }
+
     public function show(int $id, Comparison $comparison)
     {
         $row = Record::findOrFail($id);

@@ -21,6 +21,12 @@
             <button class="btn btn-primary" :disabled="busy">Search / Apply filters</button>
         </form>
         <p class="text-muted">Filters describe the original findings. Current GT comparisons are recalculated when loaded. Refresh after editing a curation.</p>
+        <details class="mb-3"><summary>Export JSON</summary>
+            <p>Filtered downloads include every page using the last applied table filters. Downloads do not modify GT or reconciliation records.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <button v-for="option in exportOptions" :key="option.type + option.scope" class="btn btn-outline-primary" :disabled="busy" @click="downloadExport(option.type, option.scope)">{{ option.label }}</button>
+            </div>
+        </details>
         <div class="table-responsive"><table class="table table-striped align-middle"><thead><tr><th><input type="checkbox" aria-label="Select visible records for review" :checked="allSelected" @change="selected = $event.target.checked ? rows.map(r => r.id) : []" /></th><th>Gene / GCEP</th><th>GT ID</th><th>Original finding</th><th>Current GT</th><th>Review / Action</th><th></th></tr></thead><tbody>
             <tr v-for="row in rows" :key="row.id"><td><input v-model="selected" type="checkbox" :value="row.id" :aria-label="'Select record ' + row.id" /></td><td>{{ row.gci_gene_symbol }} / {{ row.gci_affiliation_id }}</td><td>{{ row.resolved_gt_curation_id || row.gt_curation_id || 'Unresolved' }}</td><td>{{ row.match_status }}<br /><small>{{ (row.issue_codes || []).join(', ') }}</small></td><td>{{ row.current_matches_gci ? 'Matches GCI now' : 'Discrepancy / investigation needed' }}<br /><small>{{ row.gci_action }}</small></td><td>{{ reviewLabel(row) }}</td><td><button class="btn btn-sm btn-outline-primary" :disabled="busy" @click="open(row.id)">Inspect {{ row.id }}</button></td></tr>
         </tbody></table></div>
@@ -62,6 +68,13 @@ const store = useStore()
 const canReview = computed(() => store.getters.getUser.hasPermission('review gci-reconciliation'))
 const base = '/api/admin/gci-reconciliation'
 const rows = ref([]), selected = ref([]), detail = ref(null), busy = ref(false), error = ref(''), message = ref(''), includeRetired = ref(false)
+const appliedFilters = ref({ include_retired: 0 })
+const exportOptions = [
+    { type: 'precuration-ids', scope: 'all', label: 'Precuration IDs - All eligible' },
+    { type: 'precuration-ids', scope: 'filtered', label: 'Precuration IDs - Filtered' },
+    { type: 'actions', scope: 'all', label: 'GCI Actions - All eligible' },
+    { type: 'actions', scope: 'filtered', label: 'GCI Actions - Filtered' },
+]
 const page = ref(1), lastPage = ref(1), total = ref(0)
 const filters = reactive({ curation_id: '', gdm_uuid: '', queue: '', gci_gene_symbol: '', gci_affiliation_id: '' })
 const gciActions = ['DELETE_GCI_DATA', 'MOVE_TO_PARKING_LOT']
@@ -90,7 +103,31 @@ async function perform(fn) {
 async function fetchRows(n = 1) {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const { data } = await window.axios.get(`${base}/records`, { params: { ...params, include_retired: includeRetired.value ? 1 : 0, page: n } })
+    appliedFilters.value = { ...params, include_retired: includeRetired.value ? 1 : 0 }
     rows.value = data.data; page.value = data.current_page; lastPage.value = data.last_page; total.value = data.total
+}
+function downloadExport(type, scope) {
+    return perform(async () => {
+        let response
+        try {
+            response = await window.axios.get(`${base}/export/${type}`, {
+                params: { ...(scope === 'filtered' ? appliedFilters.value : {}), scope }, responseType: 'blob',
+            })
+        } catch (e) {
+            if (e.response?.data instanceof Blob) {
+                try { e.response.data = JSON.parse(await e.response.data.text()) } catch { /* Keep the request error if not JSON. */ }
+            }
+            throw e
+        }
+        const filename = response.headers['content-disposition']?.match(/filename="?([^";]+)"?/)?.[1] || `gci-${type}.json`
+        const url = URL.createObjectURL(response.data)
+        const link = document.createElement('a')
+        link.href = url; link.download = filename
+        document.body.appendChild(link); link.click(); link.remove()
+        // Allow the browser to start consuming the object URL before releasing it.
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+        message.value = `Downloaded ${response.headers['x-export-count'] || ''} records. Skipped ${response.headers['x-export-skipped'] || 0} ineligible records.`
+    })
 }
 function refresh() { selected.value = []; return perform(() => fetchRows()) }
 function loadPage(n) { selected.value = []; return perform(() => fetchRows(n)) }

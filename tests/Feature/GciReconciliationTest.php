@@ -351,4 +351,47 @@ class GciReconciliationTest extends TestCase
         $this->assertCount(8, $result['skipped']);
     }
 
+    public function test_ui_downloads_share_cli_payloads_filters_and_do_not_mutate_rows(): void
+    {
+        $this->actor->assignRole('admin');
+        $this->actor->givePermissionTo(\Spatie\Permission\Models\Permission::findOrCreate('list gci-reconciliation', 'web'));
+        $this->actingAs($this->actor, 'api');
+        $c = $this->curation();
+        $items = [$this->item(['PK' => $c->gdm_uuid])];
+        for ($n = 0; $n < 52; $n++) $items[] = $this->item();
+        $rows = $this->reconcile([], $items);
+        foreach ($rows->slice(1) as $r) $r->update(['review_status' => 'REVIEWED', 'resolution' => Decision::DELETE_GCI]);
+        $rows[2]->update(['resolution' => Decision::PARKING_LOT]);
+        $rows[3]->update(['review_status' => 'PENDING']);
+        $before = $rows->fresh()->map->getAttributes()->all();
+        $base = '/api/admin/gci-reconciliation/export/';
+        foreach (['actions' => \App\Services\GciReconciliation\ActionExport::class, 'precuration-ids' => PrecurationExport::class] as $type => $service) {
+            $response = $this->getJson($base.$type.'?scope=filtered&run_uuid='.$rows[0]->run_uuid.'&page=2');
+            $response->assertOk()->assertHeader('Content-Type', 'application/json');
+            $this->assertStringContainsString($type === 'actions' ? 'gci-actions-' : 'gci-precuration-id-updates-', $response->headers->get('Content-Disposition'));
+            $this->assertSame(app($service)->payload($rows->fresh())['payload'], json_decode($response->streamedContent(), true));
+        }
+        $filtered = $this->getJson($base.'actions?'.http_build_query(['scope' => 'filtered', 'run_uuid' => $rows[0]->run_uuid, 'resolution' => Decision::DELETE_GCI]))->assertOk();
+        $this->assertSame(50, json_decode($filtered->streamedContent(), true)['Count']);
+        $all = $this->getJson($base.'actions?scope=all&source_type=HAS_PRECURATION_ID')->assertOk();
+        $this->assertSame(app(\App\Services\GciReconciliation\ActionExport::class)->payload(Record::orderBy('id')->get())['payload'], json_decode($all->streamedContent(), true));
+        foreach ([['source_type' => PayloadReader::HAS], ['resolution' => 'KEEP_DELETED']] as $filter) {
+            $this->getJson($base.'actions?'.http_build_query($filter + ['scope' => 'filtered', 'run_uuid' => $rows[0]->run_uuid]))->assertUnprocessable()->assertJsonValidationErrors('export');
+        }
+        foreach ([['curation_id' => $c->id], ['gdm_uuid' => $c->gdm_uuid], ['source_type' => PayloadReader::NO]] as $filter) {
+            $response = $this->getJson($base.'precuration-ids?'.http_build_query($filter + ['scope' => 'filtered', 'run_uuid' => $rows[0]->run_uuid]))->assertOk();
+            $this->assertSame(1, json_decode($response->streamedContent(), true)['Count']);
+        }
+        $this->getJson($base.'actions?scope=filtered&gdm_uuid=invalid')->assertUnprocessable()->assertJsonValidationErrors('gdm_uuid');
+        $this->assertSame($before, $rows->fresh()->map->getAttributes()->all());
+        $other = factory(User::class)->create();
+        $this->actingAs($other, 'api')->getJson($base.'actions?scope=all')->assertForbidden();
+        $other->assignRole('admin');
+        // An admin role without the list permission is also rejected.
+        $role = \Spatie\Permission\Models\Role::findByName('admin', 'web');
+        $role->revokePermissionTo('list gci-reconciliation');
+        $other->unsetRelation('roles');
+        $this->getJson($base.'precuration-ids?scope=all')->assertForbidden();
+    }
+
 }
