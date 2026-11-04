@@ -4,11 +4,10 @@ namespace App\Jobs\Curations;
 
 use App\Curation;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Mail\Curations\TransferNotification;
-use App\Jobs\NotifyCoordinatorsAboutCuration;
 
 class SetOwner
 {
@@ -34,26 +33,39 @@ class SetOwner
      */
     public function handle()
     {
-        if (
-            ($this->expertPanelId && $this->curation->expert_panel_id != $this->expertPanelId)
-            || $this->curation->isDirty('expert_panel_id')
-        ) {
-            \DB::transaction(function () {
-                $originalOwner = $this->curation->expertPanel;
-                
-                $this->setEndOfOwnership();
-                $this->addNewOwner();
+        DB::transaction(function () {
+            // Serialize transfers and initialization on the same persisted curation.
+            Curation::whereKey($this->curation->id)->lockForUpdate()->firstOrFail();
+            $this->curation->refresh();
+            if ($this->curation->expert_panel_id == $this->expertPanelId) return;
 
-                $this->curation->refresh();
-                if ($this->curation->expertPanel->hasCoordinators()) {
-                    Mail::to($this->curation->expertPanel->coordinators)
-                            ->cc($originalOwner->coordinators)
-                            ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
-                }
+            $originalOwner = $this->curation->expertPanel;
+            $this->setEndOfOwnership();
+            $this->addNewOwner();
 
-            });
+            $this->curation->refresh();
+            if ($this->curation->expertPanel->hasCoordinators()) {
+                Mail::to($this->curation->expertPanel->coordinators)
+                    ->cc($originalOwner->coordinators)
+                    ->send(new TransferNotification($this->curation->fresh(), $originalOwner));
+            }
+        });
+    }
 
-        }
+    /** Initial ownership is not a transfer, even while the created model is dirty. */
+    public static function initialize(Curation $curation): void
+    {
+        DB::transaction(function () use ($curation) {
+            $persisted = Curation::whereKey($curation->id)->lockForUpdate()->firstOrFail();
+            // Do not replay initialization over existing history or a later owner.
+            if ($persisted->expert_panel_id != $curation->expert_panel_id
+                || $persisted->expertPanels()->exists()) return;
+
+            $persisted->expertPanels()->attach($persisted->expert_panel_id, [
+                'start_date' => $persisted->created_at,
+                'end_date' => null,
+            ]);
+        });
     }
 
     private function setEndOfOwnership()

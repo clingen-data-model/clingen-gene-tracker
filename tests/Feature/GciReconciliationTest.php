@@ -455,4 +455,17 @@ class GciReconciliationTest extends TestCase
         $this->assertEquals($wrong->id, $r->fresh()->gci_precuration_id);
     }
 
+    public function test_review_association_keeps_one_initial_ownership_record(): void
+    {
+        $c = $this->curation();
+        $r = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid])])->first();
+        $before = DB::table('curation_expert_panel')->where('curation_id', $c->id)->get()->toArray();
+        $this->assertCount(1, $before);
+        foreach ([Decision::MATCH, Decision::CREATE, Decision::EXPORT] as $resolution) {
+            app(Review::class)->save([$r->id], ['review_status' => 'REVIEWED', 'resolution' => $resolution,
+                'resolved_gt_curation_id' => $c->id], $this->actor->id);
+        }
+        $this->assertEquals($before, DB::table('curation_expert_panel')->where('curation_id', $c->id)->get()->toArray());
+    }
+
 }

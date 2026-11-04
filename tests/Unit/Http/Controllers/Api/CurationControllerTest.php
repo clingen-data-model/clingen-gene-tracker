@@ -87,10 +87,16 @@ class CurationControllerTest extends TestCase
             'nav' => 'next',
         ];
 
-        $this->actingAs($this->user, 'api')
+        $response = $this->actingAs($this->user, 'api')
             ->json('POST', '/api/curations', $data)
             ->assertStatus(201)
             ->assertJsonFragment(['gene_symbol' => 'BRCA1']);
+        $curation = \App\Curation::findOrFail($response->json('data.id') ?? $response->json('id'));
+        $history = $curation->expertPanels()->get();
+        $this->assertCount(1, $history);
+        $this->assertEquals($this->panel->id, $history->first()->id);
+        $this->assertNull($history->first()->pivot->end_date);
+        $this->assertSame($curation->created_at->toDateString(), $history->first()->pivot->start_date->toDateString());
     }
 
     /**

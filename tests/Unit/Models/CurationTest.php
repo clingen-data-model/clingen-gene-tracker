@@ -474,14 +474,16 @@ class CurationTest extends TestCase
      */
     #[\PHPUnit\Framework\Attributes\Test]
     #[\PHPUnit\Framework\Attributes\Group('curation-ownership')]
-    public function ordinary_creation_may_add_duplicate_open_ownership_history()
+    public function ordinary_creation_adds_one_open_initial_ownership()
     {
         $ep1 = factory(ExpertPanel::class)->create();
         $curation = factory(Curation::class)->create(['expert_panel_id' => $ep1->id]);
 
         $ownerships = $curation->fresh()->expertPanels()->get();
 
-        $this->assertCount(2, $ownerships);
+        $this->assertCount(1, $ownerships);
+        $this->assertEquals($ep1->id, $ownerships->first()->id);
+        $this->assertSame($curation->created_at->toDateString(), $ownerships->first()->pivot->start_date->toDateString());
         $this->assertCount(1, $ownerships->filter(
             fn (ExpertPanel $expertPanel) => $expertPanel->pivot->end_date === null
         ));
