@@ -87,7 +87,7 @@ behavior, including its existing transaction/queue timing.
 
 Visit `/home#/admin/gci-reconciliation`. The browser can list, inspect, filter and
 save individual/bulk review decisions and notes, and download JSON exports. It
-cannot upload, reconcile, preview or execute GT changes. API routes include GET
+cannot upload or rerun reconciliation; saving review may synchronize disease/MoI as described below. API routes include GET
 records, GET records/{id}, POST review and the read-only download routes below,
 protected by list/review permissions.
 
@@ -95,7 +95,7 @@ protected by list/review permissions.
 ID. `GCI / GDM UUID` searches GCI and original GT UUID. Other filters cover source,
 match method/status, gene, affiliation, issues, review, resolution, comparisons,
 deleted and retired findings. Affiliation mismatches have a dedicated category.
-Candidate hints remain informational; review never creates or edits a curation.
+Candidate hints remain informational; review never creates a curation or changes its identity.
 Manual match/create review requires an existing resolved ID entered after work
 through normal GT screens.
 
@@ -182,11 +182,72 @@ Responses include exported/skipped counts in headers; the UI reports those count
 Zero eligible rows return HTTP 422 with a useful message, displayed in the page.
 Existing service handling of conflicting/duplicate source records still applies.
 
+## Explicitly reviewed GT targets
+
+`ManualTarget` validates REVIEWED rows with an explicit resolved GT ID and resolution
+MATCH_EXISTING_GT_CURATION, CREATE_GT_CURATION or UPDATE_GCI_PRECURATION_ID.
+The selected target must be active, non-deleted, non-archived and non-retired,
+with matching gene and parent affiliation. It must own the expected GCI UUID;
+retired, archived or soft-deleted alternative UUID owners do not block an explicit
+manual decision. Another active owner still blocks it. The existing NO-source
+manual association of an unlinked target remains allowed only if the GCI UUID
+has no owner at all. HAS-source corrections require UUID ownership.
+
+Live comparison and export use this validator, and review completion uses the live
+comparison. A wrong original precuration ID does not invalidate an explicit reviewed
+target; the individual comparison flag still shows the mismatch. Saving review
+assigns RESOLVED_MANUALLY when the validated target also matches disease and MoI.
+APPLIED and NO_ACTION are preserved. Read/display requests never update status.
+The original match, IDs, flags, issues and payload are never rewritten.
+
+Precuration export continues accepting clean automatic NO-source matches and valid
+reviewed manual NO-source targets. It additionally accepts HAS-source rows only
+with REVIEWED + UPDATE_GCI_PRECURATION_ID + a valid explicit resolved target.
+It replaces precurationId in the exported original GCI values with the selected
+GT ID. Other existing exclusion rules and GCI action decisions still apply.
+Disease/MoI synchronization remains a separate action from exporting identity.
+Both CLI and browser use this same service. Automated reconciliation and safe-update
+matching remain strict and unchanged; this exception applies only to manual review.
+
+For the JPH2 HAS-source correction, save UPDATE_GCI_PRECURATION_ID with target 9614.
+A prior MATCH_EXISTING_GT_CURATION decision can establish the live target but does
+not authorize exporting an existing HAS-source ID correction. Existing reviews can
+be saved again to refresh their tracked completion status; no automatic backfill
+or production review changes are performed by this code change.
+
+## Review-time disease/MoI synchronization
+
+Saving REVIEWED now synchronizes current disease/MoI when those are the only
+remaining differences. An explicit ManualTarget takes precedence; otherwise the
+original target must be confirmed without unresolved snapshot identity warnings
+or conflicts. Live UUID, gene, affiliation and active-target checks must pass.
+ManualTarget permits inactive duplicate alternatives, but another active UUID
+owner blocks synchronization. An unlinked manual target allowed for ID export
+is not permission to synchronize disease/MoI: the live UUID must match.
+
+Only undecided, disease/MoI-update, manual-match/create and precuration-correction
+resolutions can trigger this. Pending/further-review, no-action, deletion and
+parking-lot outcomes never trigger updates. APPLIED and NO_ACTION rows are preserved.
+
+SafeUpdates shares mapping and mutation methods between review and CLI. Both use
+Services/Curations/UpdateCuration and normal Eloquent events, revisions and DX.
+Both MONDO and MoI mappings must resolve before mutation. Review locks targets and
+UUID owners, rechecks live identity, updates only mondo_id/moi_id, then rechecks
+comparison. Successful synchronization is RESOLVED_MANUALLY, never APPLIED.
+The original reconciliation snapshot is unchanged.
+
+Each GT update runs in a nested transaction. Mapping/application failures roll
+back that row's GT changes, revisions and stored DX messages; review metadata is
+saved with NOT_READY and execution_error. The API returns HTTP 422 with row-specific
+errors, displayed by the review form. Bulk review continues for other valid rows;
+the response identifies failures even when other rows succeeded. Normal external
+DX delivery retains the application's existing transaction/queue behavior.
+
 ## History compatibility
 
 No unified-history branches or migrations are merged/copied. Actual GT changes
 use the ordinary update path, so future history listeners integrate there.
-Ownership discrepancies are informational/manual follow-up only: neither current
+Ownership discrepancies require normal GT follow-up: neither current
 ownership fields nor ownership-history tables are changed by these commands.
 
 ## Validation of this refactor

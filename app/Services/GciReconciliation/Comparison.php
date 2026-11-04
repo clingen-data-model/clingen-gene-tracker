@@ -39,12 +39,17 @@ class Comparison
         $active = $c && !$c->trashed() && !$c->archived_at && !$live['is_retired'];
         $identity = $active && $unique && $flags['gene_match'] && $flags['affiliation_match']
             && ($row->source_type === PayloadReader::NO || $flags['precuration_id_match']);
+        $manual = app(ManualTarget::class);
+        if ($manual->selected($row)) {
+            try { $manual->validate($row, $c); $identity = true; }
+            catch (\UnexpectedValueException $e) { $identity = false; }
+        }
         return ['current_gt' => $live, 'current_comparison' => $flags,
             'current_identity_matches' => (bool) $identity,
             'current_matches_gci' => (bool) ($identity && $flags['disease_match'] && $flags['moi_match']),
             'gci_action' => in_array($row->resolution, Decision::GCI_ACTIONS, true)
                 ? ($row->review_status === 'REVIEWED' ? $row->resolution : null)
-                : ($row->source_type === PayloadReader::NO && $identity ? Decision::EXPORT : null)];
+                : (($row->source_type === PayloadReader::NO || ($manual->selected($row) && $row->resolution === Decision::EXPORT)) && $identity ? Decision::EXPORT : null)];
     }
 
     public function candidates(Record $row): array

@@ -27,15 +27,56 @@ class SafeUpdates
             && strtoupper($c->gene_symbol) === $r->gci_gene_symbol
             && $c->expertPanel?->affiliation?->parent?->clingen_id == $r->gci_affiliation_id, 'Live UUID, gene or affiliation no longer matches GCI.');
         $this->check(Curation::withTrashed()->where('gdm_uuid', $r->gci_gdm_uuid)->count() === 1, 'Live UUID is duplicated or ambiguous (including deleted curations).');
+        $changes = $this->changes($r, $c);
+        $this->check((bool) $changes, 'Live GT disease/MoI already match GCI; no GT change needed.');
+        return ['id' => $r->id, 'gt_curation_id' => $c->id, 'source_type' => $r->source_type, 'changes' => $changes,
+            'before' => $c->only(['gene_symbol', 'gdm_uuid', 'expert_panel_id', 'affiliation_id', 'mondo_id', 'moi_id', 'curation_status_id'])];
+    }
+
+    private function changes(Record $r, Curation $c): array
+    {
         $diseases = Disease::where('mondo_id', $r->gci_mondo_id)->where('is_obsolete', false)->get();
         $mois = ModeOfInheritance::where('hp_id', $r->gci_moi_hp_id)->get();
         $this->check($r->gci_mondo_id && $diseases->count() === 1, 'MONDO mapping is missing, obsolete or ambiguous.');
         $this->check($r->gci_moi_hp_id && $mois->count() === 1, 'MoI mapping is missing or ambiguous.');
         $values = ['mondo_id' => $diseases->first()->mondo_id, 'moi_id' => $mois->first()->id];
         $changes = array_filter($values, fn ($value, $key) => (string) $value !== (string) $c->$key, ARRAY_FILTER_USE_BOTH);
-        $this->check((bool) $changes, 'Live GT disease/MoI already match GCI; no GT change needed.');
-        return ['id' => $r->id, 'gt_curation_id' => $c->id, 'source_type' => $r->source_type, 'changes' => $changes,
-            'before' => $c->only(['gene_symbol', 'gdm_uuid', 'expert_panel_id', 'affiliation_id', 'mondo_id', 'moi_id', 'curation_status_id'])];
+        return $changes;
+    }
+
+    private function mutate(Curation $c, array $changes): void
+    {
+        $protected = $c->only(['gene_symbol', 'gdm_uuid', 'expert_panel_id', 'affiliation_id', 'curation_status_id']);
+        app(UpdateCuration::class)->update($c, $changes);
+        $c->refresh();
+        foreach ($protected as $field => $value) {
+            $this->check($c->$field == $value, 'A model listener unexpectedly changed '.$field.'.');
+        }
+    }
+
+    /** Called inside the locked review transaction; nested transaction rolls back a failed GT save. */
+    public function synchronizeReview(Record $r): bool
+    {
+        if ($r->review_status !== 'REVIEWED' || in_array($r->execution_status, ['APPLIED', 'NO_ACTION'], true)
+            || !in_array($r->resolution, [null, Decision::UPDATE, Decision::MATCH, Decision::CREATE, Decision::EXPORT], true)) return false;
+        return DB::transaction(function () use ($r) {
+            Curation::withTrashed()->where('gdm_uuid', $r->gci_gdm_uuid)->lockForUpdate()->get();
+            Curation::withTrashed()->whereKey($r->resolved_gt_curation_id ?: $r->gt_curation_id)->lockForUpdate()->first();
+            $comparison = app(Comparison::class);
+            $manual = app(ManualTarget::class);
+            if (!$manual->selected($r) && ($r->resolved_gt_curation_id || $r->match_status !== 'CONFIRMED'
+                || !$r->is_confirmed_match || $r->has_identity_warning || !empty($r->conflicting_gt_curation_ids))) return false;
+            $live = $comparison->describe($r);
+            // The unlinked manual-target export exception is not permission to mutate GT.
+            if (!$live['current_identity_matches'] || !$live['current_comparison']['gdm_uuid_match']) return false;
+            if ($live['current_matches_gci']) return false;
+            $c = $comparison->current($r);
+            $changes = $this->changes($r, $c); // Validate both mappings before any mutation.
+            if (!$changes) return false;
+            $this->mutate($c, $changes);
+            $this->check($comparison->describe($r)['current_matches_gci'], 'Live GT comparison still differs after synchronization.');
+            return true;
+        });
     }
 
     public function inspect(iterable $rows): array
@@ -58,11 +99,7 @@ class SafeUpdates
                 Curation::withTrashed()->whereKey($r->gt_curation_id)->lockForUpdate()->first();
                 $plan = $this->plan($r); // Revalidate immediately before writing, not just during dry-run.
                 $c = Curation::findOrFail($plan['gt_curation_id']);
-                app(UpdateCuration::class)->update($c, $plan['changes']);
-                $c->refresh();
-                foreach (['gene_symbol', 'gdm_uuid', 'expert_panel_id', 'affiliation_id', 'curation_status_id'] as $field) {
-                    $this->check($c->$field == $plan['before'][$field], 'A model listener unexpectedly changed '.$field.'.');
-                }
+                $this->mutate($c, $plan['changes']);
                 $r->fill(['execution_status' => 'APPLIED', 'executed_by' => $actor, 'executed_at' => now(), 'execution_error' => null])->save();
                 return ['id' => $id, 'status' => 'APPLIED'];
             });
