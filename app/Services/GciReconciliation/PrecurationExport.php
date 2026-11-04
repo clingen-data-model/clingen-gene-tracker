@@ -1,13 +1,14 @@
 <?php
 namespace App\Services\GciReconciliation;
 
-use App\Curation;
 use RuntimeException;
 
 class PrecurationExport
 {
     public function payload(iterable $rows): array
     {
+        $rows = collect($rows);
+        $data = new ExportGtData($rows);
         $items = $ids = $skipped = $seen = [];
         foreach ($rows as $r) {
             try {
@@ -22,13 +23,13 @@ class PrecurationExport
                     && (!$r->resolved_gt_curation_id || $r->resolved_gt_curation_id == $r->gt_curation_id);
                 $this->check($direct || $manual, 'Identity has not been confidently resolved.');
                 if ($manual) {
-                    $c = app(ManualTarget::class)->validate($r);
+                    $c = app(ManualTarget::class)->validateLoaded($r, $data->target($r->resolved_gt_curation_id), $data->owners($r->gci_gdm_uuid));
                 } else {
-                    $c = Curation::with(['expertPanel.affiliation.parent'])->find($r->gt_curation_id);
-                    $this->check($c && !$c->archived_at && $c->curation_status_id != config('curations.statuses.retired-assignment'), 'GT target is missing, deleted, archived or retired.');
+                    $c = $data->target($r->gt_curation_id);
+                    $this->check($c && !$c->trashed() && !$c->archived_at && $c->curation_status_id != config('curations.statuses.retired-assignment'), 'GT target is missing, deleted, archived or retired.');
                     $this->check(strtoupper($c->gene_symbol) === $r->gci_gene_symbol
                         && $c->expertPanel?->affiliation?->parent?->clingen_id == $r->gci_affiliation_id, 'Live gene or affiliation differs from GCI.');
-                    $owners = Curation::withTrashed()->where('gdm_uuid', $r->gci_gdm_uuid)->pluck('id');
+                    $owners = $data->owners($r->gci_gdm_uuid)->pluck('id');
                     $this->check($owners->count() <= 1 && (!$owners->count() || $owners->first() == $c->id), 'GDM UUID is ambiguous or belongs to another/deleted target.');
                     $this->check(strtolower((string) $c->gdm_uuid) === $r->gci_gdm_uuid, 'GT UUID differs from GCI.');
                 }

@@ -261,3 +261,39 @@ ownership fields nor ownership-history tables are changed by these commands.
 - The obsolete upload/apply Playwright scenario was replaced with an information
   page/search scenario; Playwright was not run in this validation pass.
 - No normal local/demo database reset or workflow-table cleanup was performed.
+
+## Precuration export performance
+
+The export creates a request-scoped `ExportGtData` lookup: target curations with
+Expert Panel / affiliation / parent relations, plus UUID owners including deleted
+records and their retirement/archive status. Queries use batches of at most 500
+IDs or UUIDs. Default disease and affiliation-type eager loads are suppressed
+because export identity checks do not use them. Lookup maps are rebuilt on every
+export; nothing is cached across review updates or subsequent downloads.
+
+`ManualTarget::validateLoaded` applies the same manual-target rules to preloaded
+models. Interactive review still uses `validate`, which obtains fresh data and
+then calls the same validator. Missing preloaded targets never cause a per-row
+fallback query. Automatic export eligibility still rejects any duplicate UUID
+owner, while reviewed manual targets retain the inactive-alternative exception.
+
+A read-only local profile against 4,430 production-sized reconciliation rows
+produced these results (SQL includes selection and eligibility, excluding framework
+bootstrap/authentication):
+
+| Scope | Exported | SQL before / after | Local elapsed before / after |
+| --- | ---: | ---: | ---: |
+| All 4,430 rows | 2,121 | 17,153 / 46 | 9.94 s / 0.77 s |
+| JPH2 filter, 3 rows | 2 | 19 / 6 | 33 ms / 19 ms |
+| UPDATE_GCI_PRECURATION_ID filter, 2,017 rows | 2,016 | 16,145 / 26 | 8.68 s / 0.32 s |
+| Single reviewed UUID | 1 | 11 / 6 | 22 ms / 12 ms |
+
+Full result hashes, including exported values/order and skipped rows/reasons,
+were identical before and after in all four profiles. These are local timings,
+not production gateway measurements. No timeout settings were changed.
+
+The controller already returns a streamed download. Eligibility completes before
+headers/output so empty selections and conflicting records can still produce a
+proper validation response. Streaming alone would not fix the original thousands
+of database round trips. Record::filtered remains the shared SQL scope; it adds
+query predicates and is not the source of per-record eligibility queries.

@@ -2,6 +2,7 @@
 namespace App\Services\GciReconciliation;
 
 use App\Curation;
+use Illuminate\Database\Eloquent\Collection;
 use UnexpectedValueException;
 
 /** Explicit review can resolve historical ambiguity; automated identity stays strict. */
@@ -17,11 +18,18 @@ class ManualTarget
     {
         $this->check($this->selected($row), 'No explicitly reviewed GT target.');
         $target ??= Curation::withTrashed()->with(['expertPanel.affiliation.parent', 'modeOfInheritance'])->find($row->resolved_gt_curation_id);
+        $owners = Curation::withTrashed()->where('gdm_uuid', $row->gci_gdm_uuid)->get();
+        return $this->validateLoaded($row, $target, $owners);
+    }
+
+    /** Same manual eligibility rules, using already loaded export data (including missing targets). */
+    public function validateLoaded(Record $row, ?Curation $target, Collection $owners): Curation
+    {
+        $this->check($this->selected($row), 'No explicitly reviewed GT target.');
         $this->check($target && $target->id == $row->resolved_gt_curation_id && $this->active($target), 'Reviewed GT target is missing, deleted, archived or retired.');
         $this->check(strtoupper($target->gene_symbol) === $row->gci_gene_symbol
             && $target->expertPanel?->affiliation?->parent?->clingen_id == $row->gci_affiliation_id,
             'Reviewed GT gene or affiliation differs from GCI.');
-        $owners = Curation::withTrashed()->where('gdm_uuid', $row->gci_gdm_uuid)->get();
         $this->check(!$owners->contains(fn ($owner) => $owner->id != $target->id && $this->active($owner)), 'Another active GT curation owns the GCI UUID.');
         // Preserve existing manual association of an unlinked NO-source target, only
         // when the UUID has no owner at all. HAS-source corrections must own it.

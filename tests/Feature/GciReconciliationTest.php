@@ -259,7 +259,7 @@ class GciReconciliationTest extends TestCase
         $r = $this->reconcile([$this->item(['PK' => $c->gdm_uuid, 'precurationId' => (string) $c->id])], [])->first();
         $snapshot = $r->getAttributes();
         $review = app(Review::class);
-        $review->save([$r->id], ['review_status' => 'REVIEWED'], $this->actor->id);
+        $review->save([$r->id], ['review_status' => 'PENDING'], $this->actor->id);
         $this->assertSame('NOT_READY', $r->fresh()->execution_status);
         app(\App\Services\Curations\UpdateCuration::class)->update($c, ['mondo_id' => $this->disease->mondo_id]);
         $review->save([$r->id], ['review_status' => 'PENDING'], $this->actor->id);
@@ -274,7 +274,7 @@ class GciReconciliationTest extends TestCase
         $this->assertSame($messages, DB::table('stream_messages')->count());
         foreach (['review_status', 'reviewed_by', 'reviewed_at', 'execution_status', 'updated_at'] as $key) unset($snapshot[$key]);
         $this->assertSame($snapshot, array_intersect_key($r->fresh()->getAttributes(), $snapshot));
-        $c->update(['mondo_id' => null]);
+        $c->update(['gdm_uuid' => (string) Str::uuid()]);
         $review->save([$r->id], ['review_status' => 'REVIEWED'], $this->actor->id);
         $this->assertSame('NOT_READY', $r->fresh()->execution_status);
     }
@@ -392,6 +392,67 @@ class GciReconciliationTest extends TestCase
         $role->revokePermissionTo('list gci-reconciliation');
         $other->unsetRelation('roles');
         $this->getJson($base.'precuration-ids?scope=all')->assertForbidden();
+    }
+
+    public function test_export_query_count_is_bounded_and_loaded_data_is_not_cached_across_calls(): void
+    {
+        $items = [];
+        for ($n = 0; $n < 40; $n++) {
+            $c = $this->curation();
+            $items[] = $this->item(['PK' => $c->gdm_uuid]);
+        }
+        $rows = $this->reconcile([], $items);
+        // Mix automatic and explicitly reviewed targets in the same bulk export.
+        $rows[0]->fill(['review_status' => 'REVIEWED', 'resolution' => Decision::MATCH,
+            'resolved_gt_curation_id' => $rows[0]->gt_curation_id]);
+        DB::flushQueryLog(); DB::enableQueryLog();
+        try {
+            $result = app(PrecurationExport::class)->payload($rows);
+            $queries = DB::getQueryLog();
+        } finally { DB::disableQueryLog(); DB::flushQueryLog(); }
+        $this->assertSame(40, $result['payload']['Count']);
+        $this->assertLessThanOrEqual(5, count($queries), 'Export should bulk-load targets/relations and UUID owners, not query per row.');
+        $this->assertEmpty($result['skipped']);
+        $target = Curation::findOrFail($rows[0]->gt_curation_id);
+        $target->update(['archived_at' => now()]);
+        $this->assertSame(39, app(PrecurationExport::class)->payload($rows)['payload']['Count']);
+        $rows[0]->resolved_gt_curation_id = 4294967294;
+        DB::enableQueryLog();
+        try {
+            $missing = app(PrecurationExport::class)->payload([$rows[0]]);
+            $queries = DB::getQueryLog();
+        } finally { DB::disableQueryLog(); DB::flushQueryLog(); }
+        $this->assertSame(0, $missing['payload']['Count']);
+        $this->assertStringContainsString('missing', $missing['skipped'][0]['reason']);
+        $this->assertLessThanOrEqual(2, count($queries), 'A missing bulk-loaded target must not fall back to a per-row lookup.');
+    }
+
+    public function test_bulk_export_preserves_manual_duplicate_owner_and_correction_rules(): void
+    {
+        foreach (['retired', 'archived', 'deleted', 'active'] as $state) {
+            $c = $this->curation(); $other = $this->curation(['gdm_uuid' => $c->gdm_uuid]);
+            $r = $this->reconcile([], [$this->item(['PK' => $c->gdm_uuid])])->first();
+            if ($state === 'retired') DB::table('curations')->where('id', $other->id)->update(['curation_status_id' => config('curations.statuses.retired-assignment')]);
+            if ($state === 'archived') $other->update(['archived_at' => now()]);
+            if ($state === 'deleted') $other->delete();
+            $r->fill(['review_status' => 'REVIEWED', 'resolution' => Decision::MATCH, 'resolved_gt_curation_id' => $c->id]);
+            $result = app(PrecurationExport::class)->payload([$r]);
+            $this->assertSame($state === 'active' ? 0 : 1, $result['payload']['Count'], $state);
+            if ($state !== 'active') $this->assertSame((string) $c->id, $result['payload']['Items'][0]['precurationId']);
+        }
+        $target = $this->curation(); $wrong = $this->curation();
+        $r = $this->reconcile([$this->item(['PK' => $target->gdm_uuid, 'precurationId' => (string) $wrong->id])], [])->first();
+        $r->update(['review_status' => 'REVIEWED', 'resolution' => Decision::EXPORT, 'resolved_gt_curation_id' => $target->id]);
+        $expected = app(PrecurationExport::class)->payload([$r])['payload'];
+        $this->assertSame((string) $target->id, $expected['Items'][0]['precurationId']);
+        $path = sys_get_temp_dir().'/gci-bulk-'.Str::uuid().'.json'; $this->paths[] = $path;
+        $this->artisan('gci:export-precuration-ids', ['--id' => [$r->id], '--output' => $path])->assertExitCode(0);
+        $this->assertSame($expected, json_decode(file_get_contents($path), true));
+        $this->actor->assignRole('admin');
+        $this->actor->givePermissionTo(\Spatie\Permission\Models\Permission::findOrCreate('list gci-reconciliation', 'web'));
+        $response = $this->actingAs($this->actor, 'api')->getJson('/api/admin/gci-reconciliation/export/precuration-ids?scope=filtered&run_uuid='.$r->run_uuid)->assertOk();
+        $this->assertSame($expected, json_decode($response->streamedContent(), true));
+        $this->assertEquals($wrong->id, $r->fresh()->gci_precuration_id);
     }
 
 }
