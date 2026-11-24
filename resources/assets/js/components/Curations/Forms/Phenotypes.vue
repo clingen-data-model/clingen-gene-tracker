@@ -34,14 +34,6 @@ const fields = [
         tdClass: 'text-end w-10',
         sortable: false,
         label: ' ',
-        formatter: ({item}) => {
-            return {
-                'id': item.id,
-                'mim_number': item.phenotypeMimNumber,
-                'name': item.phenotype,
-                'label_obsolete': Boolean(item.label_obsolete),
-            }
-        }
     }
 ]
 const message = ref(null)
@@ -92,6 +84,21 @@ const showTable = computed(() => {
 })
 
 const showRationale = true
+
+function selectPhenotype(phenotype, selected) {
+    if (phenotype.label_obsolete) return
+    const selections = updatedCuration.value.phenotypes || []
+    const remaining = selections.filter(item => !item.label_obsolete && item.id !== phenotype.id)
+    updatedCuration.value.phenotypes = selected ? [...remaining, {
+        id: phenotype.id,
+        mim_number: phenotype.phenotypeMimNumber,
+        name: phenotype.phenotype,
+        label_obsolete: Boolean(phenotype.label_obsolete),
+    }] : remaining
+}
+
+// Keep historical rows visible until a successful save reloads the associations.
+defineExpose({ refreshPhenotypes: () => fetchPhenotypes(updatedCuration.value.id) })
 </script>
 <template>
     <div class="component-container">
@@ -103,7 +110,7 @@ const showRationale = true
                 </div>
 
                 <div v-if="showTable && (phenotypes || []).some(p => p.label_obsolete)" class="alert alert-warning py-2">
-                    Some phenotypes are not present in the latest OMIM list. They may have been renamed.
+                    Some previously associated phenotypes are no longer present in the latest OMIM list. Please review and select the appropriate current phenotypes. Outdated phenotype associations will be removed when you save your phenotype selections.
                 </div>
                 <b-table v-show="showTable"
                     :items="phenotypes"
@@ -125,8 +132,9 @@ const showRationale = true
                             v-if="!data.item.label_obsolete"
                             class="form-check-input form-check-input-lg"
                             type="checkbox" 
-                            v-model="updatedCuration.phenotypes"
-                            :value="data.value"
+                            :checked="(updatedCuration.phenotypes || []).some(p => p.id === data.item.id)"
+                            @change="selectPhenotype(data.item, $event.target.checked)"
+                            :aria-label="'Select ' + data.item.phenotype"
                             :disabled="disabled"
                         >
                     </template>

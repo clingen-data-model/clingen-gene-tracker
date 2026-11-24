@@ -85,7 +85,7 @@ class OmimController extends Controller
         $curationPhenotypes = $curation->phenotypes;
 
         $phenotypes = $curationPhenotypes
-            ->merge($curation->gene->phenotypes)
+            ->merge($curation->gene->phenotypes->whereNull('label_obsolete_at'))
             ->unique('id')
             ->sortBy(fn($ph) => $ph->id)
             ->values();

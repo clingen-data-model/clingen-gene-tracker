@@ -43,6 +43,40 @@ async function openCurationList(page) {
 }
 
 test.describe('authenticated curation list', () => {
+    test('gene deep links survive refresh, history, and detail navigation', async ({ page, baseURL }) => {
+        test.setTimeout(60_000)
+        const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
+        await page.goto('/home#/genes/LMNA')
+        await expect(page.getByRole('heading', { name: 'Curations for LMNA', exact: true })).toBeVisible()
+        await expect(page.getByPlaceholder('Filter by Gene Symbol')).toHaveValue('LMNA')
+        await expect(page.getByText('No curations found for LMNA.', { exact: true })).toBeVisible()
+        await page.reload()
+        await expect(page.getByText('No curations found for LMNA.', { exact: true })).toBeVisible()
+
+        await page.goto('/home#/genes/E2E-BRAVO')
+        await expect(page.getByRole('link', { name: 'E2E-BRAVO', exact: true })).toBeVisible()
+        await page.getByPlaceholder('Filter by Expert Panel').fill('unrelated')
+        await expect(page.getByText('No curations found for E2E-BRAVO.', { exact: true })).toBeVisible()
+        await page.goto('/home#/genes/E2E-CHARLIE')
+        await expect(page.getByRole('link', { name: 'E2E-CHARLIE', exact: true })).toBeVisible()
+        await expect(page.getByPlaceholder('Filter by Expert Panel')).toHaveValue('')
+        await page.goBack()
+        await expect(page.getByRole('link', { name: 'E2E-BRAVO', exact: true })).toBeVisible()
+        await page.goForward()
+        await expect(page.getByRole('link', { name: 'E2E-CHARLIE', exact: true })).toBeVisible()
+        await page.getByRole('link', { name: 'E2E-CHARLIE', exact: true }).click()
+        await expect(page).toHaveURL(/#\/curations\/9103$/)
+        await expect(page.getByRole('heading', { name: /Curation: E2E-CHARLIE/ })).toBeVisible()
+        await page.goBack()
+        await expect(page.getByRole('link', { name: 'E2E-CHARLIE', exact: true })).toBeVisible()
+        const allCurations = waitForCurationList(page)
+        await page.getByRole('link', { name: 'View all curations', exact: true }).click()
+        await allCurations
+        await expect(page.getByRole('heading', { name: 'All Curations', exact: true })).toBeVisible()
+        await expect(page.getByText('Total Records: 11', { exact: true })).toBeVisible()
+        assertNoApplicationErrors()
+    })
+
     test('renders deterministic rows and supports global search and clearing', async ({ page, baseURL }) => {
         const assertNoApplicationErrors = monitorApplicationErrors(page, baseURL)
         await openCurationList(page)

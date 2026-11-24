@@ -152,16 +152,30 @@ class CurationController extends Controller
 
     private function setPhenotypes(Curation $curation, $request)
     {
-        if ($request->has('phenotypes')) {
-            $phenotypeIds = collect($request->input('phenotypes', []))->reject(fn ($p) => !empty($p['label_obsolete']))->pluck('id')->filter()->unique()->values()->all();
-            SyncPhenotypes::dispatchSync($curation, $phenotypeIds);
+        // Other tabs send the full curation, including historical selections.
+        if ($request->input('page') !== 'phenotypes') {
+            return;
         }
 
         if ($request->isolated_phenotype) {
-            // $pheno = $this->omim->getEntry($request->isolated_phenotype);
-            $pheno = Phenotype::findByMimNumber($request->isolated_phenotype);
-            SyncPhenotypes::dispatchSync($curation, [$pheno->id]);
+            $pheno = Phenotype::where('mim_number', $request->isolated_phenotype)
+                ->whereNull('label_obsolete_at')->first();
+            if (!$pheno) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'isolated_phenotype' => ['Select a current OMIM phenotype.'],
+                ]);
+            }
+            $phenotypeIds = [$pheno->id];
+        } elseif ($request->has('phenotypes')) {
+            $requestedIds = collect($request->input('phenotypes', []))->pluck('id')->filter()->unique();
+            $outdatedIds = Phenotype::whereIn('id', $requestedIds)->whereNotNull('label_obsolete_at')->pluck('id');
+            // Keep unknown IDs so SyncPhenotypes still rejects invalid selections.
+            $phenotypeIds = $requestedIds->diff($outdatedIds)->values()->all();
+        } else {
+            return;
         }
+
+        SyncPhenotypes::dispatchSync($curation, $phenotypeIds);
     }
 
     private function setRationales(Curation $curation, $rationales)

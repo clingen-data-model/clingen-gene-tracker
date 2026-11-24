@@ -14,8 +14,10 @@
 
             <table class="table table-sm table-xs mb-0">
                 <thead>
+                    <tr>
                     <th>MIM Number</th>
                     <th style="width: 80%">Phenotype</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="phenotype in phenotypes" :key="phenotype.id">
@@ -31,8 +33,7 @@
     </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 
 const props = defineProps({
     geneSymbol: {
@@ -44,13 +45,5 @@ const props = defineProps({
     }
 })
 
-const route = useRoute()
-const phenotypes = ref([])
-
-function syncPhenotypes() {
-    phenotypes.value = props.curation.phenotypes || []
-}
-
-watch(route, syncPhenotypes)
-onMounted(syncPhenotypes)
+const phenotypes = computed(() => props.curation.phenotypes || [])
 </script>

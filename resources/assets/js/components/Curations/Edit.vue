@@ -185,8 +185,13 @@
             return
         }
         updatedCuration.value.nav = nav
-        return storeItemUpdates(updatedCuration.value)
-            .then(response => {
+        const payload = { ...updatedCuration.value }
+        if (currentStep.value === 'phenotypes' && Array.isArray(payload.phenotypes)) {
+            payload.phenotypes = payload.phenotypes.filter(phenotype => !phenotype.label_obsolete)
+        }
+        return storeItemUpdates(payload)
+            .then(async response => {
+                await editPage.value?.refreshPhenotypes?.()
                 store.commit('messages/addInfo', 'Updates saved for ' + updatedCuration.value.gene_symbol + '.')
                 emit('saved')
                 if (callback) {
