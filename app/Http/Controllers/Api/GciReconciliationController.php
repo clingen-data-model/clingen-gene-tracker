@@ -31,6 +31,19 @@ class GciReconciliationController extends Controller
 
     public function download(Request $request, string $type)
     {
+        if ($type === 'curator-review') {
+            $export = app(\App\Services\GciReconciliation\CuratorReviewExport::class);
+            $sheets = $export->sheets(Record::orderBy('id')->get());
+            $count = $sheets['Summary'][1][1];
+            return response()->streamDownload(function () use ($export, $sheets) {
+                $path = tempnam(sys_get_temp_dir(), 'gci-review-');
+                try { $export->write($sheets, $path); readfile($path); }
+                finally { if (is_file($path)) unlink($path); }
+            }, 'gci-curator-review-'.now()->format('Ymd-His').'.xlsx', [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Cache-Control' => 'private, no-store', 'X-Export-Count' => (string) $count,
+            ]);
+        }
         $scope = $request->validate(['scope' => ['required', Rule::in(['all', 'filtered'])]])['scope'];
         $filters = $this->filters($request);
         $query = $scope === 'filtered' ? Record::filtered($filters) : Record::query();

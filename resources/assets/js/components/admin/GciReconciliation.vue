@@ -21,10 +21,10 @@
             <button class="btn btn-primary" :disabled="busy">Search / Apply filters</button>
         </form>
         <p class="text-muted">Filters describe the original findings. Current GT comparisons are recalculated when loaded. Refresh after editing a curation.</p>
-        <details class="mb-3"><summary>Export JSON</summary>
-            <p>Filtered downloads include every page using the last applied table filters. Downloads do not modify GT or reconciliation records.</p>
+        <details class="mb-3"><summary>Export</summary>
+            <p>JSON downloads include all eligible records. Curator Review downloads an Excel workbook of unresolved records. Downloads do not modify GT or reconciliation records.</p>
             <div class="d-flex flex-wrap gap-2">
-                <button v-for="option in exportOptions" :key="option.type + option.scope" class="btn btn-outline-primary" :disabled="busy" @click="downloadExport(option.type, option.scope)">{{ option.label }}</button>
+                <button v-for="option in exportOptions" :key="option.type" class="btn btn-outline-primary" :disabled="busy" @click="downloadExport(option.type)">{{ option.label }}</button>
             </div>
         </details>
         <div class="table-responsive"><table class="table table-striped align-middle"><thead><tr><th><input type="checkbox" aria-label="Select visible records for review" :checked="allSelected" @change="selected = $event.target.checked ? rows.map(r => r.id) : []" /></th><th>Gene / GCEP</th><th>GT ID</th><th>Original finding</th><th>Current GT</th><th>Review / Action</th><th></th></tr></thead><tbody>
@@ -68,12 +68,10 @@ const store = useStore()
 const canReview = computed(() => store.getters.getUser.hasPermission('review gci-reconciliation'))
 const base = '/api/admin/gci-reconciliation'
 const rows = ref([]), selected = ref([]), detail = ref(null), busy = ref(false), error = ref(''), message = ref(''), includeRetired = ref(false)
-const appliedFilters = ref({ include_retired: 0 })
 const exportOptions = [
-    { type: 'precuration-ids', scope: 'all', label: 'Precuration IDs - All eligible' },
-    { type: 'precuration-ids', scope: 'filtered', label: 'Precuration IDs - Filtered' },
-    { type: 'actions', scope: 'all', label: 'GCI Actions - All eligible' },
-    { type: 'actions', scope: 'filtered', label: 'GCI Actions - Filtered' },
+    { type: 'precuration-ids', label: 'Precuration ID Updates' },
+    { type: 'actions', label: 'GCI Actions' },
+    { type: 'curator-review', label: 'Curator Review' },
 ]
 const page = ref(1), lastPage = ref(1), total = ref(0)
 const filters = reactive({ curation_id: '', gdm_uuid: '', queue: '', gci_gene_symbol: '', gci_affiliation_id: '' })
@@ -103,15 +101,14 @@ async function perform(fn) {
 async function fetchRows(n = 1) {
     const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== ''))
     const { data } = await window.axios.get(`${base}/records`, { params: { ...params, include_retired: includeRetired.value ? 1 : 0, page: n } })
-    appliedFilters.value = { ...params, include_retired: includeRetired.value ? 1 : 0 }
     rows.value = data.data; page.value = data.current_page; lastPage.value = data.last_page; total.value = data.total
 }
-function downloadExport(type, scope) {
+function downloadExport(type) {
     return perform(async () => {
         let response
         try {
             response = await window.axios.get(`${base}/export/${type}`, {
-                params: { ...(scope === 'filtered' ? appliedFilters.value : {}), scope }, responseType: 'blob',
+                params: { scope: 'all' }, responseType: 'blob',
             })
         } catch (e) {
             if (e.response?.data instanceof Blob) {
@@ -119,7 +116,7 @@ function downloadExport(type, scope) {
             }
             throw e
         }
-        const filename = response.headers['content-disposition']?.match(/filename="?([^";]+)"?/)?.[1] || `gci-${type}.json`
+        const filename = response.headers['content-disposition']?.match(/filename="?([^";]+)"?/)?.[1] || `gci-${type}.${type === 'curator-review' ? 'xlsx' : 'json'}`
         const url = URL.createObjectURL(response.data)
         const link = document.createElement('a')
         link.href = url; link.download = filename

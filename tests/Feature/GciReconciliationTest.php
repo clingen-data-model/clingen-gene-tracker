@@ -56,6 +56,58 @@ class GciReconciliationTest extends TestCase
         app(Reconciler::class)->reconcile($uuid, 'test', ...$paths);
         return Record::where('run_uuid', $uuid)->orderBy('id')->get();
     }
+    public function test_curator_workbook_uses_live_targets_and_excludes_completed_decisions_without_writes(): void
+    {
+        $rows = $this->reconcile([], array_map(fn () => $this->item(), range(1, 13)));
+        foreach (['APPLIED', 'NO_ACTION', 'RESOLVED_MANUALLY'] as $i => $status) $rows[$i]->update(['execution_status' => $status]);
+        foreach ([Decision::DELETE_GCI, Decision::PARKING_LOT, 'KEEP_DELETED'] as $i => $resolution) $rows[$i + 3]->update(['review_status' => 'REVIEWED', 'resolution' => $resolution]);
+        $rows[7]->update(['match_status' => 'AMBIGUOUS_GDM_UUID']);
+        $target = $this->curation(['gdm_uuid' => $rows[8]->gci_gdm_uuid, 'gene_symbol' => 'OTHER_GENE']);
+        $rows[8]->update(['review_status' => 'REVIEWED', 'resolution' => Decision::MATCH, 'resolved_gt_curation_id' => $target->id, 'review_notes' => '=Review this candidate', 'execution_status' => 'NOT_READY']);
+        foreach (['deleted_at' => now(), 'archived_at' => now(), 'curation_status_id' => config('curations.statuses.retired-assignment')] as $key => $value) {
+            $i = 9 + array_search($key, ['deleted_at', 'archived_at', 'curation_status_id']);
+            $c = $this->curation();
+            if ($key === 'deleted_at') $c->delete();
+            else $c->update([$key => $value]);
+            $rows[$i]->update(['resolved_gt_curation_id' => $c->id]);
+        }
+        // Original finding still says not found, but live reviewed target now fully matches.
+        $resolved = $this->curation(['gdm_uuid' => $rows[12]->gci_gdm_uuid]);
+        $rows[12]->update(['review_status' => 'REVIEWED', 'resolution' => Decision::MATCH, 'resolved_gt_curation_id' => $resolved->id]);
+        $before = DB::table('gci_gt_reconciliations')->get()->toJson();
+        $gtBefore = DB::table('curations')->get()->toJson();
+        $historyBefore = DB::table('curation_expert_panel')->get()->toJson();
+        $export = app(\App\Services\GciReconciliation\CuratorReviewExport::class);
+        $sheets = $export->sheets($rows->fresh());
+        $this->assertSame(6, $sheets['Summary'][1][1]);
+        $this->assertCount(2, $sheets['GCI Not Found in GT']);
+        $this->assertCount(3, $sheets['Ambiguous - Identity Conflict']);
+        $this->assertCount(4, $sheets['Inactive GT Records']);
+        $headers = $sheets['Ambiguous - Identity Conflict'][0];
+        $selected = array_combine($headers, $sheets['Ambiguous - Identity Conflict'][2]);
+        $this->assertEquals($target->id, $selected['Resolved GT Curation ID']);
+        $this->assertSame('OTHER_GENE', $selected['Current GT Gene']);
+        $this->assertSame('=Review this candidate', $selected['Review Notes']);
+        $this->actor->assignRole('admin');
+        $this->actor->givePermissionTo(\Spatie\Permission\Models\Permission::findOrCreate('list gci-reconciliation', 'web'));
+        $response = $this->actingAs($this->actor, 'api')->get('/api/admin/gci-reconciliation/export/curator-review')->assertOk();
+        $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $path = tempnam(sys_get_temp_dir(), 'gci-xlsx-'); $this->paths[] = $path;
+        file_put_contents($path, $response->streamedContent());
+        $reader = \Box\Spout\Reader\Common\Creator\ReaderEntityFactory::createXLSXReader();
+        $reader->open($path);
+        $actual = [];
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $line) $actual[$sheet->getName()][] = $line->toArray();
+        }
+        $reader->close();
+        $this->assertSame(array_keys($sheets), array_keys($actual));
+        $this->assertSame('=Review this candidate', $actual['Ambiguous - Identity Conflict'][2][32]);
+        $this->assertSame($before, DB::table('gci_gt_reconciliations')->get()->toJson());
+        $this->assertSame($gtBefore, DB::table('curations')->get()->toJson());
+        $this->assertSame($historyBefore, DB::table('curation_expert_panel')->get()->toJson());
+    }
+
     public function test_matching_normalization_fallback_deleted_retired_and_candidates(): void
     {
         $direct = $this->curation(); $fallback = $this->curation(); $retired = $this->curation(['curation_status_id' => config('curations.statuses.retired-assignment')]);

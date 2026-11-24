@@ -79,7 +79,7 @@ describe('GCI information and review page', () => {
         wrapper.unmount()
     })
 
-    it('downloads all or the last applied filters and reports empty-export errors', async () => {
+    it('downloads all eligible JSON and curator workbooks regardless of table filters', async () => {
         const get = vi.fn().mockResolvedValue({ data: { data: [], current_page: 1, last_page: 1, total: 0 } })
         window.axios = { get }
         vi.useFakeTimers()
@@ -95,16 +95,22 @@ describe('GCI information and review page', () => {
             await flushPromises()
             await wrapper.get('#gt-id').setValue('456') // Draft filter must not change the export scope.
             get.mockResolvedValue({ data: new Blob(['{}']), headers: { 'content-disposition': 'attachment; filename=gci-actions-20261103-120000.json', 'x-export-count': '2' } })
-            await wrapper.findAll('button').find(b => b.text() === 'GCI Actions - Filtered').trigger('click')
+            await wrapper.findAll('button').find(b => b.text() === 'GCI Actions').trigger('click')
             await flushPromises()
-            expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/actions', { params: { curation_id: 123, include_retired: 0, scope: 'filtered' }, responseType: 'blob' })
+            expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/actions', { params: { scope: 'all' }, responseType: 'blob' })
             expect(click).toHaveBeenCalledOnce()
             expect(wrapper.get('[role=status]').text()).toContain('Downloaded 2 records')
-            await wrapper.findAll('button').find(b => b.text() === 'Precuration IDs - All eligible').trigger('click')
+            await wrapper.findAll('button').find(b => b.text() === 'Precuration ID Updates').trigger('click')
             await flushPromises()
             expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/precuration-ids', { params: { scope: 'all' }, responseType: 'blob' })
+            expect(wrapper.text()).not.toContain('Filtered')
+            get.mockResolvedValue({ data: new Blob(['workbook']), headers: { 'content-disposition': 'attachment; filename=gci-curator-review-test.xlsx', 'x-export-count': '3' } })
+            await wrapper.findAll('button').find(b => b.text() === 'Curator Review').trigger('click')
+            await flushPromises()
+            expect(get).toHaveBeenLastCalledWith('/api/admin/gci-reconciliation/export/curator-review', { params: { scope: 'all' }, responseType: 'blob' })
+            expect(click.mock.instances.at(-1).download).toBe('gci-curator-review-test.xlsx')
             get.mockRejectedValue({ response: { data: { errors: { export: ['No eligible records remain for this export and scope.'] } } } })
-            await wrapper.findAll('button').find(b => b.text() === 'Precuration IDs - Filtered').trigger('click')
+            await wrapper.findAll('button').find(b => b.text() === 'Precuration ID Updates').trigger('click')
             await flushPromises()
             expect(wrapper.get('[role=alert]').text()).toContain('No eligible records')
         } finally {

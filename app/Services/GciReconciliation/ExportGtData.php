@@ -10,13 +10,16 @@ class ExportGtData
     private array $targets = [];
     private array $owners = [];
 
-    public function __construct(iterable $rows)
+    public function __construct(iterable $rows, bool $comparison = false)
     {
         $ids = $uuids = [];
         $manual = app(ManualTarget::class);
         foreach ($rows as $row) {
             $id = $manual->selected($row) ? $row->resolved_gt_curation_id : $row->gt_curation_id;
             if ($id) $ids[$id] = $id;
+            if ($comparison) foreach (array_merge([$row->resolved_gt_curation_id, $row->gt_curation_id], $row->conflicting_gt_curation_ids ?? [], $row->deleted_gt_curation_ids ?? []) as $candidate) {
+                if ($candidate) $ids[$candidate] = $candidate;
+            }
             if ($row->gci_gdm_uuid) $uuids[$row->gci_gdm_uuid] = $row->gci_gdm_uuid;
         }
         // Bound IN-list sizes; load only relations actually used by identity checks.
@@ -24,7 +27,7 @@ class ExportGtData
             $targets = Curation::without('disease')->withTrashed()->with([
                 'expertPanel.affiliation' => fn ($q) => $q->without('type'),
                 'expertPanel.affiliation.parent' => fn ($q) => $q->without('type'),
-            ])->whereIn('id', $chunk)->get();
+            ])->when($comparison, fn ($q) => $q->with(['modeOfInheritance', 'currentStatus']))->whereIn('id', $chunk)->get();
             foreach ($targets as $target) $this->targets[$target->id] = $target;
         }
         foreach (array_chunk(array_values($uuids), 500) as $chunk) {

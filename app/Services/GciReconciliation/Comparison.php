@@ -13,9 +13,9 @@ class Comparison
             ->find($row->resolved_gt_curation_id ?: $row->gt_curation_id);
     }
 
-    public function describe(Record $row): array
+    public function describe(Record $row, ?ExportGtData $data = null): array
     {
-        $c = $this->current($row);
+        $c = $data ? $data->target($row->resolved_gt_curation_id ?: $row->gt_curation_id) : $this->current($row);
         $parent = $c?->expertPanel?->affiliation?->parent;
         $live = $c ? [
             'curation_id' => $c->id, 'gdm_uuid' => $c->gdm_uuid, 'gene_symbol' => $c->gene_symbol,
@@ -35,13 +35,17 @@ class Comparison
             'disease_match' => $row->gci_mondo_id && $c ? $row->gci_mondo_id === $c->mondo_id : null,
             'moi_match' => $row->gci_moi_hp_id && $c ? $row->gci_moi_hp_id === $c->modeOfInheritance?->hp_id : null,
         ];
-        $unique = $c && $flags['gdm_uuid_match'] && Curation::withTrashed()->where('gdm_uuid', $row->gci_gdm_uuid)->count() === 1;
+        $unique = $c && $flags['gdm_uuid_match'] && ($data ? $data->owners($row->gci_gdm_uuid)->count() : Curation::withTrashed()->where('gdm_uuid', $row->gci_gdm_uuid)->count()) === 1;
         $active = $c && !$c->trashed() && !$c->archived_at && !$live['is_retired'];
         $identity = $active && $unique && $flags['gene_match'] && $flags['affiliation_match']
             && ($row->source_type === PayloadReader::NO || $flags['precuration_id_match']);
         $manual = app(ManualTarget::class);
         if ($manual->selected($row)) {
-            try { $manual->validate($row, $c); $identity = true; }
+            try {
+                if ($data) $manual->validateLoaded($row, $c, $data->owners($row->gci_gdm_uuid));
+                else $manual->validate($row, $c);
+                $identity = true;
+            }
             catch (\UnexpectedValueException $e) { $identity = false; }
         }
         return ['current_gt' => $live, 'current_comparison' => $flags,
