@@ -109,12 +109,19 @@ const routes = [{
         // }
     },
     {
+        path: '/genes/:gene_symbol?',
+        component: CurationList,
+        name: 'gene-curations',
+        props: route => ({ geneSymbol: route.params.gene_symbol || '' })
+    },
+    {
         path: '/curations',
         component: Curations,
         children: [{
                 path: '',
                 component: CurationList,
-                name: 'curations-index'
+                name: 'curations-index',
+                props: route => ({ geneSymbol: route.query.gene })
             },
             {
                 path: 'create',

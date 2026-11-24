@@ -82,6 +82,7 @@
                                 v-model="advancedFilters[field.key]"
                                 class="form-control form-control-sm"
                                 :placeholder="'Filter by ' + field.label"
+                                :readonly="field.key === 'gene_symbol' && !!geneSymbol"
                             />
                         </div>
                     </div>
@@ -102,6 +103,8 @@
             v-model:sort-by="sortByModel"
             :no-local-sorting="true"
             :show-empty="true"
+            :empty-text="geneSymbol ? `No curations found for ${geneSymbol}.` : 'There are no records to show'"
+            :empty-filtered-text="geneSymbol ? `No curations found for ${geneSymbol}.` : 'There are no records matching your request'"
         >     
             <template v-slot:table-busy>
                 <center>Loading...</center>
@@ -186,6 +189,7 @@ import uniqid from '../../helpers/uniqid'
 import DeleteButton from './DeleteButton.vue'
 
 const props = defineProps({
+    geneSymbol: { type: String, default: '' },
     sortBy: {
         type: String,
         default: 'gene_symbol'
@@ -218,9 +222,9 @@ const sortByModel = ref([
 ])
 const totalRows = ref(0)
 const searchFieldId = 'search-filter-' + uniqid()
-const showAdvancedFilters = ref(false)
+const showAdvancedFilters = ref(!!props.geneSymbol)
 const advancedFilters = ref({
-    gene_symbol: '',
+    gene_symbol: props.geneSymbol,
     mode_of_inheritance: '',
     mondo_id: '',
     expert_panel: '',
@@ -339,6 +343,9 @@ const activeFilterCount = computed(() => Object.values(advancedFilters.value).fi
 
 function curationProvider(ctx) {
     const [sort] = ctx.sortBy || []
+    const filters = { ...advancedFilters.value }
+    // The route scopes the list exactly; do not also apply the partial gene filter.
+    if (props.geneSymbol) filters.gene_symbol = ''
     const context = {
         currentPage: ctx.currentPage,
         perPage: ctx.perPage,
@@ -346,7 +353,8 @@ function curationProvider(ctx) {
         sortBy: sort?.key || props.sortBy,
         sortDesc: sort?.order === 'desc',
         ...props.searchParams,
-        filters: JSON.stringify(advancedFilters.value),
+        ...(props.geneSymbol ? { gene_symbol: props.geneSymbol } : {}),
+        filters: JSON.stringify(filters),
         archive_filter: archiveFilter.value
     }
 
@@ -360,7 +368,7 @@ function clearFilters() {
     filter.value = null
     archiveFilter.value = 'exclude'
     advancedFilters.value = {
-        gene_symbol: '',
+        gene_symbol: props.geneSymbol,
         mode_of_inheritance: '',
         mondo_id: '',
         expert_panel: '',
